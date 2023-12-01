@@ -1,0 +1,16 @@
+import { Injectable } from '@nestjs/common';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { UsersGroupsInst } from './entities/users-groups-inst.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { TP_DB_NAME } from "../../app/tp-typeorm.config";
+
+@Injectable()
+export class UsersGroupsInstService extends TypeOrmCrudService<UsersGroupsInst> {
+  constructor(
+    @InjectRepository(UsersGroupsInst, TP_DB_NAME)
+    readonly repo: Repository<UsersGroupsInst>,
+  ) {
+    super(repo);
+  }
+}
