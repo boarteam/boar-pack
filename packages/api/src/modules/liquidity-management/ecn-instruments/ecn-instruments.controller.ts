@@ -54,7 +54,7 @@ import { ManageEcnInstrumentsPolicy } from './policies/manage-ecn-instruments.po
 })
 @CheckPolicies(new ManageEcnInstrumentsPolicy())
 @ApiTags('EcnInstruments')
-@Controller('ecn-instruments')
+@Controller('liquidity/ecn-instruments')
 export class EcnInstrumentsController {
   constructor(
     private readonly service: EcnInstrumentsService,

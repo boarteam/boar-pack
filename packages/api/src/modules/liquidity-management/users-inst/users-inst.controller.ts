@@ -53,7 +53,7 @@ import { UniqueIdPipe } from "../unique-id.pipe";
 })
 @ApiTags('UsersInst')
 @CheckPolicies(new ManageUsersInstPolicy())
-@Controller('users-inst')
+@Controller('liquidity/users-inst')
 export class UsersInstController {
   constructor(private readonly service: UsersInstService) {}
 }
