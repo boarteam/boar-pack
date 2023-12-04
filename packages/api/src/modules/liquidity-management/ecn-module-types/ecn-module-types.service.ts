@@ -3,7 +3,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { EcnModuleType } from './entities/ecn-module-type.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AMTS_DB_NAME } from "../../app/amts-typeorm.config";
+import { AMTS_DB_NAME } from "../../amts-db/amts-db.config";
 
 @Injectable()
 export class EcnModuleTypesService extends TypeOrmCrudService<EcnModuleType> {

@@ -38,7 +38,7 @@ import { ManageEcnInstrumentsGroupsPolicy } from './policies/manage-ecn-instrume
 })
 @CheckPolicies(new ManageEcnInstrumentsGroupsPolicy())
 @ApiTags('EcnInstrumentsGroups')
-@Controller('ecn-instruments-groups')
+@Controller('liquidity/ecn-instruments-groups')
 export class EcnInstrumentsGroupsController {
   constructor(public service: EcnInstrumentsGroupsService) {}
 }

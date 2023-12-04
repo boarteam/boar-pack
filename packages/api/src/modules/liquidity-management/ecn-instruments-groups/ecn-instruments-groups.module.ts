@@ -4,7 +4,7 @@ import { EcnInstrumentsGroupsController } from './ecn-instruments-groups.control
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EcnInstrumentsGroup } from './entities/ecn-instruments-group.entity';
 import { TModuleConfig } from "../../app/app.types";
-import { AMTS_DB_NAME } from "../../app/amts-typeorm.config";
+import { AMTS_DB_NAME } from "../../amts-db/amts-db.config";
 
 @Module({})
 export class EcnInstrumentsGroupsModule {

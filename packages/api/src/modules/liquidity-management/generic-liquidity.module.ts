@@ -1,12 +1,12 @@
 import { Controller, DynamicModule, Module } from '@nestjs/common';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
-import { AMTS_DB_NAME } from "../app/amts-typeorm.config";
 import { ObjectLiteral, Repository } from "typeorm";
 import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
 import { Crud } from "@nestjsx/crud";
 import { CrudOptions } from "@nestjsx/crud/lib/interfaces";
 import { CheckPolicies, IPolicyHandler } from "../casl/policies.guard";
 import { ApiTags } from "@nestjs/swagger";
+import { AMTS_DB_NAME } from "../amts-db/amts-db.config";
 
 type TGenericLiquidityModuleConfig<Entity> = {
   endpoint: string;

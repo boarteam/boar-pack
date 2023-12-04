@@ -53,7 +53,7 @@ import { AutoincrementIdPipe } from "../autoincrement_id.pipe";
 })
 @CheckPolicies(new ManageEcnModulesPolicy())
 @ApiTags('EcnModules')
-@Controller('ecn-modules')
+@Controller('liquidity/ecn-modules')
 export class EcnModulesController {
   constructor(
     private readonly service: EcnModulesService,

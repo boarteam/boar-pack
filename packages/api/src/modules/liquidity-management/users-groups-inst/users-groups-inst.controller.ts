@@ -42,7 +42,7 @@ import { ManageUsersGroupsInstPolicy } from './policies/manage-users-groups-inst
 })
 @ApiTags('UsersGroupsInst')
 @CheckPolicies(new ManageUsersGroupsInstPolicy())
-@Controller('users-groups-inst')
+@Controller('liquidity/users-groups-inst')
 export class UsersGroupsInstController {
   constructor(private readonly service: UsersGroupsInstService) {}
 }

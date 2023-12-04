@@ -38,7 +38,7 @@ import { ManageEcnModuleTypesPolicy } from "./policies/manage-ecn-module-types.p
 })
 @CheckPolicies(new ManageEcnModuleTypesPolicy())
 @ApiTags('EcnModuleTypes')
-@Controller('ecn-module-types')
+@Controller('liquidity/ecn-module-types')
 export class EcnModuleTypesController {
   constructor(
     private readonly service: EcnModuleTypesService,

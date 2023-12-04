@@ -4,11 +4,11 @@ import { UsersGroupsInstController } from './users-groups-inst.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersGroupsInst } from './entities/users-groups-inst.entity';
 import { TModuleConfig } from "../../app/app.types";
-import { AMTS_DB_NAME } from "../../app/amts-typeorm.config";
 import { DclAction } from "../entities/dcl-action.entity";
 import { GenericLiquidityModule } from "../generic-liquidity.module";
 import { ViewUsersGroupsInstPolicy } from "./policies/view-users-groups-inst.policy";
 import { UsersInstCompany } from "../entities/users-inst-company.entity";
+import { AMTS_DB_NAME } from "../../amts-db/amts-db.config";
 
 @Module({})
 export class UsersGroupsInstModule {
@@ -21,13 +21,13 @@ export class UsersGroupsInstModule {
           DclAction,
         ], AMTS_DB_NAME),
         GenericLiquidityModule.generate<DclAction>({
-          endpoint: 'dcl-actions',
+          endpoint: 'liquidity/dcl-actions',
           apiTag: 'Dcl Actions',
           Entity: DclAction,
           policy: new ViewUsersGroupsInstPolicy,
         }),
         GenericLiquidityModule.generate<UsersInstCompany>({
-          endpoint: 'users-inst-companies',
+          endpoint: 'liquidity/users-inst-companies',
           apiTag: 'Users Inst Companies',
           Entity: UsersInstCompany,
           policy: new ViewUsersGroupsInstPolicy,
