@@ -1,9 +1,9 @@
-import Table from "../../Table/Table";
-import apiClient from "../../../tools/client/apiClient";
-import { EcnModuleType, EcnModuleTypeCreateDto, EcnModuleTypeUpdateDto } from "../../../tools/api";
+import Table from "../../../Table/Table";
+import apiClient from "../../../../tools/client/apiClient";
+import { EcnModuleType, EcnModuleTypeCreateDto, EcnModuleTypeUpdateDto } from "../../../../tools/api";
 import { useEcnModuleTypesColumns } from "./useEcnModuleTypesColumns";
 import pick from "lodash/pick";
-import { Operators, withNumericId } from "../../Table/tableTools";
+import { Operators, withNumericId } from "../../../Table/tableTools";
 
 function entityToDto(entity: EcnModuleType) {
   return pick(entity, [
