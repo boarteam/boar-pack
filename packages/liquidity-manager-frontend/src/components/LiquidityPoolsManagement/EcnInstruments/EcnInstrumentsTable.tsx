@@ -73,10 +73,14 @@ const columnsSets: TColumnsSet<EcnInstrument>[] = [
     columns: [
       'name',
       'descr',
+      // @ts-ignore-next-line
+      'price_group',
       'priceDigits',
       'priceLiquidityLimit',
       'swapLong',
       'swapShort',
+      // @ts-ignore-next-line
+      'margin_group',
       'marginCurrency',
       'currency',
       'instrumentGroup',
