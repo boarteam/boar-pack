@@ -109,6 +109,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
     },
     {
       title: 'Price',
+      dataIndex: 'price_group', // hack to make it work with columns visibility settings
       children: [
         {
           title: intl.formatMessage({ id: 'pages.ecnInstruments.priceDigits.short' }),
@@ -561,6 +562,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
     },
     {
       title: 'Margin',
+      dataIndex: 'margin_group', // hack to make it work with columns visibility settings
       children: [
         {
           title: intl.formatMessage({ id: 'pages.ecnInstruments.marginMode.short' }),

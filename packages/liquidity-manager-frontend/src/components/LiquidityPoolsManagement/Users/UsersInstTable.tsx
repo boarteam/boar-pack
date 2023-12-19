@@ -3,8 +3,8 @@ import apiClient from "../../../tools/client/apiClient";
 import { UsersInst, UsersInstCreateDto, UsersInstUpdateDto } from "../../../tools/api";
 import { useUsersInstColumns } from "./useUsersInstColumns";
 import pick from "lodash/pick";
-import { useMemo } from "react";
-import { getDefaultColumnsState, Operators } from "../../Table/tableTools";
+import { Operators } from "../../Table/tableTools";
+import { TColumnsSet } from "../../Table/useColumnsSets";
 
 function entityToDto(entity: UsersInst) {
   return {
@@ -56,27 +56,71 @@ type TUsersInstFilterParams = {
   descr?: string,
 }
 
-const defaultDisplayedColumns = new Set<keyof UsersInst>([
-  'id',
-  'name',
-  'group',
-  'enabled',
-  'balance',
-  'credit',
-  'margin',
-  'freeMargin',
-  'userComment',
-  'module',
-  'commission',
-  'commissionValue',
-  'commissionTurnover',
-  'marginModule',
-  'company',
-]);
+const columnsSets: TColumnsSet<UsersInst>[] = [
+  {
+    name: 'Default Columns',
+    columns: [
+      'id',
+      'name',
+      'group',
+      'enabled',
+      'balance',
+      'credit',
+      'margin',
+      'freeMargin',
+      'userComment',
+      'module',
+      // @ts-ignore-next-line
+      'commission_group',
+      'commission',
+      'commissionValue',
+      'commissionTurnover',
+      'marginModule',
+      'company',
+    ],
+  },
+  {
+    name: 'Margin Columns',
+    columns: [
+      'id',
+      'name',
+      'leverage',
+      // @ts-ignore-next-line
+      'margin_group',
+      'margin',
+      'freeMargin',
+      'marginModule',
+      'marginWithLimits',
+      'marginLevel',
+    ],
+  },
+  {
+    name: 'Commission Columns',
+    columns: [
+      'id',
+      'name',
+      // @ts-ignore-next-line
+      'commission_group',
+      'commission',
+      'commissionValue',
+      'commissionTurnover',
+      'commissionType',
+      'commissionLotsMode',
+    ],
+  },
+  {
+    name: 'Fix Columns',
+    columns: [
+      'id',
+      'name',
+      'fixTradingEnabled',
+      'fixUserinfoRequestsEnabled',
+    ],
+  }
+];
 
 const UsersInstTable = () => {
   const columns = useUsersInstColumns();
-  const defaultColumnsState = useMemo(() => getDefaultColumnsState<UsersInst>(columns, defaultDisplayedColumns), [columns])
 
   return (
     <Table<UsersInst, UsersInstCreateDto, UsersInstUpdateDto, TUsersInstFilterParams, {}, number>
@@ -86,11 +130,9 @@ const UsersInstTable = () => {
       onDelete={params => apiClient.usersInst.deleteOneBaseUsersInstControllerUsersInst(params)}
       entityToCreateDto={entityToDto}
       entityToUpdateDto={entityToDto}
-      columns={columns}
       idColumnName='id'
-      columnsState={{
-        defaultValue: defaultColumnsState,
-      }}
+      columns={columns}
+      columnsSets={columnsSets}
       pathParams={{}}
       params={{
         join: [

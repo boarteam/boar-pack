@@ -3,9 +3,9 @@ import apiClient from "../../../tools/client/apiClient";
 import { EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto } from "../../../tools/api";
 import { useEcnInstrumentsColumns } from "./useEcnInstrumentsColumns";
 import pick from "lodash/pick";
-import { useMemo } from "react";
-import { getDefaultColumnsState, Operators } from "../../Table/tableTools";
+import { Operators } from "../../Table/tableTools";
 import { ecnInstrumentJoinFields } from "./ecnInstrumentJoinFields";
+import { TColumnsSet } from "../../Table/useColumnsSets";
 
 export function ecnInstrumentToDto<
   T extends Partial<EcnInstrument>,
@@ -26,6 +26,7 @@ export function ecnInstrumentToDto<
       'swapRollover3Days',
       'swapLong',
       'swapShort',
+      'swapLimit',
       'tickPrice',
       'tickSize',
       'commission',
@@ -41,7 +42,6 @@ export function ecnInstrumentToDto<
       'marginHedged',
       'marginDivider',
       'marginCurrency',
-      'swapLimit',
       'tsPriceLiquidityLimit',
       'currency',
       'startExpirationDatetime',
@@ -67,22 +67,37 @@ type TEcnInstrumentFilterParams = {
   descr?: string,
 }
 
-const defaultDisplayedColumns = new Set<keyof EcnInstrument>([
-  'name',
-  'descr',
-  'priceDigits',
-  'priceLiquidityLimit',
-  'swapLong',
-  'swapShort',
-  'marginCurrency',
-  'currency',
-  'instrumentGroup',
-]);
-
+const columnsSets: TColumnsSet<EcnInstrument>[] = [
+  {
+    name: 'Default Columns',
+    columns: [
+      'name',
+      'descr',
+      'priceDigits',
+      'priceLiquidityLimit',
+      'swapLong',
+      'swapShort',
+      'marginCurrency',
+      'currency',
+      'instrumentGroup',
+    ],
+  },
+  {
+    name: 'Swap Columns',
+    columns: [
+      'name',
+      'swapEnable',
+      'swapType',
+      'swapRollover3Days',
+      'swapLong',
+      'swapShort',
+      'swapLimit',
+    ],
+  }
+];
 
 const EcnInstrumentsTable = () => {
   const columns = useEcnInstrumentsColumns();
-  const defaultColumnsState = useMemo(() => getDefaultColumnsState<EcnInstrument>(columns, defaultDisplayedColumns), [columns]);
 
   return (
     <Table<EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto, TEcnInstrumentFilterParams, {}, number>
@@ -93,9 +108,7 @@ const EcnInstrumentsTable = () => {
       entityToUpdateDto={ecnInstrumentToDto}
       columns={columns}
       idColumnName="instrumentHash"
-      columnsState={{
-        defaultValue: defaultColumnsState,
-      }}
+      columnsSets={columnsSets}
       scroll={{
         x: 'max-content',
       }}
