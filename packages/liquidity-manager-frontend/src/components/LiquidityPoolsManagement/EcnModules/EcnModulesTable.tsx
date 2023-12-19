@@ -5,8 +5,12 @@ import { useEcnModulesColumns } from "./useEcnModulesColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";
 import { Operators, withNumericId } from "../../Table/tableTools";
+import { ecnModuleJoinFields } from "./ecnModuleJoinFields";
 
-function entityToDto(entity: EcnModule) {
+export function ecnModuleToDto<
+  T extends Partial<EcnModule>,
+  R extends (EcnModuleCreateDto | EcnModuleUpdateDto)
+>(entity: T): R {
   return {
     ...pick(entity, [
       'name',
@@ -15,7 +19,7 @@ function entityToDto(entity: EcnModule) {
     ]),
     id: isRecordNew(entity) ? undefined : entity.id,
     type: entity.type?.id,
-  };
+  } as R;
 }
 
 type TEcnModuleFilterParams = {
@@ -33,12 +37,13 @@ const EcnModulesTable = () => {
       onCreate={params => apiClient.ecnModules.createOneBaseEcnModulesControllerEcnModule(params)}
       onUpdate={params => apiClient.ecnModules.updateOneBaseEcnModulesControllerEcnModule(withNumericId(params))}
       onDelete={params => apiClient.ecnModules.deleteOneBaseEcnModulesControllerEcnModule(withNumericId(params))}
-      entityToCreateDto={entityToDto}
-      entityToUpdateDto={entityToDto}
+      entityToCreateDto={ecnModuleToDto}
+      entityToUpdateDto={ecnModuleToDto}
       columns={columns}
       idColumnName='id'
-      pathParams={{
-        join: ['type']
+      pathParams={{}}
+      params={{
+        join: ecnModuleJoinFields,
       }}
       createNewDefaultParams={{
         name: '',

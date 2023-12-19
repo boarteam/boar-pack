@@ -1,21 +1,18 @@
-import { Link, useIntl } from "@umijs/max";
+import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { EcnModule, EcnModuleType } from "../../../tools/api";
+import { EcnConnectSchema } from "../../../tools/api";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
 import { NumberSwitch } from "../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
-import { RelationSelect } from "../../Inputs/RelationSelect";
-import apiClient from "../../../tools/client/apiClient";
-import { NumberInputHandlingNewRecord } from "../../Inputs/NumberInputHandlingNewRecord";
 
-export const useEcnModulesColumns = (): ProColumns<EcnModule>[] => {
+export const useEcnConnectSchemasColumns = (): ProColumns<EcnConnectSchema>[] => {
   const intl = useIntl();
   const { canManageLiquidity } = useAccess() || {};
 
-  const columns: ProColumns<EcnModule>[] = [
+  const columns: ProColumns<EcnConnectSchema>[] = [
     {
-      title: intl.formatMessage({ id: 'pages.ecnModules.id' }),
+      title: intl.formatMessage({ id: 'pages.ecnConnectSchemas.id' }),
       dataIndex: 'id',
       sorter: true,
       search: false,
@@ -24,33 +21,10 @@ export const useEcnModulesColumns = (): ProColumns<EcnModule>[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
-      // if id is set to new record, then it will render input with empty value
-      renderFormItem() {
-        return <NumberInputHandlingNewRecord />
-      },
-      render(text) {
-        return text;
-      }
+      render: (text) => text,
     },
     {
-      title: intl.formatMessage({ id: 'pages.ecnModules.name' }),
-      dataIndex: 'name',
-      width: '30%',
-      sorter: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-          }
-        ]
-      },
-      fieldProps: {
-        autoComplete: 'one-time-code', // disable browser autocomplete
-      },
-      render: (text, record) => <Link to={`/liquidity/ecn-modules/${record.id}`}>{text}</Link>,
-    },
-    {
-      title: intl.formatMessage({ id: 'pages.ecnModules.descr' }),
+      title: intl.formatMessage({ id: 'pages.ecnConnectSchemas.descr' }),
       dataIndex: 'descr',
       width: '30%',
       sorter: true,
@@ -59,26 +33,29 @@ export const useEcnModulesColumns = (): ProColumns<EcnModule>[] => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.ecnModules.type' }),
-      dataIndex: 'type',
+      title: intl.formatMessage({ id: 'pages.ecnConnectSchemas.fromModule' }),
+      dataIndex: 'fromModule',
       sorter: true,
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
       render(text, record) {
-        return record.type?.name ?? '-';
-      },
-      renderFormItem(schema, config) {
-        return (<RelationSelect<EcnModuleType>
-          selectedItem={config.record?.type}
-          fetchItems={filter => apiClient.ecnModuleTypes.getManyBaseEcnModuleTypesControllerEcnModuleType({
-            filter,
-          })}
-        />);
+        return record.fromModule?.name ?? '-';
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.ecnModules.enabled' }),
+      title: intl.formatMessage({ id: 'pages.ecnConnectSchemas.toModule' }),
+      dataIndex: 'toModule',
+      sorter: true,
+      fieldProps: {
+        autoComplete: 'one-time-code', // disable browser autocomplete
+      },
+      render(text, record) {
+        return record.toModule?.name ?? '-';
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.ecnConnectSchemas.enabled' }),
       dataIndex: 'enabled',
       sorter: true,
       renderFormItem() {

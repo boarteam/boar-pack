@@ -7,7 +7,10 @@ import { useMemo } from "react";
 import { getDefaultColumnsState, Operators } from "../../Table/tableTools";
 import { ecnInstrumentJoinFields } from "./ecnInstrumentJoinFields";
 
-export function ecnInstrumentToDto(entity: Partial<EcnInstrument>) {
+export function ecnInstrumentToDto<
+  T extends Partial<EcnInstrument>,
+  R extends EcnInstrumentCreateDto | EcnInstrumentUpdateDto
+>(entity: T): R {
   return {
     ...pick(entity, [
       'instrumentHash',
@@ -56,7 +59,7 @@ export function ecnInstrumentToDto(entity: Partial<EcnInstrument>) {
     commissionAgentLotsMode: entity.commissionAgentLotsMode?.id,
     profitMode: entity.profitMode?.id,
     marginMode: entity.marginMode?.id,
-  };
+  } as R;
 }
 
 type TEcnInstrumentFilterParams = {
@@ -86,10 +89,7 @@ const EcnInstrumentsTable = () => {
       getAll={params => apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params)}
       onUpdate={params => apiClient.ecnInstruments.updateOneBaseEcnInstrumentsControllerEcnInstrument(params)}
       onDelete={params => apiClient.ecnInstruments.deleteOneBaseEcnInstrumentsControllerEcnInstrument(params)}
-      // todo: uncomment once proper relational objects are returned
-      // @ts-ignore
       entityToCreateDto={ecnInstrumentToDto}
-      // @ts-ignore
       entityToUpdateDto={ecnInstrumentToDto}
       columns={columns}
       idColumnName="instrumentHash"
