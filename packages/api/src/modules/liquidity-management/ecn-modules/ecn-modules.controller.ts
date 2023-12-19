@@ -25,13 +25,16 @@ import { AutoincrementIdPipe } from "../autoincrement_id.pipe";
   query: {
     alwaysPaginate: true,
     join: {
-      type: {
-        exclude: ['id']
-      },
+      type: {},
     }
   },
   routes: {
-    only: ['getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    only: ['getOneBase', 'getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    getOneBase: {
+      decorators: [
+        CheckPolicies(new ViewEcnModulesPolicy()),
+      ],
+    },
     getManyBase: {
       decorators: [
         CheckPolicies(new ViewEcnModulesPolicy()),
