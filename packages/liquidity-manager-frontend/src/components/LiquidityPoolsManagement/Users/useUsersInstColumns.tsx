@@ -216,6 +216,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
     },
     {
       title: 'Margin',
+      dataIndex: 'margin_group', // hack to make it work with columns visibility settings
       children: [
         {
           title: intl.formatMessage({ id: 'pages.usersInst.margin' }),
@@ -483,6 +484,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
     },
     {
       title: 'Commission',
+      dataIndex: 'commission_group', // hack to make it work with columns visibility settings
       children: [
         {
           title: intl.formatMessage({ id: 'pages.usersInst.commission' }),

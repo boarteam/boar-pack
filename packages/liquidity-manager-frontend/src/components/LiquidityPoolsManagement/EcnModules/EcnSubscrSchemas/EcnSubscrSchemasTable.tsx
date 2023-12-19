@@ -2,8 +2,8 @@ import Table from "../../../Table/Table";
 import apiClient from "../../../../tools/client/apiClient";
 import { EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto } from "../../../../tools/api";
 import pick from "lodash/pick";
-import React, { useMemo } from "react";
-import { getDefaultColumnsState, Operators } from "../../../Table/tableTools";
+import React from "react";
+import { Operators } from "../../../Table/tableTools";
 import { ecnSubscrSchemaJoinFields } from "./ecnSubscrSchemaJoinFields";
 import { useEcnSubscrSchemaColumns } from "./useEcnSubscrSchemaColumns";
 import useFullscreen from "../../../../tools/useFullscreen";
@@ -34,12 +34,6 @@ type TEcnSubscriptionSchemaFilterParams = {
   descr?: string,
 }
 
-const defaultDisplayedColumns = new Set<keyof EcnSubscrSchema>([
-  'instrument',
-  'enabled',
-  'tradeEnabled'
-]);
-
 type TEcnSubscrSchemasTableProps = {
   connectSchemaId: number;
 }
@@ -48,7 +42,6 @@ const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
   connectSchemaId,
 }) => {
   const columns = useEcnSubscrSchemaColumns();
-  const defaultColumnsState = useMemo(() => getDefaultColumnsState<EcnSubscrSchema>(columns, defaultDisplayedColumns), [columns]);
   const { isFullscreen } = useFullscreen();
 
   return (
@@ -60,9 +53,16 @@ const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
       entityToUpdateDto={ecnSubscriptionSchemaToDto}
       columns={columns}
       idColumnName="instrumentHash"
-      columnsState={{
-        defaultValue: defaultColumnsState,
-      }}
+      columnsSets={[
+        {
+          name: 'Default Columns',
+          columns: [
+            'instrument',
+            'enabled',
+            'tradeEnabled'
+          ],
+        },
+      ]}
       scroll={{
         x: 'max-content',
       }}
