@@ -11,6 +11,9 @@ import { ViewEcnInstrumentsPolicy } from "./policies/view-ecn-instruments.policy
 import { EcnWeekDay } from "../entities/ecn-week-day.entity";
 import { EcnProfitCalcMode } from "../entities/ecn-profit-calc-mode.entity";
 import { EcnMarginCalcMode } from "../entities/ecn-margin-calc-mode.entity";
+import { EcnState } from "../entities/ecn-state.entity";
+import { EcnCurrency } from '../entities/ecn-currency.entity';
+import { EcnWorkingMode } from '../entities/ecn-working-modes.entity';
 
 @Module({})
 export class EcnInstrumentsModule {
@@ -24,6 +27,9 @@ export class EcnInstrumentsModule {
           EcnWeekDay,
           EcnProfitCalcMode,
           EcnMarginCalcMode,
+          EcnState,
+          EcnCurrency,
+          EcnWorkingMode,
         ], AMTS_DB_NAME),
         GenericLiquidityModule.generate<EcnSwapType>({
           endpoint: 'liquidity/ecn-swap-types',
@@ -47,6 +53,24 @@ export class EcnInstrumentsModule {
           endpoint: 'liquidity/ecn-margin-calc-modes',
           apiTag: 'Ecn Margin Calc Modes',
           Entity: EcnMarginCalcMode,
+          policy: new ViewEcnInstrumentsPolicy,
+        }),
+        GenericLiquidityModule.generate<EcnState>({
+          endpoint: 'liquidity/ecn-states',
+          apiTag: 'Ecn States',
+          Entity: EcnState,
+          policy: new ViewEcnInstrumentsPolicy,
+        }),
+        GenericLiquidityModule.generate<EcnCurrency>({
+          endpoint: 'liquidity/ecn-currency',
+          apiTag: 'Ecn Currencies',
+          Entity: EcnCurrency,
+          policy: new ViewEcnInstrumentsPolicy,
+        }),
+        GenericLiquidityModule.generate<EcnWorkingMode>({
+          endpoint: 'liquidity/ecn-working-modes',
+          apiTag: 'Ecn Working Modes',
+          Entity: EcnWorkingMode,
           policy: new ViewEcnInstrumentsPolicy,
         }),
       ],

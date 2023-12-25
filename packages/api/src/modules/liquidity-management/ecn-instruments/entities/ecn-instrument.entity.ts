@@ -5,6 +5,7 @@ import {
   Unique,
   ManyToOne,
   JoinColumn,
+  PrimaryColumn,
 } from 'typeorm';
 import { EcnInstrumentsGroup } from '../../ecn-instruments-groups/entities/ecn-instruments-group.entity';
 import { EcnMarginCalcMode } from '../../entities/ecn-margin-calc-mode.entity';
@@ -17,7 +18,7 @@ import { EcnWeekDay } from '../../entities/ecn-week-day.entity';
 @Entity('ecn_instruments')
 @Unique('idx_ecn_instruments_name', ['name'])
 export class EcnInstrument {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true, comment: 'Symbol id (hash)' })
+  @PrimaryColumn({ type: 'bigint', unsigned: true, comment: 'Symbol id (hash)' })
   instrumentHash: string;
 
   @Column('varchar', { length: 20, comment: 'Symbol name' })
