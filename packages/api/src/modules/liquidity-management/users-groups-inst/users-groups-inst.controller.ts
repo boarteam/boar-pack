@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UsePipes } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersGroupsInstService } from './users-groups-inst.service';
@@ -8,14 +8,16 @@ import { UsersGroupsInstCreateDto } from './dto/users-groups-inst-create.dto';
 import { UsersGroupsInstUpdateDto } from './dto/users-groups-inst-update.dto';
 import { ViewUsersGroupsInstPolicy } from './policies/view-users-groups-inst.policy';
 import { ManageUsersGroupsInstPolicy } from './policies/manage-users-groups-inst.policy';
+import { UniqueIdPipe } from '../unique-id.pipe';
+import { AutoincrementIdPipe } from '../autoincrement_id.pipe';
 
 @Crud({
   model: {
     type: UsersGroupsInst,
   },
   params: {
-    id: {
-      field: 'id',
+    name: {
+      field: 'name',
       type: 'string',
       primary: true,
     },
@@ -25,6 +27,8 @@ import { ManageUsersGroupsInstPolicy } from './policies/manage-users-groups-inst
     join: {
       action: {},
       company: {},
+      currency: {},
+      workingMode: {},
     },
   },
   routes: {
@@ -32,6 +36,14 @@ import { ManageUsersGroupsInstPolicy } from './policies/manage-users-groups-inst
     getManyBase: {
       decorators: [
         CheckPolicies(new ViewUsersGroupsInstPolicy()),
+      ],
+    },
+    createOneBase: {
+      decorators: [
+        UsePipes(
+          UniqueIdPipe(UsersGroupsInst),
+          AutoincrementIdPipe(UsersGroupsInst),
+        ),
       ],
     },
   },

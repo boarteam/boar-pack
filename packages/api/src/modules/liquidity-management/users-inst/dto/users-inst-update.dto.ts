@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import { JoiSchema } from 'nestjs-joi';
 import { UsersInstCompany } from '../../entities/users-inst-company.entity';
+import { EcnModule } from "../../ecn-modules/entities/ecn-module.entity";
 
 export class UsersInstUpdateDto {
   @JoiSchema(Joi.number().integer().min(0).optional())
@@ -73,7 +74,7 @@ export class UsersInstUpdateDto {
   stopoutGenerationTime?: string;
 
   @JoiSchema(Joi.number().integer().optional())
-  moduleId?: number;
+  module?: EcnModule['id'];
 
   @JoiSchema(Joi.string().optional())
   password?: string;

@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UsePipes } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
 import { ApiTags } from '@nestjs/swagger';
 import { EcnInstrumentsService } from './ecn-instruments.service';
@@ -8,6 +8,7 @@ import { EcnInstrumentCreateDto } from './dto/ecn-instrument-create.dto';
 import { EcnInstrumentUpdateDto } from './dto/ecn-instrument-update.dto';
 import { ViewEcnInstrumentsPolicy } from './policies/view-ecn-instruments.policy';
 import { ManageEcnInstrumentsPolicy } from './policies/manage-ecn-instruments.policy';
+import { CRC64HashPipe } from '../hash_instrument.pipe';
 
 @Crud({
   model: {
@@ -44,6 +45,13 @@ import { ManageEcnInstrumentsPolicy } from './policies/manage-ecn-instruments.po
     getManyBase: {
       decorators: [
         CheckPolicies(new ViewEcnInstrumentsPolicy()),
+      ],
+    },
+    createOneBase: {
+      decorators: [
+        UsePipes(
+          CRC64HashPipe(EcnInstrument, 'name', 'instrumentHash'),
+        ),
       ],
     },
   },

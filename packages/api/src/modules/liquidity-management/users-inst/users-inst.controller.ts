@@ -9,6 +9,7 @@ import { UsersInstUpdateDto } from './dto/users-inst-update.dto';
 import { ViewUsersInstPolicy } from './policies/view-users-inst.policy';
 import { ManageUsersInstPolicy } from './policies/manage-users-inst.policy';
 import { UniqueIdPipe } from "../unique-id.pipe";
+import { AutoincrementIdPipe } from "../autoincrement_id.pipe";
 
 @Crud({
   model: {
@@ -42,7 +43,10 @@ import { UniqueIdPipe } from "../unique-id.pipe";
     },
     createOneBase: {
       decorators: [
-        UsePipes(UniqueIdPipe(UsersInst)),
+        UsePipes(
+          UniqueIdPipe(UsersInst),
+          AutoincrementIdPipe(UsersInst),
+        ),
       ],
     },
   },

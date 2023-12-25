@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { EcnModule } from '../../ecn-modules/entities/ecn-module.entity';
 import { UsersInstCompany } from '../../entities/users-inst-company.entity';
 import { UsersGroupsInst } from "../../users-groups-inst/entities/users-groups-inst.entity";
@@ -22,9 +22,9 @@ export class UsersInst {
   @Column('varchar', { length: 256, comment: 'User name' })
   name: string;
 
-  @ManyToOne<UsersGroupsInst>(() => UsersGroupsInst, (group) => group.name)
-  @JoinColumn({ name: 'groupname' })
-  @Column('varchar', { length: 128, comment: 'User name' })
+  @ManyToOne<UsersGroupsInst>(() => UsersGroupsInst, (group) => group.usersInst)
+  @JoinColumn({ name: 'groupname', referencedColumnName: 'name' })
+  @Column('varchar', { length: 128, comment: 'User name', name: 'groupname' })
   group: UsersGroupsInst;
 
   @ManyToOne(() => DclAction, action => action.id)
@@ -92,7 +92,7 @@ export class UsersInst {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'module_id' })
-  @Column('int', { default: 0, comment: 'mt bridge module id' })
+  @Column('int', { default: 0, comment: 'mt bridge module id', name: 'module_id' })
   module: EcnModule;
 
   @Column('varchar', { length: 64, default: '', comment: 'user password (md5 hash)' })
@@ -122,12 +122,12 @@ export class UsersInst {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'margin_module_id' })
-  @Column('int', { default: 0, comment: 'margin module id' })
+  @Column('int', { default: 0, comment: 'margin module id', name: 'margin_module_id' })
   marginModule: EcnModule;
 
   @ManyToOne(() => UsersInstCompany, company => company.id, { onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'company_id' })
-  @Column('int', { unsigned: true, nullable: true, default: 1 })
+  @Column('int', { unsigned: true, nullable: true, default: 1, name: 'company_id' })
   company?: UsersInstCompany;
 
   @Column('int', { unsigned: true, nullable: true, default: 0 })
