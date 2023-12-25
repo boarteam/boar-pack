@@ -21,6 +21,7 @@ export const useEcnConnectSchemasColumns = (): ProColumns<EcnConnectSchema>[] =>
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+      editable: false,
       render: (text) => text,
     },
     {
@@ -39,6 +40,7 @@ export const useEcnConnectSchemasColumns = (): ProColumns<EcnConnectSchema>[] =>
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+      editable: false,
       render(text, record) {
         return record.fromModule?.name ?? '-';
       },
@@ -50,6 +52,7 @@ export const useEcnConnectSchemasColumns = (): ProColumns<EcnConnectSchema>[] =>
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+      editable: false,
       render(text, record) {
         return record.toModule?.name ?? '-';
       },
