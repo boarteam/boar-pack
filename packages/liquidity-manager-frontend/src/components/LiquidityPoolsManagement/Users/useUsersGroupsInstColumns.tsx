@@ -1,12 +1,13 @@
 import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { DclAction, UsersGroupsInst, UsersInstCompany } from "../../../tools/api";
+import { DclAction, EcnWorkingMode, UsersGroupsInst, UsersInstCompany } from "../../../tools/api";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
 import { RelationSelect } from "../../Inputs/RelationSelect";
 import apiClient from "../../../tools/client/apiClient";
 import { NumberSwitch } from "../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
+import { EcnCurrency } from "../../../../../api/src/modules/liquidity-management/entities/ecn-currency.entity";
 
 export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
   const intl = useIntl();
@@ -29,8 +30,8 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.type' }),
-      dataIndex: 'type',
+      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.workingMode' }),
+      dataIndex: 'workingMode',
       valueType: 'digit',
       sorter: true,
       formItemProps: {
@@ -43,6 +44,15 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+      render: (text, record) => {
+        return record.workingMode?.name;
+      },
+      renderFormItem: (schema, config, _, action) => {
+        return <RelationSelect<EcnWorkingMode>
+          selectedItem={config.record?.workingMode}
+          fetchItems={filter => apiClient.ecnWorkingModes.getManyBaseGenericLiquidityControllerEcnWorkingMode({ filter })}
+        />;
+      }
     },
     {
       title: intl.formatMessage({ id: 'pages.usersGroupsInsts.descr' }),
@@ -107,24 +117,24 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
         />;
       }
     },
-    {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.currencyId' }),
-      dataIndex: 'currencyId',
-      sorter: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-          }
-        ]
-      },
-      fieldProps: {
-        autoComplete: 'one-time-code', // disable browser autocomplete
-      },
-    },
+    // {
+    //   title: intl.formatMessage({ id: 'pages.usersGroupsInsts.currencyId' }),
+    //   dataIndex: 'currencyId',
+    //   sorter: true,
+    //   formItemProps: {
+    //     rules: [
+    //       {
+    //         required: true,
+    //       }
+    //     ]
+    //   },
+    //   fieldProps: {
+    //     autoComplete: 'one-time-code', // disable browser autocomplete
+    //   },
+    // },
     {
       title: intl.formatMessage({ id: 'pages.usersGroupsInsts.currencyName' }),
-      dataIndex: 'currencyName',
+      dataIndex: 'currency',
       sorter: true,
       formItemProps: {
         rules: [
@@ -136,6 +146,19 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+      render: (text, record) => {
+        return record.currency?.name;
+      },
+      renderFormItem: (schema, config, _, action) => {
+        return <RelationSelect<EcnCurrency>
+          selectedItem={config.record?.currency}
+          fieldNames={{
+            value: 'name',
+            label: 'name',
+          }}
+          fetchItems={filter => apiClient.ecnCurrencies.getManyBaseGenericLiquidityControllerEcnCurrency({ filter })}
+        />;
+      }
     },
     {
       title: intl.formatMessage({ id: 'pages.usersGroupsInsts.leverage' }),
@@ -172,8 +195,8 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.swapMode' }),
-      dataIndex: 'swapMode',
+      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.swapEnabled' }),
+      dataIndex: 'swapEnabled',
       sorter: true,
       formItemProps: {
         rules: [
@@ -194,7 +217,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
         );
       },
       render(text, record) {
-        return <Tag color={record.swapMode ? 'green' : 'red'}>{record.swapMode ? 'On' : 'Off'}</Tag>;
+        return <Tag color={record.swapEnabled ? 'green' : 'red'}>{record.swapEnabled ? 'On' : 'Off'}</Tag>;
       },
     },
     {
@@ -241,7 +264,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.id);
+            action?.startEditable?.(record.name);
           }}
         >
           <EditOutlined />

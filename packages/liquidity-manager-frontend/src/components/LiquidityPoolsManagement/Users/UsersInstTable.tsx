@@ -5,6 +5,7 @@ import { useUsersInstColumns } from "./useUsersInstColumns";
 import pick from "lodash/pick";
 import { Operators } from "../../Table/tableTools";
 import { TColumnsSet } from "../../Table/useColumnsSets";
+import { useAccess } from "@umijs/max";
 
 function entityToDto(entity: UsersInst) {
   return {
@@ -41,7 +42,7 @@ function entityToDto(entity: UsersInst) {
       'alwaysBookA',
       'hedgeFactor',
     ]),
-    moduleId: entity.module?.id,
+    module: entity.module?.id,
     marginModuleId: entity.marginModule?.id,
     group: entity.group?.name,
     company: entity.company?.id,
@@ -121,6 +122,7 @@ const columnsSets: TColumnsSet<UsersInst>[] = [
 
 const UsersInstTable = () => {
   const columns = useUsersInstColumns();
+  const { canManageLiquidity } = useAccess() || {};
 
   return (
     <Table<UsersInst, UsersInstCreateDto, UsersInstUpdateDto, TUsersInstFilterParams, {}, number>
@@ -144,10 +146,6 @@ const UsersInstTable = () => {
             select: ['name'],
           },
           {
-            field: 'group',
-            select: ['name'],
-          },
-          {
             field: 'company',
             select: ['name'],
           },
@@ -163,10 +161,54 @@ const UsersInstTable = () => {
             field: 'commissionLotsMode',
             select: ['name'],
           },
+          {
+            field: 'group',
+            select: ['id'],
+          },
         ]
       }}
       scroll={{
         x: 'max-content',
+      }}
+      excludeColumnsWhileCreate={new Set<keyof UsersInst>(['id'])}
+      createNewDefaultParams={{
+        ts: undefined,
+        tsMs: 0,
+        name: undefined,
+        leverage: undefined,
+        balance: '0',
+        credit: '0',
+        margin: '0',
+        freeMargin: '0',
+        marginLevel: '0',
+        userComment: '',
+        enabled: 0,
+        profitloss: '0',
+        marginWithLimits: '0',
+        commission: '0',
+        swap: '0',
+        stopoutHash: '0',
+        stopoutName: '0',
+        userState: -1,
+        stopoutEnabled: 1,
+        stopoutSuppressTime: '0',
+        stopoutGenerationTime: '0',
+        password: undefined,
+        commissionValue: '0',
+        rolloverTime: '0',
+        commissionTurnover: '0',
+        trId: 0,
+        fixTradingEnabled: 1,
+        fixUserinfoRequestsEnabled: 0,
+        alwaysBookA: 0,
+        hedgeFactor: '1',
+        marginModuleId: 0,
+        group: undefined,
+        module: 0,
+        company: 1,
+        action: 0,
+        commissionType: 1,
+        commissionLotsMode: 3,
       }}
       defaultSort={['name', 'ASC']}
       searchableColumns={[
@@ -179,8 +221,8 @@ const UsersInstTable = () => {
           operator: Operators.containsLow,
         },
       ]}
-      // do not allow creation here
-      viewOnly
+      viewOnly={!canManageLiquidity}
+      popupCreation
     />
   );
 }
