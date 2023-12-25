@@ -13,22 +13,20 @@ function entityToDto(entity: UsersGroupsInst) {
       'tsMs',
       'name',
       'leverage',
-      'currencyName',
-      'currencyId',
       'descr',
       'marginCall',
       'marginStopout',
-      'type',
-      'swapMode',
+      'swapEnabled',
     ]),
     action: entity.action?.id,
     companyId: entity.company?.id,
+    currency: entity.currency?.name,
+    workingMode: entity.workingMode?.id,
   };
 }
 
 type TUsersGroupsInstFilterParams = {
   name?: string,
-  currencyName?: string,
   descr?: string,
 }
 
@@ -47,7 +45,7 @@ const UsersGroupsInstTable = () => {
       entityToCreateDto={entityToDto}
       // @ts-ignore
       entityToUpdateDto={entityToDto}
-      idColumnName='id'
+      idColumnName='name'
       scroll={{
         x: 'max-content',
       }}
@@ -56,12 +54,12 @@ const UsersGroupsInstTable = () => {
       createNewDefaultParams={{
         name: '',
         leverage: 0,
-        currencyName: '',
+        currency: undefined,
         descr: '',
         marginCall: 0,
         marginStopout: 0,
-        type: 0,
-        companyId: 0,
+        swapEnabled: 1,
+        company: undefined,
         ts: 0,
         tsMs: 0,
       }}
@@ -75,16 +73,20 @@ const UsersGroupsInstTable = () => {
             field: 'company',
             select: ['name'],
           },
+          {
+            field: 'workingMode',
+            select: ['name'],
+          },
+          {
+            field: 'currency',
+            select: ['id'],
+          },
         ],
       }}
       defaultSort={['name', 'ASC']}
       searchableColumns={[
         {
           field: 'name',
-          operator: Operators.containsLow,
-        },
-        {
-          field: 'currencyName',
           operator: Operators.containsLow,
         },
         {

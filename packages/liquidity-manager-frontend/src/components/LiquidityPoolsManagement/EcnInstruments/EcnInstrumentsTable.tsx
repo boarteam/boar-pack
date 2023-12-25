@@ -6,6 +6,7 @@ import pick from "lodash/pick";
 import { Operators } from "../../Table/tableTools";
 import { ecnInstrumentJoinFields } from "./ecnInstrumentJoinFields";
 import { TColumnsSet } from "../../Table/useColumnsSets";
+import { useAccess } from "@umijs/max";
 
 export function ecnInstrumentToDto<
   T extends Partial<EcnInstrument>,
@@ -102,10 +103,12 @@ const columnsSets: TColumnsSet<EcnInstrument>[] = [
 
 const EcnInstrumentsTable = () => {
   const columns = useEcnInstrumentsColumns();
+  const { canManageLiquidity } = useAccess() || {};
 
   return (
     <Table<EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto, TEcnInstrumentFilterParams, {}, number>
       getAll={params => apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params)}
+      onCreate={params => apiClient.ecnInstruments.createOneBaseEcnInstrumentsControllerEcnInstrument(params)}
       onUpdate={params => apiClient.ecnInstruments.updateOneBaseEcnInstrumentsControllerEcnInstrument(params)}
       onDelete={params => apiClient.ecnInstruments.deleteOneBaseEcnInstrumentsControllerEcnInstrument(params)}
       entityToCreateDto={ecnInstrumentToDto}
@@ -115,6 +118,44 @@ const EcnInstrumentsTable = () => {
       columnsSets={columnsSets}
       scroll={{
         x: 'max-content',
+      }}
+      excludeColumnsWhileCreate={new Set<keyof EcnInstrument>(['instrumentHash'])}
+      createNewDefaultParams={{
+        name: '',
+        descr: undefined,
+        priceDigits: 5,
+        priceLiquidityLimit: '0',
+        maxQuoteDeviation: 0,
+        maxQuoteTimeDeviation: 0,
+        contractSize: undefined,
+        swapEnable: 0,
+        swapType: undefined,
+        swapRollover3Days: undefined,
+        swapLong: '0',
+        swapShort: '0',
+        tickPrice: '0',
+        tickSize: '0',
+        commission: '0',
+        commissionType: undefined,
+        commissionLotsMode: undefined,
+        commissionAgent: '0',
+        commissionAgentType: undefined,
+        commissionAgentLotsMode: undefined,
+        profitMode: undefined,
+        marginMode: undefined,
+        marginInitial: '0',
+        marginMaintenance: '0',
+        marginHedged: '0',
+        marginDivider: '0',
+        marginCurrency: undefined,
+        swapLimit: '0',
+        tsPriceLiquidityLimit: '0',
+        currency: undefined,
+        startExpirationDatetime: undefined,
+        expirationDatetime: undefined,
+        basis: undefined,
+        delBandOnAbookNos: 0,
+        delBandOnBbookNos: 0,
       }}
       pathParams={{}}
       params={{
@@ -131,8 +172,8 @@ const EcnInstrumentsTable = () => {
           operator: Operators.containsLow,
         },
       ]}
-      // do not allow creation here
-      viewOnly
+      viewOnly={!canManageLiquidity}
+      popupCreation
     />
   );
 }

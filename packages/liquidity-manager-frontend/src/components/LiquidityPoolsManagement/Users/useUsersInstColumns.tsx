@@ -108,13 +108,6 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       title: intl.formatMessage({ id: 'pages.usersInst.userComment' }),
       dataIndex: 'userComment',
       sorter: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-          }
-        ]
-      },
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
