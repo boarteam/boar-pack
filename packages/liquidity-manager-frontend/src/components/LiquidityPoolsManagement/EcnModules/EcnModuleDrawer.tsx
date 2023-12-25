@@ -7,12 +7,18 @@ import apiClient from '../../../tools/client/apiClient';
 import { Drawer } from 'antd';
 import React from "react";
 
-export const EcnModuleDrawer: React.FC<{ id: EcnModule['id'] | undefined, onClose: () => void }> = ({ id, onClose }) => {
+export const EcnModuleDrawer: React.FC<{
+  id: EcnModule['id'] | undefined,
+  onUpdate: (entity: EcnModule) => void,
+  onClose: () => void,
+}> = ({ id, onUpdate, onClose }) => {
   if (id === undefined) {
     return <></>
   }
 
   const columns = useEcnModulesColumns();
+  const idColumnIndex = columns.findIndex(column => column.dataIndex === 'id');
+  columns[idColumnIndex] = { ...columns[idColumnIndex], editable: false };
 
   return (
     <Drawer
@@ -26,7 +32,11 @@ export const EcnModuleDrawer: React.FC<{ id: EcnModule['id'] | undefined, onClos
           id,
         }}
         getOne={params => apiClient.ecnModules.getOneBaseEcnModulesControllerEcnModule(params)}
-        onUpdate={params => apiClient.ecnModules.updateOneBaseEcnModulesControllerEcnModule(params)}
+        onUpdate={async params => {
+          const entity = await apiClient.ecnModules.updateOneBaseEcnModulesControllerEcnModule(params);
+          onUpdate(entity);
+          return entity;
+        }}
         onDelete={params => apiClient.ecnModules.deleteOneBaseEcnModulesControllerEcnModule(params)}
         entityToCreateDto={ecnModuleToDto}
         entityToUpdateDto={ecnModuleToDto}
