@@ -3,10 +3,10 @@ import apiClient from "../../../../tools/client/apiClient";
 import { EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto } from "../../../../tools/api";
 import pick from "lodash/pick";
 import React from "react";
-import { Operators } from "../../../Table/tableTools";
 import { ecnSubscrSchemaJoinFields } from "./ecnSubscrSchemaJoinFields";
 import { useEcnSubscrSchemaColumns } from "./useEcnSubscrSchemaColumns";
 import useFullscreen from "../../../../tools/useFullscreen";
+import { ecnSubscrSchemaSearchableColumns } from "./ecnSubscrSchemaSearchableColumns";
 
 export function ecnSubscriptionSchemaToDto(entity: EcnSubscrSchema) {
   return {
@@ -29,11 +29,6 @@ export function ecnSubscriptionSchemaToDto(entity: EcnSubscrSchema) {
   };
 }
 
-type TEcnSubscriptionSchemaFilterParams = {
-  'connectSchema.id': number;
-  descr?: string,
-}
-
 type TEcnSubscrSchemasTableProps = {
   connectSchemaId: number;
 }
@@ -45,7 +40,7 @@ const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
   const { isFullscreen } = useFullscreen();
 
   return (
-    <Table<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, TEcnSubscriptionSchemaFilterParams, {}, number>
+    <Table<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, {}, TEcnSubscrSchemasTableProps, number>
       getAll={params => apiClient.ecnSubscrSchemas.getManyBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
       onUpdate={params => apiClient.ecnSubscrSchemas.updateOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
       onDelete={params => apiClient.ecnSubscrSchemas.deleteOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
@@ -66,22 +61,14 @@ const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
       scroll={{
         x: 'max-content',
       }}
-      pathParams={{}}
+      pathParams={{
+        connectSchemaId,
+      }}
       params={{
         join: ecnSubscrSchemaJoinFields,
-        'connectSchema.id': connectSchemaId,
       }}
       defaultSort={['instrument.name', 'ASC']}
-      searchableColumns={[
-        {
-          field: 'connectSchema.id',
-          operator: Operators.equals,
-        },
-        {
-          field: 'descr',
-          operator: Operators.containsLow,
-        },
-      ]}
+      searchableColumns={ecnSubscrSchemaSearchableColumns}
       viewOnly
       ghost={!isFullscreen}
     />

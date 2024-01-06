@@ -4,8 +4,9 @@ import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from "../../../tool
 import { useEcnModulesColumns } from "./useEcnModulesColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";
-import { Operators, withNumericId } from "../../Table/tableTools";
+import { withNumericId } from "../../Table/tableTools";
 import { ecnModuleJoinFields } from "./ecnModuleJoinFields";
+import { ecnModuleSearchableColumns } from "./ecnModuleSearchableColumns";
 
 export function ecnModuleToDto<
   T extends Partial<EcnModule>,
@@ -22,17 +23,12 @@ export function ecnModuleToDto<
   } as R;
 }
 
-type TEcnModuleFilterParams = {
-  name?: string,
-  descr?: string,
-}
-
 const EcnModulesTable = () => {
   const columns = useEcnModulesColumns();
   const { canManageLiquidity } = useAccess() || {};
 
   return (
-    <Table<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, TEcnModuleFilterParams, {}, number>
+    <Table<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, {}, {}, number>
       getAll={params => apiClient.ecnModules.getManyBaseEcnModulesControllerEcnModule(params)}
       onCreate={params => apiClient.ecnModules.createOneBaseEcnModulesControllerEcnModule(params)}
       onUpdate={params => apiClient.ecnModules.updateOneBaseEcnModulesControllerEcnModule(withNumericId(params))}
@@ -51,16 +47,7 @@ const EcnModulesTable = () => {
         enabled: 1,
       }}
       defaultSort={['name', 'ASC']}
-      searchableColumns={[
-        {
-          field: 'name',
-          operator: Operators.containsLow,
-        },
-        {
-          field: 'descr',
-          operator: Operators.containsLow,
-        },
-      ]}
+      searchableColumns={ecnModuleSearchableColumns}
       viewOnly={!canManageLiquidity}
     ></Table>
   );

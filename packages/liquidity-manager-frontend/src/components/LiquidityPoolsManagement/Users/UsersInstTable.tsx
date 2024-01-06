@@ -3,9 +3,10 @@ import apiClient from "../../../tools/client/apiClient";
 import { UsersInst, UsersInstCreateDto, UsersInstUpdateDto } from "../../../tools/api";
 import { useUsersInstColumns } from "./useUsersInstColumns";
 import pick from "lodash/pick";
-import { Operators } from "../../Table/tableTools";
 import { TColumnsSet } from "../../Table/useColumnsSets";
 import { useAccess } from "@umijs/max";
+import { ecnUsersInstJoinFields } from "./ecnUsersInstJoinFields";
+import { ecnUsersInstSearchableColumns } from "./ecnUsersInstSearchableColumns";
 
 function entityToDto(entity: UsersInst) {
   return {
@@ -50,11 +51,6 @@ function entityToDto(entity: UsersInst) {
     commissionType: entity.commissionType.id,
     commissionLotsMode: entity.commissionLotsMode.id,
   };
-}
-
-type TUsersInstFilterParams = {
-  name?: string,
-  descr?: string,
 }
 
 const columnsSets: TColumnsSet<UsersInst>[] = [
@@ -125,7 +121,7 @@ const UsersInstTable = () => {
   const { canManageLiquidity } = useAccess() || {};
 
   return (
-    <Table<UsersInst, UsersInstCreateDto, UsersInstUpdateDto, TUsersInstFilterParams, {}, number>
+    <Table<UsersInst, UsersInstCreateDto, UsersInstUpdateDto, {}, {}, number>
       getAll={params => apiClient.usersInst.getManyBaseUsersInstControllerUsersInst(params)}
       onCreate={params => apiClient.usersInst.createOneBaseUsersInstControllerUsersInst(params)}
       onUpdate={params => apiClient.usersInst.updateOneBaseUsersInstControllerUsersInst(params)}
@@ -137,35 +133,7 @@ const UsersInstTable = () => {
       columnsSets={columnsSets}
       pathParams={{}}
       params={{
-        join: [
-          {
-            field: 'module',
-            select: ['name'],
-          }, {
-            field: 'marginModule',
-            select: ['name'],
-          },
-          {
-            field: 'company',
-            select: ['name'],
-          },
-          {
-            field: 'action',
-            select: ['name'],
-          },
-          {
-            field: 'commissionType',
-            select: ['name'],
-          },
-          {
-            field: 'commissionLotsMode',
-            select: ['name'],
-          },
-          {
-            field: 'group',
-            select: ['id'],
-          },
-        ]
+        join: ecnUsersInstJoinFields,
       }}
       scroll={{
         x: 'max-content',
@@ -202,25 +170,16 @@ const UsersInstTable = () => {
         fixUserinfoRequestsEnabled: 0,
         alwaysBookA: 0,
         hedgeFactor: '1',
-        marginModuleId: 0,
+        marginModule: undefined,
         group: undefined,
-        module: 0,
-        company: 1,
-        action: 0,
-        commissionType: 1,
-        commissionLotsMode: 3,
+        module: undefined,
+        company: undefined,
+        action: undefined,
+        commissionType: undefined,
+        commissionLotsMode: undefined,
       }}
       defaultSort={['name', 'ASC']}
-      searchableColumns={[
-        {
-          field: 'name',
-          operator: Operators.containsLow,
-        },
-        {
-          field: 'descr',
-          operator: Operators.containsLow,
-        },
-      ]}
+      searchableColumns={ecnUsersInstSearchableColumns}
       viewOnly={!canManageLiquidity}
       popupCreation
     />

@@ -3,10 +3,10 @@ import apiClient from "../../../tools/client/apiClient";
 import { EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto } from "../../../tools/api";
 import { useEcnInstrumentsColumns } from "./useEcnInstrumentsColumns";
 import pick from "lodash/pick";
-import { Operators } from "../../Table/tableTools";
 import { ecnInstrumentJoinFields } from "./ecnInstrumentJoinFields";
 import { TColumnsSet } from "../../Table/useColumnsSets";
 import { useAccess } from "@umijs/max";
+import { ecnInstrumentSearchableColumns } from "./ecnInstrumentSearchableColumns";
 
 export function ecnInstrumentToDto<
   T extends Partial<EcnInstrument>,
@@ -63,11 +63,6 @@ export function ecnInstrumentToDto<
   } as R;
 }
 
-type TEcnInstrumentFilterParams = {
-  name?: string,
-  descr?: string,
-}
-
 const columnsSets: TColumnsSet<EcnInstrument>[] = [
   {
     name: 'Default Columns',
@@ -106,7 +101,7 @@ const EcnInstrumentsTable = () => {
   const { canManageLiquidity } = useAccess() || {};
 
   return (
-    <Table<EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto, TEcnInstrumentFilterParams, {}, number>
+    <Table<EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto, {}, {}, number>
       getAll={params => apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params)}
       onCreate={params => apiClient.ecnInstruments.createOneBaseEcnInstrumentsControllerEcnInstrument(params)}
       onUpdate={params => apiClient.ecnInstruments.updateOneBaseEcnInstrumentsControllerEcnInstrument(params)}
@@ -162,16 +157,7 @@ const EcnInstrumentsTable = () => {
         join: ecnInstrumentJoinFields,
       }}
       defaultSort={['name', 'ASC']}
-      searchableColumns={[
-        {
-          field: 'name',
-          operator: Operators.containsLow,
-        },
-        {
-          field: 'descr',
-          operator: Operators.containsLow,
-        },
-      ]}
+      searchableColumns={ecnInstrumentSearchableColumns}
       viewOnly={!canManageLiquidity}
       popupCreation
     />
