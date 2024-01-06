@@ -13,17 +13,12 @@ function entityToDto(entity: EcnInstrumentsGroup) {
   ]);
 }
 
-type TEcnInstrumentsGroupFilterParams = {
-  name?: string,
-  descr?: string,
-}
-
 const EcnInstrumentsGroupsTable = () => {
   const columns = useEcnInstrumentsGroupsColumns();
   const { canManageLiquidity } = useAccess() || {};
 
   return (
-    <Table<EcnInstrumentsGroup, EcnInstrumentsGroupCreateDto, EcnInstrumentsGroupUpdateDto, TEcnInstrumentsGroupFilterParams, {}, number>
+    <Table<EcnInstrumentsGroup, EcnInstrumentsGroupCreateDto, EcnInstrumentsGroupUpdateDto, {}, {}, number>
       getAll={params => apiClient.ecnInstrumentsGroups.getManyBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup(params)}
       onCreate={params => apiClient.ecnInstrumentsGroups.createOneBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup(params)}
       onUpdate={params => apiClient.ecnInstrumentsGroups.updateOneBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup(withNumericId(params))}

@@ -4,7 +4,8 @@ import { UsersGroupsInst, UsersGroupsInstCreateDto, UsersGroupsInstUpdateDto } f
 import { useUsersGroupsInstColumns } from "./useUsersGroupsInstColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";
-import { Operators } from "../../Table/tableTools";
+import { ecnUsersGroupsJoinFields } from "./ecnUsersGroupsJoinFields";
+import { ecnUsersGroupsSearchableColumns } from "./ecnUsersGroupsSearchableColumns";
 
 function entityToDto(entity: UsersGroupsInst) {
   return {
@@ -25,17 +26,12 @@ function entityToDto(entity: UsersGroupsInst) {
   };
 }
 
-type TUsersGroupsInstFilterParams = {
-  name?: string,
-  descr?: string,
-}
-
 const UsersGroupsInstTable = () => {
   const columns = useUsersGroupsInstColumns();
   const { canManageLiquidity } = useAccess() || {};
 
   return (
-    <Table<UsersGroupsInst, UsersGroupsInstCreateDto, UsersGroupsInstUpdateDto, TUsersGroupsInstFilterParams, {}, number>
+    <Table<UsersGroupsInst, UsersGroupsInstCreateDto, UsersGroupsInstUpdateDto, {}, {}, number>
       getAll={params => apiClient.usersGroupsInst.getManyBaseUsersGroupsInstControllerUsersGroupsInst(params)}
       onCreate={params => apiClient.usersGroupsInst.createOneBaseUsersGroupsInstControllerUsersGroupsInst(params)}
       onUpdate={params => apiClient.usersGroupsInst.updateOneBaseUsersGroupsInstControllerUsersGroupsInst(params)}
@@ -64,36 +60,10 @@ const UsersGroupsInstTable = () => {
         tsMs: 0,
       }}
       params={{
-        join: [
-          {
-            field: 'action',
-            select: ['name'],
-          },
-          {
-            field: 'company',
-            select: ['name'],
-          },
-          {
-            field: 'workingMode',
-            select: ['name'],
-          },
-          {
-            field: 'currency',
-            select: ['id'],
-          },
-        ],
+        join: ecnUsersGroupsJoinFields,
       }}
       defaultSort={['name', 'ASC']}
-      searchableColumns={[
-        {
-          field: 'name',
-          operator: Operators.containsLow,
-        },
-        {
-          field: 'descr',
-          operator: Operators.containsLow,
-        },
-      ]}
+      searchableColumns={ecnUsersGroupsSearchableColumns}
       viewOnly={!canManageLiquidity}
     ></Table>
   );

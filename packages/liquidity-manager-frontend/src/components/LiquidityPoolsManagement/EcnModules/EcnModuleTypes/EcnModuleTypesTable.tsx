@@ -12,16 +12,11 @@ function entityToDto(entity: EcnModuleType) {
   ]);
 }
 
-type TEcnModuleTypeFilterParams = {
-  name?: string,
-  descr?: string,
-}
-
 const EcnModuleTypesTable = () => {
   const columns = useEcnModuleTypesColumns();
 
   return (
-    <Table<EcnModuleType, EcnModuleTypeCreateDto, EcnModuleTypeUpdateDto, TEcnModuleTypeFilterParams, {}, number>
+    <Table<EcnModuleType, EcnModuleTypeCreateDto, EcnModuleTypeUpdateDto, {}, {}, number>
       getAll={params => apiClient.ecnModuleTypes.getManyBaseEcnModuleTypesControllerEcnModuleType(params)}
       onCreate={params => apiClient.ecnModuleTypes.createOneBaseEcnModuleTypesControllerEcnModuleType(params)}
       onUpdate={params => apiClient.ecnModuleTypes.updateOneBaseEcnModuleTypesControllerEcnModuleType(withNumericId(params))}
