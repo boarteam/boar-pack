@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { EcnModuleType } from "../../ecn-module-types/entities/ecn-module-type.entity";
+import { EcnConnectSchemaSetupLabel } from "../../ecn-connect-schema-setup-labels/entities/ecn-connect-schema-setup-label.entity";
 
 @Entity('ecn_modules')
 export class EcnModule {
@@ -41,4 +42,18 @@ export class EcnModule {
     comment: 'Enabled/disabled switcher'
   })
   enabled: number;
+
+  @ManyToMany<EcnConnectSchemaSetupLabel>(() => EcnConnectSchemaSetupLabel, setupLabel => setupLabel.modules)
+  @JoinTable({
+    name: 'ecn_connect_schema_setup',
+    joinColumn: {
+      name: 'label_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'module_id',
+      referencedColumnName: 'id',
+    },
+  })
+  setupLabels: EcnConnectSchemaSetupLabel[];
 }
