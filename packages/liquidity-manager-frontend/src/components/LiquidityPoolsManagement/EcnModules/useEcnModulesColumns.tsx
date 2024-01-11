@@ -47,7 +47,7 @@ export const useEcnModulesColumns = (): ProColumns<EcnModule>[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
-      render: (text, record) => <Link to={`/liquidity/ecn-modules/${record.id}`}>{text}</Link>,
+      render: (text, record) => <Link to={`/liquidity/modules-graph?moduleId=${record.id}`}>{text}</Link>,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnModules.descr' }),
