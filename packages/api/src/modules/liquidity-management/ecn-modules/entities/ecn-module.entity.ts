@@ -44,16 +44,5 @@ export class EcnModule {
   enabled: number;
 
   @ManyToMany<EcnConnectSchemaSetupLabel>(() => EcnConnectSchemaSetupLabel, setupLabel => setupLabel.modules)
-  @JoinTable({
-    name: 'ecn_connect_schema_setup',
-    joinColumn: {
-      name: 'label_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'module_id',
-      referencedColumnName: 'id',
-    },
-  })
   setupLabels: EcnConnectSchemaSetupLabel[];
 }
