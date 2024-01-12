@@ -10,5 +10,5 @@ export class EcnConnectSchemaSetupLabelCreateDto {
   label: string;
 
   @JoiSchema(Joi.array().items(Joi.object({ id: Joi.number().integer().positive() })).required())
-  instrumentsGroups: EcnModule['id'][];
+  modules: EcnModule['id'][];
 }
