@@ -1,7 +1,6 @@
 import { Link, useAccess, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import { EcnConnectSchemaSetupLabel } from "../../../../tools/api";
-import { NumberInputHandlingNewRecord } from "@/components/Inputs/NumberInputHandlingNewRecord";
 import { Tag } from "antd";
 import { EcnModulesSelect } from "../EcnModuleSelect";
 import { EditOutlined } from "@ant-design/icons";
@@ -11,24 +10,6 @@ export const useEcnSetupsColumns = (): ProColumns<EcnConnectSchemaSetupLabel>[] 
   const { canManageLiquidity } = useAccess() || {};
 
   const columns: ProColumns<EcnConnectSchemaSetupLabel>[] = [
-    {
-      title: intl.formatMessage({ id: 'pages.ecnSetups.id' }),
-      dataIndex: 'id',
-      sorter: true,
-      search: false,
-      valueType: 'digit',
-      copyable: true,
-      fieldProps: {
-        autoComplete: 'one-time-code', // disable browser autocomplete
-      },
-      // if id is set to new record, then it will render input with empty value
-      renderFormItem() {
-        return <NumberInputHandlingNewRecord />
-      },
-      render(text) {
-        return text;
-      }
-    },
     {
       title: intl.formatMessage({ id: 'pages.ecnSetups.label' }),
       dataIndex: 'label',
@@ -43,7 +24,7 @@ export const useEcnSetupsColumns = (): ProColumns<EcnConnectSchemaSetupLabel>[] 
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
-      render: (text, record) => <Link to={`/liquidity/modules-graph?setupId=${record.id}`}>{text}</Link>,
+      render: (text, record) => <Link to={`/liquidity/ecn-setups/${record.id}`}>{text}</Link>,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSetups.modules' }),

@@ -23,7 +23,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       },
       render(text, record) {
         // link to subscr schema page
-        return <Link to={`/liquidity/ecn-connect-schemas/${record.connectSchema.id}/subscription-schemas/${record.instrumentHash}`}>{record.instrument?.name ?? '-'}</Link>;
+        return <Link to={`/liquidity/ecn-connect-schemas/${record.connectSchemaId}/subscription-schemas/${record.instrumentHash}`}>{record.instrument?.name ?? '-'}</Link>;
       },
       renderFormItem(schema, config) {
         return <RelationSelect<EcnInstrument>

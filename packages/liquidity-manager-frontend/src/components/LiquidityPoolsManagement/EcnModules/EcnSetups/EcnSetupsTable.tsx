@@ -7,7 +7,6 @@ import { useEcnSetupsColumns } from "./useEcnSetupsColumns";
 import { useAccess } from "@umijs/max";
 
 function entityToDto(entity: EcnConnectSchemaSetupLabel) {
-  console.log(entity)
   return {
       ...pick(entity, [
       'label',
@@ -46,6 +45,10 @@ const EcnSetupsTable = () => {
       searchableColumns={[
         {
           field: 'label',
+          operator: Operators.containsLow,
+        },
+        {
+          field: ['modules', 'name'],
           operator: Operators.containsLow,
         }
       ]}
