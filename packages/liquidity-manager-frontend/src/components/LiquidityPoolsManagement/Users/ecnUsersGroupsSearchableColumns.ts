@@ -2,7 +2,6 @@ import { Operators } from "@/components/Table/tableTools";
 
 export const ecnUsersGroupsSearchableColumns = [
   'name',
-  ['group', 'name'],
   'descr',
   ['company', 'name'],
   ['action', 'name'],
