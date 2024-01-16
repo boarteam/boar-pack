@@ -4,11 +4,19 @@ import { memoize } from "lodash";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AMTS_DB_NAME } from "../amts-db/amts-db.config";
 
-export const AutoincrementIdPipe: <Entity extends ObjectLiteral>(Entity: Type<Entity>) => Type<PipeTransform> = memoize(
-  createAutoincrementIdPipe,
-);
+type TAutoincrementIdPipeParams<Entity> = {
+  Entity: Type<Entity>,
+  idField?: string,
+  uniqueFields?: (keyof Entity extends string ? keyof Entity : never)[],
+}
 
-function createAutoincrementIdPipe<EntityType extends ObjectLiteral>(Entity: Type<EntityType>): Type<PipeTransform> {
+export const AutoincrementIdPipe = memoize(createAutoincrementIdPipe);
+
+function createAutoincrementIdPipe<EntityType extends ObjectLiteral>({
+  Entity,
+  idField = 'id',
+  uniqueFields = [],
+}: TAutoincrementIdPipeParams<EntityType>): Type<PipeTransform> {
   class AutoincrementIdPipeMixin<T extends ObjectLiteral> implements PipeTransform {
     constructor(
       @InjectRepository(Entity, AMTS_DB_NAME)
@@ -17,12 +25,20 @@ function createAutoincrementIdPipe<EntityType extends ObjectLiteral>(Entity: Typ
     }
 
     async transform(value: any, metadata: ArgumentMetadata) {
-      const id = value.id;
+      const id = value[idField];
       if (id === undefined || id === null || id === '') {
-        const result = await this.repo.createQueryBuilder('entity')
-          .select('coalesce(max(entity.id), 0) + 1', 'nextId')
-          .getRawOne<{ nextId: number }>();
-        value.id = result?.nextId ?? 1;
+        const query = this.repo
+          .createQueryBuilder('entity')
+          .select(`coalesce(max(entity.${idField}), 0) + 1`, 'nextId');
+
+        if (uniqueFields.length > 0) {
+          uniqueFields.forEach((field) => {
+            query.andWhere(`entity.${field} = :${field}`, { [field]: value[field] });
+          });
+        }
+
+        const result = await query.getRawOne<{ nextId: number }>();
+        value[idField] = result?.nextId ?? 1;
       }
 
       return value;

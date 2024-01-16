@@ -44,7 +44,7 @@ import { AutoincrementIdPipe } from "../autoincrement_id.pipe";
       decorators: [
         UsePipes(
           UniqueIdPipe(EcnModule),
-          AutoincrementIdPipe(EcnModule),
+          AutoincrementIdPipe({ Entity: EcnModule }),
         ),
       ],
     },
