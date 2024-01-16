@@ -114,7 +114,6 @@ const EcnInstrumentsTable = () => {
       scroll={{
         x: 'max-content',
       }}
-      excludeColumnsWhileCreate={new Set<keyof EcnInstrument>(['instrumentHash'])}
       createNewDefaultParams={{
         name: '',
         descr: undefined,

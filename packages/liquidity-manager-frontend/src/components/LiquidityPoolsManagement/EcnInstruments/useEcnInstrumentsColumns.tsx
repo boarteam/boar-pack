@@ -39,6 +39,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
       copyable: true,
+      hideInDescriptions: true,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnInstruments.name' }),

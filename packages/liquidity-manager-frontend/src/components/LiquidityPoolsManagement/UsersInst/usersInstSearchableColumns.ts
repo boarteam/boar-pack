@@ -1,6 +1,6 @@
-import { Operators } from "@/components/Table/tableTools";
+import { Operators } from "../../Table/tableTools";
 
-export const ecnUsersInstSearchableColumns = [
+export const usersInstSearchableColumns = [
   'name',
   ['action', 'name'],
   'userComment',

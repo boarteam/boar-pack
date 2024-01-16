@@ -1,13 +1,12 @@
 import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { DclAction, EcnWorkingMode, UsersGroupsInst, UsersInstCompany } from "../../../tools/api";
+import { DclAction, EcnCurrency, EcnWorkingMode, UsersGroupsInst, UsersInstCompany } from "../../../../tools/api";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
-import { RelationSelect } from "../../Inputs/RelationSelect";
-import apiClient from "../../../tools/client/apiClient";
-import { NumberSwitch } from "../../Inputs/NumberSwitcher";
+import { RelationSelect } from "../../../Inputs/RelationSelect";
+import apiClient from "../../../../tools/client/apiClient";
+import { NumberSwitch } from "../../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
-import { EcnCurrency } from "../../../../../api/src/modules/liquidity-management/entities/ecn-currency.entity";
 
 export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
   const intl = useIntl();
@@ -15,7 +14,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
 
   const columns: ProColumns<UsersGroupsInst>[] = [
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.name' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.name' }),
       dataIndex: 'name',
       sorter: true,
       formItemProps: {
@@ -30,7 +29,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.workingMode' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.workingMode' }),
       dataIndex: 'workingMode',
       valueType: 'digit',
       sorter: true,
@@ -55,7 +54,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       }
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.descr' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.descr' }),
       dataIndex: 'descr',
       sorter: true,
       formItemProps: {
@@ -70,7 +69,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.company' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.company' }),
       dataIndex: 'company',
       sorter: true,
       formItemProps: {
@@ -94,7 +93,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       }
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.action' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.action' }),
       dataIndex: 'action',
       sorter: true,
       formItemProps: {
@@ -118,7 +117,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       }
     },
     // {
-    //   title: intl.formatMessage({ id: 'pages.usersGroupsInsts.currencyId' }),
+    //   title: intl.formatMessage({ id: 'pages.usersGroupsInst.currencyId' }),
     //   dataIndex: 'currencyId',
     //   sorter: true,
     //   formItemProps: {
@@ -133,7 +132,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
     //   },
     // },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.currencyName' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.currencyName' }),
       dataIndex: 'currency',
       sorter: true,
       formItemProps: {
@@ -161,7 +160,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       }
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.leverage' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.leverage' }),
       dataIndex: 'leverage',
       sorter: true,
       valueType: 'digit',
@@ -177,7 +176,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.marginCall' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.marginCall' }),
       dataIndex: 'marginCall',
       valueType: 'digit',
       sorter: true,
@@ -186,7 +185,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.marginStopout' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.marginStopout' }),
       dataIndex: 'marginStopout',
       valueType: 'digit',
       sorter: true,
@@ -195,7 +194,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.swapEnabled' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.swapEnabled' }),
       dataIndex: 'swapEnabled',
       sorter: true,
       formItemProps: {
@@ -221,7 +220,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.ts' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.ts' }),
       dataIndex: 'ts',
       valueType: 'digit',
       sorter: true,
@@ -237,7 +236,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.usersGroupsInsts.tsMs' }),
+      title: intl.formatMessage({ id: 'pages.usersGroupsInst.tsMs' }),
       dataIndex: 'tsMs',
       valueType: 'digit',
       sorter: true,

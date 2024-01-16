@@ -1,4 +1,4 @@
-export const ecnUsersInstJoinFields = [
+export const usersInstJoinFields = [
   {
     field: 'module',
     select: ['name'],
