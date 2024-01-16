@@ -5,10 +5,13 @@ import { useUsersInstColumns } from "./useUsersInstColumns";
 import pick from "lodash/pick";
 import { TColumnsSet } from "../../Table/useColumnsSets";
 import { useAccess } from "@umijs/max";
-import { ecnUsersInstJoinFields } from "./ecnUsersInstJoinFields";
-import { ecnUsersInstSearchableColumns } from "./ecnUsersInstSearchableColumns";
+import { usersInstJoinFields } from "./usersInstJoinFields";
+import { usersInstSearchableColumns } from "./usersInstSearchableColumns";
 
-function entityToDto(entity: UsersInst) {
+export function usersInstToDto<
+  T extends Partial<UsersInst>,
+  R extends UsersInstCreateDto | UsersInstUpdateDto
+>(entity: T): R {
   return {
     ...pick(entity, [
       'ts',
@@ -47,10 +50,10 @@ function entityToDto(entity: UsersInst) {
     marginModuleId: entity.marginModule?.id,
     group: entity.group?.name,
     company: entity.company?.id,
-    action: entity.action.id,
-    commissionType: entity.commissionType.id,
-    commissionLotsMode: entity.commissionLotsMode.id,
-  };
+    action: entity.action?.id,
+    commissionType: entity.commissionType?.id,
+    commissionLotsMode: entity.commissionLotsMode?.id,
+  } as R;
 }
 
 const columnsSets: TColumnsSet<UsersInst>[] = [
@@ -126,19 +129,18 @@ const UsersInstTable = () => {
       onCreate={params => apiClient.usersInst.createOneBaseUsersInstControllerUsersInst(params)}
       onUpdate={params => apiClient.usersInst.updateOneBaseUsersInstControllerUsersInst(params)}
       onDelete={params => apiClient.usersInst.deleteOneBaseUsersInstControllerUsersInst(params)}
-      entityToCreateDto={entityToDto}
-      entityToUpdateDto={entityToDto}
+      entityToCreateDto={usersInstToDto}
+      entityToUpdateDto={usersInstToDto}
       idColumnName='id'
       columns={columns}
       columnsSets={columnsSets}
       pathParams={{}}
       params={{
-        join: ecnUsersInstJoinFields,
+        join: usersInstJoinFields,
       }}
       scroll={{
         x: 'max-content',
       }}
-      excludeColumnsWhileCreate={new Set<keyof UsersInst>(['id'])}
       createNewDefaultParams={{
         ts: undefined,
         tsMs: 0,
@@ -179,7 +181,7 @@ const UsersInstTable = () => {
         commissionLotsMode: undefined,
       }}
       defaultSort={['name', 'ASC']}
-      searchableColumns={ecnUsersInstSearchableColumns}
+      searchableColumns={usersInstSearchableColumns}
       viewOnly={!canManageLiquidity}
       popupCreation
     />

@@ -1,17 +1,25 @@
-import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { EcnInstrumentsGroup } from "../../../tools/api";
+import { useIntl } from "@umijs/max";
 import { EditOutlined } from "@ant-design/icons";
+import { UsersSubAccountInst } from "../../../../tools/api";
 import { useAccess } from "umi";
 
-export const useEcnInstrumentsGroupsColumns = (): ProColumns<EcnInstrumentsGroup>[] => {
+export const useUsersSubAccountsInstColumns = (): ProColumns<UsersSubAccountInst>[] => {
   const intl = useIntl();
   const { canManageLiquidity } = useAccess() || {};
 
-  const columns: ProColumns<EcnInstrumentsGroup>[] = [
+  const columns: ProColumns<UsersSubAccountInst>[] = [
     {
-      title: intl.formatMessage({ id: 'pages.ecnInstrumentsGroups.name' }),
-      dataIndex: 'name',
+      title: intl.formatMessage({ id: 'pages.subAccounts.subAccountId' }),
+      dataIndex: 'subAccountId',
+      sorter: true,
+      editable: false,
+      copyable: true,
+      width: '150px',
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.subAccounts.descr' }),
+      dataIndex: 'descr',
       sorter: true,
       formItemProps: {
         rules: [
@@ -24,21 +32,14 @@ export const useEcnInstrumentsGroupsColumns = (): ProColumns<EcnInstrumentsGroup
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
     },
-    {
-      title: intl.formatMessage({ id: 'pages.ecnInstrumentsGroups.descr' }),
-      dataIndex: 'descr',
-      sorter: true,
-      fieldProps: {
-        autoComplete: 'one-time-code', // disable browser autocomplete
-      },
-    },
   ];
 
   if (canManageLiquidity) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',
-      width: '3%',
+      width: '50px',
+      fixed: 'right',
       render: (text, record, _, action) => [
         <a
           key="editable"

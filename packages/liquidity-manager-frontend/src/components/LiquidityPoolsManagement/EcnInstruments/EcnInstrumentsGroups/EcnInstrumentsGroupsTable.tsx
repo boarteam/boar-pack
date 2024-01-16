@@ -1,10 +1,10 @@
-import Table from "../../Table/Table";
-import apiClient from "../../../tools/client/apiClient";
-import { EcnInstrumentsGroup, EcnInstrumentsGroupCreateDto, EcnInstrumentsGroupUpdateDto } from "../../../tools/api";
+import Table from "../../../Table/Table";
+import apiClient from "../../../../tools/client/apiClient";
+import { EcnInstrumentsGroup, EcnInstrumentsGroupCreateDto, EcnInstrumentsGroupUpdateDto } from "../../../../tools/api";
 import { useEcnInstrumentsGroupsColumns } from "./useEcnInstrumentsGroupsColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";
-import { Operators, withNumericId } from "../../Table/tableTools";
+import { Operators, withNumericId } from "../../../Table/tableTools";
 
 function entityToDto(entity: EcnInstrumentsGroup) {
   return pick(entity, [

@@ -1,9 +1,9 @@
 import { ProFormSelectProps } from "@ant-design/pro-form/lib/components/Select";
 import React, { useState } from "react";
 import { ProFormSelect } from "@ant-design/pro-form";
-import { UsersGroupsInst } from "../../../tools/api";
-import apiClient from "../../../tools/client/apiClient";
-import styles from "../../../tools/tools.less";
+import { UsersGroupsInst } from "../../../../tools/api";
+import apiClient from "../../../../tools/client/apiClient";
+import styles from "../../../../tools/tools.less";
 
 type UsersGroupsInstSelectProps = ProFormSelectProps & {
   usersGroupsInst: UsersGroupsInst | null,

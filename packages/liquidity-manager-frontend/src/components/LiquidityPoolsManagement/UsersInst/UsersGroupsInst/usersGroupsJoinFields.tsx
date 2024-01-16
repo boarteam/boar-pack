@@ -1,4 +1,4 @@
-export const ecnUsersGroupsJoinFields = [
+export const usersGroupsJoinFields = [
   {
     field: 'action',
     select: ['name'],

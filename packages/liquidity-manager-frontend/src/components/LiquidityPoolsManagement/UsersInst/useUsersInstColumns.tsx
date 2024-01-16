@@ -1,4 +1,4 @@
-import { useIntl } from "@umijs/max";
+import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import {
   DclAction, EcnCommissionLotsMode,
@@ -40,6 +40,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       fixed: 'left',
       width: '80px',
       copyable: true,
+      hideInDescriptions: true,
     },
     {
       title: intl.formatMessage({ id: 'pages.usersInst.name' }),
@@ -55,6 +56,10 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+      // link to user page
+      render(text, record) {
+        return <Link to={`/liquidity/users-inst/${record.id}`}>{text}</Link>;
+      }
     },
     {
       title: intl.formatMessage({ id: 'pages.usersInst.group' }),

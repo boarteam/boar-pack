@@ -1,11 +1,11 @@
-import Table from "../../Table/Table";
-import apiClient from "../../../tools/client/apiClient";
-import { UsersGroupsInst, UsersGroupsInstCreateDto, UsersGroupsInstUpdateDto } from "../../../tools/api";
+import Table from "../../../Table/Table";
+import apiClient from "../../../../tools/client/apiClient";
+import { UsersGroupsInst, UsersGroupsInstCreateDto, UsersGroupsInstUpdateDto } from "../../../../tools/api";
 import { useUsersGroupsInstColumns } from "./useUsersGroupsInstColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";
-import { ecnUsersGroupsJoinFields } from "./ecnUsersGroupsJoinFields";
-import { ecnUsersGroupsSearchableColumns } from "./ecnUsersGroupsSearchableColumns";
+import { usersGroupsJoinFields } from "./usersGroupsJoinFields";
+import { usersGroupsSearchableColumns } from "./usersGroupsSearchableColumns";
 
 function entityToDto(entity: UsersGroupsInst) {
   return {
@@ -60,10 +60,10 @@ const UsersGroupsInstTable = () => {
         tsMs: 0,
       }}
       params={{
-        join: ecnUsersGroupsJoinFields,
+        join: usersGroupsJoinFields,
       }}
       defaultSort={['name', 'ASC']}
-      searchableColumns={ecnUsersGroupsSearchableColumns}
+      searchableColumns={usersGroupsSearchableColumns}
       viewOnly={!canManageLiquidity}
     ></Table>
   );
