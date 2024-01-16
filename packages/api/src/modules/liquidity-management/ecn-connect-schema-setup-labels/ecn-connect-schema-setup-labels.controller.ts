@@ -44,7 +44,7 @@ import { EcnConnectSchemaSetupLabelUpdateDto } from './dto/ecn-connect-schema-se
       decorators: [
         UsePipes(
           UniqueIdPipe(EcnConnectSchemaSetupLabel),
-          AutoincrementIdPipe(EcnConnectSchemaSetupLabel),
+          AutoincrementIdPipe({ Entity: EcnConnectSchemaSetupLabel }),
         ),
       ],
     },

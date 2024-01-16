@@ -35,7 +35,12 @@ import { AutoincrementIdPipe } from "../autoincrement_id.pipe";
     },
   },
   routes: {
-    only: ['getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    only: ['getOneBase', 'getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    getOneBase: {
+      decorators: [
+        CheckPolicies(new ViewUsersInstPolicy()),
+      ],
+    },
     getManyBase: {
       decorators: [
         CheckPolicies(new ViewUsersInstPolicy()),
@@ -45,7 +50,7 @@ import { AutoincrementIdPipe } from "../autoincrement_id.pipe";
       decorators: [
         UsePipes(
           UniqueIdPipe(UsersInst),
-          AutoincrementIdPipe(UsersInst),
+          AutoincrementIdPipe({ Entity: UsersInst }),
         ),
       ],
     },
@@ -59,5 +64,6 @@ import { AutoincrementIdPipe } from "../autoincrement_id.pipe";
 @CheckPolicies(new ManageUsersInstPolicy())
 @Controller('liquidity/users-inst')
 export class UsersInstController {
-  constructor(private readonly service: UsersInstService) {}
+  constructor(private readonly service: UsersInstService) {
+  }
 }

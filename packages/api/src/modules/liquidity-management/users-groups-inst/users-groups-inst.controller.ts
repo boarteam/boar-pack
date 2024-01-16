@@ -42,7 +42,7 @@ import { AutoincrementIdPipe } from '../autoincrement_id.pipe';
       decorators: [
         UsePipes(
           UniqueIdPipe(UsersGroupsInst),
-          AutoincrementIdPipe(UsersGroupsInst),
+          AutoincrementIdPipe({ Entity: UsersGroupsInst }),
         ),
       ],
     },
@@ -56,5 +56,6 @@ import { AutoincrementIdPipe } from '../autoincrement_id.pipe';
 @CheckPolicies(new ManageUsersGroupsInstPolicy())
 @Controller('liquidity/users-groups-inst')
 export class UsersGroupsInstController {
-  constructor(private readonly service: UsersGroupsInstService) {}
+  constructor(private readonly service: UsersGroupsInstService) {
+  }
 }
