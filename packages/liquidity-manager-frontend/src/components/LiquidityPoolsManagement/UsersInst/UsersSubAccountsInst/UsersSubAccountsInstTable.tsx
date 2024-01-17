@@ -76,6 +76,7 @@ const columnsSets: TColumnsSet<SubloginSettings>[] = [
       'hedgeAmount',
       'hedgeStep',
       'hedgeCurrency',
+      'hedgeMultiplier',
     ],
   },
   {
@@ -98,6 +99,7 @@ const columnsSets: TColumnsSet<SubloginSettings>[] = [
       'hedgeAmount',
       'hedgeStep',
       'hedgeCurrency',
+      'hedgeMultiplier',
     ],
   },
 ];
