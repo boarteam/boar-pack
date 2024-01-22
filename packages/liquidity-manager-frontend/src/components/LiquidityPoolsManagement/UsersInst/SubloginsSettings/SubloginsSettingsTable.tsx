@@ -2,12 +2,12 @@ import Table from "../../../Table/Table";
 import apiClient from "../../../../tools/client/apiClient";
 import { SubloginSettings, SubloginSettingsCreateDto, SubloginSettingsUpdateDto } from "../../../../tools/api";
 import React from "react";
-import { Operators } from "../../../Table/tableTools";
 import useFullscreen from "../../../../tools/useFullscreen";
 import { subloginsSettingsJoinFields } from "./subloginsSettingsJoinFields";
 import { ProColumns } from "@ant-design/pro-components";
 import { ColumnStateType } from "@ant-design/pro-table/es/typing";
 import { useAccess } from "umi";
+import { subloginsSearchableColumns } from "./subloginsSearchableColumns";
 
 type TEcnSubscriptionSchemaPathParams = {
   usersSubAccountInstId: string;
@@ -67,16 +67,7 @@ const SubloginsSettingsTable: React.FC<TSubloginSettingsTableProps> = ({
         usersSubAccountInstId,
       }}
       defaultSort={['instrument', 'ASC']}
-      searchableColumns={[
-        {
-          field: 'usersSubAccountInstId',
-          operator: Operators.equals,
-        },
-        {
-          field: 'descr',
-          operator: Operators.containsLow,
-        },
-      ]}
+      searchableColumns={subloginsSearchableColumns}
       createNewDefaultParams={{
         usersSubAccountInstId,
         spreadLimit: 0,
