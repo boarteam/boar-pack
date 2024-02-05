@@ -1,11 +1,11 @@
 import Joi from 'joi';
-import { JoiSchema } from 'nestjs-joi';
+import { JoiSchema, JoiSchemaOptions } from 'nestjs-joi';
 import { EcnModule } from '../../ecn-modules/entities/ecn-module.entity';
 
+@JoiSchemaOptions({
+  stripUnknown: true,
+})
 export class EcnConnectSchemaSetupLabelCreateDto {
-  @JoiSchema(Joi.number().positive().integer().optional())
-  id?: number;
-
   @JoiSchema(Joi.string().required())
   label: string;
 
