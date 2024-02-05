@@ -2,10 +2,12 @@ import Descriptions from '../../Descriptions/Descriptions';
 import { useEcnConnectSchemasColumns } from '../EcnConnectSchemas/useEcnConnectSchemasColumns';
 import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto } from '../../../tools/api';
 import apiClient from '../../../tools/client/apiClient';
-import { Drawer } from 'antd';
+import { Button, Drawer } from 'antd';
 import { pick } from 'lodash';
 import React from "react";
 import EcnSubscrSchemasTable from "./EcnSubscrSchemas/EcnSubscrSchemasTable";
+import { DeleteOutlined } from '@ant-design/icons';
+import { deleteEdgeConfirm } from '../ConnectionsGraph';
 
 export const ecnConnectSchemaJoinFields = [
   {
@@ -29,7 +31,11 @@ export function ecnConnectSchemaToDto<
   ]) as R;
 }
 
-export const EcnConnectSchemaDrawer: React.FC<{ id: EcnConnectSchema['id'] | undefined, onClose: () => void }> = ({ id, onClose }) => {
+export const EcnConnectSchemaDrawer: React.FC<{ 
+  id: EcnConnectSchema['id'] | undefined; 
+  onClose: () => void;
+  onDelete: (id: EcnConnectSchema['id']) => Promise<void>;
+}> = ({ id, onClose, onDelete }) => {
   if (id === undefined) {
     return <></>
   }
@@ -42,6 +48,22 @@ export const EcnConnectSchemaDrawer: React.FC<{ id: EcnConnectSchema['id'] | und
       open
       onClose={onClose}
       width='33%'
+      extra={
+        <Button 
+          onClick={() => {
+            deleteEdgeConfirm(
+              id, 
+              async () => {
+                await onDelete(id);
+                onClose();
+              }
+            )
+          }} 
+          danger
+        >
+          <DeleteOutlined />
+        </Button>
+      }
     >
       <Descriptions<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, { id: number }, number>
         pathParams={{

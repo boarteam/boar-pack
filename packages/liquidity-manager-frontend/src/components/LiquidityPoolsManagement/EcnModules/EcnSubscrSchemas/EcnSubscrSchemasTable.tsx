@@ -40,7 +40,7 @@ const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
   const { isFullscreen } = useFullscreen();
 
   return (
-    <Table<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, {}, TEcnSubscrSchemasTableProps, number>
+    <Table<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, { connectSchemaId: number }, TEcnSubscrSchemasTableProps, number>
       getAll={params => apiClient.ecnSubscrSchemas.getManyBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
       onUpdate={params => apiClient.ecnSubscrSchemas.updateOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
       onDelete={params => apiClient.ecnSubscrSchemas.deleteOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
@@ -65,6 +65,7 @@ const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
         connectSchemaId,
       }}
       params={{
+        connectSchemaId,
         join: ecnSubscrSchemaJoinFields,
       }}
       defaultSort={['instrument.name', 'ASC']}

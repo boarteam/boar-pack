@@ -1,15 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import type { IAppLoad, NsGraph } from '@antv/xflow';
-import { CanvasScaleToolbar, CanvasSnapline, createGraphConfig, XFlow, XFlowCanvas } from '@antv/xflow';
-
+import { CanvasContextMenu, CanvasScaleToolbar, CanvasSnapline, createCtxMenuConfig, createGraphConfig  , IconStore, MenuItemType, XFlow, XFlowCanvas, XFlowEdgeCommands, XFlowNodeCommands } from '@antv/xflow';
 import '@antv/xflow/dist/index.css';
 import s from './index.less';
-import { PageContainer } from '@ant-design/pro-components';
 import apiClient from '@/tools/client/apiClient';
 import { EcnConnectSchema, EcnModule } from '@/tools/api';
 import { AlgoNode } from './react-node/algo-node';
 import { EcnModuleDrawer } from '../EcnModules/EcnModuleDrawer';
 import { EcnConnectSchemaDrawer } from '../EcnModules/EcnConnectSchemaDrawer';
+import { Shape } from '@antv/x6';
+import { Modal } from 'antd';
+import { useToken } from '@ant-design/pro-components';
+import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-design/icons';
+
+IconStore.set('DeleteOutlined', DeleteOutlined);
+IconStore.set('EditOutlined', EditOutlined);
 
 type TToggleFn = (nodeId: EcnModule['id'], type: TPortGroup) => void;
 
@@ -23,7 +28,7 @@ type TAddNodes = (
 
 type TData = {
   edgesMap: Map<EcnConnectSchema['id'], EcnConnectSchema>,
-  nodesMap: Map<EcnModule['id'], EcnModule & { frontEdgesIds: EcnConnectSchema['id'][], backEdgesIds: EcnConnectSchema['id'][] }>,
+  nodesMap: Map<EcnModule['id'], EcnModule & { frontEdgesIds: Set<EcnConnectSchema['id']>, backEdgesIds: Set<EcnConnectSchema['id']> }>,
 }
 
 type TElements = {
@@ -46,9 +51,11 @@ const defaultGraphNodeProps: Partial<NsGraph.INodeConfig> = {
         position: 'right',
         attrs: {
           circle: {
-            r: 1,
-            stroke: 'none',
-            fill: 'none',
+            r: 5,
+            magnet: true,
+            stroke: '#d9d9d9',
+            fill: 'white',
+            class: 'x6-port-body front-port'
           },
         },
       },
@@ -56,9 +63,10 @@ const defaultGraphNodeProps: Partial<NsGraph.INodeConfig> = {
         position: 'left',
         attrs: {
           circle: {
-            r: 1,
-            stroke: 'none',
-            fill: 'none',
+            r: 5,
+            magnet: true,
+            stroke: '#d9d9d9',
+            fill: '#d9d9d9',
           },
         },
       },
@@ -100,6 +108,30 @@ class Stack<T> {
   }
 }
 
+export const deleteNodeConfirm = async (onOk: () => Promise<void>) => {
+  Modal.confirm({
+    title: 'Delete this module?',
+    icon: <ExclamationCircleFilled />,
+    content: 'Are you sure you want to delete this module? All connections to and from this module will be deleted.',
+    onOk,
+  })
+}
+
+export const deleteEdgeConfirm = async (edgeId: EcnConnectSchema['id'], onOk: () => Promise<void>) => {
+  const subscrCount = await apiClient.ecnSubscrSchemas.getCount({ connectSchemaId: edgeId }) as number;
+  if (subscrCount > 0) {
+    Modal.confirm({
+      title: 'Delete this connection?',
+      icon: <ExclamationCircleFilled />,
+      content: `Are you sure you want to delete this connection? It will affect ${subscrCount} SubscrShemas.`,
+      onOk,
+    });
+  }
+  else {
+    onOk();
+  }
+}
+
 const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
   const [selectedNode, setSelectedNode] = useState<EcnModule['id'] | undefined>();
   const [selectedEdge, setSelectedEdge] = useState<EcnConnectSchema['id'] | undefined>();
@@ -108,6 +140,8 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
     edges: new Set()
   });
   const [data, setData] = useState<TData>({ edgesMap: new Map(), nodesMap: new Map() });
+  const { token } = useToken();
+  const color = token.colorPrimary;
 
   const updateNode = (updatedNode: EcnModule) => setData(prevData => {
     const node = prevData.nodesMap.get(updatedNode.id);
@@ -121,6 +155,44 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
 
     return newData;
   });
+
+  const deleteNode = async (nodeId: EcnModule['id']) => {
+    let node: ReturnType<typeof data.nodesMap.get>;
+    await apiClient.ecnModules.deleteOneBaseEcnModulesControllerEcnModule({ id: nodeId });
+    setData(prevState => {
+      node = prevState.nodesMap.get(nodeId);
+      if (!node) return prevState;
+      const newData = { ...prevState };
+      newData.nodesMap.delete(node.id);
+      [...node.frontEdgesIds, ...node.backEdgesIds].forEach(edgeId => newData.edgesMap.delete(edgeId));
+      return newData;
+    });
+    setVisibleElementsIds(prevState => {
+      const newVisibleElementsIds = { ...prevState };
+      newVisibleElementsIds.nodes.delete(nodeId);
+      [...(node?.frontEdgesIds ?? []), ...(node?.backEdgesIds ?? [])].forEach(edgeId => newVisibleElementsIds.edges.delete(edgeId));
+      return newVisibleElementsIds;
+    })
+  };
+
+  const deleteEdge = async (edgeId: EcnConnectSchema['id']) => {
+    await apiClient.ecnConnectSchemas.deleteOneBaseEcnConnectSchemaControllerEcnConnectSchema({ id: edgeId });
+    setData(prevState => {
+      const edge = prevState.edgesMap.get(edgeId);
+      if (!edge) return prevState;
+      const newEdgesMap = new Map(prevState.edgesMap);
+      newEdgesMap.delete(edgeId);
+      const newNodesMap = new Map(prevState.nodesMap);
+      newNodesMap.get(edge.fromModuleId)?.frontEdgesIds?.delete(edgeId);
+      newNodesMap.get(edge.toModuleId)?.backEdgesIds?.delete(edgeId);
+      return { edgesMap: newEdgesMap, nodesMap: newNodesMap };
+    });
+    setVisibleElementsIds(prevState => {
+      const newEdges = new Set(prevState.edges);
+      newEdges.delete(edgeId);
+      return { ...prevState, edges: newEdges };
+    })
+  };
 
   useEffect(() => {
     Promise.all([
@@ -139,15 +211,15 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
         for (const node of nodes.data) {
           nodesMap.set(node.id, {
             ...node,
-            frontEdgesIds: [],
-            backEdgesIds: [],
+            frontEdgesIds: new Set(),
+            backEdgesIds: new Set(),
           });
         }
 
         for (const edge of edges.data) {
           edgesMap.set(edge.id, edge);
-          nodesMap.get(edge.fromModuleId)?.frontEdgesIds.push(edge.id);
-          nodesMap.get(edge.toModuleId)?.backEdgesIds.push(edge.id);
+          nodesMap.get(edge.fromModuleId)?.frontEdgesIds.add(edge.id);
+          nodesMap.get(edge.toModuleId)?.backEdgesIds.add(edge.id);
           if (visibleElementsIds.nodes.has(edge.fromModuleId) && visibleElementsIds.nodes.has(edge.toModuleId)) {
             visibleSetupEdges.add(edge.id);
           }
@@ -173,6 +245,13 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
       connectedPorts.add(targetPortId);
       edges.push({
         id: String(id),
+        router: {
+          name: 'manhattan',
+        },
+        connector: {
+          name: 'rounded',
+          args: { radius: 15 },
+        },
         source: String(fromModuleId),
         sourcePortId,
         target: String(toModuleId),
@@ -200,28 +279,34 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
       if (!nodeData) continue;
 
       const { id, name, frontEdgesIds, backEdgesIds } = nodeData;
-      const portGroups: TPortGroup[] = [];
-      backEdgesIds.length && portGroups.push('back');
-      frontEdgesIds.length && portGroups.push('front');
+
+      const backPortId = `${id}-back`;
+      const frontPortId = `${id}-front`;
+      const backPortConnected = connectedPorts.has(backPortId);
+      const frontPortConnected = connectedPorts.has(frontPortId);
 
       nodes.push({
         ...defaultGraphNodeProps,
         id: String(id),
-        height: Math.ceil(name.length / 20) * 30,
+        height: 32,
         label: name,
         onClick: () => setSelectedNode(id),
         ports: {
           ...defaultGraphNodeProps.ports,
-          items: portGroups.map(group => {
-            const portId = `${id}-${group}`;
-            const connected = connectedPorts.has(portId);
-            return {
-              id: portId,
-              group,
-              connected,
-              onClick: () => (connected ? hideNext : showNext)(id, group),
-            };
-          }),
+          items: [
+            {
+              id: frontPortId,
+              group: 'front',
+              connected: frontPortConnected,
+              onClick: frontEdgesIds.size ? () => (frontPortConnected ? hideNext : showNext)(id, 'front') : undefined,
+            },
+            {
+              id: backPortId,
+              group: 'back',
+              connected: backPortConnected,
+              onClick: backEdgesIds.size ? () => (backPortConnected ? hideNext : showNext)(id, 'back') : undefined,
+            },
+          ],
         }
       });
     }
@@ -249,7 +334,9 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
   const showNext: TToggleFn = (baseNodeId, type) => setVisibleElementsIds(els => ({ ...addNodes(els, baseNodeId, type) }));
   const hideNext: TToggleFn = (baseNodeId, type) => {
     const newVisibleElements: TElements = { nodes: new Set([baseNodeId]), edges: new Set() };
-    data.nodesMap.get(baseNodeId)?.[typeToEdges[type]]?.forEach(id => visibleElementsIds.edges.delete(id));
+    for (const edgeId of data.nodesMap.get(baseNodeId)?.[typeToEdges[type]] ?? []) {
+      visibleElementsIds.edges.delete(edgeId)
+    }
     const stack = new Stack(newVisibleElements.nodes);
     for (let nodeId = stack.pop(); nodeId !== undefined; nodeId = stack.pop()) {
       addNodes(newVisibleElements, nodeId, 'front', visibleElementsIds.edges, stack);
@@ -262,7 +349,34 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
     const graph = await app.getGraphInstance();
     graph.on('edge:click', ({ edge }) => {
       edge.toFront();
-      setSelectedEdge(edge.data.id);
+      setSelectedEdge(Number(edge.data.id as string));
+    });
+    graph.on('edge:connected', async ({ edge }) => {
+      graph.removeEdge(edge);
+      try {
+        const newEdge = await apiClient.ecnConnectSchemas.createOneBaseEcnConnectSchemaControllerEcnConnectSchema({
+          requestBody: {
+            fromModuleId: Number(edge.getSourceCellId()),
+            toModuleId: Number(edge.getTargetCellId()),
+          }
+        });
+        setData(prevState => {
+          const newEdgesMap = new Map(prevState.edgesMap);
+          newEdgesMap.set(newEdge.id, newEdge);
+          const newNodesMap = new Map(prevState.nodesMap);
+          newNodesMap.get(newEdge.fromModuleId)?.frontEdgesIds?.add(newEdge.id);
+          newNodesMap.get(newEdge.toModuleId)?.backEdgesIds?.add(newEdge.id);
+          return { edgesMap: newEdgesMap, nodesMap: newNodesMap };
+        });
+        setVisibleElementsIds(prevState => {
+          const newEdges = new Set(prevState.edges);
+          newEdges.add(newEdge.id);
+          return { ...prevState, edges: newEdges };
+        })
+      }
+      catch(error) {
+        console.error(error)
+      }
     });
   };
 
@@ -273,8 +387,147 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
         min: 0.2,
         max: 3,
       },
+      highlighting: {
+        magnetAvailable: {
+          name: 'stroke',
+          args: {
+            attrs: {
+              'stroke-width': 0,
+            },
+          },
+        },
+        magnetAdsorbed: {
+          name: 'stroke',
+          args: {
+            attrs: {
+              stroke: color,
+            },
+          },
+        },
+      },
+      connecting: {
+        snap: true,
+        allowBlank: false,
+        highlight: true,
+        validateMagnet({ magnet, view }) {
+          return magnet.getAttribute('port-group') === 'front';
+        },
+        validateConnection({ sourceView, sourceMagnet, targetView, targetMagnet }) {
+          if (sourceView === targetView) {
+            return false;
+          }
+          
+          const isSourceRight = sourceMagnet?.getAttribute('port-group') === 'front';
+          const isTargetLeft = targetMagnet?.getAttribute('port-group') === 'back';
+
+          if (!isSourceRight || !isTargetLeft) {
+            return false;
+          }
+
+          return true;
+        },
+        createEdge() {
+          return new Shape.Edge({
+            router: {
+              name: 'manhattan',
+            },
+            connector: {
+              name: 'rounded',
+              args: { radius: 15 },
+            },
+            attrs: {
+              line: {
+                targetMarker: {
+                  name: "classic",
+                  width: 6,
+                  height: 8,
+                },
+                strokeDasharray: "",
+                stroke: "#cbcbcb",
+                strokeWidth: 2,
+              },
+            },
+          });
+        },
+      },
     });
     config.setNodeRender('node', AlgoNode);
+  })();
+
+  const menuConfig = createCtxMenuConfig(config => {
+    config.setMenuModelService(async (target, model) => {
+      switch (target.type) {
+        case 'node':
+          model.setValue({
+            id: 'root',
+            type: MenuItemType.Root,
+            submenu: [
+              {
+                id: XFlowNodeCommands.DEL_NODE.id,
+                label: 'Delete module',
+                iconName: 'DeleteOutlined',
+                onClick: async ({ target }) => {
+                  if (target.data?.id !== undefined) {
+                    const nodeId = Number(target.data.id);
+                    deleteNodeConfirm(() => deleteNode(nodeId));
+                  }
+                },
+              },
+              {
+                id: XFlowNodeCommands.UPDATE_NODE.id,
+                label: 'Update module',
+                iconName: 'EditOutlined',
+                onClick: async ({ target }) => {
+                  target.data?.id && setSelectedNode(Number(target.data.id));
+                },
+              },
+            ],
+          });
+          break;
+        case 'edge':
+          model.setValue({
+            id: 'root',
+            type: MenuItemType.Root,
+            submenu: [
+              {
+                id: XFlowEdgeCommands.DEL_EDGE.id,
+                label: 'Delete connection',
+                iconName: 'DeleteOutlined',
+                onClick: async ({ target }) => {
+                  if (target.data?.id !== undefined) {
+                    const edgeId = Number(target.data.id);
+                    deleteEdgeConfirm(edgeId, () => deleteEdge(edgeId));
+                  }
+                },
+              },
+              {
+                id: XFlowEdgeCommands.UPDATE_EDGE.id,
+                label: 'Update connection',
+                iconName: 'EditOutlined',
+                onClick: async ({ target }) => {
+                  target.data?.id && setSelectedEdge(Number(target.data.id));
+                },
+              },
+            ],
+          });
+          break;
+        case 'blank':
+        default:
+          model.setValue({
+            id: 'root',
+            type: MenuItemType.Root,
+            submenu: [
+              {
+                id: 'EMPTY_MENU_ITEM',
+                label: 'No action',
+                isEnabled: false,
+                iconName: 'DeleteOutlined',
+              },
+            ],
+          });
+          break;
+      }
+    })
   })();
 
   return (
@@ -295,12 +548,13 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
         }}
         onLoad={onLoad}
       >
+        <CanvasContextMenu config={menuConfig} />
         <XFlowCanvas config={graphConfig} />
         <CanvasScaleToolbar position={{ top: 12, left: 12 }} />
         <CanvasSnapline color="#1890ff" />
       </XFlow>
-      <EcnModuleDrawer id={selectedNode} onUpdate={updateNode} onClose={() => setSelectedNode(undefined)} />
-      <EcnConnectSchemaDrawer id={selectedEdge} onClose={() => setSelectedEdge(undefined)} />
+      <EcnModuleDrawer id={selectedNode} onDelete={deleteNode} onUpdate={updateNode} onClose={() => setSelectedNode(undefined)} />
+      <EcnConnectSchemaDrawer id={selectedEdge} onDelete={deleteEdge} onClose={() => setSelectedEdge(undefined)} />
     </>
   );
 };
