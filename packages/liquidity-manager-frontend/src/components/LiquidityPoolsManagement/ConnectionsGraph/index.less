@@ -1,5 +1,5 @@
 @body-bg: #fafafa;
-@primaryColor: #3056e3;
+@primaryColor: #1890ff;
 @light-border: 1px solid #d9d9d9;
 
 .dag {
@@ -12,6 +12,11 @@
     background: @body-bg;
   }
 
+  :global(.x6-node):hover :global(.front-port) {
+    stroke: @primaryColor;
+    stroke-width: 2;
+    transition: 800;
+  }
 
   :global(.x6-edge) {
     :global(.x6-edge-label) {

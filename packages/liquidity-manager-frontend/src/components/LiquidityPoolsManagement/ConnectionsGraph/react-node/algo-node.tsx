@@ -12,21 +12,21 @@ export const AlgoNode: NsGraph.INodeRender = ({ data }) => {
   const backPort = ports.items.find(port => port.id === `${id}-back`);
   const backPortOnClick: MouseEventHandler<HTMLSpanElement> = (e) => {
     e.stopPropagation();
-    backPort.onClick();
+    backPort?.onClick();
   }
   const frontPortOnClick: MouseEventHandler<HTMLSpanElement> = (e) => {
     e.stopPropagation();
-    frontPort.onClick();
+    frontPort?.onClick();
   };
 
   return (
     <div className="xflow-algo-node" onClick={onClick}>
-      {backPort && (backPort.connected 
+      {backPort.onClick && (backPort.connected 
         ? <MinusOutlined className="icon" onClick={backPortOnClick} /> 
         : <PlusOutlined className="icon" onClick={backPortOnClick} />
       )}
       <span className="label">{data.label}</span>
-      {frontPort && (frontPort.connected
+      {frontPort.onClick && (frontPort.connected
         ? <MinusOutlined className="icon" onClick={frontPortOnClick} />
         : <PlusOutlined className="icon" onClick={frontPortOnClick} />
       )}

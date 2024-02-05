@@ -4,14 +4,17 @@ import { ecnModuleJoinFields } from './ecnModuleJoinFields';
 import { useEcnModulesColumns } from './useEcnModulesColumns';
 import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from '../../../tools/api';
 import apiClient from '../../../tools/client/apiClient';
-import { Drawer } from 'antd';
+import { Button, Drawer } from 'antd';
 import React from "react";
+import { DeleteOutlined } from '@ant-design/icons';
+import { deleteNodeConfirm } from '../ConnectionsGraph';
 
 export const EcnModuleDrawer: React.FC<{
   id: EcnModule['id'] | undefined,
   onUpdate: (entity: EcnModule) => void,
+  onDelete: (id: EcnModule['id']) => Promise<void>,
   onClose: () => void,
-}> = ({ id, onUpdate, onClose }) => {
+}> = ({ id, onUpdate, onClose, onDelete }) => {
   if (id === undefined) {
     return <></>
   }
@@ -26,6 +29,19 @@ export const EcnModuleDrawer: React.FC<{
       open
       onClose={onClose}
       width='33%'
+      extra={
+        <Button 
+          onClick={() => {
+            deleteNodeConfirm(async () => {
+              await onDelete(id);
+              onClose();
+            })
+          }} 
+          danger
+        >
+          <DeleteOutlined />
+        </Button>
+      }
     >
       <Descriptions<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, { id: number }, number>
         pathParams={{
