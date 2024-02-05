@@ -6,7 +6,12 @@ import { Operators, withNumericId } from "../../../Table/tableTools";
 import { useEcnSetupsColumns } from "./useEcnSetupsColumns";
 import { useAccess } from "@umijs/max";
 
-function entityToDto(entity: EcnConnectSchemaSetupLabel) {
+export const createNewDefaultParams = {
+  label: '',
+  modules: [],
+};
+
+export function entityToDto(entity: EcnConnectSchemaSetupLabel) {
   return {
       ...pick(entity, [
       'label',
@@ -37,10 +42,7 @@ const EcnSetupsTable = () => {
           select: ['name'],
         }],
       }}
-      createNewDefaultParams={{
-        label: '',
-        modules: [],
-      }}
+      createNewDefaultParams={createNewDefaultParams}
       defaultSort={['label', 'ASC']}
       searchableColumns={[
         {
