@@ -3,7 +3,9 @@ import { ProColumns } from "@ant-design/pro-components";
 import { EcnConnectSchemaSetupLabel } from "../../../../tools/api";
 import { Tag } from "antd";
 import { EcnModulesSelect } from "../EcnModuleSelect";
-import { EditOutlined } from "@ant-design/icons";
+import { CopyOutlined, EditOutlined } from "@ant-design/icons";
+import { KEY_SYMBOL, getNewId } from "@/components/Table/Table";
+import { createNewDefaultParams } from "./EcnSetupsTable";
 
 export const useEcnSetupsColumns = (): ProColumns<EcnConnectSchemaSetupLabel>[] => {
   const intl = useIntl();
@@ -50,6 +52,23 @@ export const useEcnSetupsColumns = (): ProColumns<EcnConnectSchemaSetupLabel>[] 
         >
           <EditOutlined />
         </a>,
+         <a
+         key="editable"
+         onClick={() => {
+           const newId = getNewId();
+           const { id, ...rest } = record;
+           action?.addEditRecord({
+             ...createNewDefaultParams,
+             ...rest,
+             label: `${record.label} - Copy`,
+             [KEY_SYMBOL]: newId,
+           }, {
+             position: 'top',
+           });
+         }}
+       >
+         <CopyOutlined />
+       </a>,
       ],
     });
   }
