@@ -1,6 +1,6 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiExtraModels, ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { EcnSubscrSchemaService } from './ecn-subscr-schema.service';
 import { EcnSubscrSchema } from './entities/ecn-subscr-schema.entity';
 import { CheckPolicies } from '../../casl/policies.guard';
@@ -8,6 +8,10 @@ import { EcnSubscrSchemaCreateDto } from './dto/ecn-subscr-schema-create.dto';
 import { EcnSubscrSchemaUpdateDto } from './dto/ecn-subscr-schema-update.dto';
 import { ViewEcnSubscrSchemaPolicy } from './policies/view-ecn-subscr-schema.policy';
 import { ManageEcnSubscrSchemaPolicy } from './policies/manage-ecn-subscr-schema.policy';
+
+export class SubscSchemasCountResponse {
+  data: number
+}
 
 @Crud({
   model: {
@@ -53,9 +57,26 @@ import { ManageEcnSubscrSchemaPolicy } from './policies/manage-ecn-subscr-schema
 })
 @CheckPolicies(new ManageEcnSubscrSchemaPolicy())
 @ApiTags('EcnSubscrSchemas')
+@ApiExtraModels(SubscSchemasCountResponse)
 @Controller('liquidity/ecn-subscr-schemas')
 export class EcnSubscrSchemaController {
   constructor(
-    private readonly service: EcnSubscrSchemaService,
+    public readonly service: EcnSubscrSchemaService,
   ) {}
+  
+    @Get('count/:connectSchemaId')
+    @ApiOkResponse({
+      schema: {
+        $ref: getSchemaPath(SubscSchemasCountResponse),
+      }
+    })
+    async getCount(@Param('connectSchemaId') connectSchemaId: number) {
+      return await this.service.count({
+        where: {
+          connectSchema: {
+            id: Number(connectSchemaId),
+          },
+        },
+      });
+    }
 }
