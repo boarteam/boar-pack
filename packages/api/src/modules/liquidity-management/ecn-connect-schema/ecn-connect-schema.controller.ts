@@ -1,5 +1,5 @@
-import { Controller } from '@nestjs/common';
-import { Crud } from '@nestjsx/crud';
+import { BadRequestException, Controller, Req, UsePipes } from '@nestjs/common';
+import { Crud, CrudRequest, Override, ParsedBody, ParsedRequest } from '@nestjsx/crud';
 import { ApiTags } from '@nestjs/swagger';
 import { EcnConnectSchemaService } from './ecn-connect-schema.service';
 import { EcnConnectSchema } from './entities/ecn-connect-schema.entity';
@@ -8,6 +8,8 @@ import { EcnConnectSchemaCreateDto } from './dto/ecn-connect-schema-create.dto';
 import { EcnConnectSchemaUpdateDto } from './dto/ecn-connect-schema-update.dto';
 import { ViewEcnConnectSchemaPolicy } from './policies/view-ecn-connect-schema.policy';
 import { ManageEcnConnectSchemaPolicy } from './policies/manage-ecn-connect-schema.policy';
+import { UniqueIdPipe } from '../unique-id.pipe';
+import { AutoincrementIdPipe } from '../autoincrement_id.pipe';
 
 @Crud({
   model: {
@@ -39,6 +41,14 @@ import { ManageEcnConnectSchemaPolicy } from './policies/manage-ecn-connect-sche
         CheckPolicies(new ManageEcnConnectSchemaPolicy()),
       ],
     },
+    createOneBase: {
+      decorators: [
+        UsePipes(
+          UniqueIdPipe(EcnConnectSchema),
+          AutoincrementIdPipe({ Entity: EcnConnectSchema }),
+        ),
+      ],
+    },
   },
   dto: {
     create: EcnConnectSchemaCreateDto,
@@ -52,4 +62,24 @@ export class EcnConnectSchemaController {
   constructor(
     private readonly service: EcnConnectSchemaService,
   ) {}
+
+  @Override()
+  async createOne(
+    @Req() req: any,
+    @ParsedRequest() crudRequest: CrudRequest,
+    @ParsedBody() dto: EcnConnectSchemaCreateDto
+  ) {
+    const existingConnection = await this.service.findOne({
+      where: {
+        fromModuleId: dto.fromModuleId,
+        toModuleId: dto.toModuleId,
+      },
+    });
+
+    if (existingConnection) {
+      throw new BadRequestException('A connection with these properties already exists.');
+    }
+
+    return this.service.createOne(crudRequest, dto);
+  }
 }
