@@ -74,7 +74,7 @@ export class UsersInst {
   @Column('varchar', { length: 128, comment: 'user stopout name' })
   stopoutName: string;
 
-  // Skipped in UI: user_state - пока скипить. это тоже что-то старое. - Yuriy Kovalenko
+  // Skipped in UI and dtos: user_state - пока скипить. это тоже что-то старое. - Yuriy Kovalenko
   @Column('tinyint', { default: -1, comment: 'state for User( ENABLED, DISABLED_BY_BAD_FILL, DISABLED_BY_BAD_AMOUNT, DISABLED_BY_BAD_STOPOUT)' })
   userState: number;
 
