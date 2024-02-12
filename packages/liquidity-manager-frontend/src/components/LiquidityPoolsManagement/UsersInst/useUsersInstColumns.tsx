@@ -185,6 +185,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
         ]
       },
       fieldProps: {
+        stringMode: true,
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
@@ -207,6 +208,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
+        stringMode: true,
       },
       render(text, record) {
         return dropTrailZeroes(record.credit);
@@ -232,6 +234,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.margin);
@@ -253,6 +256,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.freeMargin);
@@ -274,6 +278,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.marginLevel);
@@ -295,6 +300,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.marginWithLimits);
@@ -317,6 +323,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
+        stringMode: true,
       },
       render(text, record) {
         return dropTrailZeroes(record.profitloss);
@@ -337,6 +344,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
+        stringMode: true,
       },
       render(text, record) {
         return dropTrailZeroes(record.swap);
@@ -360,6 +368,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           },
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
+            stringMode: true,
           },
         },
         {
@@ -412,6 +421,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           },
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
+            stringMode: true,
           },
         },
         {
@@ -428,6 +438,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           },
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
+            stringMode: true,
           },
         },
       ]
@@ -499,6 +510,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.commission);
@@ -519,6 +531,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.commissionValue);
@@ -589,6 +602,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.commissionTurnover);
@@ -603,6 +617,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       sorter: true,
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
+        stringMode: true,
       },
     },
     {
@@ -716,6 +731,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
+        stringMode: true,
       },
       render(text, record) {
         return dropTrailZeroes(record.hedgeFactor);
