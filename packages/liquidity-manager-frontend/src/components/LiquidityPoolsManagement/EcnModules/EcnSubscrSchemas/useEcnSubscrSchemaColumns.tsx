@@ -38,6 +38,9 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.enabled' }),
       dataIndex: 'enabled',
       sorter: true,
+      formItemProps: {
+        rules: [{ required: true }]
+      },
       renderFormItem() {
         return <NumberSwitch />;
       },
@@ -104,6 +107,9 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       formItemProps: {
         rules: [{ required: true }]
       },
+      fieldProps: {
+        stringMode: true,
+      },
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.maxVolume' }),
@@ -112,6 +118,9 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       formItemProps: {
         rules: [{ required: true }]
       },
+      fieldProps: {
+        stringMode: true,
+      },
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.volumeStep' }),
@@ -119,6 +128,9 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       sorter: true,
       formItemProps: {
         rules: [{ required: true }]
+      },
+      fieldProps: {
+        stringMode: true,
       },
     },
     {
@@ -138,6 +150,9 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.executionMode' }),
       dataIndex: 'executionMode',
       sorter: true,
+      formItemProps: {
+        rules: [{ required: true }]
+      },
       renderFormItem(schema, config) {
         return <RelationSelect<EcnExecutionMode>
           selectedItem={config.record?.executionMode}
@@ -162,6 +177,9 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.tradeEnabled' }),
       dataIndex: 'tradeEnabled',
       sorter: true,
+      formItemProps: {
+        rules: [{ required: true }]
+      },
       renderFormItem() {
         return <NumberSwitch />;
       },
