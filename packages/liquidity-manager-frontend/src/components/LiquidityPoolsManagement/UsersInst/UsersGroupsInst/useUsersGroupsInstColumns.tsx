@@ -116,21 +116,6 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
         />;
       }
     },
-    // {
-    //   title: intl.formatMessage({ id: 'pages.usersGroupsInst.currencyId' }),
-    //   dataIndex: 'currencyId',
-    //   sorter: true,
-    //   formItemProps: {
-    //     rules: [
-    //       {
-    //         required: true,
-    //       }
-    //     ]
-    //   },
-    //   fieldProps: {
-    //     autoComplete: 'one-time-code', // disable browser autocomplete
-    //   },
-    // },
     {
       title: intl.formatMessage({ id: 'pages.usersGroupsInst.currencyName' }),
       dataIndex: 'currency',
