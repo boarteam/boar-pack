@@ -7,6 +7,7 @@ import { ecnSubscrSchemaJoinFields } from "./ecnSubscrSchemaJoinFields";
 import { useEcnSubscrSchemaColumns } from "./useEcnSubscrSchemaColumns";
 import useFullscreen from "../../../../tools/useFullscreen";
 import { ecnSubscrSchemaSearchableColumns } from "./ecnSubscrSchemaSearchableColumns";
+import { useAccess } from "@umijs/max";
 
 export function ecnSubscriptionSchemaToDto(entity: EcnSubscrSchema) {
   return {
@@ -23,9 +24,9 @@ export function ecnSubscriptionSchemaToDto(entity: EcnSubscrSchema) {
       'instrumentWeight',
       'descr',
     ]),
-    instrument: entity.instrument?.instrumentHash,
+    instrumentHash: entity.instrument?.instrumentHash,
     executionMode: entity.executionMode?.id,
-    connectSchema: entity.connectSchema?.id,
+    connectSchemaId: entity.connectSchemaId,
   };
 }
 
@@ -36,12 +37,14 @@ type TEcnSubscrSchemasTableProps = {
 const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
   connectSchemaId,
 }) => {
+  const { canManageLiquidity } = useAccess() || {};
   const columns = useEcnSubscrSchemaColumns();
   const { isFullscreen } = useFullscreen();
 
   return (
     <Table<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, { connectSchemaId: number }, TEcnSubscrSchemasTableProps, number>
       getAll={params => apiClient.ecnSubscrSchemas.getManyBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
+      onCreate={params => apiClient.ecnSubscrSchemas.createOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
       onUpdate={params => apiClient.ecnSubscrSchemas.updateOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
       onDelete={params => apiClient.ecnSubscrSchemas.deleteOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
       entityToCreateDto={ecnSubscriptionSchemaToDto}
@@ -67,6 +70,17 @@ const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
       params={{
         connectSchemaId,
         join: ecnSubscrSchemaJoinFields,
+      }}
+      createNewDefaultParams={{
+        connectSchemaId,
+        enabled: 1,
+        markupBid: 0,
+        markupAsk: 0,
+        defaultMarkupBid: 0,
+        defaultMarkupAsk: 0,
+        tradeEnabled: 1,
+        reserved: 0,
+        instrumentWeight: 1,
       }}
       defaultSort={['instrument.name', 'ASC']}
       searchableColumns={ecnSubscrSchemaSearchableColumns}
