@@ -145,6 +145,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.priceLiquidityLimit);
@@ -199,6 +200,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
+        stringMode: true,
       },
     },
     {
@@ -292,6 +294,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.swapLong);
@@ -312,6 +315,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.swapShort);
@@ -332,6 +336,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.swapLimit);
@@ -358,6 +363,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.tickPrice);
@@ -378,6 +384,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.tickSize);
@@ -404,6 +411,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.commission);
@@ -476,6 +484,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.commissionAgent);
@@ -606,6 +615,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.marginInitial);
@@ -626,6 +636,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.marginMaintenance);
@@ -646,6 +657,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.marginHedged);
@@ -666,6 +678,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.marginDivider);
@@ -703,6 +716,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
+        stringMode: true,
       },
       render(text, record) {
         return dropTrailZeroes(record.tsPriceLiquidityLimit);
