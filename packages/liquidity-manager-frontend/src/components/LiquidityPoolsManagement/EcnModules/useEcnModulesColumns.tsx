@@ -65,6 +65,13 @@ export const useEcnModulesColumns = (): ProColumns<EcnModule>[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          }
+        ]
+      },
       render(text, record) {
         return record.type?.name ?? '-';
       },
