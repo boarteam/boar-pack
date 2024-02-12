@@ -1,12 +1,13 @@
 import Joi from 'joi';
 import { JoiSchema } from 'nestjs-joi';
+import { EcnExecutionMode } from '../entities/ecn-execution-mode.entity';
 
 export class EcnSubscrSchemaCreateDto {
   @JoiSchema(Joi.number().integer().required())
-  connectSchema: number;
+  connectSchemaId: number;
 
   @JoiSchema(Joi.string().required())
-  instrument: string;
+  instrumentHash: string;
 
   @JoiSchema(Joi.number().integer().min(0).max(1).required())
   enabled: number;
@@ -23,20 +24,20 @@ export class EcnSubscrSchemaCreateDto {
   @JoiSchema(Joi.number().integer().required())
   defaultMarkupAsk: number;
 
-  @JoiSchema(Joi.string().alphanum().required())
+  @JoiSchema(Joi.string().required())
   minVolume: string;
 
-  @JoiSchema(Joi.string().alphanum().required())
+  @JoiSchema(Joi.string().required())
   maxVolume: string;
 
-  @JoiSchema(Joi.string().alphanum().required())
+  @JoiSchema(Joi.string().required())
   volumeStep: string;
 
   @JoiSchema(Joi.number().integer().min(0).required())
   instrumentWeight: number;
 
   @JoiSchema(Joi.number().integer().min(0).required())
-  executionMode: number;
+  executionMode: EcnExecutionMode['id'];
 
   @JoiSchema(Joi.string().max(512).allow(null).optional())
   descr?: string;
