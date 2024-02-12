@@ -20,7 +20,7 @@ function entityToDto(entity: UsersGroupsInst) {
       'swapEnabled',
     ]),
     action: entity.action?.id,
-    companyId: entity.company?.id,
+    company: entity.company?.id,
     currency: entity.currency?.name,
     workingMode: entity.workingMode?.id,
   };
