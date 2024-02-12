@@ -9,9 +9,6 @@ import { EcnMarginCalcMode } from '../../entities/ecn-margin-calc-mode.entity';
 import { EcnInstrumentsGroup } from '../../ecn-instruments-groups/entities/ecn-instruments-group.entity';
 
 export class EcnInstrumentCreateDto {
-  @JoiSchema(Joi.string().required())
-  instrumentHash: string;
-
   @JoiSchema(Joi.string().max(20).required())
   name: string;
 
