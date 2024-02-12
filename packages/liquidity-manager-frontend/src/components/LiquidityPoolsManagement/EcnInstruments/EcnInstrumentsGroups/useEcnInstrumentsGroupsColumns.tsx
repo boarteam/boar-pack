@@ -31,6 +31,13 @@ export const useEcnInstrumentsGroupsColumns = (): ProColumns<EcnInstrumentsGroup
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          }
+        ]
+      },
     },
   ];
 
