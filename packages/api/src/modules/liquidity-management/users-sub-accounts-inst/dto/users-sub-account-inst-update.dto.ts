@@ -5,9 +5,6 @@ export class UsersSubAccountInstUpdateDto {
   @JoiSchema(Joi.string().optional())
   userId?: string;
 
-  @JoiSchema(Joi.string().optional())
-  subAccountId?: string;
-
   @JoiSchema(Joi.string().max(96).optional())
   descr?: string;
 }
