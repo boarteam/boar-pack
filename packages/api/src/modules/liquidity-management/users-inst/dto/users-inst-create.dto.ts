@@ -61,9 +61,6 @@ export class UsersInstCreateDto {
   @JoiSchema(Joi.string().max(128).required())
   stopoutName: string;
 
-  @JoiSchema(Joi.number().integer().min(-1).required())
-  userState: number;
-
   @JoiSchema(Joi.number().integer().min(0).max(1).required())
   stopoutEnabled: number;
 
@@ -95,7 +92,7 @@ export class UsersInstCreateDto {
   commissionTurnover: string;
 
   @JoiSchema(Joi.number().integer().required())
-  marginModuleId: number;
+  marginModule: number;
 
   @JoiSchema(Joi.number().integer().optional())
   company?: UsersInstCompany['id'];
