@@ -61,6 +61,7 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
       fieldProps: {
         autoComplete: 'one-time-code',
         min: -Infinity,
+        stringMode: true,
       },
       render(text, record) {
         return dropTrailZeroes(record.minVolumeForABook);
@@ -120,6 +121,13 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
       title: intl.formatMessage({ id: 'pages.usersSubloginInstrumentsSetting.alias' }),
       dataIndex: 'alias',
       sorter: true,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          }
+        ]
+      },
       fieldProps: {
         autoComplete: 'one-time-code',
       },
@@ -154,6 +162,7 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
           fieldProps: {
             autoComplete: 'one-time-code',
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.hedgeMultiplier);
@@ -167,6 +176,7 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
           fieldProps: {
             autoComplete: 'one-time-code',
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.hedgeAmount);
@@ -180,6 +190,7 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
           fieldProps: {
             autoComplete: 'one-time-code',
             min: -Infinity,
+            stringMode: true,
           },
           render(text, record) {
             return dropTrailZeroes(record.hedgeStep);
