@@ -21,11 +21,9 @@ export class UsersGroupsInst {
   @Column('int', { unsigned: true, comment: 'user group leverage' })
   leverage: number;
 
-  // @Column('bigint', { default: 0, unsigned: true, comment: 'user group currency id' })
-  // currencyId: string;
-
   @ManyToOne<EcnCurrency>(() => EcnCurrency, (currency) => currency.usersGroups)
   @JoinColumn({ name: 'currency_name', referencedColumnName: 'name' })
+  @Column({ name: 'currency_name' })
   currency: EcnCurrency;
 
   @Column('varchar', { length: 96, comment: 'User group description' })
@@ -39,6 +37,7 @@ export class UsersGroupsInst {
 
   @ManyToOne<UsersInstCompany>(() => UsersInstCompany, (company) => company.usersInst)
   @JoinColumn({ name: 'company_id' })
+  @Column({ name: 'company_id' })
   company: UsersInstCompany;
 
   @ManyToOne<EcnWorkingMode>(() => EcnWorkingMode, (workingMode) => workingMode.usersGroups)
