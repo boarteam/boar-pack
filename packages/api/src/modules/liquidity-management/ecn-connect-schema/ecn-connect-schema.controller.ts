@@ -38,7 +38,7 @@ import { AutoincrementIdPipe } from '../autoincrement_id.pipe';
     },
     getManyBase: {
       decorators: [
-        CheckPolicies(new ManageEcnConnectSchemaPolicy()),
+        CheckPolicies(new ViewEcnConnectSchemaPolicy()),
       ],
     },
     createOneBase: {
