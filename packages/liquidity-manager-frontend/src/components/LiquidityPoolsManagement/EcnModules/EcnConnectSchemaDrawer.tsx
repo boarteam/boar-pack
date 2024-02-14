@@ -8,6 +8,7 @@ import React from "react";
 import EcnSubscrSchemasTable from "./EcnSubscrSchemas/EcnSubscrSchemasTable";
 import { DeleteOutlined } from '@ant-design/icons';
 import { deleteEdgeConfirm } from '../ConnectionsGraph';
+import { useAccess } from '@umijs/max';
 
 export const ecnConnectSchemaJoinFields = [
   {
@@ -41,6 +42,7 @@ export const EcnConnectSchemaDrawer: React.FC<{
   }
 
   const columns = useEcnConnectSchemasColumns();
+  const { canManageLiquidity } = useAccess() || {};
 
   return (
     <Drawer
@@ -77,6 +79,7 @@ export const EcnConnectSchemaDrawer: React.FC<{
         entityToUpdateDto={ecnConnectSchemaToDto}
         columns={columns}
         column={1}
+        canEdit={canManageLiquidity}
         params={{
           join: ecnConnectSchemaJoinFields,
         }}
