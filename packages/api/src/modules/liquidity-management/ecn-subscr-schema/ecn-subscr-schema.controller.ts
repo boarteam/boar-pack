@@ -70,6 +70,7 @@ export class EcnSubscrSchemaController {
         $ref: getSchemaPath(SubscSchemasCountResponse),
       }
     })
+    @CheckPolicies(new ViewEcnSubscrSchemaPolicy())
     async getCount(@Param('connectSchemaId') connectSchemaId: number) {
       return await this.service.count({
         where: {
