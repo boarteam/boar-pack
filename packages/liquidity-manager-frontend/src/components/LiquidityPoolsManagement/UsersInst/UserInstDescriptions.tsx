@@ -5,6 +5,7 @@ import { useUsersInstColumns } from "./useUsersInstColumns";
 import { UsersInst, UsersInstCreateDto, UsersInstUpdateDto } from "@/tools/api";
 import { usersInstJoinFields } from "./usersInstJoinFields";
 import { usersInstToDto } from "./UsersInstTable";
+import { useAccess } from "@umijs/max";
 
 type TUserInstProps = {
   id: string,
@@ -14,6 +15,7 @@ const UserInstDescriptions: React.FC<TUserInstProps> = ({
   id,
 }) => {
   const columns = useUsersInstColumns();
+  const { canManageLiquidity } = useAccess() || {};
 
   return (<Descriptions<UsersInst, UsersInstCreateDto, UsersInstUpdateDto, {
     id: string,
@@ -27,6 +29,7 @@ const UserInstDescriptions: React.FC<TUserInstProps> = ({
     onDelete={params => apiClient.usersInst.deleteOneBaseUsersInstControllerUsersInst(params)}
     entityToCreateDto={usersInstToDto}
     entityToUpdateDto={usersInstToDto}
+    canEdit={canManageLiquidity}
     columns={columns}
     params={{
       join: usersInstJoinFields,

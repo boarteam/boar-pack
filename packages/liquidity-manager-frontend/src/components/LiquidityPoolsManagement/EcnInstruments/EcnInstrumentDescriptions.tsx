@@ -5,6 +5,7 @@ import { ecnInstrumentJoinFields } from "./ecnInstrumentJoinFields";
 import Descriptions from "../../Descriptions/Descriptions";
 import React from "react";
 import { useEcnInstrumentsColumns } from "./useEcnInstrumentsColumns";
+import { useAccess } from "@umijs/max";
 
 type TEcnInstrumentProps = {
   instrumentHash: string,
@@ -14,6 +15,7 @@ const EcnInstrumentDescriptions: React.FC<TEcnInstrumentProps> = ({
   instrumentHash,
 }) => {
   const columns = useEcnInstrumentsColumns();
+  const { canManageLiquidity } = useAccess() || {};
 
   return (<Descriptions<EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto, {
     instrumentHash: string,
@@ -29,6 +31,7 @@ const EcnInstrumentDescriptions: React.FC<TEcnInstrumentProps> = ({
     entityToCreateDto={ecnInstrumentToDto}
     entityToUpdateDto={ecnInstrumentToDto}
     columns={columns}
+    canEdit={canManageLiquidity}
     params={{
       join: ecnInstrumentJoinFields,
     }}

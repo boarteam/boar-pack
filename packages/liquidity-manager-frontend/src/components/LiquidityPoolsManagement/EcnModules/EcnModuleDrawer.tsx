@@ -8,6 +8,7 @@ import { Button, Drawer } from 'antd';
 import React from "react";
 import { DeleteOutlined } from '@ant-design/icons';
 import { deleteNodeConfirm } from '../ConnectionsGraph';
+import { useAccess } from '@umijs/max';
 
 export const EcnModuleDrawer: React.FC<{
   id: EcnModule['id'] | undefined,
@@ -22,6 +23,7 @@ export const EcnModuleDrawer: React.FC<{
   const columns = useEcnModulesColumns();
   const idColumnIndex = columns.findIndex(column => column.dataIndex === 'id');
   columns[idColumnIndex] = { ...columns[idColumnIndex], editable: false };
+  const { canManageLiquidity } = useAccess() || {};
 
   return (
     <Drawer
@@ -57,6 +59,7 @@ export const EcnModuleDrawer: React.FC<{
         entityToCreateDto={ecnModuleToDto}
         entityToUpdateDto={ecnModuleToDto}
         columns={columns}
+        canEdit={canManageLiquidity}
         column={1}
         params={{
           join: ecnModuleJoinFields,
