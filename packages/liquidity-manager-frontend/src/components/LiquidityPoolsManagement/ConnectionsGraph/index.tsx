@@ -123,7 +123,7 @@ export const deleteEdgeConfirm = async (edgeId: EcnConnectSchema['id'], onOk: ()
     Modal.confirm({
       title: 'Delete this connection?',
       icon: <ExclamationCircleFilled />,
-      content: `Are you sure you want to delete this connection? It will affect ${subscrCount} SubscrShemas.`,
+      content: `Are you sure you want to delete this connection? It will affect ${subscrCount} Subscribe Schemas.`,
       onOk,
     });
   }
