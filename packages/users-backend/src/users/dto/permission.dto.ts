@@ -1,5 +1,5 @@
-import { Permissions } from "../entities/user.entity";
+import { Permission } from "../entities/permissions";
 
 export class PermissionDto {
-  permissions: Permissions;
+  permissions: Permission[];
 }

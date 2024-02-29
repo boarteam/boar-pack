@@ -1,28 +1,47 @@
 import { DynamicModule, Logger, Module, OnModuleInit } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Roles, User } from './entities/user.entity';
+import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
+import { EMAIL_UNIQUE_CONSTRAINT, Roles, User } from './entities/user.entity';
 import { MeController } from './me.controller';
 import { CaslModule } from '../casl/casl.module';
 import { UsersConfigService } from "./users.config";
 import BcryptService from "./bcrypt.service";
-import { TModuleConfig } from "../app/app.types";
 import { ConfigModule } from "@nestjs/config";
-import { TID_DB_NAME } from "../app/tid-typeorm.config";
+import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/typeorm.execption-filter";
+import { CaslAbilityFactory } from "../casl/casl-ability.factory";
+import { Action } from "../casl/action.enum";
+import { USERS_DATA_SOURCE_NAME } from "../users-backend.constants";
+import { VIEW_USERS } from "./users.constants";
+import { DataSource } from "typeorm";
+
+declare module '../casl/casl-ability.factory' {
+  interface TSubjects {
+    User: typeof User;
+  }
+}
 
 @Module({})
 export class UsersModule implements OnModuleInit {
-  static register(config: TModuleConfig = { withControllers: true }): DynamicModule {
+  static register(config: {
+    withControllers?: boolean;
+    dataSourceName?: string;
+  } = { withControllers: true }): DynamicModule {
     const dynamicModule: DynamicModule = {
       module: UsersModule,
       imports: [
         ConfigModule,
-        TypeOrmModule.forFeature([User], TID_DB_NAME),
+        TypeOrmModule.forFeature([User], config.dataSourceName),
         CaslModule
       ],
       providers: [
-        UsersService,
+        {
+          provide: UsersService,
+          inject: [getDataSourceToken(config.dataSourceName)],
+          useFactory: (dataSource: DataSource) => {
+            return new UsersService(dataSource.getRepository(User));
+          }
+        },
         UsersConfigService,
         BcryptService,
       ],
@@ -41,7 +60,14 @@ export class UsersModule implements OnModuleInit {
   constructor(
     private readonly usersService: UsersService,
     private readonly bcryptService: BcryptService,
-  ) {}
+  ) {
+    TypeOrmExceptionFilter.setUniqueConstraintMessage(EMAIL_UNIQUE_CONSTRAINT, 'User with this email already exists');
+    CaslAbilityFactory.addPermissionToAction({
+      permission: VIEW_USERS,
+      action: Action.Read,
+      subject: User,
+    })
+  }
 
   async onModuleInit() {
     const usersCount = await this.usersService.count();

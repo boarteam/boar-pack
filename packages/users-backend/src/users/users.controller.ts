@@ -11,7 +11,7 @@ import { PermissionDto } from "./dto/permission.dto";
 import { UsersEditingGuard } from "./users-editing.guard";
 import { ViewUsersPolicy } from "./policies/view-users.policy";
 import { ManageAllPolicy } from "../casl/policies/manage-all.policy";
-import { TypeOrmExceptionFilter } from "../../tools/typeorm.execption-filter";
+import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/typeorm.execption-filter";
 
 @Crud({
   model: {

@@ -1,8 +1,7 @@
 {
-  "name": "@jifeon/boar-pack-users-backend",
+  "name": "@jifeon/boar-pack-common-backend",
   "version": "1.0.0",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
-  "main": "src/users/users-module.ts",
   "repository": "git@github.com:jifeon/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
@@ -14,13 +13,8 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "peerDependencies": {
-    "@nestjs/common": "^10.0.0",
-    "@nestjs/config": "^3.0.0",
-    "@nestjs/typeorm": "^10.0.0",
-    "@nestjsx/crud-typeorm": "^5.0.0-alpha.3",
-    "typeorm": "^0.3.0"
-  },
-  "dependencies": {
-    "@jifeon/boar-pack-common-backend": "^1.0.0"
+    "@nestjs/common": "^7.0.0",
+    "@nestjs/core": "^7.0.0",
+    "typeorm": "^0.2.25"
   }
 }

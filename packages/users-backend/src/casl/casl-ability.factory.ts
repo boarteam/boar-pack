@@ -1,50 +1,14 @@
 import { AbilityBuilder, AbilityClass, ExtractSubjectType, InferSubjects, PureAbility, RawRule, } from '@casl/ability';
-import { Permissions, Roles, User } from '../users/entities/user.entity';
+import { Roles, User } from '../users/entities/user.entity';
 import { Action } from './action.enum';
 import { Injectable } from '@nestjs/common';
 import { PackRule, packRules } from '@casl/ability/extra';
 import { AnyObject } from '@casl/ability/dist/types/types';
-import { Platform } from "../platforms/entities/platform.entity";
-import { InstrumentsGroup } from "../instruments-groups/entities/instruments-group.entity";
-import { EcnModule } from "../liquidity-management/ecn-modules/entities/ecn-module.entity";
-import { StoredFilter } from '../stored-filters/entities/stored-filter.entity';
-import { EcnInstrument } from '../liquidity-management/ecn-instruments/entities/ecn-instrument.entity';
-import { EcnInstrumentsGroup } from '../liquidity-management/ecn-instruments-groups/entities/ecn-instruments-group.entity';
-import { UsersGroupsInst } from '../liquidity-management/users-groups-inst/entities/users-groups-inst.entity';
-import { UsersInst } from '../liquidity-management/users-inst/entities/users-inst.entity';
-import { EcnModuleType } from '../liquidity-management/ecn-module-types/entities/ecn-module-type.entity';
-import { ConfigService } from '@nestjs/config';
-import { Setting } from "../settings/entities/setting.entity";
-import { EcnConnectSchema } from '../liquidity-management/ecn-connect-schema/entities/ecn-connect-schema.entity';
-import { EcnSubscrSchema } from '../liquidity-management/ecn-subscr-schema/entities/ecn-subscr-schema.entity';
-import { EcnConnectSchemaSetupLabel } from '../liquidity-management/ecn-connect-schema-setup-labels/entities/ecn-connect-schema-setup-label.entity';
-import {
-  UsersSubAccountInst
-} from "../liquidity-management/users-sub-accounts-inst/entities/users-sub-account-inst.entity";
-import {
-  SubloginSettings
-} from "../liquidity-management/sublogin-settings/entities/sublogin-settings.entity";
+import { Permission } from '../users/entities/permissions';
 
-type TSubjects = {
-  User: typeof User;
-  Platform: typeof Platform;
-  InstrumentsGroup: typeof InstrumentsGroup;
-  EcnModule: typeof EcnModule;
-  StoredFilter: typeof StoredFilter;
-  EcnModuleType: typeof EcnModuleType;
-  EcnConnectShema: typeof EcnConnectSchema;
-  EcnConnectSchemaSetupLabel: typeof EcnConnectSchemaSetupLabel;
-  EcnSubscrSchema: typeof EcnSubscrSchema,
-  EcnInstrument: typeof EcnInstrument;
-  EcnInstrumentsGroup: typeof EcnInstrumentsGroup;
-  UsersGroupsInst: typeof UsersGroupsInst;
-  UsersInst: typeof UsersInst;
-  UsersSubAccountInst: typeof UsersSubAccountInst;
-  SubloginSettings: typeof SubloginSettings;
-  Setting: typeof Setting;
-};
+export interface TSubjects {}
 
-type TTextSubjects = 'QuotesMonitor' | 'Notifications' | 'Liquidity' | 'all';
+export type TTextSubjects = 'all';
 
 export type TSubjectsNames =
   | keyof TSubjects
@@ -55,87 +19,26 @@ type Subjects =
 
 export type AppAbility = PureAbility<[Action, Subjects], AnyObject>;
 
-const permissionToActionMap: {
-  [key in Permissions]: {
-    action: Action;
-    subject: Subjects | Subjects[];
-  }
-} = {
-  [Permissions.VIEW_QUOTES_MONITOR]: {
-    action: Action.Read,
-    subject: 'QuotesMonitor',
-  },
-  [Permissions.VIEW_INSTRUMENTS_GROUPS]: {
-    action: Action.Read,
-    subject: InstrumentsGroup,
-  },
-  [Permissions.MANAGE_INSTRUMENTS_GROUPS]: {
-    action: Action.Manage,
-    subject: InstrumentsGroup,
-  },
-  [Permissions.VIEW_STORED_FILTERS]: {
-    action: Action.Read,
-    subject: StoredFilter,
-  },
-  [Permissions.MANAGE_STORED_FILTERS]: {
-    action: Action.Manage,
-    subject: StoredFilter,
-  },
-  [Permissions.VIEW_USERS]: {
-    action: Action.Read,
-    subject: User,
-  },
-  [Permissions.VIEW_TRADING_PLATFORMS]: {
-    action: Action.Read,
-    subject: Platform,
-  },
-  [Permissions.MANAGE_TRADING_PLATFORMS]: {
-    action: Action.Manage,
-    subject: Platform,
-  },
-  [Permissions.MANAGE_SETTINGS]: {
-    action: Action.Manage,
-    subject: Setting,
-  },
-  [Permissions.VIEW_LIQUIDITY]: {
-    action: Action.Read,
-    subject: [
-      EcnModule,
-      EcnModuleType,
-      EcnConnectSchema,
-      EcnConnectSchemaSetupLabel,
-      EcnSubscrSchema,
-      EcnInstrument,
-      EcnInstrumentsGroup,
-      UsersGroupsInst,
-      UsersInst,
-      UsersSubAccountInst,
-      'Liquidity'
-    ],
-  },
-  [Permissions.MANAGE_LIQUIDITY]: {
-    action: Action.Manage,
-    subject: [
-      EcnModule,
-      EcnModuleType,
-      EcnConnectSchema,
-      EcnConnectSchemaSetupLabel,
-      EcnSubscrSchema,
-      EcnInstrument,
-      EcnInstrumentsGroup,
-      UsersGroupsInst,
-      UsersInst,
-      UsersSubAccountInst,
-      'Liquidity'
-    ],
-  },
-}
-
 @Injectable()
 export class CaslAbilityFactory {
-  constructor(
-    private readonly configService: ConfigService,
-  ) {
+  private static permissionsToActionsMap: {
+    [key in Permission]?: {
+      action: Action;
+      subject: Subjects | Subjects[];
+    }
+  } = {};
+
+  public static addPermissionToAction({
+    permission, action, subject,
+  }: {
+    permission: Permission,
+    action: Action,
+    subject: Subjects | Subjects[],
+  }) {
+    CaslAbilityFactory.permissionsToActionsMap[permission] = {
+      action,
+      subject
+    };
   }
 
   createForUser(user: Pick<User, 'id' | 'role' | 'permissions'>) {
@@ -148,7 +51,12 @@ export class CaslAbilityFactory {
 
       case Roles.USER:
         user.permissions.forEach((permission) => {
-          const { action, subject } = permissionToActionMap[permission];
+          const actionAndSubject = CaslAbilityFactory.permissionsToActionsMap[permission];
+          if (!actionAndSubject) {
+            throw new Error(`Unknown permission: ${permission}`);
+          }
+
+          const { action, subject } = actionAndSubject;
           // @ts-ignore
           can(action, subject);
         });
