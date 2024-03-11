@@ -25,6 +25,16 @@ import { AutoincrementIdPipe } from "../autoincrement_id.pipe";
   query: {
     alwaysPaginate: true,
     join: {
+      // this field is not in the Entity, refer to the service to understand the logic
+      connections: {
+        required: true,
+        select: false,
+      },
+      // this field is not in the Entity, refer to the service to understand the logic
+      'connections.subscrSchemas': {
+        required: true,
+        select: false,
+      },
       type: {},
     }
   },
