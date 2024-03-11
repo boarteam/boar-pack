@@ -7,6 +7,7 @@ import { useAccess } from "umi";
 import { withNumericId } from "../../Table/tableTools";
 import { ecnModuleJoinFields } from "./ecnModuleJoinFields";
 import { ecnModuleSearchableColumns } from "./ecnModuleSearchableColumns";
+import { TTableProps } from "@/components/Table/tableTypes";
 
 export function ecnModuleToDto<
   T extends Partial<EcnModule>,
@@ -23,9 +24,12 @@ export function ecnModuleToDto<
   } as R;
 }
 
-const EcnModulesTable = () => {
-  const columns = useEcnModulesColumns();
-  const { canManageLiquidity } = useAccess() || {};
+const EcnModulesTable = (props: Partial<TTableProps<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, {}, {}>>) => {
+  let { canManageLiquidity } = useAccess() || {};
+  if (props.viewOnly !== undefined) {
+    canManageLiquidity = !props.viewOnly;
+  }
+  const columns = useEcnModulesColumns(canManageLiquidity ?? false);
 
   return (
     <Table<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, {}, {}, number>
@@ -35,12 +39,12 @@ const EcnModulesTable = () => {
       onDelete={params => apiClient.ecnModules.deleteOneBaseEcnModulesControllerEcnModule(withNumericId(params))}
       entityToCreateDto={ecnModuleToDto}
       entityToUpdateDto={ecnModuleToDto}
-      columns={columns}
-      idColumnName='id'
-      pathParams={{}}
       params={{
         join: ecnModuleJoinFields,
       }}
+      columns={columns}
+      idColumnName='id'
+      pathParams={{}}
       createNewDefaultParams={{
         name: '',
         descr: '',
@@ -49,6 +53,7 @@ const EcnModulesTable = () => {
       defaultSort={['name', 'ASC']}
       searchableColumns={ecnModuleSearchableColumns}
       viewOnly={!canManageLiquidity}
+      {...props}
     ></Table>
   );
 }

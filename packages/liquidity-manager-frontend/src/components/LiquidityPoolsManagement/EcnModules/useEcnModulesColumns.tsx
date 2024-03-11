@@ -2,16 +2,14 @@ import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import { EcnModule, EcnModuleType } from "../../../tools/api";
 import { EditOutlined } from "@ant-design/icons";
-import { useAccess } from "umi";
 import { NumberSwitch } from "../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
 import { RelationSelect } from "../../Inputs/RelationSelect";
 import apiClient from "../../../tools/client/apiClient";
 import { NumberInputHandlingNewRecord } from "../../Inputs/NumberInputHandlingNewRecord";
 
-export const useEcnModulesColumns = (): ProColumns<EcnModule>[] => {
+export const useEcnModulesColumns = (canManageEcnModulesColumns: boolean): ProColumns<EcnModule>[] => {
   const intl = useIntl();
-  const { canManageLiquidity } = useAccess() || {};
 
   const columns: ProColumns<EcnModule>[] = [
     {
@@ -102,7 +100,7 @@ export const useEcnModulesColumns = (): ProColumns<EcnModule>[] => {
     },
   ];
 
-  if (canManageLiquidity) {
+  if (canManageEcnModulesColumns) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',

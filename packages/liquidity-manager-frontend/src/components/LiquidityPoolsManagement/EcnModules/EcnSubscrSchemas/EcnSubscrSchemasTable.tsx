@@ -7,9 +7,11 @@ import { ecnSubscrSchemaJoinFields } from "./ecnSubscrSchemaJoinFields";
 import { useEcnSubscrSchemaColumns } from "./useEcnSubscrSchemaColumns";
 import useFullscreen from "../../../../tools/useFullscreen";
 import { ecnSubscrSchemaSearchableColumns } from "./ecnSubscrSchemaSearchableColumns";
-import { useAccess } from "@umijs/max";
 
-export function ecnSubscriptionSchemaToDto(entity: EcnSubscrSchema) {
+export function ecnSubscriptionSchemaToDto<
+  T extends Partial<EcnSubscrSchema>,
+  R extends (EcnSubscrSchemaCreateDto | EcnSubscrSchemaUpdateDto)
+>(entity: T): R {
   return {
     ...pick(entity, [
       'enabled',
@@ -27,7 +29,7 @@ export function ecnSubscriptionSchemaToDto(entity: EcnSubscrSchema) {
     instrumentHash: entity.instrument?.instrumentHash,
     executionMode: entity.executionMode?.id,
     connectSchemaId: entity.connectSchemaId,
-  };
+  } as R;
 }
 
 type TEcnSubscrSchemasTableProps = {
@@ -37,7 +39,6 @@ type TEcnSubscrSchemasTableProps = {
 const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
   connectSchemaId,
 }) => {
-  const { canManageLiquidity } = useAccess() || {};
   const columns = useEcnSubscrSchemaColumns();
   const { isFullscreen } = useFullscreen();
 

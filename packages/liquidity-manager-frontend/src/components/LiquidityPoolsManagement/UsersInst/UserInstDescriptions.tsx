@@ -27,7 +27,6 @@ const UserInstDescriptions: React.FC<TUserInstProps> = ({
     getOne={params => apiClient.usersInst.getOneBaseUsersInstControllerUsersInst(params)}
     onUpdate={params => apiClient.usersInst.updateOneBaseUsersInstControllerUsersInst(params)}
     onDelete={params => apiClient.usersInst.deleteOneBaseUsersInstControllerUsersInst(params)}
-    entityToCreateDto={usersInstToDto}
     entityToUpdateDto={usersInstToDto}
     canEdit={canManageLiquidity}
     columns={columns}
