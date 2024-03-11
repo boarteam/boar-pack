@@ -28,7 +28,6 @@ const EcnInstrumentDescriptions: React.FC<TEcnInstrumentProps> = ({
     getOne={params => apiClient.ecnInstruments.getOneBaseEcnInstrumentsControllerEcnInstrument(params)}
     onUpdate={params => apiClient.ecnInstruments.updateOneBaseEcnInstrumentsControllerEcnInstrument(params)}
     onDelete={params => apiClient.ecnInstruments.deleteOneBaseEcnInstrumentsControllerEcnInstrument(params)}
-    entityToCreateDto={ecnInstrumentToDto}
     entityToUpdateDto={ecnInstrumentToDto}
     columns={columns}
     canEdit={canManageLiquidity}

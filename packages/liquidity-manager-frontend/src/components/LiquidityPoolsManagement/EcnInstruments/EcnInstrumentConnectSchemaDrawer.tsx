@@ -1,14 +1,16 @@
 import Descriptions from '../../Descriptions/Descriptions';
 import { useEcnConnectSchemasColumns } from '../EcnConnectSchemas/useEcnConnectSchemasColumns';
-import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto } from '../../../tools/api';
+import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto } from '../../../tools/api';
 import apiClient from '../../../tools/client/apiClient';
 import { Button, Drawer } from 'antd';
 import { pick } from 'lodash';
 import React from "react";
-import EcnSubscrSchemasTable from "./EcnSubscrSchemas/EcnSubscrSchemasTable";
 import { DeleteOutlined } from '@ant-design/icons';
 import { deleteEdgeConfirm } from '../ConnectionsGraph';
 import { useAccess } from '@umijs/max';
+import { ecnSubscriptionSchemaToDto } from '../EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable';
+import { useEcnSubscrSchemaColumns } from '../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns';
+import { ecnSubscrSchemaJoinFields } from '../EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields';
 
 export const ecnConnectSchemaJoinFields = [
   {
@@ -32,29 +34,33 @@ export function ecnConnectSchemaToDto<
   ]) as R;
 }
 
-export const EcnConnectSchemaDrawer: React.FC<{
+export type TEcnConnectionSchemaWihSubscrEnabled = EcnConnectSchema & { subscrSchemaEnabled?: boolean };
+
+export const EcnInstrumentConnectSchemaDrawer: React.FC<{
   id: EcnConnectSchema['id'] | undefined;
+  instrumentHash: EcnSubscrSchema['instrumentHash'];
   onClose: () => void;
-  onUpdate: (entity: EcnConnectSchema) => void,
+  onUpdate: (entity: Partial<TEcnConnectionSchemaWihSubscrEnabled> & { id: EcnConnectSchema['id'] }) => void,
   onDelete: (id: EcnConnectSchema['id']) => Promise<void>;
-}> = ({ id, onClose, onUpdate, onDelete }) => {
+}> = ({ id, instrumentHash, onClose, onUpdate, onDelete }) => {
   if (id === undefined) {
     return <></>
   }
 
   const { canManageLiquidity } = useAccess() || {};
   const columns = useEcnConnectSchemasColumns(canManageLiquidity ?? false);
+  const subscrSchemaColumns = useEcnSubscrSchemaColumns();
 
   return (
     <Drawer
-      title="Connection"
+      title="Connection Schema"
       open
       onClose={onClose}
       width='33%'
       extra={
         <Button
-          onClick={() => {
-            deleteEdgeConfirm(
+          onClick={async () => {
+            await deleteEdgeConfirm(
               id,
               async () => {
                 await onDelete(id);
@@ -88,8 +94,29 @@ export const EcnConnectSchemaDrawer: React.FC<{
           join: ecnConnectSchemaJoinFields,
         }}
       />
-      <EcnSubscrSchemasTable
-        connectSchemaId={id}
+      <Descriptions<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, {
+        instrumentHash: string,
+        connectSchemaId: number,
+      }, number>
+        mainTitle="Subscription Schema"
+        pathParams={{
+          instrumentHash,
+          connectSchemaId: id,
+        }}
+        idColumnName="instrumentHash"
+        getOne={params => apiClient.ecnSubscrSchemas.getOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
+        onUpdate={async params => {
+          const entity = await apiClient.ecnSubscrSchemas.updateOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params);
+          onUpdate({ id, subscrSchemaEnabled: Boolean(entity.enabled) });
+          return entity;
+        }}
+        entityToUpdateDto={ecnSubscriptionSchemaToDto}
+        columns={subscrSchemaColumns}
+        canEdit={canManageLiquidity}
+        params={{
+          join: ecnSubscrSchemaJoinFields,
+        }}
+        column={2}
       />
     </Drawer>
   );

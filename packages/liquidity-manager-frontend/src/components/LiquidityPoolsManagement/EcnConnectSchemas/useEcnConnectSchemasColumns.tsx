@@ -2,13 +2,11 @@ import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import { EcnConnectSchema } from "../../../tools/api";
 import { EditOutlined } from "@ant-design/icons";
-import { useAccess } from "umi";
 import { NumberSwitch } from "../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
 
-export const useEcnConnectSchemasColumns = (): ProColumns<EcnConnectSchema>[] => {
+export const useEcnConnectSchemasColumns = (canManageConnectSchemas: boolean): ProColumns<EcnConnectSchema>[] => {
   const intl = useIntl();
-  const { canManageLiquidity } = useAccess() || {};
 
   const columns: ProColumns<EcnConnectSchema>[] = [
     {
@@ -75,7 +73,7 @@ export const useEcnConnectSchemasColumns = (): ProColumns<EcnConnectSchema>[] =>
     },
   ];
 
-  if (canManageLiquidity) {
+  if (canManageConnectSchemas) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',

@@ -1,4 +1,4 @@
-import { Link, useAccess, useIntl } from "@umijs/max";
+import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import { EcnConnectSchemaSetupLabel } from "../../../../tools/api";
 import { Tag } from "antd";
@@ -7,9 +7,8 @@ import { CopyOutlined, EditOutlined } from "@ant-design/icons";
 import { KEY_SYMBOL, getNewId } from "@/components/Table/Table";
 import { createNewDefaultParams } from "./EcnSetupsTable";
 
-export const useEcnSetupsColumns = (): ProColumns<EcnConnectSchemaSetupLabel>[] => {
+export const useEcnSetupsColumns = (canManageEcnSetupsColumns: boolean): ProColumns<EcnConnectSchemaSetupLabel>[] => {
   const intl = useIntl();
-  const { canManageLiquidity } = useAccess() || {};
 
   const columns: ProColumns<EcnConnectSchemaSetupLabel>[] = [
     {
@@ -38,7 +37,7 @@ export const useEcnSetupsColumns = (): ProColumns<EcnConnectSchemaSetupLabel>[] 
     },
   ];
 
-  if (canManageLiquidity) {
+  if (canManageEcnSetupsColumns) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',

@@ -21,12 +21,12 @@ export const AlgoNode: NsGraph.INodeRender = ({ data }) => {
 
   return (
     <div className="xflow-algo-node" onClick={onClick}>
-      {backPort.onClick && (backPort.connected 
+      {backPort?.onClick && (backPort.connected 
         ? <MinusOutlined className="icon" onClick={backPortOnClick} /> 
         : <PlusOutlined className="icon" onClick={backPortOnClick} />
       )}
       <span className="label">{data.label}</span>
-      {frontPort.onClick && (frontPort.connected
+      {frontPort?.onClick && (frontPort.connected
         ? <MinusOutlined className="icon" onClick={frontPortOnClick} />
         : <PlusOutlined className="icon" onClick={frontPortOnClick} />
       )}

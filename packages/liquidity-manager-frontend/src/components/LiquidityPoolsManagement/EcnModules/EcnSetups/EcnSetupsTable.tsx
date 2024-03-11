@@ -5,6 +5,7 @@ import pick from "lodash/pick";
 import { Operators, withNumericId } from "../../../Table/tableTools";
 import { useEcnSetupsColumns } from "./useEcnSetupsColumns";
 import { useAccess } from "@umijs/max";
+import { TTableProps } from "@/components/Table/tableTypes";
 
 export const createNewDefaultParams = {
   label: '',
@@ -21,10 +22,13 @@ export function entityToDto(entity: EcnConnectSchemaSetupLabel) {
   };
 }
 
-const EcnSetupsTable = () => {
-  const columns = useEcnSetupsColumns();
-  const { canManageLiquidity } = useAccess() || {};
-  
+const EcnSetupsTable = (props: Partial<TTableProps<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, {}>>) => {
+  let { canManageLiquidity } = useAccess() || {};
+  if (props.viewOnly !== undefined) {
+    canManageLiquidity = !props.viewOnly;
+  }
+  const columns = useEcnSetupsColumns(canManageLiquidity ?? false);
+
   return (
     <Table<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, {}, number>
       getAll={params => apiClient.ecnConnectSchemaSetupLabels.getManyBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel(params)}
@@ -33,15 +37,17 @@ const EcnSetupsTable = () => {
       onDelete={params => apiClient.ecnConnectSchemaSetupLabels.deleteOneBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel(withNumericId(params))}
       entityToCreateDto={entityToDto}
       entityToUpdateDto={entityToDto}
+      params={{
+        join: [
+          {
+            field: 'modules',
+            select: ['name'],
+          },
+        ],
+      }}
       columns={columns}
       idColumnName='id'
       pathParams={{}}
-      params={{
-        join: [{
-          field: 'modules',
-          select: ['name'],
-        }],
-      }}
       createNewDefaultParams={createNewDefaultParams}
       defaultSort={['label', 'ASC']}
       searchableColumns={[
@@ -55,6 +61,7 @@ const EcnSetupsTable = () => {
         }
       ]}
       viewOnly={!canManageLiquidity}
+      {...props}
     ></Table>
   );
 }

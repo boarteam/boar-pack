@@ -32,13 +32,13 @@ export const EcnModuleDrawer: React.FC<{
       onClose={onClose}
       width='33%'
       extra={
-        <Button 
+        <Button
           onClick={() => {
             deleteNodeConfirm(async () => {
               await onDelete(id);
               onClose();
             })
-          }} 
+          }}
           danger
         >
           <DeleteOutlined />
@@ -56,7 +56,6 @@ export const EcnModuleDrawer: React.FC<{
           return entity;
         }}
         onDelete={params => apiClient.ecnModules.deleteOneBaseEcnModulesControllerEcnModule(params)}
-        entityToCreateDto={ecnModuleToDto}
         entityToUpdateDto={ecnModuleToDto}
         columns={columns}
         canEdit={canManageLiquidity}
