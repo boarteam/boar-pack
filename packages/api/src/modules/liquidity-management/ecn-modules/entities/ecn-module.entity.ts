@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { EcnModuleType } from "../../ecn-module-types/entities/ecn-module-type.entity";
 import { EcnConnectSchemaSetupLabel } from "../../ecn-connect-schema-setup-labels/entities/ecn-connect-schema-setup-label.entity";
+import { EcnConnectSchema } from "../../ecn-connect-schema/entities/ecn-connect-schema.entity";
 
 @Entity('ecn_modules')
 export class EcnModule {
@@ -45,4 +46,10 @@ export class EcnModule {
 
   @ManyToMany<EcnConnectSchemaSetupLabel>(() => EcnConnectSchemaSetupLabel, setupLabel => setupLabel.modules)
   setupLabels: EcnConnectSchemaSetupLabel[];
+
+  @OneToMany(() => EcnConnectSchema, connection => connection.fromModule)
+  outgoingConnections: EcnConnectSchema[];
+
+  @OneToMany(() => EcnConnectSchema, connection => connection.toModule)
+  incomingConnections: EcnConnectSchema[];
 }

@@ -27,6 +27,7 @@ import { AutoincrementIdPipe } from '../autoincrement_id.pipe';
     join: {
       fromModule: {},
       toModule: {},
+      subscrSchemas: {},
     }
   },
   routes: {

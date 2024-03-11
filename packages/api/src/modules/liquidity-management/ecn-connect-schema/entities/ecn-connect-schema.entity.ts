@@ -5,8 +5,10 @@ import {
   Unique,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { EcnModule } from '../../ecn-modules/entities/ecn-module.entity';
+import { EcnSubscrSchema } from '../../ecn-subscr-schema/entities/ecn-subscr-schema.entity';
 
 @Entity('ecn_connect_schema')
 @Unique('uidx_from_to_connection_schema_module', ['fromModuleId', 'toModuleId'])
@@ -51,4 +53,7 @@ export class EcnConnectSchema {
   @ManyToOne(() => EcnModule)
   @JoinColumn({ name: 'to_moduleid' })
   toModule: EcnModule;
+
+  @OneToMany(() => EcnSubscrSchema, subscrSchema => subscrSchema.connectSchema)
+  subscrSchemas: EcnSubscrSchema[];
 }

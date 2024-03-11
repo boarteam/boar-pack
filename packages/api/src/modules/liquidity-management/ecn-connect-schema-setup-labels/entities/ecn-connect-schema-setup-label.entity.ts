@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { EcnModule } from "../../ecn-modules/entities/ecn-module.entity";
 
 @Entity('ecn_connect_schema_setup_labels')
