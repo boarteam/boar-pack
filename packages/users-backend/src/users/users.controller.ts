@@ -11,7 +11,7 @@ import { PermissionDto } from "./dto/permission.dto";
 import { UsersEditingGuard } from "./users-editing.guard";
 import { ViewUsersPolicy } from "./policies/view-users.policy";
 import { ManageAllPolicy } from "../casl/policies/manage-all.policy";
-import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/typeorm.execption-filter";
+import { Tools } from "@jifeon/boar-pack-common-backend";
 
 @Crud({
   model: {
@@ -60,7 +60,7 @@ import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/typ
   },
 })
 @CheckPolicies(new ManageAllPolicy())
-@UseFilters(TypeOrmExceptionFilter)
+@UseFilters(Tools.TypeOrmExceptionFilter)
 @ApiTags('Users')
 @ApiExtraModels(PermissionDto)
 @Controller('users')

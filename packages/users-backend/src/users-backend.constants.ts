@@ -1,1 +1,0 @@
-export const USERS_DATA_SOURCE_NAME = Symbol('USERS_DATA_SOURCE_NAME');
