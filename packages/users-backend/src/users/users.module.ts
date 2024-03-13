@@ -8,18 +8,11 @@ import { CaslModule } from '../casl/casl.module';
 import { UsersConfigService } from "./users.config";
 import BcryptService from "./bcrypt.service";
 import { ConfigModule } from "@nestjs/config";
-import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/typeorm.execption-filter";
+import { Tools } from "@jifeon/boar-pack-common-backend";
 import { CaslAbilityFactory } from "../casl/casl-ability.factory";
 import { Action } from "../casl/action.enum";
-import { USERS_DATA_SOURCE_NAME } from "../users-backend.constants";
 import { VIEW_USERS } from "./users.constants";
 import { DataSource } from "typeorm";
-
-declare module '../casl/casl-ability.factory' {
-  interface TSubjects {
-    User: typeof User;
-  }
-}
 
 @Module({})
 export class UsersModule implements OnModuleInit {
@@ -61,7 +54,7 @@ export class UsersModule implements OnModuleInit {
     private readonly usersService: UsersService,
     private readonly bcryptService: BcryptService,
   ) {
-    TypeOrmExceptionFilter.setUniqueConstraintMessage(EMAIL_UNIQUE_CONSTRAINT, 'User with this email already exists');
+    Tools.TypeOrmExceptionFilter.setUniqueConstraintMessage(EMAIL_UNIQUE_CONSTRAINT, 'User with this email already exists');
     CaslAbilityFactory.addPermissionToAction({
       permission: VIEW_USERS,
       action: Action.Read,

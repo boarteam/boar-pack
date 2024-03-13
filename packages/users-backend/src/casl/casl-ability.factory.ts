@@ -6,7 +6,9 @@ import { PackRule, packRules } from '@casl/ability/extra';
 import { AnyObject } from '@casl/ability/dist/types/types';
 import { Permission } from '../users/entities/permissions';
 
-export interface TSubjects {}
+export interface TSubjects {
+  User: typeof User;
+}
 
 export type TTextSubjects = 'all';
 
