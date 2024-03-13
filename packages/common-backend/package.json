@@ -5,6 +5,7 @@
   "repository": "git@github.com:jifeon/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
+  "main": "src/index",
   "scripts": {
     "publish": "npm publish",
     "link": "yarn link"
