@@ -9,31 +9,50 @@ import { JWTAuthConfigService } from "./jwt-auth.config";
 import { PassportModule } from "@nestjs/passport";
 import { JWTAuthService } from "./jwt-auth.service";
 
-@Module({
-  imports: [
-    ConfigModule,
-    UsersModule.register({ withControllers: false }),
-    PassportModule,
-    JwtModule.registerAsync({
-      imports: [JwtAuthModule],
-      inject: [JWTAuthConfigService],
-      useFactory: async (jwtAuthConfigService: JWTAuthConfigService) => ({
-        secret: jwtAuthConfigService.config.jwtSecret,
-      }),
-    }),
-  ],
-  providers: [
-    JWTAuthConfigService,
-    JwtAuthStrategy,
-    JWTAuthService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-  ],
-  exports: [
-    JWTAuthConfigService,
-    JWTAuthService,
-  ],
-})
-export class JwtAuthModule {}
+@Module({})
+export class JwtAuthModule {
+  static register(config: {
+    dataSourceName?: string;
+  }) {
+    return {
+      module: JwtAuthModule,
+      imports: [
+        ConfigModule,
+        UsersModule.register({
+          withControllers: false,
+          dataSourceName: config.dataSourceName,
+        }),
+        PassportModule,
+        JwtModule.registerAsync({
+          imports: [JwtAuthModule.forConfig()],
+          inject: [JWTAuthConfigService],
+          useFactory: async (jwtAuthConfigService: JWTAuthConfigService) => ({
+            secret: jwtAuthConfigService.config.jwtSecret,
+          }),
+        }),
+      ],
+      providers: [
+        JWTAuthConfigService,
+        JwtAuthStrategy,
+        JWTAuthService,
+        {
+          provide: APP_GUARD,
+          useClass: JwtAuthGuard,
+        },
+      ],
+      exports: [
+        JWTAuthConfigService,
+        JWTAuthService,
+      ],
+    };
+  }
+
+  private static forConfig() {
+    return {
+      module: JwtAuthModule,
+      imports: [ConfigModule],
+      providers: [JWTAuthConfigService],
+      exports: [JWTAuthConfigService],
+    };
+  }
+}

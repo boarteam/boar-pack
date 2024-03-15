@@ -1,6 +1,6 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JWTAuthConfigService } from './jwt-auth.config';
 import { Request } from 'express';
 import { tokenName } from '../auth/auth.constants';
