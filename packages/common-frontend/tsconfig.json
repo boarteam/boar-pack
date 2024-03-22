@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "baseUrl": "./",
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictPropertyInitialization": false,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@@/*": [
+        "./src/.umi/*"
+      ],
+      "@@test/*": [
+        "./src/.umi-test/*"
+      ]
+    }
+  },
+  "include": [
+    "./**/*.d.ts",
+    "./**/*.ts",
+    "./**/*.tsx"
+  ]
+}
