@@ -6,7 +6,7 @@ import { SkipJWTGuard } from '../jwt-auth/jwt-auth.guard';
 import { SkipPoliciesGuard } from '../casl/policies.guard';
 import { GoogleAuthGuard } from './google-auth.guard';
 import { AuthExceptionFilter } from './google-auth.filter';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { LocalAuthLoginDto, LocalAuthTokenDto } from "./local-auth.dto";
 import { MSAuthGuard } from "./ms-auth.guard";
@@ -14,6 +14,7 @@ import { MSAuthGuard } from "./ms-auth.guard";
 @SkipJWTGuard()
 @SkipPoliciesGuard()
 @ApiTags('Authentication')
+@ApiExtraModels(LocalAuthTokenDto)
 @Controller('auth')
 export default class AuthController {
   constructor(private authService: AuthService) {}
