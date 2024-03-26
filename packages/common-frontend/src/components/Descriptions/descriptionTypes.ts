@@ -18,7 +18,7 @@ export type TGetOneParams = {
    */
   cache?: number,
 }
-export type TGetRequestParams = {
+export type TDescriptionGetRequestParams = {
   join?: QueryJoin | QueryJoin[];
 };
 export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = {}> = {
@@ -36,7 +36,7 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = {}> =
   actionRef?: MutableRefObject<ActionType | undefined>,
   editable?: RowEditableConfig<Entity>,
   canEdit?: boolean,
-  params?: TGetRequestParams,
+  params?: TDescriptionGetRequestParams,
   columns: ProColumns<Entity>[],
   record?: Entity,
 }
