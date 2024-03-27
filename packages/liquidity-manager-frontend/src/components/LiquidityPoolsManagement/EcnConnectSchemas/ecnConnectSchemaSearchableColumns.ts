@@ -1,12 +1,8 @@
 import { Operators } from "@/components/Table/tableTools";
 
-export const ecnModuleSearchableColumns = [
+export const ecnConnectSchemaSearchableColumns = [
   {
     field: 'id',
-    operator: Operators.containsLow,
-  },
-  {
-    field: 'name',
     operator: Operators.containsLow,
   },
   {
@@ -14,7 +10,11 @@ export const ecnModuleSearchableColumns = [
     operator: Operators.containsLow,
   },
   {
-    field: ['type', 'name'],
+    field: ['fromModule', 'name'],
+    operator: Operators.containsLow,
+  },
+  {
+    field: ['toModule', 'name'],
     operator: Operators.containsLow,
   },
 ];

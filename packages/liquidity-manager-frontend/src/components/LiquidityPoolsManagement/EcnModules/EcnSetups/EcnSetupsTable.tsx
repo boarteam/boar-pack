@@ -2,10 +2,11 @@ import Table, { isRecordNew } from "../../../Table/Table";
 import apiClient from "../../../../tools/client/apiClient";
 import { EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto } from "../../../../tools/api";
 import pick from "lodash/pick";
-import { Operators, withNumericId } from "../../../Table/tableTools";
+import { withNumericId } from "../../../Table/tableTools";
 import { useEcnSetupsColumns } from "./useEcnSetupsColumns";
 import { useAccess } from "@umijs/max";
 import { TTableProps } from "@/components/Table/tableTypes";
+import { ecnSetupsSearchableColumns } from "./ecnSetupsSearchableColumns";
 
 export const createNewDefaultParams = {
   label: '',
@@ -50,16 +51,7 @@ const EcnSetupsTable = (props: Partial<TTableProps<EcnConnectSchemaSetupLabel, E
       pathParams={{}}
       createNewDefaultParams={createNewDefaultParams}
       defaultSort={['label', 'ASC']}
-      searchableColumns={[
-        {
-          field: 'label',
-          operator: Operators.containsLow,
-        },
-        {
-          field: ['modules', 'name'],
-          operator: Operators.containsLow,
-        }
-      ]}
+      searchableColumns={ecnSetupsSearchableColumns}
       viewOnly={!canManageLiquidity}
       {...props}
     ></Table>

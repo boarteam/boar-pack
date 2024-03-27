@@ -6,6 +6,7 @@ import { TTableProps } from "@/components/Table/tableTypes";
 import { useEcnConnectSchemasColumns } from "./useEcnConnectSchemasColumns";
 import { ecnConnectSchemaJoinFields, ecnConnectSchemaToDto } from "../EcnModules/EcnConnectSchemaDrawer";
 import { withNumericId } from "../../Table/tableTools";
+import { ecnConnectSchemaSearchableColumns } from "./ecnConnectSchemaSearchableColumns";
 
 const EcnConnectSchemaTable = (props: Partial<TTableProps<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, {}, {}>>) => {
   let { canManageLiquidity } = useAccess() || {};
@@ -27,6 +28,7 @@ const EcnConnectSchemaTable = (props: Partial<TTableProps<EcnConnectSchema, EcnC
         join: ecnConnectSchemaJoinFields,
       }}
       defaultSort={['id', 'DESC']}
+      searchableColumns={ecnConnectSchemaSearchableColumns}
       viewOnly={!canManageLiquidity}
       {...props}
     ></Table>
