@@ -58,7 +58,7 @@ export const useEcnModulesColumns = (canManageEcnModulesColumns: boolean): ProCo
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnModules.type' }),
-      dataIndex: 'type',
+      dataIndex: 'type.name',
       sorter: true,
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete

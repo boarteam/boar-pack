@@ -6,6 +6,9 @@ import { Card, Space } from "antd";
 import { CondOperator } from "@nestjsx/crud-request";
 import { ecnModuleJoinFields } from "../EcnModules/ecnModuleJoinFields";
 import { ecnConnectSchemaJoinFields } from "./EcnInstrumentConnectSchemaDrawer";
+import { ecnModuleSearchableColumns } from "../EcnModules/ecnModuleSearchableColumns";
+import { ecnConnectSchemaSearchableColumns } from "../EcnConnectSchemas/ecnConnectSchemaSearchableColumns";
+import { ecnSetupsSearchableColumns } from "../EcnModules/EcnSetups/ecnSetupsSearchableColumns";
 
 type TEcnInstrumentProps = {
   instrumentHash: string,
@@ -18,8 +21,10 @@ const EcnInstrumentRelations: React.FC<TEcnInstrumentProps> = ({
     <Space direction="vertical" size="large" style={{ width: '100%' }}>
       <Card title="Related Setups">
         <EcnSetupsTable
+          ghost
           viewOnly={true}
           searchableColumns={[
+            ...ecnSetupsSearchableColumns,
             {
               field: 'modulesConnectionsSubscrSchemas.instrumentHash',
               operator: CondOperator.EQUALS,
@@ -42,8 +47,10 @@ const EcnInstrumentRelations: React.FC<TEcnInstrumentProps> = ({
       </Card>
       <Card title="Related Modules">
         <EcnModulesTable
+          ghost
           viewOnly={true}
           searchableColumns={[
+            ...ecnModuleSearchableColumns,
             {
               field: 'connectionsSubscrSchemas.instrumentHash',
               operator: CondOperator.EQUALS,
@@ -63,8 +70,10 @@ const EcnInstrumentRelations: React.FC<TEcnInstrumentProps> = ({
       </Card>
       <Card title="Related Connection Schemas">
         <EcnConnectSchemaTable
+          ghost
           viewOnly={true}
           searchableColumns={[
+            ...ecnConnectSchemaSearchableColumns,
             {
               field: 'subscrSchemas.instrumentHash',
               operator: CondOperator.EQUALS,

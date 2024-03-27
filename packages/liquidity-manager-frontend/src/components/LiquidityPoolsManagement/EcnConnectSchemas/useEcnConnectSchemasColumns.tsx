@@ -33,7 +33,7 @@ export const useEcnConnectSchemasColumns = (canManageConnectSchemas: boolean): P
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnConnectSchemas.fromModule' }),
-      dataIndex: 'fromModule',
+      dataIndex: 'fromModule.name',
       sorter: true,
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
@@ -45,7 +45,7 @@ export const useEcnConnectSchemasColumns = (canManageConnectSchemas: boolean): P
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnConnectSchemas.toModule' }),
-      dataIndex: 'toModule',
+      dataIndex: 'toModule.name',
       sorter: true,
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete

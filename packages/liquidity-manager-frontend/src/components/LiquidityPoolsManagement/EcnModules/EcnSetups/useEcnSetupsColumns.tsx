@@ -30,7 +30,7 @@ export const useEcnSetupsColumns = (canManageEcnSetupsColumns: boolean): ProColu
     {
       title: intl.formatMessage({ id: 'pages.ecnSetups.modules' }),
       dataIndex: 'modules',
-      sorter: true,
+      sorter: false,
       render: (_, record) =>
         record.modules.map(({ id, name }) => <Tag style={{ margin: 2 }} key={id}>{name}</Tag>),
       renderFormItem: () => <EcnModulesSelect />,
