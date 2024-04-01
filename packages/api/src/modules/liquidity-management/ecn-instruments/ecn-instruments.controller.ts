@@ -1,6 +1,6 @@
-import { Controller, UsePipes } from '@nestjs/common';
+import { Controller, Get, Query, UsePipes } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiExtraModels, ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { EcnInstrumentsService } from './ecn-instruments.service';
 import { EcnInstrument } from './entities/ecn-instrument.entity';
 import { CheckPolicies } from '../../casl/policies.guard';
@@ -9,6 +9,7 @@ import { EcnInstrumentUpdateDto } from './dto/ecn-instrument-update.dto';
 import { ViewEcnInstrumentsPolicy } from './policies/view-ecn-instruments.policy';
 import { ManageEcnInstrumentsPolicy } from './policies/manage-ecn-instruments.policy';
 import { CRC64HashPipe } from '../hash_instrument.pipe';
+import { GetEcnInstrumentsInConnectionsResponse, GetInstrumentsInConnectionsQueryDto } from './dto/ecn-instruments-get-in-connections.dto';
 
 @Crud({
   model: {
@@ -61,10 +62,23 @@ import { CRC64HashPipe } from '../hash_instrument.pipe';
   },
 })
 @CheckPolicies(new ManageEcnInstrumentsPolicy())
+@ApiExtraModels(GetInstrumentsInConnectionsQueryDto)
+@ApiExtraModels(GetEcnInstrumentsInConnectionsResponse)
 @ApiTags('EcnInstruments')
 @Controller('liquidity/ecn-instruments')
 export class EcnInstrumentsController {
   constructor(
     private readonly service: EcnInstrumentsService,
   ) {}
+
+  @Get('in-connections')
+  @CheckPolicies(new ViewEcnInstrumentsPolicy())
+  @ApiOkResponse({
+    schema: {
+      $ref: getSchemaPath(GetEcnInstrumentsInConnectionsResponse),
+    }
+  })
+  getInConnections(@Query() query: GetInstrumentsInConnectionsQueryDto): Promise<GetEcnInstrumentsInConnectionsResponse> {
+    return this.service.getInConnections(query);
+  }
 }
