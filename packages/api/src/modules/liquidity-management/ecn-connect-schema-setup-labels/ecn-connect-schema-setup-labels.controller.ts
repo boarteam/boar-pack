@@ -27,15 +27,9 @@ import { EcnConnectSchemaSetupLabelUpdateDto } from './dto/ecn-connect-schema-se
     join: {
       modules: {},
       // this field is not in the Entity, refer to the service to understand the logic
-      'modules.connections': {
-        required: true,
-        select: false,
-      },
+      'modules.connections': {},
       // this field is not in the Entity, refer to the service to understand the logic
-      'modules.connections.subscrSchemas': {
-        required: true,
-        select: false,
-      },
+      'modules.connections.subscrSchemas': {},
     }
   },
   routes: {

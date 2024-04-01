@@ -14,6 +14,7 @@ import { EcnMarginCalcMode } from "../entities/ecn-margin-calc-mode.entity";
 import { EcnState } from "../entities/ecn-state.entity";
 import { EcnCurrency } from '../entities/ecn-currency.entity';
 import { EcnWorkingMode } from '../entities/ecn-working-modes.entity';
+import { EcnSubscrSchema } from '../ecn-subscr-schema/entities/ecn-subscr-schema.entity';
 
 @Module({})
 export class EcnInstrumentsModule {
@@ -30,6 +31,7 @@ export class EcnInstrumentsModule {
           EcnState,
           EcnCurrency,
           EcnWorkingMode,
+          EcnSubscrSchema,
         ], AMTS_DB_NAME),
         GenericLiquidityModule.generate<EcnSwapType>({
           endpoint: 'liquidity/ecn-swap-types',

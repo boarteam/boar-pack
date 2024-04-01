@@ -26,7 +26,13 @@ import { AutoincrementIdPipe } from '../autoincrement_id.pipe';
     alwaysPaginate: true,
     join: {
       fromModule: {},
+      'fromModule.setupLabels': {
+        alias: 'fromModuleSetupLabels',
+      },
       toModule: {},
+      'toModule.setupLabels': {
+        alias: 'toModuleSetupLabels',
+      },
       subscrSchemas: {},
     }
   },
