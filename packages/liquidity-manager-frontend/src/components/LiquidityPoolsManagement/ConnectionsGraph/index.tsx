@@ -88,6 +88,11 @@ export const deleteEdgeConfirm = async (edgeId: EcnConnectSchema['id'], onOk: ()
   }
 }
 
+const getEdgeIdFromRealId = (realId: number) => `${realId}-edge`;
+const getRealIdFromEdgeId = (edgeId: string) => Number(edgeId.slice(0, -5));
+const getNodeIdFromRealId = (realId: number) => `${realId}-node`;
+const getRealIdFromNodeId = (nodeId: string) => Number(nodeId.slice(0, -5));
+
 const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
   const graphRef = useRef<Graph>(null);
   const commandServiceRef = useRef<IGraphCommandService>(null);
@@ -156,7 +161,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
       connectedPorts.add(sourcePortId);
       connectedPorts.add(targetPortId);
       edges.push({
-        id: String(id),
+        id: getEdgeIdFromRealId(id),
         router: {
           name: 'manhattan',
         },
@@ -164,9 +169,9 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
           name: 'rounded',
           args: { radius: 15 },
         },
-        source: String(fromModuleId),
+        source: getNodeIdFromRealId(fromModuleId),
         sourcePortId,
-        target: String(toModuleId),
+        target: getNodeIdFromRealId(toModuleId),
         targetPortId,
         edgeContentWidth: 30,
         edgeContentHeight: 60,
@@ -198,7 +203,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
       const frontPortConnected = connectedPorts.has(frontPortId);
       nodes.push({
         ...defaultGraphNodeProps,
-        id: String(id),
+        id: getNodeIdFromRealId(id),
         height: 32,
         label: name,
         onClick: () => setSelectedNode(id),
@@ -232,7 +237,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
 
     graph.on('edge:click', ({ edge }) => {
       edge.toFront();
-      setSelectedEdge(Number(edge.data.id as string));
+      setSelectedEdge(getRealIdFromEdgeId(edge.data.id));
     });
 
     graph.on('edge:connected', async ({ edge }) => {
@@ -240,8 +245,8 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
       try {
         const newEdge = await apiClient.ecnConnectSchemas.createOneBaseEcnConnectSchemaControllerEcnConnectSchema({
           requestBody: {
-            fromModuleId: Number(edge.getSourceCellId()),
-            toModuleId: Number(edge.getTargetCellId()),
+            fromModuleId: getRealIdFromNodeId(edge.getSourceCellId()),
+            toModuleId: getRealIdFromNodeId(edge.getTargetCellId()),
           }
         });
         setData(prevState => {
@@ -300,7 +305,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
           if (sourceView === targetView) {
             return false;
           }
-          
+
           const isSourceRight = sourceMagnet?.getAttribute('port-group') === 'front';
           const isTargetLeft = targetMagnet?.getAttribute('port-group') === 'back';
 
@@ -352,7 +357,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
                 iconName: 'DeleteOutlined',
                 onClick: async ({ target }) => {
                   if (target.data?.id !== undefined) {
-                    const nodeId = Number(target.data.id);
+                    const nodeId = getRealIdFromNodeId(target.data.id);
                     deleteNodeConfirm(() => deleteNode(nodeId));
                   }
                 },
@@ -362,7 +367,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
                 label: 'Update module',
                 iconName: 'EditOutlined',
                 onClick: async ({ target }) => {
-                  target.data?.id && setSelectedNode(Number(target.data.id));
+                  target.data?.id && setSelectedNode(getRealIdFromNodeId(target.data.id));
                 },
               },
             ],
@@ -379,7 +384,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
                 iconName: 'DeleteOutlined',
                 onClick: async ({ target }) => {
                   if (target.data?.id !== undefined) {
-                    const edgeId = Number(target.data.id);
+                    const edgeId = getRealIdFromEdgeId(target.data.id);
                     deleteEdgeConfirm(edgeId, () => deleteEdge(edgeId));
                   }
                 },
@@ -389,7 +394,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
                 label: 'Update connection',
                 iconName: 'EditOutlined',
                 onClick: async ({ target }) => {
-                  target.data?.id && setSelectedEdge(Number(target.data.id));
+                  target.data?.id && setSelectedEdge(getRealIdFromEdgeId(target.data.id));
                 },
               },
             ],
