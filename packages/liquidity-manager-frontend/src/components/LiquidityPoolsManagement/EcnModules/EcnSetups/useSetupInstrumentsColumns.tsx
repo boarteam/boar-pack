@@ -47,7 +47,7 @@ const Content = ({
         { "connectSchemaId": { "$in": [connectSchemaId, compareConnectSchemaId] } }, 
         { "instrumentHash": { "$eq": instrumentHash } }, 
       ]}),
-      join: ['connectSchema'],
+      join: ['connectSchema', 'executionMode||name'],
     })
       .then(({ data }) => {
         const { connectSchemaId: id0, connectSchema: connectSchema0, descr: descr0, ...rest0 } = data[0];
