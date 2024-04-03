@@ -156,8 +156,8 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
       if (!edgeData) continue;
 
       const { id, fromModuleId, toModuleId, enabled } = edgeData;
-      const sourcePortId = `${fromModuleId}-front`;
-      const targetPortId = `${toModuleId}-back`;
+      const sourcePortId = `${fromModuleId}-node-front`;
+      const targetPortId = `${toModuleId}-node-back`;
       connectedPorts.add(sourcePortId);
       connectedPorts.add(targetPortId);
       edges.push({
@@ -196,9 +196,8 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
       if (!nodeData) continue;
 
       const { id, name, frontEdgesIds, backEdgesIds } = nodeData;
-
-      const backPortId = `${id}-back`;
-      const frontPortId = `${id}-front`;
+      const backPortId = `${id}-node-back`;
+      const frontPortId = `${id}-node-front`;
       const backPortConnected = connectedPorts.has(backPortId);
       const frontPortConnected = connectedPorts.has(frontPortId);
       nodes.push({
