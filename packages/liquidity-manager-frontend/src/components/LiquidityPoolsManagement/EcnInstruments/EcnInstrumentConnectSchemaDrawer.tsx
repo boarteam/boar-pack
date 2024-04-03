@@ -1,6 +1,13 @@
 import Descriptions from '../../Descriptions/Descriptions';
 import { useEcnConnectSchemasColumns } from '../EcnConnectSchemas/useEcnConnectSchemasColumns';
-import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto } from '../../../tools/api';
+import {
+  EcnConnectSchema,
+  EcnConnectSchemaCreateDto,
+  EcnConnectSchemaUpdateDto,
+  EcnSubscrSchema,
+  EcnSubscrSchemaCreateDto,
+  EcnSubscrSchemaUpdateDto
+} from '../../../tools/api';
 import apiClient from '../../../tools/client/apiClient';
 import { Button, Drawer } from 'antd';
 import { pick } from 'lodash';
@@ -11,6 +18,8 @@ import { useAccess } from '@umijs/max';
 import { ecnSubscriptionSchemaToDto } from '../EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable';
 import { useEcnSubscrSchemaColumns } from '../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns';
 import { ecnSubscrSchemaJoinFields } from '../EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields';
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-layout";
 
 export const ecnConnectSchemaJoinFields = [
   {
@@ -24,10 +33,8 @@ export const ecnConnectSchemaJoinFields = [
 ];
 
 
-export function ecnConnectSchemaToDto<
-  T extends Partial<EcnConnectSchema>,
-  R extends (EcnConnectSchemaCreateDto | EcnConnectSchemaUpdateDto)
->(entity: T): R {
+export function ecnConnectSchemaToDto<T extends Partial<EcnConnectSchema>,
+  R extends (EcnConnectSchemaCreateDto | EcnConnectSchemaUpdateDto)>(entity: T): R {
   return pick(entity, [
     'descr',
     'enabled'
@@ -50,6 +57,9 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
   const { canManageLiquidity } = useAccess() || {};
   const columns = useEcnConnectSchemasColumns(canManageLiquidity ?? false);
   const subscrSchemaColumns = useEcnSubscrSchemaColumns();
+  const { worker } = useLiquidityManagerContext();
+
+  if (!worker) return <PageLoading />;
 
   return (
     <Drawer
@@ -74,9 +84,13 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
         </Button>
       }
     >
-      <Descriptions<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, { id: number }, number>
+      <Descriptions<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, {
+        id: number,
+        worker: string
+      }, number>
         pathParams={{
           id,
+          worker,
         }}
         idColumnName='id'
         getOne={params => apiClient.ecnConnectSchemas.getOneBaseEcnConnectSchemaControllerEcnConnectSchema(params)}
@@ -97,9 +111,11 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
       <Descriptions<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, {
         instrumentHash: string,
         connectSchemaId: number,
+        worker: string,
       }, number>
         mainTitle="Subscription Schema"
         pathParams={{
+          worker,
           instrumentHash,
           connectSchemaId: id,
         }}

@@ -6,10 +6,12 @@ import { RelationSelect } from "../../../Inputs/RelationSelect";
 import apiClient from "../../../../tools/client/apiClient";
 import { NumberSwitch } from "../../../Inputs/NumberSwitcher";
 import { EditOutlined } from "@ant-design/icons";
+import { useLiquidityManagerContext } from "../../liquidityManagerContext";
 
 export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
   const intl = useIntl();
   const { canManageLiquidity } = useAccess() || {};
+  const { worker } = useLiquidityManagerContext();
 
   const columns: ProColumns<EcnSubscrSchema>[] = [
     {
@@ -26,12 +28,13 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         return <Link to={`/liquidity/ecn-connect-schemas/${record.connectSchemaId}/subscription-schemas/${record.instrumentHash}`}>{record.instrument?.name ?? '-'}</Link>;
       },
       renderFormItem(schema, config) {
-        return <RelationSelect<EcnInstrument>
+        return worker && <RelationSelect<EcnInstrument>
           selectedItem={config.record?.instrument}
           fetchItems={filter => apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument({
             filter,
+            worker,
           })}
-        />;
+        /> || null;
       }
     },
     {
@@ -154,12 +157,13 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         rules: [{ required: true }]
       },
       renderFormItem(schema, config) {
-        return <RelationSelect<EcnExecutionMode>
+        return worker && <RelationSelect<EcnExecutionMode>
           selectedItem={config.record?.executionMode}
           fetchItems={filter => apiClient.ecnExecutionModes.getManyBaseGenericLiquidityControllerEcnExecutionMode({
             filter,
+            worker,
           })}
-        />;
+        /> || null;
       },
       render(text, record) {
         return record.executionMode?.name ?? '-';

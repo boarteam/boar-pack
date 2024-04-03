@@ -5,6 +5,7 @@ import apiClient from '@/tools/client/apiClient';
 import { EcnConnectSchema, EcnModule } from '@/tools/api';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { TEcnConnectionSchemaWihSubscrEnabled } from "../EcnInstruments/EcnInstrumentConnectSchemaDrawer";
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
 
 IconStore.set('DeleteOutlined', DeleteOutlined);
 IconStore.set('EditOutlined', EditOutlined);
@@ -78,6 +79,7 @@ export const useConnectionsGraph = () => {
   const [visibleElementsIds, setVisibleElementsIds] = useState<TElements>({ nodes: new Set(), edges: new Set() });
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<TData>({ edgesMap: new Map(), nodesMap: new Map() });
+  const { worker } = useLiquidityManagerContext();
 
   const updateNode = (updatedNode: EcnModule) => setData(prevData => {
     const node = prevData.nodesMap.get(updatedNode.id);
@@ -93,8 +95,12 @@ export const useConnectionsGraph = () => {
   });
 
   const deleteNode = async (nodeId: EcnModule['id']) => {
+    if (!worker) {
+      return;
+    }
+
     let node: ReturnType<typeof data.nodesMap.get>;
-    await apiClient.ecnModules.deleteOneBaseEcnModulesControllerEcnModule({ id: nodeId });
+    await apiClient.ecnModules.deleteOneBaseEcnModulesControllerEcnModule({ id: nodeId, worker });
     setData(prevState => {
       node = prevState.nodesMap.get(nodeId);
       if (!node) return prevState;
@@ -125,7 +131,11 @@ export const useConnectionsGraph = () => {
   });
 
   const deleteEdge = async (edgeId: EcnConnectSchema['id']) => {
-    await apiClient.ecnConnectSchemas.deleteOneBaseEcnConnectSchemaControllerEcnConnectSchema({ id: edgeId });
+    if (!worker) {
+      return;
+    }
+
+    await apiClient.ecnConnectSchemas.deleteOneBaseEcnConnectSchemaControllerEcnConnectSchema({ id: edgeId, worker });
     setData(prevState => {
       const edge = prevState.edgesMap.get(edgeId);
       if (!edge) return prevState;

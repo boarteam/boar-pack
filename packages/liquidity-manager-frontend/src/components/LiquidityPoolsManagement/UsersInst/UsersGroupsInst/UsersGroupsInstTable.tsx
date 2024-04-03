@@ -6,6 +6,8 @@ import pick from "lodash/pick";
 import { useAccess } from "umi";
 import { usersGroupsJoinFields } from "./usersGroupsJoinFields";
 import { usersGroupsSearchableColumns } from "./usersGroupsSearchableColumns";
+import { useLiquidityManagerContext } from "../../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-layout";
 
 function entityToDto(entity: UsersGroupsInst) {
   return {
@@ -29,9 +31,12 @@ function entityToDto(entity: UsersGroupsInst) {
 const UsersGroupsInstTable = () => {
   const columns = useUsersGroupsInstColumns();
   const { canManageLiquidity } = useAccess() || {};
+  const { worker } = useLiquidityManagerContext();
+
+  if (!worker) return <PageLoading />;
 
   return (
-    <Table<UsersGroupsInst, UsersGroupsInstCreateDto, UsersGroupsInstUpdateDto, {}, {}, number>
+    <Table<UsersGroupsInst, UsersGroupsInstCreateDto, UsersGroupsInstUpdateDto, {}, { worker: string }, number>
       getAll={params => apiClient.usersGroupsInst.getManyBaseUsersGroupsInstControllerUsersGroupsInst(params)}
       onCreate={params => apiClient.usersGroupsInst.createOneBaseUsersGroupsInstControllerUsersGroupsInst(params)}
       onUpdate={params => apiClient.usersGroupsInst.updateOneBaseUsersGroupsInstControllerUsersGroupsInst(params)}
@@ -46,7 +51,9 @@ const UsersGroupsInstTable = () => {
         x: 'max-content',
       }}
       columns={columns}
-      pathParams={{}}
+      pathParams={{
+        worker,
+      }}
       createNewDefaultParams={{
         name: '',
         leverage: 0,

@@ -7,6 +7,8 @@ import { ecnSubscrSchemaJoinFields } from "./ecnSubscrSchemaJoinFields";
 import { useEcnSubscrSchemaColumns } from "./useEcnSubscrSchemaColumns";
 import useFullscreen from "../../../../tools/useFullscreen";
 import { ecnSubscrSchemaSearchableColumns } from "./ecnSubscrSchemaSearchableColumns";
+import { useLiquidityManagerContext } from "../../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-layout";
 
 export function ecnSubscriptionSchemaToDto<
   T extends Partial<EcnSubscrSchema>,
@@ -41,9 +43,15 @@ const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
 }) => {
   const columns = useEcnSubscrSchemaColumns();
   const { isFullscreen } = useFullscreen();
+  const { worker } = useLiquidityManagerContext();
+
+  if (!worker) return <PageLoading />;
 
   return (
-    <Table<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, { connectSchemaId: number }, TEcnSubscrSchemasTableProps, number>
+    <Table<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, { connectSchemaId: number }, {
+      connectSchemaId: number,
+      worker: string,
+    }, number>
       getAll={params => apiClient.ecnSubscrSchemas.getManyBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
       onCreate={params => apiClient.ecnSubscrSchemas.createOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
       onUpdate={params => apiClient.ecnSubscrSchemas.updateOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
@@ -67,6 +75,7 @@ const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
       }}
       pathParams={{
         connectSchemaId,
+        worker,
       }}
       params={{
         connectSchemaId,

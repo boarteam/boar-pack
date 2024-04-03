@@ -8,6 +8,8 @@ import { ProColumns } from "@ant-design/pro-components";
 import { ColumnStateType } from "@ant-design/pro-table/es/typing";
 import { useAccess } from "umi";
 import { subloginsSearchableColumns } from "./subloginsSearchableColumns";
+import { useLiquidityManagerContext } from "../../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-layout";
 
 type TEcnSubscriptionSchemaPathParams = {
   usersSubAccountInstId: string;
@@ -43,9 +45,17 @@ const SubloginsSettingsTable: React.FC<TSubloginSettingsTableProps> = ({
 }) => {
   const { isFullscreen } = useFullscreen();
   const { canManageLiquidity } = useAccess() || {};
+  const { worker } = useLiquidityManagerContext();
+
+  if (!worker) {
+    return <PageLoading />;
+  }
 
   return (
-    <Table<SubloginSettings, SubloginSettingsCreateDto, SubloginSettingsUpdateDto, TEcnSubscriptionSchemaPathParams, {}, number>
+    <Table<SubloginSettings, SubloginSettingsCreateDto, SubloginSettingsUpdateDto, TEcnSubscriptionSchemaPathParams, {
+      usersSubAccountInstId: string,
+      worker: string
+    }, number>
       getAll={params => apiClient.subloginSettings.getManyBaseSubloginsSettingsControllerSubloginSettings(params)}
       onCreate={params => apiClient.subloginSettings.createOneBaseSubloginsSettingsControllerSubloginSettings(params)}
       onUpdate={params => apiClient.subloginSettings.updateOneBaseSubloginsSettingsControllerSubloginSettings(params)}
@@ -61,6 +71,7 @@ const SubloginsSettingsTable: React.FC<TSubloginSettingsTableProps> = ({
       }}
       pathParams={{
         usersSubAccountInstId,
+        worker,
       }}
       params={{
         join: subloginsSettingsJoinFields,

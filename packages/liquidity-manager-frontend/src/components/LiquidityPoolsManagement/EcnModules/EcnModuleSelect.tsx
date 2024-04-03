@@ -5,6 +5,7 @@ import { keyBy } from "lodash";
 import { SFields } from "@nestjsx/crud-request";
 import { EcnModule } from "@/tools/api";
 import apiClient from "@/tools/client/apiClient";
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
 
 type TValue = Pick<EcnModule, 'id' | 'name'>[];
 type TOption = { value: EcnModule['id'], label: EcnModule['name'] };
@@ -16,11 +17,14 @@ export const EcnModulesSelect: React.FC<{
   const intl = useIntl();
   const [isLoading, setIsLoading] = useState(false);
   const [modules, setModules] = useState<TValue>([]);
+  const { worker } = useLiquidityManagerContext();
 
   const modulesById = useMemo(() => keyBy(modules, 'id'), [modules]);
   const options = useMemo(() => modules.map(module => ({ label: module.name, value: module.id })), [modules]);
 
   const updateOptions = useCallback((selectedGroups: TValue, search: string) => {
+    if (!worker) return;
+
     setIsLoading(true);
 
     const filters: SFields[] = [{ "name": { "$contL": search } }];
@@ -33,6 +37,7 @@ export const EcnModulesSelect: React.FC<{
         s: JSON.stringify({ "$and": filters }),
         fields: ['name,id'],
         limit: 10,
+        worker,
       })
       .then(response => {
         setModules([...selectedGroups, ...response.data as TValue]);
@@ -40,7 +45,7 @@ export const EcnModulesSelect: React.FC<{
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [worker]);
 
   useEffect(() => {
     updateOptions(value ?? [], '');

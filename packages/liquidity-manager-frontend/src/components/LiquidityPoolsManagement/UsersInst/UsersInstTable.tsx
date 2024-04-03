@@ -7,6 +7,8 @@ import { TColumnsSet } from "../../Table/useColumnsSets";
 import { useAccess } from "@umijs/max";
 import { usersInstJoinFields } from "./usersInstJoinFields";
 import { usersInstSearchableColumns } from "./usersInstSearchableColumns";
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-layout";
 
 export function usersInstToDto<
   T extends Partial<UsersInst>,
@@ -121,9 +123,14 @@ const columnsSets: TColumnsSet<UsersInst>[] = [
 const UsersInstTable = () => {
   const columns = useUsersInstColumns();
   const { canManageLiquidity } = useAccess() || {};
+  const { worker } = useLiquidityManagerContext();
+
+  if (!worker) return <PageLoading />;
 
   return (
-    <Table<UsersInst, UsersInstCreateDto, UsersInstUpdateDto, {}, {}, number>
+    <Table<UsersInst, UsersInstCreateDto, UsersInstUpdateDto, {}, {
+      worker: string,
+    }, number>
       getAll={params => apiClient.usersInst.getManyBaseUsersInstControllerUsersInst(params)}
       onCreate={params => apiClient.usersInst.createOneBaseUsersInstControllerUsersInst(params)}
       onUpdate={params => apiClient.usersInst.updateOneBaseUsersInstControllerUsersInst(params)}
@@ -133,7 +140,9 @@ const UsersInstTable = () => {
       idColumnName='id'
       columns={columns}
       columnsSets={columnsSets}
-      pathParams={{}}
+      pathParams={{
+        worker,
+      }}
       params={{
         join: usersInstJoinFields,
       }}

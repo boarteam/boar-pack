@@ -7,10 +7,12 @@ import { RelationSelect } from "../../../Inputs/RelationSelect";
 import apiClient from "../../../../tools/client/apiClient";
 import { NumberSwitch } from "../../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
+import { useLiquidityManagerContext } from "../../liquidityManagerContext";
 
 export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] => {
   const intl = useIntl();
   const { canManageLiquidity } = useAccess() || {};
+  const { worker } = useLiquidityManagerContext();
 
   const columns: ProColumns<SubloginSettings>[] = [
     {
@@ -34,14 +36,17 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
         return <Link to={`/liquidity/ecn-instruments/${record.instrumentRel?.instrumentHash}`}>{record.instrumentRel?.name}</Link>;
       },
       renderFormItem: (schema, config) => {
-        return <RelationSelect<EcnInstrument>
+        return worker && <RelationSelect<EcnInstrument>
           selectedItem={config.record?.instrumentRel}
           fieldNames={{
             value: 'name',
             label: 'name',
           }}
-          fetchItems={filter => apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument({ filter })}
-        />;
+          fetchItems={filter => apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument({
+            filter,
+            worker,
+          })}
+        /> || null;
       }
     },
     {
@@ -60,7 +65,6 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
       sorter: true,
       fieldProps: {
         autoComplete: 'one-time-code',
-        min: -Infinity,
         stringMode: true,
       },
       render(text, record) {
@@ -161,7 +165,6 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
           sorter: true,
           fieldProps: {
             autoComplete: 'one-time-code',
-            min: -Infinity,
             stringMode: true,
           },
           render(text, record) {
@@ -175,7 +178,6 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
           sorter: true,
           fieldProps: {
             autoComplete: 'one-time-code',
-            min: -Infinity,
             stringMode: true,
           },
           render(text, record) {
@@ -189,7 +191,6 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
           sorter: true,
           fieldProps: {
             autoComplete: 'one-time-code',
-            min: -Infinity,
             stringMode: true,
           },
           render(text, record) {
@@ -207,14 +208,17 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
             return record.hedgeCurrency?.name;
           },
           renderFormItem: (schema, config) => {
-            return <RelationSelect<EcnCurrency>
+            return worker && <RelationSelect<EcnCurrency>
               selectedItem={config.record?.hedgeCurrency}
               fieldNames={{
                 value: 'name',
                 label: 'name',
               }}
-              fetchItems={filter => apiClient.ecnCurrencies.getManyBaseGenericLiquidityControllerEcnCurrency({ filter })}
-            />;
+              fetchItems={filter => apiClient.ecnCurrencies.getManyBaseGenericLiquidityControllerEcnCurrency({
+                filter,
+                worker,
+              })}
+            /> || null;
           }
         },
       ]

@@ -21,6 +21,8 @@ import { defaultGraphNodeProps, TElements } from '../ConnectionsGraph';
 import { buildJoinFields } from '@/components/Table/tableTools';
 import { EcnInstrumentConnectSchemaDrawer } from './EcnInstrumentConnectSchemaDrawer';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-layout";
 
 type TData = {
   edgesMap: Map<EcnConnectSchema['id'], EcnConnectSchema & { subscrSchemaEnabled: boolean }>,
@@ -44,10 +46,15 @@ const EcnInstrumentGraph: React.FC<IProps> = ({ instrumentHash }) => {
     updateEdge, deleteEdge,
   } = useConnectionsGraph();
 
+  const { worker } = useLiquidityManagerContext();
+
   useEffect(() => {
+    if (!worker) return;
+
     setIsLoading(true);
     Promise.all([
       apiClient.ecnModules.getManyBaseEcnModulesControllerEcnModule({
+        worker,
         s: JSON.stringify({
           'connectionsSubscrSchemas.instrumentHash': { eq: instrumentHash }
         }),
@@ -57,6 +64,7 @@ const EcnInstrumentGraph: React.FC<IProps> = ({ instrumentHash }) => {
         ]).joinSelect,
       }),
       apiClient.ecnConnectSchemas.getManyBaseEcnConnectSchemaControllerEcnConnectSchema({
+        worker,
         s: JSON.stringify({
           'subscrSchemas.instrumentHash': { eq: instrumentHash },
         }),
@@ -91,7 +99,7 @@ const EcnInstrumentGraph: React.FC<IProps> = ({ instrumentHash }) => {
         setVisibleElementsIds({ edges: visibleEdges, nodes: visibleNodes });
         setIsLoading(false);
       });
-  }, []);
+  }, [worker]);
 
   const graphData = useMemo(() => {
     const connectedPorts = new Set<string>();
@@ -183,6 +191,8 @@ const EcnInstrumentGraph: React.FC<IProps> = ({ instrumentHash }) => {
       });
     }, 100)
   }, [graphData]);
+
+  if (!worker) return <PageLoading />;
 
   return (
     <Space

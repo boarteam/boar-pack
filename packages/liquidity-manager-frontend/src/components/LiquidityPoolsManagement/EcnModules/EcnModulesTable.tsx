@@ -8,6 +8,8 @@ import { withNumericId } from "../../Table/tableTools";
 import { ecnModuleJoinFields } from "./ecnModuleJoinFields";
 import { ecnModuleSearchableColumns } from "./ecnModuleSearchableColumns";
 import { TTableProps } from "@/components/Table/tableTypes";
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-layout";
 
 export function ecnModuleToDto<
   T extends Partial<EcnModule>,
@@ -24,15 +26,18 @@ export function ecnModuleToDto<
   } as R;
 }
 
-const EcnModulesTable = (props: Partial<TTableProps<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, {}, {}>>) => {
+const EcnModulesTable = (props: Partial<TTableProps<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, {}, {worker: string}>>) => {
   let { canManageLiquidity } = useAccess() || {};
   if (props.viewOnly !== undefined) {
     canManageLiquidity = !props.viewOnly;
   }
   const columns = useEcnModulesColumns(canManageLiquidity ?? false);
+  const { worker } = useLiquidityManagerContext();
+
+  if (!worker) return <PageLoading />;
 
   return (
-    <Table<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, {}, {}, number>
+    <Table<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, {}, { worker: string }, number>
       getAll={params => apiClient.ecnModules.getManyBaseEcnModulesControllerEcnModule(params)}
       onCreate={params => apiClient.ecnModules.createOneBaseEcnModulesControllerEcnModule(params)}
       onUpdate={params => apiClient.ecnModules.updateOneBaseEcnModulesControllerEcnModule(withNumericId(params))}
@@ -44,7 +49,9 @@ const EcnModulesTable = (props: Partial<TTableProps<EcnModule, EcnModuleCreateDt
       }}
       columns={columns}
       idColumnName='id'
-      pathParams={{}}
+      pathParams={{
+        worker,
+      }}
       createNewDefaultParams={{
         name: '',
         descr: '',

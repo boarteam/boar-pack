@@ -7,6 +7,8 @@ import { useEcnSetupsColumns } from "./useEcnSetupsColumns";
 import { useAccess } from "@umijs/max";
 import { TTableProps } from "@/components/Table/tableTypes";
 import { ecnSetupsSearchableColumns } from "./ecnSetupsSearchableColumns";
+import { useLiquidityManagerContext } from "../../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-layout";
 
 export const createNewDefaultParams = {
   label: '',
@@ -23,15 +25,18 @@ export function entityToDto(entity: EcnConnectSchemaSetupLabel) {
   };
 }
 
-const EcnSetupsTable = (props: Partial<TTableProps<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, {}>>) => {
+const EcnSetupsTable = (props: Partial<TTableProps<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, {worker: string}>>) => {
   let { canManageLiquidity } = useAccess() || {};
   if (props.viewOnly !== undefined) {
     canManageLiquidity = !props.viewOnly;
   }
   const columns = useEcnSetupsColumns(canManageLiquidity ?? false);
+  const { worker } = useLiquidityManagerContext();
+
+  if (!worker) return <PageLoading />;
 
   return (
-    <Table<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, {}, number>
+    <Table<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, { worker: string }, number>
       getAll={params => apiClient.ecnConnectSchemaSetupLabels.getManyBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel(params)}
       onCreate={params => apiClient.ecnConnectSchemaSetupLabels.createOneBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel(params)}
       onUpdate={params => apiClient.ecnConnectSchemaSetupLabels.updateOneBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel(withNumericId(params))}
@@ -48,7 +53,9 @@ const EcnSetupsTable = (props: Partial<TTableProps<EcnConnectSchemaSetupLabel, E
       }}
       columns={columns}
       idColumnName='id'
-      pathParams={{}}
+      pathParams={{
+        worker,
+      }}
       createNewDefaultParams={createNewDefaultParams}
       defaultSort={['label', 'ASC']}
       searchableColumns={ecnSetupsSearchableColumns}

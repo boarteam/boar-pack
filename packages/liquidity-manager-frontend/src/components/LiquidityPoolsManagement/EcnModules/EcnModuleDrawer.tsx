@@ -9,6 +9,7 @@ import React from "react";
 import { DeleteOutlined } from '@ant-design/icons';
 import { deleteNodeConfirm } from '../ConnectionsGraph';
 import { useAccess } from '@umijs/max';
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
 
 export const EcnModuleDrawer: React.FC<{
   id: EcnModule['id'] | undefined,
@@ -16,14 +17,16 @@ export const EcnModuleDrawer: React.FC<{
   onDelete: (id: EcnModule['id']) => Promise<void>,
   onClose: () => void,
 }> = ({ id, onUpdate, onClose, onDelete }) => {
-  if (id === undefined) {
-    return <></>
-  }
+  const columns = useEcnModulesColumns(false);
+  const { worker } = useLiquidityManagerContext();
 
-  const columns = useEcnModulesColumns();
   const idColumnIndex = columns.findIndex(column => column.dataIndex === 'id');
   columns[idColumnIndex] = { ...columns[idColumnIndex], editable: false };
   const { canManageLiquidity } = useAccess() || {};
+
+  if (id === undefined || !worker) {
+    return <></>
+  }
 
   return (
     <Drawer
@@ -45,9 +48,10 @@ export const EcnModuleDrawer: React.FC<{
         </Button>
       }
     >
-      <Descriptions<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, { id: number }, number>
+      <Descriptions<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, { id: number, worker: string }, number>
         pathParams={{
           id,
+          worker,
         }}
         getOne={params => apiClient.ecnModules.getOneBaseEcnModulesControllerEcnModule(params)}
         onUpdate={async params => {

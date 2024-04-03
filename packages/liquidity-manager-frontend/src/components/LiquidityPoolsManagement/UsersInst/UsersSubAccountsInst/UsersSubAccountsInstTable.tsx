@@ -16,6 +16,8 @@ import SubloginsSettingsTable
 import { useSubloginsSettingsColumns } from "../SubloginsSettings/useSubloginsSettingsColumns";
 import useColumnsSets, { TColumnsSet } from "../../../Table/useColumnsSets";
 import s from './UsersSubaccountsInst.less';
+import { useLiquidityManagerContext } from "../../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-components";
 
 function userSubAccountToDto<T extends Partial<UsersSubAccountInst>,
   R extends UsersSubAccountInstCreateDto | UsersSubAccountInstUpdateDto>(entity: T): R {
@@ -119,6 +121,7 @@ const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
   const columns = useUsersSubAccountsInstColumns();
   const settingsColumns = useSubloginsSettingsColumns();
   const { canManageLiquidity } = useAccess() || {};
+  const { worker } = useLiquidityManagerContext();
 
   const {
     columnsSetSelect,
@@ -128,8 +131,12 @@ const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
     columnsSets,
   });
 
+  if (!worker) return <PageLoading />;
+
   return (
-    <Table<UsersSubAccountInst, UsersSubAccountInstCreateDto, UsersSubAccountInstUpdateDto, TUsersSubAccountsInstFilterParams, {}, number>
+    <Table<UsersSubAccountInst, UsersSubAccountInstCreateDto, UsersSubAccountInstUpdateDto, TUsersSubAccountsInstFilterParams, {
+      worker: string,
+    }, number>
       getAll={params => apiClient.usersSubAccountsInst.getManyBaseUsersSubAccountsInstControllerUsersSubAccountInst(params)}
       onCreate={params => apiClient.usersSubAccountsInst.createOneBaseUsersSubAccountsInstControllerUsersSubAccountInst(params)}
       onUpdate={params => apiClient.usersSubAccountsInst.updateOneBaseUsersSubAccountsInstControllerUsersSubAccountInst(params)}
@@ -141,7 +148,9 @@ const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
         x: 'max-content',
       }}
       columns={columns}
-      pathParams={{}}
+      pathParams={{
+        worker,
+      }}
       createNewDefaultParams={{
         userId,
       }}
