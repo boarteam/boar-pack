@@ -7,6 +7,8 @@ import { ecnInstrumentJoinFields } from "./ecnInstrumentJoinFields";
 import { TColumnsSet } from "../../Table/useColumnsSets";
 import { useAccess } from "@umijs/max";
 import { ecnInstrumentSearchableColumns } from "./ecnInstrumentSearchableColumns";
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-layout";
 
 export function ecnInstrumentToDto<
   T extends Partial<EcnInstrument>,
@@ -99,9 +101,12 @@ const columnsSets: TColumnsSet<EcnInstrument>[] = [
 const EcnInstrumentsTable = () => {
   const columns = useEcnInstrumentsColumns();
   const { canManageLiquidity } = useAccess() || {};
+  const { worker } = useLiquidityManagerContext();
+
+  if (!worker) return <PageLoading />;
 
   return (
-    <Table<EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto, {}, {}, number>
+    <Table<EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto, {}, { worker: string }, number>
       getAll={params => apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params)}
       onCreate={params => apiClient.ecnInstruments.createOneBaseEcnInstrumentsControllerEcnInstrument(params)}
       onUpdate={params => apiClient.ecnInstruments.updateOneBaseEcnInstrumentsControllerEcnInstrument(params)}
@@ -151,7 +156,9 @@ const EcnInstrumentsTable = () => {
         delBandOnAbookNos: 0,
         delBandOnBbookNos: 0,
       }}
-      pathParams={{}}
+      pathParams={{
+        worker,
+      }}
       params={{
         join: ecnInstrumentJoinFields,
       }}

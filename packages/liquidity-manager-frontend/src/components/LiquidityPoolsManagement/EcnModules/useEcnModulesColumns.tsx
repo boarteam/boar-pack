@@ -7,9 +7,11 @@ import { Tag } from "antd";
 import { RelationSelect } from "../../Inputs/RelationSelect";
 import apiClient from "../../../tools/client/apiClient";
 import { NumberInputHandlingNewRecord } from "../../Inputs/NumberInputHandlingNewRecord";
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
 
 export const useEcnModulesColumns = (canManageEcnModulesColumns: boolean): ProColumns<EcnModule>[] => {
   const intl = useIntl();
+  const { worker } = useLiquidityManagerContext();
 
   const columns: ProColumns<EcnModule>[] = [
     {
@@ -74,12 +76,13 @@ export const useEcnModulesColumns = (canManageEcnModulesColumns: boolean): ProCo
         return record.type?.name ?? '-';
       },
       renderFormItem(schema, config) {
-        return (<RelationSelect<EcnModuleType>
+        return (worker && <RelationSelect<EcnModuleType>
           selectedItem={config.record?.type}
           fetchItems={filter => apiClient.ecnModuleTypes.getManyBaseEcnModuleTypesControllerEcnModuleType({
             filter,
+            worker,
           })}
-        />);
+        /> || null);
       },
     },
     {

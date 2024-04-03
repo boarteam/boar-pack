@@ -16,6 +16,9 @@ import { useConnectionsGraph } from './useConnectionsGraph';
 
 IconStore.set('DeleteOutlined', DeleteOutlined);
 IconStore.set('EditOutlined', EditOutlined);
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
+import { useEmotionCss } from "@ant-design/use-emotion-css";
+import cx from "classnames";
 
 type TData = {
   edgesMap: Map<EcnConnectSchema['id'], EcnConnectSchema>,
@@ -73,8 +76,11 @@ export const deleteNodeConfirm = async (onOk: () => Promise<void>) => {
   })
 }
 
-export const deleteEdgeConfirm = async (edgeId: EcnConnectSchema['id'], onOk: () => Promise<void>) => {
-  const subscrCount = await apiClient.ecnSubscrSchemas.getCount({ connectSchemaId: edgeId }) as number;
+export const deleteEdgeConfirm = async (edgeId: EcnConnectSchema['id'], onOk: () => Promise<void>, worker: string) => {
+  const subscrCount = await apiClient.ecnSubscrSchemas.getCount({
+    connectSchemaId: edgeId,
+    worker,
+  }) as number;
   if (subscrCount > 0) {
     Modal.confirm({
       title: 'Delete this connection?',
@@ -84,7 +90,7 @@ export const deleteEdgeConfirm = async (edgeId: EcnConnectSchema['id'], onOk: ()
     });
   }
   else {
-    onOk();
+    await onOk();
   }
 }
 
@@ -98,6 +104,8 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
   const commandServiceRef = useRef<IGraphCommandService>(null);
   const { token } = useToken();
   const color = token.colorPrimary;
+  const { worker } = useLiquidityManagerContext();
+
   const {
     selectedNode, setSelectedNode,
     selectedEdge, setSelectedEdge,
@@ -110,13 +118,17 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
   } = useConnectionsGraph();
 
   useEffect(() => {
+    if (!worker) return;
+
     setIsLoading(true);
     Promise.all([
       apiClient.ecnModules.getManyBaseEcnModulesControllerEcnModule({
         fields: ['id,name'],
+        worker,
       }),
       apiClient.ecnConnectSchemas.getManyBaseEcnConnectSchemaControllerEcnConnectSchema({
         fields: ['id,fromModuleId,toModuleId,descr,enabled'],
+        worker,
       }),
     ])
       .then(([nodes, edges]) => {
@@ -145,7 +157,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
         setVisibleElementsIds({ nodes: modules, edges: visibleSetupEdges });
         setIsLoading(false);
       });
-  }, []);
+  }, [worker]);
 
   const graphData = useMemo(() => {
     const connectedPorts = new Set<string>();
@@ -230,6 +242,10 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
   }, [data, visibleElementsIds]);
 
   const onLoad: IAppLoad = async (app) => {
+    if (!worker) {
+      return;
+    }
+
     const graph = await app.getGraphInstance();
     commandServiceRef.current = app.commandService;
     graphRef.current = graph;
@@ -246,7 +262,8 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
           requestBody: {
             fromModuleId: getRealIdFromNodeId(edge.getSourceCellId()),
             toModuleId: getRealIdFromNodeId(edge.getTargetCellId()),
-          }
+          },
+          worker,
         });
         setData(prevState => {
           const newEdgesMap = new Map(prevState.edgesMap);
@@ -308,11 +325,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
           const isSourceRight = sourceMagnet?.getAttribute('port-group') === 'front';
           const isTargetLeft = targetMagnet?.getAttribute('port-group') === 'back';
 
-          if (!isSourceRight || !isTargetLeft) {
-            return false;
-          }
-
-          return true;
+          return isSourceRight && isTargetLeft;
         },
         createEdge() {
           return new Shape.Edge({
@@ -344,7 +357,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
 
   const menuConfig = createCtxMenuConfig(config => {
     config.setMenuModelService(async (target, model) => {
-      switch (target.type) {
+      switch (target?.type) {
         case 'node':
           model.setValue({
             id: 'root',
@@ -382,9 +395,9 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
                 label: 'Delete connection',
                 iconName: 'DeleteOutlined',
                 onClick: async ({ target }) => {
-                  if (target.data?.id !== undefined) {
+                  if (target.data?.id !== undefined && worker) {
                     const edgeId = getRealIdFromEdgeId(target.data.id);
-                    deleteEdgeConfirm(edgeId, () => deleteEdge(edgeId));
+                    await deleteEdgeConfirm(edgeId, () => deleteEdge(edgeId), worker);
                   }
                 },
               },
@@ -426,10 +439,20 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
     }, 100)
   }, [graphData]);
 
+  const dagClass = useEmotionCss(({ token }) => {
+    return {
+      border: `1px solid ${token.colorPrimary} !important`,
+      borderRadius: token.borderRadiusLG,
+      '.x6-node:hover .front-port': {
+        stroke: token.colorPrimary,
+      },
+    }
+  });
+
   return (
     <Spin spinning={isLoading}>
       <XFlow
-        className={s.dag}
+        className={cx(s.dag, dagClass)}
         graphData={graphData}
         graphLayout={{
           layoutType: 'dagre',

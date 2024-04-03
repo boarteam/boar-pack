@@ -1,21 +1,13 @@
 @body-bg: #fafafa;
 @primaryColor: #1890ff;
-@light-border: 1px solid #d9d9d9;
 
 .dag {
   position: relative;
-  border: @light-border;
-
   height: calc(100vh - 250px);
 
-  :global(.xflow-x6-canvas) {
-    background: @body-bg;
-  }
-
   :global(.x6-node):hover :global(.front-port) {
-    stroke: @primaryColor;
     stroke-width: 2;
-    transition: 800;
+    transition: all ease-in-out 0.15s;
   }
 
   :global(.x6-edge) {

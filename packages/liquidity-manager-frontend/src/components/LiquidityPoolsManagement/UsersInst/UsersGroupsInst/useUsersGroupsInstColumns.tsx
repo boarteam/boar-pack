@@ -7,10 +7,12 @@ import { RelationSelect } from "../../../Inputs/RelationSelect";
 import apiClient from "../../../../tools/client/apiClient";
 import { NumberSwitch } from "../../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
+import { useLiquidityManagerContext } from "../../liquidityManagerContext";
 
 export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
   const intl = useIntl();
   const { canManageLiquidity } = useAccess() || {};
+  const { worker } = useLiquidityManagerContext();
 
   const columns: ProColumns<UsersGroupsInst>[] = [
     {
@@ -47,10 +49,10 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
         return record.workingMode?.name;
       },
       renderFormItem: (schema, config, _, action) => {
-        return <RelationSelect<EcnWorkingMode>
+        return worker && <RelationSelect<EcnWorkingMode>
           selectedItem={config.record?.workingMode}
-          fetchItems={filter => apiClient.ecnWorkingModes.getManyBaseGenericLiquidityControllerEcnWorkingMode({ filter })}
-        />;
+          fetchItems={filter => apiClient.ecnWorkingModes.getManyBaseGenericLiquidityControllerEcnWorkingMode({ filter, worker })}
+        /> || null;
       }
     },
     {
@@ -86,10 +88,10 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
         return record.company?.name;
       },
       renderFormItem: (schema, config, _, action) => {
-        return <RelationSelect<UsersInstCompany>
+        return worker && <RelationSelect<UsersInstCompany>
           selectedItem={config.record?.company}
-          fetchItems={filter => apiClient.usersInstCompanies.getManyBaseGenericLiquidityControllerUsersInstCompany({ filter })}
-        />;
+          fetchItems={filter => apiClient.usersInstCompanies.getManyBaseGenericLiquidityControllerUsersInstCompany({ filter, worker })}
+        /> || null;
       }
     },
     {
@@ -110,10 +112,10 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
         return record.action?.name;
       },
       renderFormItem: (schema, config, _, action) => {
-        return <RelationSelect<DclAction>
+        return worker && <RelationSelect<DclAction>
           selectedItem={config.record?.action}
-          fetchItems={filter => apiClient.dclActions.getManyBaseGenericLiquidityControllerDclAction({ filter })}
-        />;
+          fetchItems={filter => apiClient.dclActions.getManyBaseGenericLiquidityControllerDclAction({ filter, worker })}
+        /> || null;
       }
     },
     {
@@ -134,14 +136,14 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
         return record.currency?.name;
       },
       renderFormItem: (schema, config, _, action) => {
-        return <RelationSelect<EcnCurrency>
+        return worker && <RelationSelect<EcnCurrency>
           selectedItem={config.record?.currency}
           fieldNames={{
             value: 'name',
             label: 'name',
           }}
-          fetchItems={filter => apiClient.ecnCurrencies.getManyBaseGenericLiquidityControllerEcnCurrency({ filter })}
-        />;
+          fetchItems={filter => apiClient.ecnCurrencies.getManyBaseGenericLiquidityControllerEcnCurrency({ filter, worker })}
+        /> || null;
       }
     },
     {

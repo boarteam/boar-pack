@@ -4,6 +4,8 @@ import { EcnModuleType, EcnModuleTypeCreateDto, EcnModuleTypeUpdateDto } from ".
 import { useEcnModuleTypesColumns } from "./useEcnModuleTypesColumns";
 import pick from "lodash/pick";
 import { Operators, withNumericId } from "../../../Table/tableTools";
+import { useLiquidityManagerContext } from "../../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-components";
 
 function entityToDto(entity: EcnModuleType) {
   return pick(entity, [
@@ -14,9 +16,12 @@ function entityToDto(entity: EcnModuleType) {
 
 const EcnModuleTypesTable = () => {
   const columns = useEcnModuleTypesColumns();
+  const { worker } = useLiquidityManagerContext();
+
+  if (!worker) return <PageLoading />;
 
   return (
-    <Table<EcnModuleType, EcnModuleTypeCreateDto, EcnModuleTypeUpdateDto, {}, {}, number>
+    <Table<EcnModuleType, EcnModuleTypeCreateDto, EcnModuleTypeUpdateDto, {}, { worker: string }, number>
       getAll={params => apiClient.ecnModuleTypes.getManyBaseEcnModuleTypesControllerEcnModuleType(params)}
       onCreate={params => apiClient.ecnModuleTypes.createOneBaseEcnModuleTypesControllerEcnModuleType(params)}
       onUpdate={params => apiClient.ecnModuleTypes.updateOneBaseEcnModuleTypesControllerEcnModuleType(withNumericId(params))}
@@ -25,7 +30,9 @@ const EcnModuleTypesTable = () => {
       entityToUpdateDto={entityToDto}
       columns={columns}
       idColumnName='id'
-      pathParams={{}}
+      pathParams={{
+        worker,
+      }}
       defaultSort={['name', 'ASC']}
       searchableColumns={[
         {

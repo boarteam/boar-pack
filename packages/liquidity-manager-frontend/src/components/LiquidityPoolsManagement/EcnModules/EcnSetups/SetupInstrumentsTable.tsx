@@ -6,6 +6,8 @@ import { EcnConnectSchema, EcnConnectSchemaSetupLabel, EcnInstrument, GetEcnInst
 import s from '@/tools/tools.less';
 import { useSetupInstrumentsColumns } from './useSetupInstrumentsColumns';
 import { SortOrder } from 'antd/es/table/interface';
+import { useLiquidityManagerContext } from "../../liquidityManagerContext";
+import { PageLoading } from "@ant-design/pro-layout";
 
 type ParamsType = {
   connectSchemasIds?: EcnConnectSchema['id'][],
@@ -30,9 +32,13 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
   const [params, setParams] = useState<ParamsType>({});
   const columns = useSetupInstrumentsColumns(connectSchemas, params.compareConnectSchemaId);
   const patchParams = (params: Partial<ParamsType>) => setParams(prevParams => ({ ...prevParams, ...params }));
+  const { worker } = useLiquidityManagerContext();
 
   useEffect(() => {
+    if (!worker) return;
+
     apiClient.ecnConnectSchemas.getManyBaseEcnConnectSchemaControllerEcnConnectSchema({
+      worker,
       s: JSON.stringify({
         "$and": [
           { "fromModuleSetupLabels.id": { "$eq": id } },
@@ -47,7 +53,7 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
         setConnectSchemas(connectSchemas.data);
         patchParams({ connectSchemasIds: connectSchemas.data.map(connectSchema => connectSchema.id) });
       });
-  }, []);
+  }, [worker]);
 
   const requestData = async (receivedParams: RequestParams, sort: Record<string, SortOrder>) => {
     const { pageSize = 10, current = 1, connectSchemasIds, keyword, compareConnectSchemaId, showOnlyChanged } = receivedParams;
@@ -64,7 +70,14 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
       sortDirection = sort.instrumentName === 'ascend' ? 'ASC' : 'DESC';
     }
 
+    if (!worker) return {
+      data: [],
+      success: false,
+      total: 0,
+    };
+
     return apiClient.ecnInstruments.getInConnections({
+      worker,
       id: connectSchemasIds,
       compareConnectSchemaId,
       limit: pageSize,
@@ -139,6 +152,8 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
       return row;
     })
   }
+
+  if (!worker) return <PageLoading />;
 
   return (
     <Card>

@@ -17,10 +17,12 @@ import { Tag } from "antd";
 import { dropTrailZeroes } from "@/tools/numberTools";
 import { RelationSelect } from "../../Inputs/RelationSelect";
 import apiClient from "../../../tools/client/apiClient";
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
 
 export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
   const intl = useIntl();
   const { canManageLiquidity } = useAccess() || {};
+  const { worker } = useLiquidityManagerContext();
 
   const columns: ProColumns<EcnInstrument>[] = [
     {
@@ -85,12 +87,13 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
         return record.instrumentGroup?.name ?? '-';
       },
       renderFormItem(schema, config) {
-        return <RelationSelect<EcnInstrumentsGroup>
+        return worker && <RelationSelect<EcnInstrumentsGroup>
           selectedItem={config.record?.instrumentGroup}
           fetchItems={filter => apiClient.ecnInstrumentsGroups.getManyBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup({
             filter,
+            worker,
           })}
-        />;
+        /> || null;
       },
     },
     {
@@ -244,12 +247,13 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
             return record.swapType?.name ?? '-';
           },
           renderFormItem(schema, config) {
-            return <RelationSelect<EcnSwapType>
+            return worker && <RelationSelect<EcnSwapType>
               selectedItem={config.record?.swapType}
               fetchItems={filter => apiClient.ecnSwapTypes.getManyBaseGenericLiquidityControllerEcnSwapType({
+                worker,
                 filter,
               })}
-            />;
+            /> || null;
           }
         },
         {
@@ -271,12 +275,13 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
             return record.swapRollover3Days?.name ?? '-';
           },
           renderFormItem(schema, config) {
-            return <RelationSelect<EcnWeekDay>
+            return worker && <RelationSelect<EcnWeekDay>
               selectedItem={config.record?.swapRollover3Days}
               fetchItems={filter => apiClient.ecnWeekDays.getManyBaseGenericLiquidityControllerEcnWeekDay({
                 filter,
+                worker,
               })}
-            />;
+            /> || null;
           }
         },
         {
@@ -435,12 +440,13 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
             return record.commissionType?.name ?? '-';
           },
           renderFormItem(schema, config) {
-            return <RelationSelect<EcnCommissionType>
+            return worker && <RelationSelect<EcnCommissionType>
               selectedItem={config.record?.commissionType}
               fetchItems={filter => apiClient.ecnCommissionTypes.getManyBaseGenericLiquidityControllerEcnCommissionType({
                 filter,
+                worker,
               })}
-            />;
+            /> || null;
           }
         },
         {
@@ -461,12 +467,13 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
             return record.commissionLotsMode?.name ?? '-';
           },
           renderFormItem(schema, config) {
-            return <RelationSelect<EcnCommissionLotsMode>
+            return worker && <RelationSelect<EcnCommissionLotsMode>
               selectedItem={config.record?.commissionLotsMode}
               fetchItems={filter => apiClient.ecnCommissionLotsModes.getManyBaseGenericLiquidityControllerEcnCommissionLotsMode({
                 filter,
+                worker,
               })}
-            />;
+            /> || null;
           }
         },
         {
@@ -508,12 +515,13 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
             return record.commissionAgentType?.name ?? '-';
           },
           renderFormItem(schema, config) {
-            return <RelationSelect<EcnCommissionType>
+            return worker && <RelationSelect<EcnCommissionType>
               selectedItem={config.record?.commissionAgentType}
               fetchItems={filter => apiClient.ecnCommissionTypes.getManyBaseGenericLiquidityControllerEcnCommissionType({
                 filter,
+                worker,
               })}
-            />;
+            /> || null;
           }
         },
         {
@@ -534,12 +542,13 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
             return record.commissionAgentLotsMode?.name ?? '-';
           },
           renderFormItem(schema, config) {
-            return <RelationSelect<EcnCommissionLotsMode>
+            return worker && <RelationSelect<EcnCommissionLotsMode>
               selectedItem={config.record?.commissionAgentLotsMode}
               fetchItems={filter => apiClient.ecnCommissionLotsModes.getManyBaseGenericLiquidityControllerEcnCommissionLotsMode({
                 filter,
+                worker,
               })}
-            />;
+            /> || null;
           }
         },
       ],
@@ -562,12 +571,13 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
         return record.profitMode?.name ?? '-';
       },
       renderFormItem(schema, config) {
-        return <RelationSelect<EcnProfitCalcMode>
+        return worker && <RelationSelect<EcnProfitCalcMode>
           selectedItem={config.record?.profitMode}
           fetchItems={filter => apiClient.ecnProfitCalcModes.getManyBaseGenericLiquidityControllerEcnProfitCalcMode({
             filter,
+            worker,
           })}
-        />;
+        /> || null;
       }
     },
     {
@@ -592,12 +602,13 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
             return record.marginMode?.name ?? '-';
           },
           renderFormItem(schema, config) {
-            return <RelationSelect<EcnMarginCalcMode>
+            return worker && <RelationSelect<EcnMarginCalcMode>
               selectedItem={config.record?.marginMode}
               fetchItems={filter => apiClient.ecnMarginCalcModes.getManyBaseGenericLiquidityControllerEcnMarginCalcMode({
                 filter,
+                worker,
               })}
-            />;
+            /> || null;
           }
         },
         {

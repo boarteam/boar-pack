@@ -9,6 +9,7 @@ import EcnSubscrSchemasTable from "./EcnSubscrSchemas/EcnSubscrSchemasTable";
 import { DeleteOutlined } from '@ant-design/icons';
 import { deleteEdgeConfirm } from '../ConnectionsGraph';
 import { useAccess } from '@umijs/max';
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
 
 export const ecnConnectSchemaJoinFields = [
   {
@@ -22,10 +23,8 @@ export const ecnConnectSchemaJoinFields = [
 ];
 
 
-export function ecnConnectSchemaToDto<
-  T extends Partial<EcnConnectSchema>,
-  R extends (EcnConnectSchemaCreateDto | EcnConnectSchemaUpdateDto)
->(entity: T): R {
+export function ecnConnectSchemaToDto<T extends Partial<EcnConnectSchema>,
+  R extends (EcnConnectSchemaCreateDto | EcnConnectSchemaUpdateDto)>(entity: T): R {
   return pick(entity, [
     'descr',
     'enabled'
@@ -39,11 +38,16 @@ export const EcnConnectSchemaDrawer: React.FC<{
   onDelete: (id: EcnConnectSchema['id']) => Promise<void>;
 }> = ({ id, onClose, onUpdate, onDelete }) => {
   if (id === undefined) {
-    return <></>
+    return <></>;
   }
 
   const { canManageLiquidity } = useAccess() || {};
   const columns = useEcnConnectSchemasColumns(canManageLiquidity ?? false);
+  const { worker } = useLiquidityManagerContext();
+
+  if (!worker) {
+    return <></>;
+  }
 
   return (
     <Drawer
@@ -53,13 +57,14 @@ export const EcnConnectSchemaDrawer: React.FC<{
       width='33%'
       extra={
         <Button
-          onClick={() => {
-            deleteEdgeConfirm(
+          onClick={async () => {
+            await deleteEdgeConfirm(
               id,
               async () => {
                 await onDelete(id);
                 onClose();
-              }
+              },
+              worker,
             )
           }}
           danger
@@ -68,9 +73,10 @@ export const EcnConnectSchemaDrawer: React.FC<{
         </Button>
       }
     >
-      <Descriptions<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, { id: number }, number>
+      <Descriptions<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, { id: number, worker: string }, number>
         pathParams={{
           id,
+          worker,
         }}
         idColumnName='id'
         getOne={params => apiClient.ecnConnectSchemas.getOneBaseEcnConnectSchemaControllerEcnConnectSchema(params)}

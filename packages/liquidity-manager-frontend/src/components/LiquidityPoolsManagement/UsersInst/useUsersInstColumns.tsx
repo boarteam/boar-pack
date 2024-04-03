@@ -16,10 +16,12 @@ import { Password } from "../../Inputs/Password";
 import { dropTrailZeroes } from "../../../tools/numberTools";
 import { RelationSelect } from "../../Inputs/RelationSelect";
 import apiClient from "../../../tools/client/apiClient";
+import { useLiquidityManagerContext } from "../liquidityManagerContext";
 
 export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
   const intl = useIntl();
   const { canManageLiquidity } = useAccess() || {};
+  const { worker } = useLiquidityManagerContext();
 
   const columns: ProColumns<UsersInst>[] = [
     {
@@ -79,10 +81,13 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
         return record.group?.name ?? '-';
       },
       renderFormItem(schema, config) {
-        return <RelationSelect<UsersGroupsInst>
+        return worker && <RelationSelect<UsersGroupsInst>
           selectedItem={config.record?.group}
-          fetchItems={filter => apiClient.usersGroupsInst.getManyBaseUsersGroupsInstControllerUsersGroupsInst({ filter })}
-        />;
+          fetchItems={filter => apiClient.usersGroupsInst.getManyBaseUsersGroupsInstControllerUsersGroupsInst({
+            filter,
+            worker,
+          })}
+        /> || null;
       }
     },
     {
@@ -103,10 +108,13 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
         return record.action?.name;
       },
       renderFormItem: (schema, config) => {
-        return <RelationSelect<DclAction>
+        return worker && <RelationSelect<DclAction>
           selectedItem={config.record?.action}
-          fetchItems={filter => apiClient.dclActions.getManyBaseGenericLiquidityControllerDclAction({ filter })}
-        />;
+          fetchItems={filter => apiClient.dclActions.getManyBaseGenericLiquidityControllerDclAction({
+            filter,
+            worker,
+          })}
+        /> || null;
       }
     },
     {
@@ -461,10 +469,13 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
         return record.module?.name ?? '-';
       },
       renderFormItem(schema, config) {
-        return <RelationSelect<EcnModule>
+        return worker && <RelationSelect<EcnModule>
           selectedItem={config.record?.module}
-          fetchItems={filter => apiClient.ecnModules.getManyBaseEcnModulesControllerEcnModule({ filter })}
-        />;
+          fetchItems={filter => apiClient.ecnModules.getManyBaseEcnModulesControllerEcnModule({
+            filter,
+            worker,
+          })}
+        /> || null;
       }
     },
     {
@@ -485,10 +496,13 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
         return record.marginModule?.name ?? '-';
       },
       renderFormItem(schema, config) {
-        return <RelationSelect<EcnModule>
+        return worker && <RelationSelect<EcnModule>
           selectedItem={config.record?.marginModule}
-          fetchItems={filter => apiClient.ecnModules.getManyBaseEcnModulesControllerEcnModule({ filter })}
-        />;
+          fetchItems={filter => apiClient.ecnModules.getManyBaseEcnModulesControllerEcnModule({
+            filter,
+            worker,
+          })}
+        /> || null;
       }
     },
     {
@@ -556,10 +570,13 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
             return record.commissionType?.name ?? '-';
           },
           renderFormItem(schema, config) {
-            return <RelationSelect<EcnCommissionType>
+            return worker && <RelationSelect<EcnCommissionType>
               selectedItem={config.record?.commissionType}
-              fetchItems={filter => apiClient.ecnCommissionTypes.getManyBaseGenericLiquidityControllerEcnCommissionType({ filter })}
-            />;
+              fetchItems={filter => apiClient.ecnCommissionTypes.getManyBaseGenericLiquidityControllerEcnCommissionType({
+                filter,
+                worker,
+              })}
+            /> || null;
           }
         },
         {
@@ -581,10 +598,13 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
             return record.commissionLotsMode?.name ?? '-';
           },
           renderFormItem(schema, config) {
-            return <RelationSelect<EcnCommissionLotsMode>
+            return worker && <RelationSelect<EcnCommissionLotsMode>
               selectedItem={config.record?.commissionLotsMode}
-              fetchItems={filter => apiClient.ecnCommissionLotsModes.getManyBaseGenericLiquidityControllerEcnCommissionLotsMode({ filter })}
-            />;
+              fetchItems={filter => apiClient.ecnCommissionLotsModes.getManyBaseGenericLiquidityControllerEcnCommissionLotsMode({
+                filter,
+                worker,
+              })}
+            /> || null;
           }
         },
         {
@@ -635,10 +655,13 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       },
       render: (text, record) => record.company?.name,
       renderFormItem: (schema, config, _, action) => {
-        return <RelationSelect<UsersInstCompany>
+        return worker && <RelationSelect<UsersInstCompany>
           selectedItem={config.record?.company}
-          fetchItems={filter => apiClient.usersInstCompanies.getManyBaseGenericLiquidityControllerUsersInstCompany({ filter })}
-        />;
+          fetchItems={filter => apiClient.usersInstCompanies.getManyBaseGenericLiquidityControllerUsersInstCompany({
+            filter,
+            worker,
+          })}
+        /> || null;
       }
     },
     {
