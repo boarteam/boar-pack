@@ -4,7 +4,7 @@ import { EcnInstrumentsGroupsController } from './ecn-instruments-groups.control
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EcnInstrumentsGroup } from './entities/ecn-instruments-group.entity';
 import { TModuleConfig } from "../../app/app.types";
-import { TP_DB_NAME } from "../../tp-db/tp-db.config";
+import { TP_DB_NAME } from "../liquidity-app.config";
 
 @Module({})
 export class EcnInstrumentsGroupsModule {

@@ -4,9 +4,9 @@ import { UsersInstController } from './users-inst.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersInst } from './entities/users-inst.entity';
 import { TModuleConfig } from "../../app/app.types";
-import { TP_DB_NAME } from "../../tp-db/tp-db.config";
+import { TP_DB_NAME } from "../liquidity-app.config";
 import { EcnCommissionType } from "../entities/ecn-commission-type.entity";
-import { GenericLiquidityModule } from "../generic-liquidity.module";
+import { GenericLiquidityModule } from "../tools/generic-liquidity.module";
 import { ViewUsersInstPolicy } from "./policies/view-users-inst.policy";
 import { EcnCommissionLotsMode } from "../entities/ecn-commission-lots-mode.entity";
 

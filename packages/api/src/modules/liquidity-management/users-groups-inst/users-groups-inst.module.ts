@@ -5,10 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersGroupsInst } from './entities/users-groups-inst.entity';
 import { TModuleConfig } from "../../app/app.types";
 import { DclAction } from "../entities/dcl-action.entity";
-import { GenericLiquidityModule } from "../generic-liquidity.module";
+import { GenericLiquidityModule } from "../tools/generic-liquidity.module";
 import { ViewUsersGroupsInstPolicy } from "./policies/view-users-groups-inst.policy";
 import { UsersInstCompany } from "../entities/users-inst-company.entity";
-import { TP_DB_NAME } from "../../tp-db/tp-db.config";
+import { TP_DB_NAME } from "../liquidity-app.config";
 
 @Module({})
 export class UsersGroupsInstModule {

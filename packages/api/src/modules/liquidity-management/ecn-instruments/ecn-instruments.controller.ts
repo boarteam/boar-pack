@@ -8,7 +8,7 @@ import { EcnInstrumentCreateDto } from './dto/ecn-instrument-create.dto';
 import { EcnInstrumentUpdateDto } from './dto/ecn-instrument-update.dto';
 import { ViewEcnInstrumentsPolicy } from './policies/view-ecn-instruments.policy';
 import { ManageEcnInstrumentsPolicy } from './policies/manage-ecn-instruments.policy';
-import { CRC64HashPipe } from '../hash_instrument.pipe';
+import { CRC64HashPipe } from '../tools/hash_instrument.pipe';
 import { GetEcnInstrumentsInConnectionsResponse, GetInstrumentsInConnectionsQueryDto } from './dto/ecn-instruments-get-in-connections.dto';
 
 @Crud({

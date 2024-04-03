@@ -8,8 +8,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { EcnModuleUpdateDto } from "./dto/ecn-module-update.dto";
 import { ViewEcnModulesPolicy } from "./policies/view-ecn-modules.policy";
 import { ManageEcnModulesPolicy } from "./policies/manage-ecn-modules.policy";
-import { UniqueIdPipe } from "../unique-id.pipe";
-import { AutoincrementIdPipe } from "../autoincrement_id.pipe";
+import { UniqueIdPipe } from "../tools/unique-id.pipe";
+import { AutoincrementIdPipe } from "../tools/autoincrement_id.pipe";
 
 @Crud({
   model: {

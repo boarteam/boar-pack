@@ -4,7 +4,7 @@ import { UsersSubAccountsInstController } from './users-sub-accounts-inst.contro
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersSubAccountInst } from './entities/users-sub-account-inst.entity';
 import { TModuleConfig } from "../../app/app.types";
-import { TP_DB_NAME } from "../../tp-db/tp-db.config";
+import { TP_DB_NAME } from "../liquidity-app.config";
 
 @Module({})
 export class UsersSubAccountsInstModule {

@@ -8,8 +8,8 @@ import { EcnConnectSchemaCreateDto } from './dto/ecn-connect-schema-create.dto';
 import { EcnConnectSchemaUpdateDto } from './dto/ecn-connect-schema-update.dto';
 import { ViewEcnConnectSchemaPolicy } from './policies/view-ecn-connect-schema.policy';
 import { ManageEcnConnectSchemaPolicy } from './policies/manage-ecn-connect-schema.policy';
-import { UniqueIdPipe } from '../unique-id.pipe';
-import { AutoincrementIdPipe } from '../autoincrement_id.pipe';
+import { UniqueIdPipe } from '../tools/unique-id.pipe';
+import { AutoincrementIdPipe } from '../tools/autoincrement_id.pipe';
 
 @Crud({
   model: {

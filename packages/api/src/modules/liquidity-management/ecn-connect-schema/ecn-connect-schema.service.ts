@@ -3,7 +3,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { EcnConnectSchema } from './entities/ecn-connect-schema.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TP_DB_NAME } from "../../tp-db/tp-db.config";
+import { TP_DB_NAME } from "../liquidity-app.config";
 
 @Injectable()
 export class EcnConnectSchemaService extends TypeOrmCrudService<EcnConnectSchema> {

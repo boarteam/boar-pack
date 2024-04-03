@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { TP_DB_NAME } from "../../tp-db/tp-db.config";
+import { TP_DB_NAME } from "../liquidity-app.config";
 import { EcnConnectSchemaSetupLabel } from './entities/ecn-connect-schema-setup-label.entity';
 import { QueryJoin } from "@nestjsx/crud-request/lib/types/request-query.types";
 import { JoinOptions } from "@nestjsx/crud";
