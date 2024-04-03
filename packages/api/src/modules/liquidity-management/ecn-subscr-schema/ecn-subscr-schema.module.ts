@@ -4,9 +4,9 @@ import { EcnSubscrSchemaController } from './ecn-subscr-schema.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EcnSubscrSchema } from './entities/ecn-subscr-schema.entity';
 import { TModuleConfig } from "../../app/app.types";
-import { AMTS_DB_NAME } from "../../amts-db/amts-db.config";
+import { AMTS_DB_NAME } from "../liquidity-app.config";
 import { EcnExecutionMode } from "./entities/ecn-execution-mode.entity";
-import { GenericLiquidityModule } from "../generic-liquidity.module";
+import { GenericLiquidityModule } from "../tools/generic-liquidity.module";
 import { ViewEcnSubscrSchemaPolicy } from "./policies/view-ecn-subscr-schema.policy";
 
 @Module({})

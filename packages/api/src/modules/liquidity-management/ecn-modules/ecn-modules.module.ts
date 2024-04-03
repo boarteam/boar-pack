@@ -4,7 +4,7 @@ import { EcnModulesController } from './ecn-modules.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EcnModule } from './entities/ecn-module.entity';
 import { TModuleConfig } from "../../app/app.types";
-import { AMTS_DB_NAME } from "../../amts-db/amts-db.config";
+import { AMTS_DB_NAME } from "../liquidity-app.config";
 
 @Module({})
 export class EcnModulesModule {

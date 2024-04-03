@@ -3,7 +3,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { SubloginSettings } from './entities/sublogin-settings.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AMTS_DB_NAME } from "../../amts-db/amts-db.config";
+import { AMTS_DB_NAME } from "../liquidity-app.config";
 
 @Injectable()
 export class SubloginsSettingsService extends TypeOrmCrudService<SubloginSettings> {

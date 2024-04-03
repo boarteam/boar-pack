@@ -8,8 +8,8 @@ import { UsersGroupsInstCreateDto } from './dto/users-groups-inst-create.dto';
 import { UsersGroupsInstUpdateDto } from './dto/users-groups-inst-update.dto';
 import { ViewUsersGroupsInstPolicy } from './policies/view-users-groups-inst.policy';
 import { ManageUsersGroupsInstPolicy } from './policies/manage-users-groups-inst.policy';
-import { UniqueIdPipe } from '../unique-id.pipe';
-import { AutoincrementIdPipe } from '../autoincrement_id.pipe';
+import { UniqueIdPipe } from '../tools/unique-id.pipe';
+import { AutoincrementIdPipe } from '../tools/autoincrement_id.pipe';
 
 @Crud({
   model: {

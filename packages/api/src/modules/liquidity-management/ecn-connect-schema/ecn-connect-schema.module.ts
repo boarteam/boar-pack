@@ -4,7 +4,7 @@ import { EcnConnectSchemaController } from './ecn-connect-schema.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EcnConnectSchema } from './entities/ecn-connect-schema.entity';
 import { TModuleConfig } from "../../app/app.types";
-import { AMTS_DB_NAME } from "../../amts-db/amts-db.config";
+import { AMTS_DB_NAME } from "../liquidity-app.config";
 
 @Module({})
 export class EcnConnectSchemaModule {

@@ -2,7 +2,7 @@ import { ArgumentMetadata, ConflictException, mixin, PipeTransform, Type } from 
 import { ObjectLiteral, Repository } from 'typeorm';
 import { memoize } from "lodash";
 import { InjectRepository } from "@nestjs/typeorm";
-import { AMTS_DB_NAME } from "../amts-db/amts-db.config";
+import { AMTS_DB_NAME } from "../liquidity-app.config";
 import { crc64 } from 'crc64-ecma';
 
 export const CRC64HashPipe: <Entity extends ObjectLiteral>(Entity: Type<Entity>, baseColumn: keyof Entity, targetColumn: keyof Entity) => Type<PipeTransform> = memoize(

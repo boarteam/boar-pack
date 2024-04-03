@@ -9,7 +9,7 @@ import { UsersSubAccountInst } from "./entities/users-sub-account-inst.entity";
 import { UsersSubAccountInstCreateDto } from "./dto/users-sub-account-inst-create.dto";
 import { UsersSubAccountInstUpdateDto } from "./dto/users-sub-account-inst-update.dto";
 import { TypeOrmExceptionFilter } from "../../../tools/typeorm.execption-filter";
-import { AutoincrementIdPipe } from "../autoincrement_id.pipe";
+import { AutoincrementIdPipe } from "../tools/autoincrement_id.pipe";
 
 @Crud({
   model: {

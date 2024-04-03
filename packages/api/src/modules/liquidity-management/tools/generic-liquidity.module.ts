@@ -4,9 +4,9 @@ import { ObjectLiteral, Repository } from "typeorm";
 import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
 import { Crud } from "@nestjsx/crud";
 import { CrudOptions } from "@nestjsx/crud/lib/interfaces";
-import { CheckPolicies, IPolicyHandler } from "../casl/policies.guard";
+import { CheckPolicies, IPolicyHandler } from "../../casl/policies.guard";
 import { ApiTags } from "@nestjs/swagger";
-import { AMTS_DB_NAME } from "../amts-db/amts-db.config";
+import { AMTS_DB_NAME } from "../liquidity-app.config";
 
 type TGenericLiquidityModuleConfig<Entity> = {
   endpoint: string;

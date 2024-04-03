@@ -3,7 +3,7 @@ import { SubloginsSettingsService } from './sublogins-settings.service';
 import { SubloginsSettingsController } from './sublogins-settings.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TModuleConfig } from "../../app/app.types";
-import { AMTS_DB_NAME } from "../../amts-db/amts-db.config";
+import { AMTS_DB_NAME } from "../liquidity-app.config";
 import { SubloginSettings } from "./entities/sublogin-settings.entity";
 
 @Module({})

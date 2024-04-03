@@ -3,7 +3,7 @@ import { EcnConnectSchemaSetupLabelsService } from './ecn-connect-schema-setup-l
 import { EcnConnectSchemaSetupLabelsController } from './ecn-connect-schema-setup-labels.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TModuleConfig } from "../../app/app.types";
-import { AMTS_DB_NAME } from "../../amts-db/amts-db.config";
+import { AMTS_DB_NAME } from "../liquidity-app.config";
 import { EcnConnectSchemaSetupLabel } from './entities/ecn-connect-schema-setup-label.entity';
 
 @Module({})

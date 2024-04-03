@@ -3,7 +3,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { EcnInstrument } from './entities/ecn-instrument.entity';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { AMTS_DB_NAME } from "../../amts-db/amts-db.config";
+import { AMTS_DB_NAME } from "../liquidity-app.config";
 import { EcnConnectSchema } from '../ecn-connect-schema/entities/ecn-connect-schema.entity';
 import { EcnSubscrSchema } from '../ecn-subscr-schema/entities/ecn-subscr-schema.entity';
 import {

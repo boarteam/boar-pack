@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { AMTS_DB_NAME } from "../../amts-db/amts-db.config";
+import { AMTS_DB_NAME } from "../liquidity-app.config";
 import { EcnConnectSchemaSetupLabel } from './entities/ecn-connect-schema-setup-label.entity';
 import { QueryJoin } from "@nestjsx/crud-request/lib/types/request-query.types";
 import { JoinOptions } from "@nestjsx/crud";
