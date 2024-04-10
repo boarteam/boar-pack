@@ -11,10 +11,6 @@ import { subloginsSearchableColumns } from "./subloginsSearchableColumns";
 import { useLiquidityManagerContext } from "../../liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
 
-type TEcnSubscriptionSchemaPathParams = {
-  usersSubAccountInstId: string;
-}
-
 function toCreateDto(entity: SubloginSettings): SubloginSettingsCreateDto {
   return {
     ...entity,
@@ -52,7 +48,7 @@ const SubloginsSettingsTable: React.FC<TSubloginSettingsTableProps> = ({
   }
 
   return (
-    <Table<SubloginSettings, SubloginSettingsCreateDto, SubloginSettingsUpdateDto, TEcnSubscriptionSchemaPathParams, {
+    <Table<SubloginSettings, SubloginSettingsCreateDto, SubloginSettingsUpdateDto, {}, {
       usersSubAccountInstId: string,
       worker: string
     }, number>
@@ -75,7 +71,9 @@ const SubloginsSettingsTable: React.FC<TSubloginSettingsTableProps> = ({
       }}
       params={{
         join: subloginsSettingsJoinFields,
-        usersSubAccountInstId,
+        baseFilters: {
+          usersSubAccountInstId,
+        },
       }}
       defaultSort={['instrument', 'ASC']}
       searchableColumns={subloginsSearchableColumns}

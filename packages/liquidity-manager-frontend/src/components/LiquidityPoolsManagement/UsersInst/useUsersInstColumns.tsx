@@ -17,11 +17,38 @@ import { dropTrailZeroes } from "../../../tools/numberTools";
 import { RelationSelect } from "../../Inputs/RelationSelect";
 import apiClient from "../../../tools/client/apiClient";
 import { useLiquidityManagerContext } from "../liquidityManagerContext";
+import { useEffect, useState } from "react";
+
+type TOptions = { text: string, value: number | string }[];
 
 export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
   const intl = useIntl();
   const { canManageLiquidity } = useAccess() || {};
   const { worker } = useLiquidityManagerContext();
+  const [userGroups, setUserGroups] = useState<TOptions>([]);
+  const [modules, setModules] = useState<TOptions>([]);
+  const [marginModules, setMarginModules] = useState<TOptions>([]);
+
+  useEffect(() => {
+    if (worker) {
+      Promise.all([
+        apiClient.usersGroupsInst.getManyBaseUsersGroupsInstControllerUsersGroupsInst({ worker }),
+        apiClient.ecnModules.getManyBaseEcnModulesControllerEcnModule({
+          worker,
+          join: ['type'],
+        }),
+      ]).then(([groups, modules]) => {
+        setUserGroups(groups.data.map(group => ({ text: group.name, value: group.id })));
+        setModules(modules.data
+          .filter(module => module.type.name !== 'MARGIN MODULE')
+          .map(module => ({ text: module.name, value: module.id })));
+        setMarginModules(modules.data
+          .filter(module => module.type.name === 'MARGIN MODULE')
+          .map(module => ({ text: module.name, value: module.id })));
+      });
+    }
+  }, [worker]);
+
 
   const columns: ProColumns<UsersInst>[] = [
     {
@@ -67,6 +94,8 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       title: intl.formatMessage({ id: 'pages.usersInst.group' }),
       dataIndex: 'group',
       sorter: true,
+      filters: userGroups,
+      filterSearch: true,
       formItemProps: {
         rules: [
           {
@@ -148,6 +177,16 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       title: intl.formatMessage({ id: 'pages.usersInst.enabled' }),
       dataIndex: 'enabled',
       sorter: true,
+      filters: [
+        {
+          text: 'Enabled',
+          value: 1,
+        },
+        {
+          text: 'Disabled',
+          value: 0,
+        }
+      ],
       formItemProps: {
         rules: [
           {
@@ -455,6 +494,8 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       title: intl.formatMessage({ id: 'pages.usersInst.module' }),
       dataIndex: 'module',
       sorter: true,
+      filters: modules,
+      filterSearch: true,
       formItemProps: {
         rules: [
           {
@@ -482,6 +523,8 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       title: intl.formatMessage({ id: 'pages.usersInst.marginModule' }),
       dataIndex: 'marginModule',
       sorter: true,
+      filters: marginModules,
+      filterSearch: true,
       formItemProps: {
         rules: [
           {

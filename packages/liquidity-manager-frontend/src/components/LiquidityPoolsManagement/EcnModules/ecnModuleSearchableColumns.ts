@@ -14,7 +14,10 @@ export const ecnModuleSearchableColumns = [
     operator: Operators.containsLow,
   },
   {
-    field: ['type', 'name'],
+    field: 'type',
+    searchField: 'type.name',
     operator: Operators.containsLow,
+    filterField: 'type.id',
+    filterOperator: Operators.in,
   },
 ];
