@@ -36,7 +36,7 @@ export class EcnInstrumentCreateDto {
   @JoiSchema(Joi.number().integer().required())
   swapType: EcnSwapType['id'];
 
-  @JoiSchema(Joi.number().integer().min(0).max(4).required())
+  @JoiSchema(Joi.number().integer().required())
   swapRollover3Days: EcnWeekDay['id'];
 
   @JoiSchema(Joi.string().required())
@@ -108,7 +108,7 @@ export class EcnInstrumentCreateDto {
   @JoiSchema(Joi.date().required())
   expirationDatetime: Date;
 
-  @JoiSchema(Joi.string().max(20).required())
+  @JoiSchema(Joi.string().max(20).required().allow(''))
   basis: string;
 
   @JoiSchema(Joi.number().integer().min(0).max(1).required())
