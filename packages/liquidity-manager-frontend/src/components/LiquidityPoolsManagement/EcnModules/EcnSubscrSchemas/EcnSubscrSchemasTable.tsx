@@ -10,10 +10,8 @@ import { ecnSubscrSchemaSearchableColumns } from "./ecnSubscrSchemaSearchableCol
 import { useLiquidityManagerContext } from "../../liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
 
-export function ecnSubscriptionSchemaToDto<
-  T extends Partial<EcnSubscrSchema>,
-  R extends (EcnSubscrSchemaCreateDto | EcnSubscrSchemaUpdateDto)
->(entity: T): R {
+export function ecnSubscriptionSchemaToDto<T extends Partial<EcnSubscrSchema>,
+  R extends (EcnSubscrSchemaCreateDto | EcnSubscrSchemaUpdateDto)>(entity: T): R {
   return {
     ...pick(entity, [
       'enabled',
@@ -48,7 +46,7 @@ const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
   if (!worker) return <PageLoading />;
 
   return (
-    <Table<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, { connectSchemaId: number }, {
+    <Table<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, {}, {
       connectSchemaId: number,
       worker: string,
     }, number>
@@ -78,7 +76,9 @@ const EcnSubscrSchemasTable: React.FC<TEcnSubscrSchemasTableProps> = ({
         worker,
       }}
       params={{
-        connectSchemaId,
+        baseFilters: {
+          connectSchemaId,
+        },
         join: ecnSubscrSchemaJoinFields,
       }}
       createNewDefaultParams={{

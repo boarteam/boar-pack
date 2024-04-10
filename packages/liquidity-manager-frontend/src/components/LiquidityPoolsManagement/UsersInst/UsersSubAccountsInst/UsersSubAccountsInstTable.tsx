@@ -106,11 +106,6 @@ const columnsSets: TColumnsSet<SubloginSettings>[] = [
   },
 ];
 
-type TUsersSubAccountsInstFilterParams = {
-  userId: string;
-  descr?: string,
-}
-
 type TUsersSubAccountsInstTableProps = {
   userId: string;
 }
@@ -134,7 +129,7 @@ const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
   if (!worker) return <PageLoading />;
 
   return (
-    <Table<UsersSubAccountInst, UsersSubAccountInstCreateDto, UsersSubAccountInstUpdateDto, TUsersSubAccountsInstFilterParams, {
+    <Table<UsersSubAccountInst, UsersSubAccountInstCreateDto, UsersSubAccountInstUpdateDto, {}, {
       worker: string,
     }, number>
       getAll={params => apiClient.usersSubAccountsInst.getManyBaseUsersSubAccountsInstControllerUsersSubAccountInst(params)}
@@ -155,7 +150,9 @@ const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
         userId,
       }}
       params={{
-        userId,
+        baseFilters: {
+          userId,
+        }
       }}
       defaultSort={['subAccountId', 'ASC']}
       searchableColumns={[

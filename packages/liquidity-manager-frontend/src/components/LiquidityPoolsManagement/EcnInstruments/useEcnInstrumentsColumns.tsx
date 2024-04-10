@@ -1,14 +1,14 @@
 import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import {
+  EcnCommissionLotsMode,
+  EcnCommissionType,
   EcnInstrument,
   EcnInstrumentsGroup,
+  EcnMarginCalcMode,
+  EcnProfitCalcMode,
   EcnSwapType,
   EcnWeekDay,
-  EcnCommissionType,
-  EcnCommissionLotsMode,
-  EcnProfitCalcMode,
-  EcnMarginCalcMode,
 } from "../../../tools/api";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
@@ -18,11 +18,26 @@ import { dropTrailZeroes } from "@/tools/numberTools";
 import { RelationSelect } from "../../Inputs/RelationSelect";
 import apiClient from "../../../tools/client/apiClient";
 import { useLiquidityManagerContext } from "../liquidityManagerContext";
+import { useEffect, useState } from "react";
+import { dividerToMargin, MarginInput } from "./MarginInput";
 
 export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
   const intl = useIntl();
   const { canManageLiquidity } = useAccess() || {};
   const { worker } = useLiquidityManagerContext();
+  const [instrumentGroups, setInstrumentGroups] = useState<{ text: string, value: number }[]>([]);
+
+  useEffect(() => {
+    if (worker) {
+      apiClient.ecnInstrumentsGroups.getManyBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup({
+        worker,
+        sort: ['name,ASC'],
+      }).then((groups) => {
+        setInstrumentGroups(groups.data.map((item) => ({ text: item.name, value: item.id })));
+      });
+    }
+  }, [worker]);
+
 
   const columns: ProColumns<EcnInstrument>[] = [
     {
@@ -80,6 +95,8 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           }
         ]
       },
+      filters: instrumentGroups,
+      filterSearch: true,
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
@@ -154,6 +171,27 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
             return dropTrailZeroes(record.priceLiquidityLimit);
           }
         },
+        {
+          title: intl.formatMessage({ id: 'pages.ecnInstruments.tsPriceLiquidityLimit' }),
+          dataIndex: 'tsPriceLiquidityLimit',
+          valueType: 'digit',
+          sorter: true,
+          formItemProps: {
+            rules: [
+              {
+                required: true,
+              }
+            ]
+          },
+          fieldProps: {
+            autoComplete: 'one-time-code', // disable browser autocomplete
+            min: -Infinity,
+            stringMode: true,
+          },
+          render(text, record) {
+            return dropTrailZeroes(record.tsPriceLiquidityLimit);
+          }
+        },
       ]
     },
     {
@@ -208,6 +246,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
     },
     {
       title: 'Swap',
+      dataIndex: 'swap_group', // hack to make it work with columns visibility settings
       children: [
         {
           title: intl.formatMessage({ id: 'pages.ecnInstruments.swapEnable.short' }),
@@ -684,15 +723,24 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
               {
                 required: true,
               }
-            ]
+            ],
           },
           fieldProps: {
             autoComplete: 'one-time-code', // disable browser autocomplete
-            min: -Infinity,
             stringMode: true,
+            formatter: (value: string) => {
+              return value + '%';
+            },
+            parser: (value: string) => value?.replace('%', ''),
           },
           render(text, record) {
-            return dropTrailZeroes(record.marginDivider);
+            const percent = dividerToMargin(record);
+            return dropTrailZeroes(percent.toFixed(2)) + '%';
+          },
+          renderFormItem(_, config) {
+            return config.record && <MarginInput
+             instrument={config.record}
+            /> || null;
           }
         },
         {
@@ -711,27 +759,6 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
           },
         },
       ],
-    },
-    {
-      title: intl.formatMessage({ id: 'pages.ecnInstruments.tsPriceLiquidityLimit' }),
-      dataIndex: 'tsPriceLiquidityLimit',
-      valueType: 'digit',
-      sorter: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-          }
-        ]
-      },
-      fieldProps: {
-        autoComplete: 'one-time-code', // disable browser autocomplete
-        min: -Infinity,
-        stringMode: true,
-      },
-      render(text, record) {
-        return dropTrailZeroes(record.tsPriceLiquidityLimit);
-      }
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnInstruments.startExpirationDatetime' }),

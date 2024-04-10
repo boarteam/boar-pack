@@ -46,6 +46,7 @@ const EcnModulesTable = (props: Partial<TTableProps<EcnModule, EcnModuleCreateDt
       entityToUpdateDto={ecnModuleToDto}
       params={{
         join: ecnModuleJoinFields,
+        sortMap: { type: 'type.name' },
       }}
       columns={columns}
       idColumnName='id'

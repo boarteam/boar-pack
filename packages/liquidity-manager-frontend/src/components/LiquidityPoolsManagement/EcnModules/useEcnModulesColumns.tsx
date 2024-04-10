@@ -8,17 +8,29 @@ import { RelationSelect } from "../../Inputs/RelationSelect";
 import apiClient from "../../../tools/client/apiClient";
 import { NumberInputHandlingNewRecord } from "../../Inputs/NumberInputHandlingNewRecord";
 import { useLiquidityManagerContext } from "../liquidityManagerContext";
+import { useEffect, useState } from "react";
 
 export const useEcnModulesColumns = (canManageEcnModulesColumns: boolean): ProColumns<EcnModule>[] => {
   const intl = useIntl();
   const { worker } = useLiquidityManagerContext();
+  const [moduleTypes, setModuleTypes] = useState<{text: string, value: number}[]>([]);
+
+  useEffect(() => {
+    if (worker) {
+      apiClient.ecnModuleTypes.getManyBaseEcnModuleTypesControllerEcnModuleType({
+        worker,
+        sort: ['name,ASC'],
+      }).then((types) => {
+        setModuleTypes(types.data.map((item) => ({text: item.name, value: item.id})));
+      });
+    }
+  }, [worker]);
 
   const columns: ProColumns<EcnModule>[] = [
     {
       title: intl.formatMessage({ id: 'pages.ecnModules.id' }),
       dataIndex: 'id',
       sorter: true,
-      search: false,
       valueType: 'digit',
       copyable: true,
       fieldProps: {
@@ -60,17 +72,21 @@ export const useEcnModulesColumns = (canManageEcnModulesColumns: boolean): ProCo
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnModules.type' }),
-      dataIndex: 'type.name',
+      dataIndex: 'type',
       sorter: true,
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-          }
-        ]
+      filters: moduleTypes,
+      filterSearch: true,
+      formItemProps(form, config) {
+        return {
+          rules: [
+            {
+              required: true,
+            }
+          ]
+        }
       },
       render(text, record) {
         return record.type?.name ?? '-';

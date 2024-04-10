@@ -75,10 +75,13 @@ const columnsSets: TColumnsSet<EcnInstrument>[] = [
       'price_group',
       'priceDigits',
       'priceLiquidityLimit',
+      // @ts-ignore-next-line
+      'swap_group',
       'swapLong',
       'swapShort',
       // @ts-ignore-next-line
       'margin_group',
+      'marginDivider',
       'marginCurrency',
       'currency',
       'instrumentGroup',
@@ -88,12 +91,37 @@ const columnsSets: TColumnsSet<EcnInstrument>[] = [
     name: 'Swap Columns',
     columns: [
       'name',
+      // @ts-ignore-next-line
+      'swap_group',
       'swapEnable',
       'swapType',
       'swapRollover3Days',
       'swapLong',
       'swapShort',
       'swapLimit',
+    ],
+  },
+  {
+    name: 'Spread Limits',
+    columns: [
+      'name',
+      'priceDigits',
+      // @ts-ignore-next-line
+      'price_group',
+      'priceLiquidityLimit',
+      'tsPriceLiquidityLimit'
+    ],
+  },
+  {
+    name: 'Margin',
+    columns: [
+      'name',
+      // @ts-ignore-next-line
+      'margin_group',
+      'marginDivider',
+      'marginMode',
+      'marginHedged',
+      'marginCurrency',
     ],
   }
 ];
