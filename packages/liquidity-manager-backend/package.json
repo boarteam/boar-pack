@@ -1,6 +1,6 @@
 {
   "name": "@jifeon/boar-pack-liquidity-manager-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Liquidity Manager",
   "main": "src/index",
   "repository": "git@github.com:jifeon/boar-pack.git",
@@ -9,13 +9,12 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
-    "@jifeon/boar-pack-common-backend": "^1.0.2",
-    "@jifeon/boar-pack-users-backend": "^1.0.6",
+    "@jifeon/boar-pack-common-backend": "^1.1.0",
+    "@jifeon/boar-pack-users-backend": "^1.0.7",
     "@nestjs/typeorm": "^10.0.2",
     "@nestjsx/crud": "^5.0.0-alpha.3",
     "crc64-ecma": "^1.0.0",
     "mysql2": "^3.9.7",
     "typeorm-naming-strategies": "^4.1.0"
-  },
-  "devDependencies": {}
+  }
 }
