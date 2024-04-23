@@ -1,16 +1,17 @@
 import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { EcnConnectSchema, EcnInstrument, EcnSubscrSchema } from "../../../../tools/api";
+import {
+  EcnConnectSchema,
+  EcnInstrument,
+  EcnSubscrSchema,
+  GetEcnInstrumentsInConnectionsData
+} from "../../../../tools/api";
 import { Popover, Table, Tag } from "antd";
-import { DataType } from "./SetupInstrumentsTable";
 import { useEffect, useState } from "react";
 import apiClient from "@/tools/client/apiClient";
-import { Entries } from 'type-fest';
-import { ColumnsType } from "antd/es/table";
 import { useEcnSubscrSchemaColumns } from "../EcnSubscrSchemas/useEcnSubscrSchemaColumns";
-import { ColumnType } from "antd/lib/table";
-
-type TDiffTableData = Partial<EcnSubscrSchema & { name: EcnConnectSchema['descr'] }>;
+import { useLiquidityManagerContext } from "@/components/LiquidityPoolsManagement/liquidityManagerContext";
+import { ColumnsType } from "antd/es/table";
 
 const subscrSchemaEnabledColorMap = new Map([
   ['Enabled', 'green'],
@@ -19,50 +20,55 @@ const subscrSchemaEnabledColorMap = new Map([
   [undefined, 'purple'],
 ]);
 
-const Content = ({ 
-  compareConnectSchemaId, 
-  connectSchemaId, 
+const Content = ({
+  compareConnectSchemaId,
+  connectSchemaId,
   instrumentHash,
 }: {
-  compareConnectSchemaId: EcnConnectSchema['id'], 
-  connectSchemaId: EcnConnectSchema['id'], 
+  compareConnectSchemaId: EcnConnectSchema['id'],
+  connectSchemaId: EcnConnectSchema['id'],
   instrumentHash: EcnInstrument['instrumentHash'],
 }) => {
+  const { worker } = useLiquidityManagerContext();
   const subscrColumns = useEcnSubscrSchemaColumns();
   const subscrColumnsByDataIndex = subscrColumns.reduce((acc, column) => {
     if (column.dataIndex !== undefined) {
-      acc[column.dataIndex] = column;
+      acc[column.dataIndex.toString()] = column;
     }
     return acc;
-  }, {} as Record<keyof EcnSubscrSchema, ColumnType<EcnSubscrSchema>>);
+  }, {} as Record<string, ProColumns<EcnSubscrSchema>>);
 
   const [tableData, setTableData] = useState<{
-    dataSource: TDiffTableData[],
-    columns: ColumnsType<TDiffTableData>,
+    dataSource: EcnSubscrSchema[],
+    columns: ColumnsType<EcnSubscrSchema>,
   }>({ dataSource: [], columns: [] });
 
   useEffect(() => {
+    if (!worker) {
+      return;
+    }
+
     apiClient.ecnSubscrSchemas.getManyBaseEcnSubscrSchemaControllerEcnSubscrSchema({
+      worker,
       s: JSON.stringify({ "$and": [
-        { "connectSchemaId": { "$in": [connectSchemaId, compareConnectSchemaId] } }, 
-        { "instrumentHash": { "$eq": instrumentHash } }, 
+        { "connectSchemaId": { "$in": [connectSchemaId, compareConnectSchemaId] } },
+        { "instrumentHash": { "$eq": instrumentHash } },
       ]}),
       join: ['connectSchema', 'executionMode||name'],
     })
       .then(({ data }) => {
-        const { connectSchemaId: id0, connectSchema: connectSchema0, descr: descr0, ...rest0 } = data[0];
-        const { connectSchemaId: id1, connectSchema: connectSchema1, descr: descr1, ...rest1 } = data[1];
-        const dataSource: TDiffTableData[] = [{ name: connectSchema0.descr }, { name: connectSchema1.descr }];
-        const columns: ColumnsType<TDiffTableData> = [{ dataIndex: 'name', title: 'Connection' }]
+        const dataSource = data;
+        const columns: ColumnsType<EcnSubscrSchema> = [{
+          title: 'Connection',
+          dataIndex: ['connectSchema', 'descr'],
+        }];
 
-        for (const [key, value0] of Object.entries(rest0) as Entries<typeof rest0>) {
-          const value1 = rest1[key];
-          if (value0 !== value1) {
-            dataSource[0][key] = value0;
-            dataSource[1][key] = value1;
-            columns.push(subscrColumnsByDataIndex[key]);
+        Object.entries(data[0]).forEach(([key, value0]) => {
+          const value1 = data[1][key as keyof EcnSubscrSchema];
+          if (value0 !== value1 && subscrColumnsByDataIndex[key]) {
+            columns.push(subscrColumnsByDataIndex[key] as ColumnsType<EcnSubscrSchema>[number]);
           }
-        }
+        });
 
         setTableData({ dataSource, columns });
       })
@@ -77,9 +83,15 @@ const Content = ({
   )
 }
 
-export const useSetupInstrumentsColumns = (connectSchemas: EcnConnectSchema[], compareConnectSchemaId?: EcnConnectSchema['id']): ProColumns<DataType>[] => {
+type TSubscrState = {
+  enabled: boolean,
+  referenceEnabled?: boolean,
+  equal?: boolean,
+}
+
+export const useSetupInstrumentsColumns = (connectSchemas: EcnConnectSchema[], compareConnectSchemaId?: EcnConnectSchema['id']): ProColumns<GetEcnInstrumentsInConnectionsData>[] => {
   const intl = useIntl();
-  const columns: ProColumns<DataType>[] = [
+  return [
     {
       title: intl.formatMessage({ id: 'pages.ecnInstruments.name' }),
       dataIndex: 'instrumentName',
@@ -88,21 +100,25 @@ export const useSetupInstrumentsColumns = (connectSchemas: EcnConnectSchema[], c
       width: '100px',
       render: (text, record) => <Link to={`/liquidity/ecn-instruments/${record.instrumentHash}`}>{text}</Link>
     },
-    ...connectSchemas.map(connectSchema => {
+    ...connectSchemas.map<ProColumns<GetEcnInstrumentsInConnectionsData>>(connectSchema => {
       return {
         sorter: false,
         title: connectSchema.descr,
-        dataIndex: connectSchema.id,
-        render: (text: React.ReactNode, record: DataType) => {
-          const value = record[connectSchema.id];
+        dataIndex: ['connections', connectSchema.id],
+        render: (text, record) => {
+          const subscrState = record.connections[connectSchema.id] as TSubscrState | undefined;
+          let value = subscrState === undefined ? undefined : subscrState.enabled ? 'Enabled' : 'Disabled';
+          if (value === 'Enabled' && subscrState?.equal === false && subscrState.referenceEnabled) {
+            value = 'Changed';
+          }
           let Component = <Tag color={subscrSchemaEnabledColorMap.get(value)}>{value ?? 'Missing'}</Tag>;
           if (value === 'Changed' && compareConnectSchemaId !== undefined) {
             Component = (
-              <Popover 
+              <Popover
                 content={(
-                  <Content 
-                    compareConnectSchemaId={compareConnectSchemaId} 
-                    connectSchemaId={connectSchema.id} 
+                  <Content
+                    compareConnectSchemaId={compareConnectSchemaId}
+                    connectSchemaId={connectSchema.id}
                     instrumentHash={record.instrumentHash}
                   />
                 )}
@@ -110,13 +126,11 @@ export const useSetupInstrumentsColumns = (connectSchemas: EcnConnectSchema[], c
                 {Component}
               </Popover>
             );
-          };
+          }
 
           return Component;
         }
       }
     }),
-  ]
-
-  return columns;
+  ];
 };

@@ -1,13 +1,13 @@
 import Descriptions from '../../Descriptions/Descriptions';
 import { useEcnConnectSchemasColumns } from '../EcnConnectSchemas/useEcnConnectSchemasColumns';
-import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto } from '../../../tools/api';
+import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto } from '@/tools/api';
 import apiClient from '../../../tools/client/apiClient';
 import { Button, Drawer } from 'antd';
 import { pick } from 'lodash';
-import React from "react";
+import React, { useState } from "react";
 import EcnSubscrSchemasTable from "./EcnSubscrSchemas/EcnSubscrSchemasTable";
 import { DeleteOutlined } from '@ant-design/icons';
-import { deleteEdgeConfirm } from '../ConnectionsGraph';
+import { deleteEdgeConfirm } from '../Graph';
 import { useAccess } from '@umijs/max';
 import { useLiquidityManagerContext } from "../liquidityManagerContext";
 
@@ -37,21 +37,19 @@ export const EcnConnectSchemaDrawer: React.FC<{
   onUpdate: (entity: EcnConnectSchema) => void,
   onDelete: (id: EcnConnectSchema['id']) => Promise<void>;
 }> = ({ id, onClose, onUpdate, onDelete }) => {
-  if (id === undefined) {
-    return <></>;
-  }
-
   const { canManageLiquidity } = useAccess() || {};
   const columns = useEcnConnectSchemasColumns(canManageLiquidity ?? false);
   const { worker } = useLiquidityManagerContext();
 
-  if (!worker) {
+  const [connectSchemaName, setConnectSchemaName] = useState('Connection');
+
+  if (!worker || id === undefined) {
     return <></>;
   }
 
   return (
     <Drawer
-      title="Connection"
+      title={connectSchemaName}
       open
       onClose={onClose}
       width='33%'
@@ -73,7 +71,10 @@ export const EcnConnectSchemaDrawer: React.FC<{
         </Button>
       }
     >
-      <Descriptions<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, { id: number, worker: string }, number>
+      <Descriptions<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, { id: number, worker: string }>
+        onEntityChange={connectSchema => {
+          setConnectSchemaName(connectSchema?.descr ? `Connection ${connectSchema.descr}` : 'Connection');
+        }}
         pathParams={{
           id,
           worker,
