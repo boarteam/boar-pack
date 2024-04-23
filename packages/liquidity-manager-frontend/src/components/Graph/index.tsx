@@ -479,10 +479,6 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
         <XFlowCanvas config={graphConfig} />
         <CanvasScaleToolbar
           position={{ top: 12, left: 12 }}
-          style={{
-            backgroundColor: 'black',
-            color: 'white',
-          }}
         />
         <CanvasSnapline color="#1890ff" />
       </XFlow>

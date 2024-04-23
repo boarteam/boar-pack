@@ -1,0 +1,54 @@
+@body-bg: #fafafa;
+@primaryColor: #1890ff;
+
+.dag {
+  position: relative;
+  height: calc(100vh - 290px);
+
+  :global(.x6-node):hover :global(.front-port) {
+    stroke-width: 2;
+    transition: all ease-in-out 0.15s;
+  }
+
+  :global(.x6-edge) {
+    :global(.x6-edge-label) {
+      cursor: pointer;
+
+      rect {
+        stroke-width: 10px;
+        fill: #d9d9d9;
+        stroke: #d9d9d9;
+      }
+    }
+
+    &:hover {
+      rect {
+        fill: @primaryColor;
+        stroke: @primaryColor;
+      }
+
+      text {
+        fill: white;
+      }
+
+      path:nth-child(2) {
+        stroke: @primaryColor;
+      }
+    }
+
+    &:global(.x6-edge-selected) {
+      rect {
+        fill: @primaryColor;
+        stroke: @primaryColor;
+      }
+
+      text {
+        fill: white;
+      }
+
+      path:nth-child(2) {
+        stroke: @primaryColor;
+      }
+    }
+  }
+}
