@@ -55,6 +55,7 @@ export const useEcnSetupsColumns = (canManageEcnSetupsColumns: boolean): ProColu
          key="editable"
          onClick={() => {
            const newId = getNewId();
+           // eslint-disable-next-line @typescript-eslint/no-unused-vars
            const { id, ...rest } = record;
            action?.addEditRecord({
              ...createNewDefaultParams,

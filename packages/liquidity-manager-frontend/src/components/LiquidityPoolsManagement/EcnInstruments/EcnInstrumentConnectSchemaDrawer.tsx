@@ -7,19 +7,18 @@ import {
   EcnSubscrSchema,
   EcnSubscrSchemaCreateDto,
   EcnSubscrSchemaUpdateDto
-} from '../../../tools/api';
-import apiClient from '../../../tools/client/apiClient';
+} from '@/tools/api';
+import apiClient from '@/tools/client/apiClient';
 import { Button, Drawer } from 'antd';
 import { pick } from 'lodash';
-import React from "react";
+import React, { useState } from "react";
 import { DeleteOutlined } from '@ant-design/icons';
-import { deleteEdgeConfirm } from '../ConnectionsGraph';
+import { deleteEdgeConfirm } from '../Graph';
 import { useAccess } from '@umijs/max';
 import { ecnSubscriptionSchemaToDto } from '../EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable';
 import { useEcnSubscrSchemaColumns } from '../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns';
 import { ecnSubscrSchemaJoinFields } from '../EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields';
 import { useLiquidityManagerContext } from "../liquidityManagerContext";
-import { PageLoading } from "@ant-design/pro-layout";
 
 export const ecnConnectSchemaJoinFields = [
   {
@@ -50,20 +49,20 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
   onUpdate: (entity: Partial<TEcnConnectionSchemaWihSubscrEnabled> & { id: EcnConnectSchema['id'] }) => void,
   onDelete: (id: EcnConnectSchema['id']) => Promise<void>;
 }> = ({ id, instrumentHash, onClose, onUpdate, onDelete }) => {
-  if (id === undefined) {
-    return <></>
-  }
-
   const { canManageLiquidity } = useAccess() || {};
   const columns = useEcnConnectSchemasColumns(canManageLiquidity ?? false);
   const subscrSchemaColumns = useEcnSubscrSchemaColumns();
   const { worker } = useLiquidityManagerContext();
 
-  if (!worker) return <PageLoading />;
+  const [connectSchemaName, setConnectSchemaName] = useState('Connection');
+
+  if (!worker || id === undefined) {
+    return <></>;
+  }
 
   return (
     <Drawer
-      title="Connection Schema"
+      title={connectSchemaName}
       open
       onClose={onClose}
       width='33%'
@@ -75,7 +74,8 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
               async () => {
                 await onDelete(id);
                 onClose();
-              }
+              },
+              worker,
             )
           }}
           danger
@@ -87,7 +87,10 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
       <Descriptions<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, {
         id: number,
         worker: string
-      }, number>
+      }>
+        onEntityChange={connectSchema => {
+          setConnectSchemaName(connectSchema?.descr ? `Connection ${connectSchema.descr}` : 'Connection')
+        }}
         pathParams={{
           id,
           worker,
@@ -112,7 +115,7 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
         instrumentHash: string,
         connectSchemaId: number,
         worker: string,
-      }, number>
+      }>
         mainTitle="Subscription Schema"
         pathParams={{
           worker,

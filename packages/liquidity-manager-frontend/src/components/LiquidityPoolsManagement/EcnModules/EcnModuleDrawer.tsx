@@ -2,12 +2,12 @@ import Descriptions from '../../Descriptions/Descriptions';
 import { ecnModuleToDto } from './EcnModulesTable';
 import { ecnModuleJoinFields } from './ecnModuleJoinFields';
 import { useEcnModulesColumns } from './useEcnModulesColumns';
-import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from '../../../tools/api';
+import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from '@/tools/api';
 import apiClient from '../../../tools/client/apiClient';
 import { Button, Drawer } from 'antd';
-import React from "react";
+import React, { useState } from "react";
 import { DeleteOutlined } from '@ant-design/icons';
-import { deleteNodeConfirm } from '../ConnectionsGraph';
+import { deleteNodeConfirm } from '../Graph';
 import { useAccess } from '@umijs/max';
 import { useLiquidityManagerContext } from "../liquidityManagerContext";
 
@@ -24,13 +24,15 @@ export const EcnModuleDrawer: React.FC<{
   columns[idColumnIndex] = { ...columns[idColumnIndex], editable: false };
   const { canManageLiquidity } = useAccess() || {};
 
+  const [moduleName, setModuleName] = useState('Module');
+
   if (id === undefined || !worker) {
     return <></>
   }
 
   return (
     <Drawer
-      title="Module"
+      title={moduleName}
       open
       onClose={onClose}
       width='33%'
@@ -48,7 +50,10 @@ export const EcnModuleDrawer: React.FC<{
         </Button>
       }
     >
-      <Descriptions<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, { id: number, worker: string }, number>
+      <Descriptions<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, { id: number, worker: string }>
+        onEntityChange={module => {
+          setModuleName(module?.name ?? 'Module');
+        }}
         pathParams={{
           id,
           worker,
