@@ -21,7 +21,7 @@ export class UsersGroupsInst {
   @Column('int', { unsigned: true, comment: 'user group leverage' })
   leverage: number;
 
-  @ManyToOne<EcnCurrency>(() => EcnCurrency, (currency) => currency.usersGroups)
+  @ManyToOne<EcnCurrency>(() => EcnCurrency)
   @JoinColumn({ name: 'currency_name', referencedColumnName: 'name' })
   @Column({ name: 'currency_name' })
   currency: EcnCurrency;
