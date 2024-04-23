@@ -4,13 +4,11 @@ import { UsersController } from './users.controller';
 import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
 import { EMAIL_UNIQUE_CONSTRAINT, Roles, User } from './entities/user.entity';
 import { MeController } from './me.controller';
-import { CaslModule } from '../casl/casl.module';
+import { Action, CaslAbilityFactory, CaslModule } from '../casl';
 import { UsersConfigService } from "./users.config";
 import BcryptService from "./bcrypt.service";
 import { ConfigModule } from "@nestjs/config";
 import { Tools } from "@jifeon/boar-pack-common-backend";
-import { CaslAbilityFactory } from "../casl/casl-ability.factory";
-import { Action } from "../casl/action.enum";
 import { VIEW_USERS } from "./users.constants";
 import { DataSource } from "typeorm";
 
