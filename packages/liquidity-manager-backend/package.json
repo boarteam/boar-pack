@@ -1,6 +1,6 @@
 {
   "name": "@jifeon/boar-pack-liquidity-manager-backend",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Liquidity Manager",
   "main": "src/index",
   "repository": "git@github.com:jifeon/boar-pack.git",
