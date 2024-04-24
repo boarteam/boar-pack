@@ -3,6 +3,7 @@ import { EcnModuleTypesService } from './ecn-module-types.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EcnModuleType } from './entities/ecn-module-type.entity';
 import { TP_DB_NAME } from "../liquidity-app/liquidity-app.config";
+import { EcnModuleTypesController } from "./ecn-module-types.controller";
 
 @Module({
   imports: [
@@ -13,6 +14,9 @@ import { TP_DB_NAME } from "../liquidity-app/liquidity-app.config";
   ],
   exports: [
     EcnModuleTypesService
+  ],
+  controllers: [
+    EcnModuleTypesController
   ],
 })
 export class EcnModuleTypesModule {}
