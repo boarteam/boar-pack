@@ -1,8 +1,13 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@jifeon/*"
+    ]
+  },
   "devDependencies": {
     "lerna": "^8.1.2"
   },

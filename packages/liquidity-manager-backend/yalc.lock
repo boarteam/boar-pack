@@ -1,8 +1,4 @@
 {
   "version": "v1",
-  "packages": {
-    "@jifeon/boar-pack-common-backend": {
-      "signature": "ec3f0c38debea994c6f7e5d040f6679f"
-    }
-  }
+  "packages": {}
 }

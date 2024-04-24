@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src",
+    "swagger",
+    "node_modules/@jifeon",
+    "node_modules/@jifeon/*/package.json"
+  ],
+  "exclude": [
+    "src/api-client"
+  ]
+}
