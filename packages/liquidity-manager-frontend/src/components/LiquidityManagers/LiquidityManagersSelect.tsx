@@ -1,7 +1,7 @@
 import { Badge, Select } from "antd";
 import { LiquidityManagerSelectHint } from "../StoredFilters/hints";
 import React from "react";
-import { useLiquidityManagers } from "../LiquidityPoolsManagement/liquidityManagerContext";
+import { useLiquidityManagers } from "../../tools/liquidityManagerContext";
 
 export const LiquidityManagersSelect: React.FC = () => {
   const {
