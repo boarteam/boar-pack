@@ -155,6 +155,8 @@ const getEdgeIdFromRealId = (realId: number) => `${realId}-edge`;
 const getRealIdFromEdgeId = (edgeId: string) => Number(edgeId.slice(0, -5));
 const getNodeIdFromRealId = (realId: number) => `${realId}-node`;
 const getRealIdFromNodeId = (nodeId: string) => Number(nodeId.slice(0, -5));
+const getPortIdFromRealId = (realId: number, port: 'frnt' | 'back') => `${getNodeIdFromRealId(realId)}-port-${port}`;
+export const getPortIdFromNodeId = (nodeId: string, port: 'frnt' | 'back') => `${nodeId}-port-${port}`;
 
 const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
   setSelectedNode,
@@ -181,8 +183,8 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
       if (!edgeData) continue;
 
       const { id, fromModuleId, toModuleId, enabled } = edgeData;
-      const sourcePortId = `${fromModuleId}-front`;
-      const targetPortId = `${toModuleId}-back`;
+      const sourcePortId = getPortIdFromRealId(fromModuleId, 'frnt');
+      const targetPortId = getPortIdFromRealId(toModuleId, 'back');
       connectedPorts.add(sourcePortId);
       connectedPorts.add(targetPortId);
       edges.push({
@@ -223,8 +225,8 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
       if (!nodeData) continue;
 
       const { id, name, frontEdgesIds, backEdgesIds } = nodeData;
-      const backPortId = `${id}-back`;
-      const frontPortId = `${id}-front`;
+      const backPortId = getPortIdFromRealId(id, 'back');
+      const frontPortId = getPortIdFromRealId(id, 'frnt');
       const backPortConnected = connectedPorts.has(backPortId);
       const frontPortConnected = connectedPorts.has(frontPortId);
       nodes.push({

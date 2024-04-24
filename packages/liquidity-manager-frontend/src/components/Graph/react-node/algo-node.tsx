@@ -5,6 +5,7 @@ import {
 import { type NsGraph } from '@antv/xflow'
 import { MouseEventHandler } from 'react';
 import { createStyles } from "antd-style";
+import { getPortIdFromNodeId } from "../../Graph";
 
 const useStyles = createStyles(({ token }) => {
   return {
@@ -46,9 +47,9 @@ export const AlgoNode: NsGraph.INodeRender = ({ data }) => {
 
   const { id, ports, onClick } = data;
   // @ts-ignore
-  const frontPort = ports.items.find(port => port.id === `${id}-front`);
+  const frontPort = ports.items.find(port => port.id === getPortIdFromNodeId(id, 'frnt'));
   // @ts-ignore
-  const backPort = ports.items.find(port => port.id === `${id}-back`);
+  const backPort = ports.items.find(port => port.id === getPortIdFromNodeId(id, 'back'));
   const backPortOnClick: MouseEventHandler<HTMLSpanElement> = (e) => {
     e.stopPropagation();
     backPort?.onClick();
