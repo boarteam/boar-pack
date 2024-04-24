@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, OneToMany, Column } from 'typeorm';
-import { EcnInstrument } from '../ecn-instruments/entities/ecn-instrument.entity';
+import { EcnInstrument } from '../modules/ecn-instruments/entities/ecn-instrument.entity';
 
 @Entity('ecn_commission_lots_mode')
 export class EcnCommissionLotsMode {

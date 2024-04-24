@@ -21,6 +21,7 @@
   },
   "include": [
     "src",
+    "swagger",
     "node_modules/@jifeon"
-  ],
+  ]
 }
