@@ -5,7 +5,7 @@ import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
 import { Crud } from "@nestjsx/crud";
 import { CrudOptions } from "@nestjsx/crud/lib/interfaces";
 import { ApiTags } from "@nestjs/swagger";
-import { AMTS_DB_NAME } from "../liquidity-app.config";
+import { AMTS_DB_NAME } from "../modules/liquidity-app/liquidity-app.config";
 import { CheckPolicies, IPolicyHandler } from "@jifeon/boar-pack-users-backend";
 
 type TGenericLiquidityModuleConfig<Entity> = {

@@ -3,7 +3,7 @@ import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule, } from '@nestjs
 import { Module } from "@nestjs/common";
 import { LiquidityManagersModule, restModules } from "../src";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { AMTS_DB_NAME } from "../src/liquidity-app.config";
+import { AMTS_DB_NAME } from "../src/modules/liquidity-app/liquidity-app.config";
 import { resolve } from "path";
 import { ConfigModule } from "@nestjs/config";
 import { generate } from "openapi-typescript-codegen";
@@ -52,7 +52,7 @@ async function bootstrap() {
     await app.listen(3335);
     await generate({
       input: 'http://localhost:3335/docs-json',
-      output: resolve(__dirname, '../api-client'),
+      output: resolve(__dirname, '../src/api-client'),
       httpClient: 'node',
       clientName: 'ApiClient',
       useOptions: true,

@@ -1,4 +1,4 @@
-import './liquidity-app.types'
+import './modules/liquidity-app/liquidity-app.types'
 
-export * from './liquidity-app.module';
-export * from './liquidity-managers';
+export * from './modules/liquidity-app/liquidity-app.module';
+export * from './modules/liquidity-managers';

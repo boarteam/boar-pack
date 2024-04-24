@@ -2,7 +2,7 @@ import { ArgumentMetadata, ConflictException, mixin, PipeTransform, Type } from 
 import { ObjectLiteral, Repository } from 'typeorm';
 import { memoize } from "lodash";
 import { InjectRepository } from "@nestjs/typeorm";
-import { AMTS_DB_NAME } from "../liquidity-app.config";
+import { AMTS_DB_NAME } from "../modules/liquidity-app/liquidity-app.config";
 
 type TAutoincrementIdPipeParams<Entity> = {
   Entity: Type<Entity>,

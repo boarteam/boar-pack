@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { UsersInst } from '../users-inst/entities/users-inst.entity';
+import { UsersInst } from '../modules/users-inst/entities/users-inst.entity';
 
 @Entity('users_inst_company')
 export class UsersInstCompany {
