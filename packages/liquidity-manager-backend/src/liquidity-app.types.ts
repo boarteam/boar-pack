@@ -9,7 +9,7 @@ import { SubloginSettings } from "./sublogin-settings/entities/sublogin-settings
 import { UsersGroupsInst } from "./users-groups-inst/entities/users-groups-inst.entity";
 import { UsersInst } from "./users-inst/entities/users-inst.entity";
 import { UsersSubAccountInst } from "./users-sub-accounts-inst/entities/users-sub-account-inst.entity";
-import { LiquidityManager } from "./liquidity-managers/entities/liquidity-manager.entity";
+import { LiquidityManager } from "./liquidity-managers";
 
 export * from '@jifeon/boar-pack-users-backend';
 

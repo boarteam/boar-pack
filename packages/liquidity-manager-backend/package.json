@@ -16,5 +16,17 @@
     "crc64-ecma": "^1.0.0",
     "mysql2": "^3.9.7",
     "typeorm-naming-strategies": "^4.1.0"
+  },
+  "scripts": {
+    "gen-types": "ts-node swagger/generateTypes.ts"
+  },
+  "devDependencies": {
+    "@nestjs/platform-express": "^10.3.8",
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^5.1.1",
+    "class-transformer": "^0.5.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "openapi-typescript-codegen": "^0.29.0"
   }
 }
