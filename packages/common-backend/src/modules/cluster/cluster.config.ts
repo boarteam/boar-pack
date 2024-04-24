@@ -14,16 +14,19 @@ export class ClusterConfigService {
   }
 
   get config(): TClusterConfig {
-    const port = Number.parseInt(this.configService.getOrThrow<string>('PORT') || '');
+    const port = Number.parseInt(this.configService.get<string>('PORT') || '');
     const worker = this.configService.get<string>('WORKER');
     const disableCluster = this.configService.get<string>('DISABLE_CLUSTER') === 'true';
 
-    if (!port) {
-      throw new Error('PORT env variable is not set');
-    }
+    if (!disableCluster) {
+      if (!port) {
+        throw new Error('PORT env variable is not set');
+      }
 
-    if (cluster.isWorker && !worker) {
-      throw new Error('WORKER env variable is not set');
+      if (cluster.isWorker && !worker) {
+        throw new Error('WORKER env variable is not set');
+      }
+
     }
 
     return {
