@@ -16,9 +16,23 @@ import {
 import { UsersSubAccountsInstModule } from "./users-sub-accounts-inst/users-sub-accounts-inst.module";
 import { SubloginsSettingsModule } from "./sublogin-settings/sublogins-settings.module";
 import { JoiPipeModule } from "nestjs-joi";
-import { LiquidityManagersModule } from "./liquidity-managers/liquidity-managers.module";
+import { LiquidityManagersModule } from "./liquidity-managers";
 import { AuthModule } from "@jifeon/boar-pack-users-backend";
 import { ClusterModule } from "@jifeon/boar-pack-common-backend";
+
+export const restModules = [
+  EcnModulesModule,
+  EcnModuleTypesModule,
+  UsersGroupsInstModule,
+  UsersInstModule,
+  UsersSubAccountsInstModule,
+  SubloginsSettingsModule,
+  EcnInstrumentsGroupsModule,
+  EcnInstrumentsModule,
+  EcnConnectSchemaModule,
+  EcnConnectSchemaSetupLabelsModule,
+  EcnSubscrSchemaModule,
+] as const;
 
 @Module({})
 export class LiquidityAppModule {
@@ -40,17 +54,7 @@ export class LiquidityAppModule {
         }),
         AuthModule,
         JoiPipeModule,
-        EcnModulesModule,
-        EcnModuleTypesModule,
-        UsersGroupsInstModule,
-        UsersInstModule,
-        UsersSubAccountsInstModule,
-        SubloginsSettingsModule,
-        EcnInstrumentsGroupsModule,
-        EcnInstrumentsModule,
-        EcnConnectSchemaModule,
-        EcnConnectSchemaSetupLabelsModule,
-        EcnSubscrSchemaModule,
+        ...restModules,
       ],
       providers: [],
       exports: [],
