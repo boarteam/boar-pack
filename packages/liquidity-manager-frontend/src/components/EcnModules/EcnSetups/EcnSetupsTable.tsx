@@ -1,11 +1,10 @@
-import Table, { isRecordNew } from "../../../Table/Table";
-import apiClient from "../../../../tools/client/apiClient";
-import { EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto } from "../../../../tools/api";
+import apiClient from '@api/apiClient';
+import { EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto } from "@api/generated";
 import pick from "lodash/pick";
-import { withNumericId } from "../../../Table/tableTools";
+import { isRecordNew, Table, withNumericId } from "@jifeon/boar-pack-common-frontend";
 import { useEcnSetupsColumns } from "./useEcnSetupsColumns";
 import { useAccess } from "@umijs/max";
-import { TTableProps } from "@/components/Table/tableTypes";
+import { TTableProps } from "@jifeon/boar-pack-common-frontend";
 import { ecnSetupsSearchableColumns } from "./ecnSetupsSearchableColumns";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";

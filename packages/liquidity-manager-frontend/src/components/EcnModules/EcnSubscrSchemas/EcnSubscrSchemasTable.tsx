@@ -1,11 +1,10 @@
-import Table from "../../../Table/Table";
-import apiClient from "../../../../tools/client/apiClient";
-import { EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto } from "../../../../tools/api";
+import { Table, useFullscreen } from "@jifeon/boar-pack-common-frontend";
+import apiClient from '@api/apiClient';
+import { EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto } from "@api/generated";
 import pick from "lodash/pick";
 import React from "react";
 import { ecnSubscrSchemaJoinFields } from "./ecnSubscrSchemaJoinFields";
 import { useEcnSubscrSchemaColumns } from "./useEcnSubscrSchemaColumns";
-import useFullscreen from "../../../../tools/useFullscreen";
 import { ecnSubscrSchemaSearchableColumns } from "./ecnSubscrSchemaSearchableColumns";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";

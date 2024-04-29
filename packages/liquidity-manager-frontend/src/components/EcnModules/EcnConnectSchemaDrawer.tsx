@@ -1,7 +1,6 @@
-import Descriptions from '../../Descriptions/Descriptions';
 import { useEcnConnectSchemasColumns } from '../EcnConnectSchemas/useEcnConnectSchemasColumns';
-import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto } from '@/tools/api';
-import apiClient from '../../../tools/client/apiClient';
+import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto } from '@api/generated';
+import apiClient from '@api/apiClient';
 import { Button, Drawer } from 'antd';
 import { pick } from 'lodash';
 import React, { useState } from "react";
@@ -10,6 +9,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { deleteEdgeConfirm } from '../Graph';
 import { useAccess } from '@umijs/max';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
+import { Descriptions } from "@jifeon/boar-pack-common-frontend";
 
 export const ecnConnectSchemaJoinFields = [
   {

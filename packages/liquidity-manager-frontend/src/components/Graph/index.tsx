@@ -3,8 +3,8 @@ import type { IAppLoad, IGraphCommandService, NsGraph } from '@antv/xflow';
 import { CanvasContextMenu, CanvasScaleToolbar, CanvasSnapline, createCtxMenuConfig, createGraphConfig  , IconStore, MenuItemType, XFlow, XFlowCanvas, XFlowEdgeCommands, XFlowGraphCommands, XFlowNodeCommands } from '@antv/xflow';
 import '@antv/xflow/dist/index.css';
 import s from './index.less';
-import apiClient from '@/tools/client/apiClient';
-import { EcnConnectSchema, EcnModule } from '@/tools/api';
+import apiClient from '@api/apiClient';
+import { EcnConnectSchema, EcnModule } from '@api/generated';
 import { AlgoNode } from './react-node/algo-node';
 import { Shape, Graph } from '@antv/x6';
 import { Modal, Space, Tag } from 'antd';
@@ -13,7 +13,7 @@ import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-desi
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { useEmotionCss } from "@ant-design/use-emotion-css";
 import cx from "classnames";
-import { useConnectionsGraph } from "@/components/LiquidityPoolsManagement/Graph/useConnectionsGraph";
+import { useConnectionsGraph } from "@/components/Graph/useConnectionsGraph";
 import Paragraph from "antd/es/typography/Paragraph";
 
 IconStore.set('DeleteOutlined', DeleteOutlined);

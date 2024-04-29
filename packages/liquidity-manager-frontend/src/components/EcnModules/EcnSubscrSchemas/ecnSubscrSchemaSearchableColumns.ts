@@ -1,4 +1,4 @@
-import { Operators } from "@/components/Table/tableTools";
+import { Operators } from "@jifeon/boar-pack-common-frontend";
 
 export const ecnSubscrSchemaSearchableColumns = [
   { field: 'descr', operator: Operators.containsLow },

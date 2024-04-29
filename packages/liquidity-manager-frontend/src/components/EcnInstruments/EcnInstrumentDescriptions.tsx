@@ -1,5 +1,5 @@
-import { EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto } from "../../../tools/api";
-import apiClient from "../../../tools/client/apiClient";
+import { EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto } from "@api/generated";
+import apiClient from '@api/apiClient';
 import { ecnInstrumentToDto } from "./EcnInstrumentsTable";
 import { ecnInstrumentJoinFields } from "./ecnInstrumentJoinFields";
 import Descriptions from "../../Descriptions/Descriptions";

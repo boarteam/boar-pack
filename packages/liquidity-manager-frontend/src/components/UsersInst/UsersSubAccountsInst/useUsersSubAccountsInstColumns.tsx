@@ -1,7 +1,7 @@
 import { ProColumns } from "@ant-design/pro-components";
 import { useIntl } from "@umijs/max";
 import { EditOutlined } from "@ant-design/icons";
-import { UsersSubAccountInst } from "../../../../tools/api";
+import { UsersSubAccountInst } from "@api/generated";
 import { useAccess } from "umi";
 
 export const useUsersSubAccountsInstColumns = (): ProColumns<UsersSubAccountInst>[] => {

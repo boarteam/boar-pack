@@ -1,8 +1,7 @@
-import Table from "../../../Table/Table";
-import apiClient from "../../../../tools/client/apiClient";
-import { SubloginSettings, SubloginSettingsCreateDto, SubloginSettingsUpdateDto } from "../../../../tools/api";
+import { Table, useFullscreen } from "@jifeon/boar-pack-common-frontend";
+import apiClient from '@api/apiClient';
+import { SubloginSettings, SubloginSettingsCreateDto, SubloginSettingsUpdateDto } from "@api/generated";
 import React from "react";
-import useFullscreen from "../../../../tools/useFullscreen";
 import { subloginsSettingsJoinFields } from "./subloginsSettingsJoinFields";
 import { ProColumns } from "@ant-design/pro-components";
 import { ColumnStateType } from "@ant-design/pro-table/es/typing";

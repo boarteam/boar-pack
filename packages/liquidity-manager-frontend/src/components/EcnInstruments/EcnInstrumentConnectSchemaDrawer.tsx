@@ -1,4 +1,3 @@
-import Descriptions from '../../Descriptions/Descriptions';
 import { useEcnConnectSchemasColumns } from '../EcnConnectSchemas/useEcnConnectSchemasColumns';
 import {
   EcnConnectSchema,
@@ -7,8 +6,8 @@ import {
   EcnSubscrSchema,
   EcnSubscrSchemaCreateDto,
   EcnSubscrSchemaUpdateDto
-} from '@/tools/api';
-import apiClient from '@/tools/client/apiClient';
+} from '@api/generated';
+import apiClient from '@api/apiClient';
 import { Button, Drawer } from 'antd';
 import { pick } from 'lodash';
 import React, { useState } from "react";
@@ -19,6 +18,7 @@ import { ecnSubscriptionSchemaToDto } from '../EcnModules/EcnSubscrSchemas/EcnSu
 import { useEcnSubscrSchemaColumns } from '../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns';
 import { ecnSubscrSchemaJoinFields } from '../EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
+import { Descriptions } from '@jifeon/boar-pack-common-frontend';
 
 export const ecnConnectSchemaJoinFields = [
   {
@@ -88,7 +88,7 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
         id: number,
         worker: string
       }>
-        onEntityChange={connectSchema => {
+        onEntityChange={(connectSchema: EcnConnectSchema) => {
           setConnectSchemaName(connectSchema?.descr ? `Connection ${connectSchema.descr}` : 'Connection')
         }}
         pathParams={{

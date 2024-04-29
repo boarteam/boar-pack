@@ -1,10 +1,10 @@
-import Table from "../Table/Table";
-import apiClient from "../../tools/client/apiClient";
-import { LiquidityManager, LiquidityManagerCreateDto, LiquidityManagerUpdateDto } from "../../tools/api";
+import { Table } from "@jifeon/boar-pack-common-frontend";
+import apiClient from '@api/apiClient';
+import { LiquidityManager, LiquidityManagerCreateDto, LiquidityManagerUpdateDto } from "@api/generated";
 import { useLiquidityManagersColumns } from "./useLiquidityManagersColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";
-import { Operators } from "../Table/tableTools";
+import { Operators } from "@jifeon/boar-pack-common-frontend";
 
 function entityToDto(entity: LiquidityManager) {
   return pick(entity, [

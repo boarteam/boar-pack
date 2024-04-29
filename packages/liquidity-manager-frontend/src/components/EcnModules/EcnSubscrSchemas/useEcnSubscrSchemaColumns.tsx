@@ -1,12 +1,11 @@
 import { Tag } from "antd";
 import { ProColumns } from "@ant-design/pro-components";
 import { useAccess, useIntl, Link } from "@umijs/max";
-import { EcnExecutionMode, EcnInstrument, EcnSubscrSchema } from "../../../../tools/api";
-import { RelationSelect } from "../../../Inputs/RelationSelect";
-import apiClient from "../../../../tools/client/apiClient";
-import { NumberSwitch } from "../../../Inputs/NumberSwitcher";
+import { EcnExecutionMode, EcnInstrument, EcnSubscrSchema } from "@api/generated";
+import apiClient from '@api/apiClient';
 import { EditOutlined } from "@ant-design/icons";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
+import { NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend";
 
 export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
   const intl = useIntl();

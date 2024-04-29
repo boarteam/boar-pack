@@ -1,6 +1,6 @@
 import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { EcnModuleType } from "../../../../tools/api";
+import { EcnModuleType } from "@api/generated";
 
 export const useEcnModuleTypesColumns = (): ProColumns<EcnModuleType>[] => {
   const intl = useIntl();

@@ -1,9 +1,9 @@
 import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { EcnConnectSchema } from "../../../tools/api";
+import { EcnConnectSchema } from "@api/generated";
 import { EditOutlined } from "@ant-design/icons";
-import { NumberSwitch } from "../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
+import { NumberSwitch } from "@jifeon/boar-pack-common-frontend";
 
 export const useEcnConnectSchemasColumns = (canManageConnectSchemas: boolean): ProColumns<EcnConnectSchema>[] => {
   const intl = useIntl();

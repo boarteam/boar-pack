@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Card, Space, Switch, Flex } from 'antd';
 import { ActionType, ColumnsState, ProFormSelect, ProTable } from '@ant-design/pro-components';
-import apiClient from '@/tools/client/apiClient';
+import apiClient from '@api/apiClient';
 import {
   EcnConnectSchema,
   EcnConnectSchemaSetupLabel,
   EcnInstrument, EcnInstrumentsGroup,
   GetEcnInstrumentsInConnectionsData,
-} from '@/tools/api';
-import s from '@/tools/tools.less';
+} from '@api/generated';
+import s from './SetupInstrumentsTable.less';
 import { useSetupInstrumentsColumns } from './useSetupInstrumentsColumns';
 import { SortOrder } from 'antd/es/table/interface';
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
@@ -18,7 +18,7 @@ import {
   FiltersContext,
   getParamsFromValues,
   useFilters,
-} from "@/components/LiquidityPoolsManagement/EcnModules/EcnSetups/InstrumentsFilters/filtersContext";
+} from "@/components/EcnModules/EcnSetups/InstrumentsFilters/filtersContext";
 
 type ParamsType = {
   connectSchemasIds?: EcnConnectSchema['id'][],
@@ -50,7 +50,10 @@ const Options: React.FC<{
         <ProFormSelect<EcnConnectSchema['id']>
           showSearch
           formItemProps={{
-            className: s.noMargin,
+            style: {
+              margin: 0,
+              display: 'inline-block',
+            }
           }}
           width={400}
           mode='single'

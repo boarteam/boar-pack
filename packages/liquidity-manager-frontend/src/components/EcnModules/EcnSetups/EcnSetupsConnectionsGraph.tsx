@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Spin } from 'antd';
-import apiClient from '@/tools/client/apiClient';
-import { EcnConnectSchemaSetupLabel, EcnModule } from '@/tools/api';
-import ConnectionsGraph from '@/components/LiquidityPoolsManagement/ConnectionsGraph';
+import apiClient from '@api/apiClient';
+import { EcnConnectSchemaSetupLabel, EcnModule } from '@api/generated';
+import ConnectionsGraph from '@/components/ConnectionsGraph';
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
 

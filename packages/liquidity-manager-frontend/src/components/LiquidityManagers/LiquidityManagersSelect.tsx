@@ -1,7 +1,7 @@
 import { Badge, Select } from "antd";
-import { LiquidityManagerSelectHint } from "../StoredFilters/hints";
 import React from "react";
 import { useLiquidityManagers } from "../../tools/liquidityManagerContext";
+import { QuestionMarkHint } from "@jifeon/boar-pack-common-frontend";
 
 export const LiquidityManagersSelect: React.FC = () => {
   const {
@@ -30,6 +30,6 @@ export const LiquidityManagersSelect: React.FC = () => {
         </Select.Option>
       ))}
     </Select>
-    <LiquidityManagerSelectHint />
+    <QuestionMarkHint intlPrefix={'pages.liquidityManagerSelect'} />
   </>;
 }

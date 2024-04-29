@@ -1,13 +1,12 @@
 import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { DclAction, EcnCurrency, EcnWorkingMode, UsersGroupsInst, UsersInstCompany } from "../../../../tools/api";
+import { DclAction, EcnCurrency, EcnWorkingMode, UsersGroupsInst, UsersInstCompany } from "@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
-import { RelationSelect } from "../../../Inputs/RelationSelect";
-import apiClient from "../../../../tools/client/apiClient";
-import { NumberSwitch } from "../../../Inputs/NumberSwitcher";
+import apiClient from '@api/apiClient';
 import { Tag } from "antd";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
+import { NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend";
 
 export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
   const intl = useIntl();
