@@ -1,7 +1,7 @@
 import { InputNumber } from "antd";
 import React from "react";
 import { InputNumberProps } from "antd/lib";
-import { EcnInstrument } from "../../../tools/api";
+import { EcnInstrument } from "@api/generated";
 
 type MarginInputProps = InputNumberProps & {
   instrument: EcnInstrument;

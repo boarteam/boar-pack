@@ -1,10 +1,9 @@
-import Table from "../../../Table/Table";
-import apiClient from "../../../../tools/client/apiClient";
-import { EcnInstrumentsGroup, EcnInstrumentsGroupCreateDto, EcnInstrumentsGroupUpdateDto } from "../../../../tools/api";
+import { Operators, Table, withNumericId } from "@jifeon/boar-pack-common-frontend";
+import apiClient from '@api/apiClient';
+import { EcnInstrumentsGroup, EcnInstrumentsGroupCreateDto, EcnInstrumentsGroupUpdateDto } from "@api/generated";
 import { useEcnInstrumentsGroupsColumns } from "./useEcnInstrumentsGroupsColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";
-import { Operators, withNumericId } from "../../../Table/tableTools";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
 

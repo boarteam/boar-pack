@@ -1,11 +1,11 @@
 import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { EcnConnectSchemaSetupLabel } from "../../../../tools/api";
+import { EcnConnectSchemaSetupLabel } from "@api/generated";
 import { Tag } from "antd";
 import { EcnModulesSelect } from "../EcnModuleSelect";
 import { CopyOutlined, EditOutlined } from "@ant-design/icons";
-import { KEY_SYMBOL, getNewId } from "@/components/Table/Table";
 import { createNewDefaultParams } from "./EcnSetupsTable";
+import { getNewId, KEY_SYMBOL } from "@jifeon/boar-pack-common-frontend";
 
 export const useEcnSetupsColumns = (canManageEcnSetupsColumns: boolean): ProColumns<EcnConnectSchemaSetupLabel>[] => {
   const intl = useIntl();

@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import '@antv/xflow/dist/index.css';
-import apiClient from '@/tools/client/apiClient';
-import { EcnInstrument } from '@/tools/api';
+import apiClient from '@api/apiClient';
+import { EcnInstrument } from '@api/generated';
 import { EcnModuleDrawer } from '../EcnModules/EcnModuleDrawer';
 import { Spin } from 'antd';
 import { useConnectionsGraph } from '../Graph/useConnectionsGraph';
 import { TData, TElements } from '../Graph';
-import { buildJoinFields } from '@/components/Table/tableTools';
+import { buildJoinFields } from '@jifeon/boar-pack-common-frontend';
 import { EcnInstrumentConnectSchemaDrawer } from './EcnInstrumentConnectSchemaDrawer';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
-import XFlowGraph from "@/components/LiquidityPoolsManagement/Graph";
+import XFlowGraph from "@/components/Graph";
 
 export interface IProps {
   instrumentHash: EcnInstrument['instrumentHash'],

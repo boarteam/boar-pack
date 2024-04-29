@@ -1,13 +1,12 @@
-import Table, { isRecordNew } from "../../Table/Table";
-import apiClient from "../../../tools/client/apiClient";
-import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from "../../../tools/api";
+import apiClient from '@api/apiClient';
+import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from "@api/generated";
 import { useEcnModulesColumns } from "./useEcnModulesColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";
-import { withNumericId } from "../../Table/tableTools";
+import { isRecordNew, Table, withNumericId } from "@jifeon/boar-pack-common-frontend";
 import { ecnModuleJoinFields } from "./ecnModuleJoinFields";
 import { ecnModuleSearchableColumns } from "./ecnModuleSearchableColumns";
-import { TTableProps } from "@/components/Table/tableTypes";
+import { TTableProps } from "@jifeon/boar-pack-common-frontend";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
 

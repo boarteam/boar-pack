@@ -1,0 +1,24 @@
+{
+  "name": "@jifeon/boar-pack-liquidity-manager-frontend",
+  "version": "1.0.0",
+  "description": "Liquidity Manager Frontend",
+  "repository": "git@github.com:jifeon/boar-pack.git",
+  "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
+  "main": "src/index",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "dependencies": {
+    "@antv/xflow": "^1.0.55",
+    "@jifeon/boar-pack-common-frontend": "^1.0.2",
+    "@jifeon/boar-pack-liquidity-manager-backend": "^1.0.2",
+    "@umijs/max": "^4.1.10",
+    "@umijs/plugins": "^4.1.10",
+    "@umijs/route-utils": "^4.0.1",
+    "@umijs/utils": "^4.1.10",
+    "umi": "^4.1.10"
+  },
+  "devDependencies": {
+    "umi-presets-pro": "^2.0.3"
+  }
+}

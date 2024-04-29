@@ -9,14 +9,14 @@ import {
   EcnProfitCalcMode,
   EcnSwapType,
   EcnWeekDay,
-} from "../../../tools/api";
+} from "@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
 import { NumberSwitch } from "../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
 import { dropTrailZeroes } from "@/tools/numberTools";
 import { RelationSelect } from "../../Inputs/RelationSelect";
-import apiClient from "../../../tools/client/apiClient";
+import apiClient from '@api/apiClient';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { useEffect, useState } from "react";
 import { dividerToMargin, MarginInput } from "./MarginInput";

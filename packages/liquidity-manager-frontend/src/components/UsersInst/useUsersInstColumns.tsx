@@ -7,17 +7,14 @@ import {
   UsersGroupsInst,
   UsersInst,
   UsersInstCompany
-} from "../../../tools/api";
+} from "@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
-import { NumberSwitch } from "../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
-import { Password } from "../../Inputs/Password";
-import { dropTrailZeroes } from "../../../tools/numberTools";
-import { RelationSelect } from "../../Inputs/RelationSelect";
-import apiClient from "../../../tools/client/apiClient";
+import apiClient from '@api/apiClient';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { useEffect, useState } from "react";
+import { dropTrailZeroes, NumberSwitch, Password, RelationSelect } from "@jifeon/boar-pack-common-frontend";
 
 type TOptions = { text: string, value: number | string }[];
 

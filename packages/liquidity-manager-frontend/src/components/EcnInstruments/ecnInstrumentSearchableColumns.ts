@@ -1,5 +1,5 @@
-import { Operators } from "@/components/Table/tableTools";
-import { TSearchableColumn } from "../../Table/tableTypes";
+import { Operators } from "@jifeon/boar-pack-common-frontend";
+import { TSearchableColumn } from "@jifeon/boar-pack-common-frontend";
 
 export const ecnInstrumentSearchableColumns: TSearchableColumn[] = [
   { field: 'name', operator: Operators.containsLow, },

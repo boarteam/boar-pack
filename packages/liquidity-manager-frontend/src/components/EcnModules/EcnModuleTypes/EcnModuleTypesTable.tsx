@@ -1,9 +1,9 @@
-import Table from "../../../Table/Table";
-import apiClient from "../../../../tools/client/apiClient";
-import { EcnModuleType, EcnModuleTypeCreateDto, EcnModuleTypeUpdateDto } from "../../../../tools/api";
+import { Table } from "@jifeon/boar-pack-common-frontend";
+import apiClient from '@api/apiClient';
+import { EcnModuleType, EcnModuleTypeCreateDto, EcnModuleTypeUpdateDto } from "@api/generated";
 import { useEcnModuleTypesColumns } from "./useEcnModuleTypesColumns";
 import pick from "lodash/pick";
-import { Operators, withNumericId } from "../../../Table/tableTools";
+import { Operators, withNumericId } from "@jifeon/boar-pack-common-frontend";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-components";
 

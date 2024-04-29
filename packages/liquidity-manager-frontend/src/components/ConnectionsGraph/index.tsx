@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import '@antv/xflow/dist/index.css';
-import apiClient from '@/tools/client/apiClient';
-import { EcnModule } from '@/tools/api';
+import apiClient from '@api/apiClient';
+import { EcnModule } from '@api/generated';
 import { EcnModuleDrawer } from '../EcnModules/EcnModuleDrawer';
 import { EcnConnectSchemaDrawer } from '../EcnModules/EcnConnectSchemaDrawer';
 import { Spin } from 'antd';
 import { useConnectionsGraph } from '../Graph/useConnectionsGraph';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
-import XFlowGraph, { TData, TElements } from "@/components/LiquidityPoolsManagement/Graph";
+import XFlowGraph, { TData, TElements } from "@/components/Graph";
 
 export interface IProps {
   modules: Set<EcnModule['id']>,

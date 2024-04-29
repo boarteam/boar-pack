@@ -1,9 +1,8 @@
-import Table from "../../Table/Table";
-import apiClient from "../../../tools/client/apiClient";
-import { UsersInst, UsersInstCreateDto, UsersInstUpdateDto } from "../../../tools/api";
+import { Table, TColumnsSet } from "@jifeon/boar-pack-common-frontend";
+import apiClient from '@api/apiClient';
+import { UsersInst, UsersInstCreateDto, UsersInstUpdateDto } from "@api/generated";
 import { useUsersInstColumns } from "./useUsersInstColumns";
 import pick from "lodash/pick";
-import { TColumnsSet } from "../../Table/useColumnsSets";
 import { useAccess } from "@umijs/max";
 import { usersInstJoinFields } from "./usersInstJoinFields";
 import { usersInstSearchableColumns } from "./usersInstSearchableColumns";

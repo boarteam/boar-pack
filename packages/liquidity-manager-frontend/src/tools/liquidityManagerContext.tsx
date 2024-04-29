@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import apiClient from '../../tools/client/apiClient';
-import { LiquidityManager } from "../../tools/api";
-import safetyRun from "../../tools/safetyRun";
+import apiClient from '@api/apiClient';
+import { LiquidityManager } from "@api/generated";
 import * as colors from "@ant-design/colors";
 import { ThemeConfig } from "antd/es/config-provider/context";
 import { useSearchParams } from "react-router-dom";
 import { once } from "lodash";
 import { history } from "@umijs/max";
+import safetyRun from "@jifeon/boar-pack-common-frontend/src/tools/safetyRun";
 
 export type LiquidityManagersHookResult = {
   liquidityManager: LiquidityManager | null;

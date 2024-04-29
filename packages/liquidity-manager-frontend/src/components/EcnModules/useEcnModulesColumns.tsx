@@ -1,14 +1,12 @@
 import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { EcnModule, EcnModuleType } from "../../../tools/api";
+import { EcnModule, EcnModuleType } from "@api/generated";
 import { EditOutlined } from "@ant-design/icons";
-import { NumberSwitch } from "../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
-import { RelationSelect } from "../../Inputs/RelationSelect";
-import apiClient from "../../../tools/client/apiClient";
-import { NumberInputHandlingNewRecord } from "../../Inputs/NumberInputHandlingNewRecord";
+import apiClient from '@api/apiClient';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { useEffect, useState } from "react";
+import { NumberInputHandlingNewRecord, NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend";
 
 export const useEcnModulesColumns = (canManageEcnModulesColumns: boolean): ProColumns<EcnModule>[] => {
   const intl = useIntl();

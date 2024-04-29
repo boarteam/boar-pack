@@ -1,20 +1,19 @@
-import Table from "../../../Table/Table";
-import apiClient from "../../../../tools/client/apiClient";
+import { Table, TColumnsSet, useColumnsSets } from "@jifeon/boar-pack-common-frontend";
+import apiClient from '@api/apiClient';
 import {
   SubloginSettings,
   UsersSubAccountInst,
   UsersSubAccountInstCreateDto,
   UsersSubAccountInstUpdateDto
-} from "../../../../tools/api";
+} from "@api/generated";
 import { useUsersSubAccountsInstColumns } from "./useUsersSubAccountsInstColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";
-import { Operators } from "../../../Table/tableTools";
+import { Operators } from "@jifeon/boar-pack-common-frontend";
 import React from "react";
 import SubloginsSettingsTable
   from "../SubloginsSettings/SubloginsSettingsTable";
 import { useSubloginsSettingsColumns } from "../SubloginsSettings/useSubloginsSettingsColumns";
-import useColumnsSets, { TColumnsSet } from "../../../Table/useColumnsSets";
 import s from './UsersSubaccountsInst.less';
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-components";

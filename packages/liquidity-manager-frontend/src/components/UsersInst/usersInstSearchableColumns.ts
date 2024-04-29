@@ -1,4 +1,4 @@
-import { Operators } from "../../Table/tableTools";
+import { Operators } from "@jifeon/boar-pack-common-frontend";
 
 export const usersInstSearchableColumns = [
   { field: 'name', operator: Operators.containsLow, },

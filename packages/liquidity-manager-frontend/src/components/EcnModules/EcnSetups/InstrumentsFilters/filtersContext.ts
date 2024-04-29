@@ -1,13 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import apiClient from "@/tools/client/apiClient";
+import apiClient from '@api/apiClient';
 import { SFields } from "@nestjsx/crud-request";
 import filtersLocalStorage from "./filtersLocalStorage";
 import { useSearchParams } from "react-router-dom";
-import {
-  LiquidityManagersHookResult,
-  useLiquidityManagerContext
-} from "@/components/LiquidityPoolsManagement/liquidityManagerContext";
-import { EcnInstrument, EcnInstrumentsGroup } from "@/tools/api";
+import { EcnInstrument, EcnInstrumentsGroup } from "@api/generated";
+import { LiquidityManagersHookResult, useLiquidityManagerContext } from "../../../../tools/liquidityManagerContext";
 
 export type OptionType = { value: string, label: string };
 

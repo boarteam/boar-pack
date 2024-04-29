@@ -5,13 +5,13 @@ import {
   EcnInstrument,
   EcnSubscrSchema,
   GetEcnInstrumentsInConnectionsData
-} from "../../../../tools/api";
+} from "@api/generated";
 import { Popover, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
-import apiClient from "@/tools/client/apiClient";
+import apiClient from '@api/apiClient';
 import { useEcnSubscrSchemaColumns } from "../EcnSubscrSchemas/useEcnSubscrSchemaColumns";
-import { useLiquidityManagerContext } from "@/components/LiquidityPoolsManagement/liquidityManagerContext";
 import { ColumnsType } from "antd/es/table";
+import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 
 const subscrSchemaEnabledColorMap = new Map([
   ['Enabled', 'green'],

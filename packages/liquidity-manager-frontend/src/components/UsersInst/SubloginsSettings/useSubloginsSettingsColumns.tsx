@@ -1,13 +1,11 @@
 import { ProColumns } from "@ant-design/pro-components";
 import { useAccess, useIntl, Link } from "@umijs/max";
-import { EcnCurrency, EcnInstrument, SubloginSettings } from "../../../../tools/api";
+import { EcnCurrency, EcnInstrument, SubloginSettings } from "@api/generated";
 import { EditOutlined } from "@ant-design/icons";
-import { dropTrailZeroes } from "../../../../tools/numberTools";
-import { RelationSelect } from "../../../Inputs/RelationSelect";
-import apiClient from "../../../../tools/client/apiClient";
-import { NumberSwitch } from "../../../Inputs/NumberSwitcher";
+import apiClient from '@api/apiClient';
 import { Tag } from "antd";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
+import { dropTrailZeroes, NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend";
 
 export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] => {
   const intl = useIntl();

@@ -1,10 +1,9 @@
-import Table from "../../Table/Table";
-import apiClient from "../../../tools/client/apiClient";
-import { EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto } from "../../../tools/api";
+import { Table, TColumnsSet } from "@jifeon/boar-pack-common-frontend";
+import apiClient from '@api/apiClient';
+import { EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto } from "@api/generated";
 import { useEcnInstrumentsColumns } from "./useEcnInstrumentsColumns";
 import pick from "lodash/pick";
 import { ecnInstrumentJoinFields } from "./ecnInstrumentJoinFields";
-import { TColumnsSet } from "../../Table/useColumnsSets";
 import { useAccess } from "@umijs/max";
 import { ecnInstrumentSearchableColumns } from "./ecnInstrumentSearchableColumns";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";

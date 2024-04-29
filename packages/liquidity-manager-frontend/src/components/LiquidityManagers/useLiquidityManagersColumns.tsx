@@ -1,6 +1,6 @@
 import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { InstrumentsGroup, LiquidityManager } from "../../tools/api";
+import { LiquidityManager } from "@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { Tag } from "antd";
 import { CheckLiquidityManagerConnection } from "./CheckLiquidityManagerConnection";
@@ -22,10 +22,10 @@ const workersEnum: TWorkersEnum = Object.values(LiquidityManager.worker).reduce(
 }, {} as TWorkersEnum);
 
 type TColorsEnum = {
-  [key in InstrumentsGroup.color]: { text: React.ReactElement, color: InstrumentsGroup.color };
+  [key in LiquidityManager.color]: { text: React.ReactElement, color: LiquidityManager.color };
 }
 const colorsEnum: TColorsEnum = {} as TColorsEnum;
-Object.values(InstrumentsGroup.color).forEach((color) => {
+Object.values(LiquidityManager.color).forEach((color) => {
   colorsEnum[color] = {
     text: <Tag color={color}>{color}</Tag>,
     color,

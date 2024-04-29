@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { IconStore } from '@antv/xflow';
 import '@antv/xflow/dist/index.css';
-import apiClient from '@/tools/client/apiClient';
-import { EcnConnectSchema, EcnModule } from '@/tools/api';
+import apiClient from '@api/apiClient';
+import { EcnConnectSchema, EcnModule } from '@api/generated';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { TEcnConnectionSchemaWihSubscrEnabled } from "../EcnInstruments/EcnInstrumentConnectSchemaDrawer";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";

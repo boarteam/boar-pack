@@ -1,15 +1,15 @@
-import Descriptions from '../../Descriptions/Descriptions';
 import { ecnModuleToDto } from './EcnModulesTable';
 import { ecnModuleJoinFields } from './ecnModuleJoinFields';
 import { useEcnModulesColumns } from './useEcnModulesColumns';
-import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from '@/tools/api';
-import apiClient from '../../../tools/client/apiClient';
+import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from '@api/generated';
+import apiClient from '@api/apiClient';
 import { Button, Drawer } from 'antd';
 import React, { useState } from "react";
 import { DeleteOutlined } from '@ant-design/icons';
 import { deleteNodeConfirm } from '../Graph';
 import { useAccess } from '@umijs/max';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
+import { Descriptions } from "@jifeon/boar-pack-common-frontend";
 
 export const EcnModuleDrawer: React.FC<{
   id: EcnModule['id'] | undefined,

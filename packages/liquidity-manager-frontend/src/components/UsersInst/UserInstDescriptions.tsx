@@ -1,13 +1,13 @@
-import apiClient from "../../../tools/client/apiClient";
-import Descriptions from "../../Descriptions/Descriptions";
+import apiClient from '@api/apiClient';
 import React from "react";
 import { useUsersInstColumns } from "./useUsersInstColumns";
-import { UsersInst, UsersInstCreateDto, UsersInstUpdateDto } from "@/tools/api";
+import { UsersInst, UsersInstCreateDto, UsersInstUpdateDto } from "@api/generated";
 import { usersInstJoinFields } from "./usersInstJoinFields";
 import { usersInstToDto } from "./UsersInstTable";
 import { useAccess } from "@umijs/max";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
+import { Descriptions } from "@jifeon/boar-pack-common-frontend";
 
 type TUserInstProps = {
   id: string,
@@ -25,7 +25,7 @@ const UserInstDescriptions: React.FC<TUserInstProps> = ({
   return (<Descriptions<UsersInst, UsersInstCreateDto, UsersInstUpdateDto, {
     id: string,
     worker: string,
-  }, number>
+  }>
     mainTitle="General"
     pathParams={{
       id,
