@@ -17,6 +17,7 @@ export class EcnProfitCalcModesService {
      * @throws ApiError
      */
     public getManyBaseGenericLiquidityControllerEcnProfitCalcMode({
+        worker,
         fields,
         s,
         filter,
@@ -28,6 +29,7 @@ export class EcnProfitCalcModesService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -71,7 +73,10 @@ export class EcnProfitCalcModesService {
     }): CancelablePromise<GetManyEcnProfitCalcModeResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-profit-calc-modes',
+            url: '/{worker}/liquidity/ecn-profit-calc-modes',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,

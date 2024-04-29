@@ -17,6 +17,7 @@ export class EcnMarginCalcModesService {
      * @throws ApiError
      */
     public getManyBaseGenericLiquidityControllerEcnMarginCalcMode({
+        worker,
         fields,
         s,
         filter,
@@ -28,6 +29,7 @@ export class EcnMarginCalcModesService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -71,7 +73,10 @@ export class EcnMarginCalcModesService {
     }): CancelablePromise<GetManyEcnMarginCalcModeResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-margin-calc-modes',
+            url: '/{worker}/liquidity/ecn-margin-calc-modes',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,

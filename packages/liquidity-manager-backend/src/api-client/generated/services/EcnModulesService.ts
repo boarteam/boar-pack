@@ -21,11 +21,13 @@ export class EcnModulesService {
      */
     public getOneBaseEcnModulesControllerEcnModule({
         id,
+        worker,
         fields,
         join,
         cache,
     }: {
         id: number,
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -41,9 +43,10 @@ export class EcnModulesService {
     }): CancelablePromise<EcnModule> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-modules/{id}',
+            url: '/{worker}/liquidity/ecn-modules/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             query: {
                 'fields': fields,
@@ -60,16 +63,19 @@ export class EcnModulesService {
      */
     public updateOneBaseEcnModulesControllerEcnModule({
         id,
+        worker,
         requestBody,
     }: {
         id: number,
+        worker: string,
         requestBody: EcnModuleUpdateDto,
     }): CancelablePromise<EcnModule> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidity/ecn-modules/{id}',
+            url: '/{worker}/liquidity/ecn-modules/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -83,14 +89,17 @@ export class EcnModulesService {
      */
     public deleteOneBaseEcnModulesControllerEcnModule({
         id,
+        worker,
     }: {
         id: number,
+        worker: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidity/ecn-modules/{id}',
+            url: '/{worker}/liquidity/ecn-modules/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
         });
     }
@@ -101,6 +110,7 @@ export class EcnModulesService {
      * @throws ApiError
      */
     public getManyBaseEcnModulesControllerEcnModule({
+        worker,
         fields,
         s,
         filter,
@@ -112,6 +122,7 @@ export class EcnModulesService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -155,7 +166,10 @@ export class EcnModulesService {
     }): CancelablePromise<GetManyEcnModuleResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-modules',
+            url: '/{worker}/liquidity/ecn-modules',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,
@@ -177,13 +191,18 @@ export class EcnModulesService {
      * @throws ApiError
      */
     public createOneBaseEcnModulesControllerEcnModule({
+        worker,
         requestBody,
     }: {
+        worker: string,
         requestBody: EcnModuleCreateDto,
     }): CancelablePromise<EcnModule> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidity/ecn-modules',
+            url: '/{worker}/liquidity/ecn-modules',
+            path: {
+                'worker': worker,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });

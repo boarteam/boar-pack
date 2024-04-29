@@ -21,11 +21,13 @@ export class UsersInstService {
      */
     public getOneBaseUsersInstControllerUsersInst({
         id,
+        worker,
         fields,
         join,
         cache,
     }: {
         id: string,
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -41,9 +43,10 @@ export class UsersInstService {
     }): CancelablePromise<UsersInst> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/users-inst/{id}',
+            url: '/{worker}/liquidity/users-inst/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             query: {
                 'fields': fields,
@@ -60,16 +63,19 @@ export class UsersInstService {
      */
     public updateOneBaseUsersInstControllerUsersInst({
         id,
+        worker,
         requestBody,
     }: {
         id: string,
+        worker: string,
         requestBody: UsersInstUpdateDto,
     }): CancelablePromise<UsersInst> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidity/users-inst/{id}',
+            url: '/{worker}/liquidity/users-inst/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -83,14 +89,17 @@ export class UsersInstService {
      */
     public deleteOneBaseUsersInstControllerUsersInst({
         id,
+        worker,
     }: {
         id: string,
+        worker: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidity/users-inst/{id}',
+            url: '/{worker}/liquidity/users-inst/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
         });
     }
@@ -101,6 +110,7 @@ export class UsersInstService {
      * @throws ApiError
      */
     public getManyBaseUsersInstControllerUsersInst({
+        worker,
         fields,
         s,
         filter,
@@ -112,6 +122,7 @@ export class UsersInstService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -155,7 +166,10 @@ export class UsersInstService {
     }): CancelablePromise<GetManyUsersInstResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/users-inst',
+            url: '/{worker}/liquidity/users-inst',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,
@@ -177,13 +191,18 @@ export class UsersInstService {
      * @throws ApiError
      */
     public createOneBaseUsersInstControllerUsersInst({
+        worker,
         requestBody,
     }: {
+        worker: string,
         requestBody: UsersInstCreateDto,
     }): CancelablePromise<UsersInst> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidity/users-inst',
+            url: '/{worker}/liquidity/users-inst',
+            path: {
+                'worker': worker,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });

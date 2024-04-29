@@ -20,13 +20,18 @@ export class EcnConnectSchemasService {
      * @throws ApiError
      */
     public createOneBaseEcnConnectSchemaControllerEcnConnectSchema({
+        worker,
         requestBody,
     }: {
+        worker: string,
         requestBody: EcnConnectSchemaCreateDto,
     }): CancelablePromise<EcnConnectSchema> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidity/ecn-connect-schemas',
+            url: '/{worker}/liquidity/ecn-connect-schemas',
+            path: {
+                'worker': worker,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -38,6 +43,7 @@ export class EcnConnectSchemasService {
      * @throws ApiError
      */
     public getManyBaseEcnConnectSchemaControllerEcnConnectSchema({
+        worker,
         fields,
         s,
         filter,
@@ -49,6 +55,7 @@ export class EcnConnectSchemasService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -92,7 +99,10 @@ export class EcnConnectSchemasService {
     }): CancelablePromise<GetManyEcnConnectSchemaResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-connect-schemas',
+            url: '/{worker}/liquidity/ecn-connect-schemas',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,
@@ -115,11 +125,13 @@ export class EcnConnectSchemasService {
      */
     public getOneBaseEcnConnectSchemaControllerEcnConnectSchema({
         id,
+        worker,
         fields,
         join,
         cache,
     }: {
         id: number,
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -135,9 +147,10 @@ export class EcnConnectSchemasService {
     }): CancelablePromise<EcnConnectSchema> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-connect-schemas/{id}',
+            url: '/{worker}/liquidity/ecn-connect-schemas/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             query: {
                 'fields': fields,
@@ -154,16 +167,19 @@ export class EcnConnectSchemasService {
      */
     public updateOneBaseEcnConnectSchemaControllerEcnConnectSchema({
         id,
+        worker,
         requestBody,
     }: {
         id: number,
+        worker: string,
         requestBody: EcnConnectSchemaUpdateDto,
     }): CancelablePromise<EcnConnectSchema> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidity/ecn-connect-schemas/{id}',
+            url: '/{worker}/liquidity/ecn-connect-schemas/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -177,14 +193,17 @@ export class EcnConnectSchemasService {
      */
     public deleteOneBaseEcnConnectSchemaControllerEcnConnectSchema({
         id,
+        worker,
     }: {
         id: number,
+        worker: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidity/ecn-connect-schemas/{id}',
+            url: '/{worker}/liquidity/ecn-connect-schemas/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
         });
     }

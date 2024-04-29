@@ -20,6 +20,7 @@ export class UsersGroupsInstService {
      * @throws ApiError
      */
     public getManyBaseUsersGroupsInstControllerUsersGroupsInst({
+        worker,
         fields,
         s,
         filter,
@@ -31,6 +32,7 @@ export class UsersGroupsInstService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -74,7 +76,10 @@ export class UsersGroupsInstService {
     }): CancelablePromise<GetManyUsersGroupsInstResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/users-groups-inst',
+            url: '/{worker}/liquidity/users-groups-inst',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,
@@ -96,13 +101,18 @@ export class UsersGroupsInstService {
      * @throws ApiError
      */
     public createOneBaseUsersGroupsInstControllerUsersGroupsInst({
+        worker,
         requestBody,
     }: {
+        worker: string,
         requestBody: UsersGroupsInstCreateDto,
     }): CancelablePromise<UsersGroupsInst> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidity/users-groups-inst',
+            url: '/{worker}/liquidity/users-groups-inst',
+            path: {
+                'worker': worker,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -115,16 +125,19 @@ export class UsersGroupsInstService {
      */
     public updateOneBaseUsersGroupsInstControllerUsersGroupsInst({
         name,
+        worker,
         requestBody,
     }: {
         name: string,
+        worker: string,
         requestBody: UsersGroupsInstUpdateDto,
     }): CancelablePromise<UsersGroupsInst> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidity/users-groups-inst/{name}',
+            url: '/{worker}/liquidity/users-groups-inst/{name}',
             path: {
                 'name': name,
+                'worker': worker,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -138,14 +151,17 @@ export class UsersGroupsInstService {
      */
     public deleteOneBaseUsersGroupsInstControllerUsersGroupsInst({
         name,
+        worker,
     }: {
         name: string,
+        worker: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidity/users-groups-inst/{name}',
+            url: '/{worker}/liquidity/users-groups-inst/{name}',
             path: {
                 'name': name,
+                'worker': worker,
             },
         });
     }
