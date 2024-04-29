@@ -11,10 +11,9 @@ import { Modal, Space, Tag } from 'antd';
 import { useToken } from '@ant-design/pro-components';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
-import { useEmotionCss } from "@ant-design/use-emotion-css";
-import cx from "classnames";
 import { useConnectionsGraph } from "@/components/Graph/useConnectionsGraph";
 import Paragraph from "antd/es/typography/Paragraph";
+import { createStyles } from "antd-style";
 
 IconStore.set('DeleteOutlined', DeleteOutlined);
 IconStore.set('EditOutlined', EditOutlined);
@@ -89,6 +88,18 @@ export const deleteEdgeConfirm = async (edgeId: EcnConnectSchema['id'], onOk: ()
   }
 }
 
+const useStyles = createStyles(({ token }) => {
+  return {
+    dagClass: {
+      border: `1px solid ${token.colorPrimary} !important`,
+      borderRadius: token.borderRadiusLG,
+      '.x6-node:hover .front-port': {
+        stroke: token.colorPrimary,
+      },
+    }
+  };
+});
+
 const getEdgeIdFromRealId = (realId: number) => `${realId}-edge`;
 const getRealIdFromEdgeId = (edgeId: string) => Number(edgeId.slice(0, -5));
 const getNodeIdFromRealId = (realId: number) => `${realId}-node`;
@@ -108,6 +119,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
   const { token } = useToken();
   const color = token.colorPrimary;
   const { worker } = useLiquidityManagerContext();
+  const { styles, cx } = useStyles();
 
   const graphData = useMemo(() => {
     const connectedPorts = new Set<string>();
@@ -389,23 +401,13 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
     }, 100)
   }, [graphData]);
 
-  const dagClass = useEmotionCss(({ token }) => {
-    return {
-      border: `1px solid ${token.colorPrimary} !important`,
-      borderRadius: token.borderRadiusLG,
-      '.x6-node:hover .front-port': {
-        stroke: token.colorPrimary,
-      },
-    }
-  });
-
   return (
     <Space
       direction={'vertical'}
       style={{ width: '100%' }}
     >
       <XFlow
-        className={cx(s.dag, dagClass)}
+        className={cx(s.dag, styles.dagClass)}
         graphData={graphData}
         graphLayout={{
           layoutType: 'dagre',

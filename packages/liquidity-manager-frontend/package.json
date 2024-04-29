@@ -16,6 +16,7 @@
     "@umijs/plugins": "^4.1.10",
     "@umijs/route-utils": "^4.0.1",
     "@umijs/utils": "^4.1.10",
+    "antd-style": "^3.6.2",
     "umi": "^4.1.10"
   },
   "devDependencies": {
