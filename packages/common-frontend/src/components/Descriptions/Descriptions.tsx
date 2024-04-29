@@ -1,12 +1,12 @@
 import { ActionType } from "@ant-design/pro-table";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Button, Tooltip } from "antd";
+import { Button, Result, Tooltip } from "antd";
 import { DeleteOutlined, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
-import { buildJoinFields, collectFieldsFromColumns } from "../Table/tableTools";
+import { buildJoinFields, collectFieldsFromColumns } from "@jifeon/boar-pack-common-frontend";
 import { ProDescriptionsProps } from "@ant-design/pro-descriptions";
-import { ProDescriptions } from "@ant-design/pro-components";
+import { PageLoading, ProDescriptions } from "@ant-design/pro-components";
 import { columnsToDescriptionItemProps } from "./useDescriptionColumns";
 import pick from "lodash/pick";
 import safetyRun from "../../tools/safetyRun";
@@ -14,27 +14,22 @@ import safetyRun from "../../tools/safetyRun";
 const Descriptions = <Entity extends Record<string | symbol, any>,
   CreateDto = Entity,
   UpdateDto = Entity,
-  TPathParams = {},
-  TKey = string,
+  TPathParams = object,
   >(
   {
     mainTitle,
     getOne,
-    // onCreate,
     onUpdate,
-    onDelete,
     pathParams,
     idColumnName = 'id',
-    // entityToCreateDto,
     entityToUpdateDto,
-    createNewDefaultParams,
     afterSave,
     actionRef: actionRefProp,
     editable,
     canEdit = false,
     columns,
     params,
-    record,
+    onEntityChange,
     ...rest
   }: TDescriptionsProps<Entity,
     CreateDto,
@@ -44,7 +39,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
   const intl = useIntl();
-  const [data, setData] = useState<Entity | undefined>(record);
+  const [data, setData] = useState<Entity | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   const sections = columnsToDescriptionItemProps(columns, mainTitle);
@@ -64,28 +59,42 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     );
 
     return queryParams;
-  }, [params])
+  }, [params, pathParams]);
 
   const requestData = async () => {
     setLoading(true);
 
     try {
       const record = await getOne(queryParams);
+      onEntityChange?.(record);
       setData(record ?? undefined);
-    }
-    catch (e) {
+    } catch (e) {
       console.error(e);
-    }
-    finally {
+      setData(undefined);
+    } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    if (!data) {
-      safetyRun(requestData());
-    }
-  }, [])
+    safetyRun(requestData());
+  }, [queryParams])
+
+  if (loading) {
+    return <PageLoading />;
+  }
+
+  if (!data) {
+    return (
+      <Result
+        status="404"
+        title="404"
+        subTitle="The instrument is not found."
+        extra={<Button type="primary" href={'/liquidity/ecn-instruments'}>See list of instruments</Button>}
+      />
+    );
+  }
+
 
   return (
     <>
@@ -119,8 +128,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
                 if (typeof afterSave === 'function') {
                   await afterSave(record);
                 }
-              }
-              catch (e) {
+              } catch (e) {
                 console.error(e);
               }
             },

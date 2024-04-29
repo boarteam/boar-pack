@@ -1,14 +1,13 @@
 import ProTable, { ActionType } from "@ant-design/pro-table";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Tooltip } from "antd";
 import { DeleteOutlined, PlusOutlined, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { flushSync } from "react-dom";
 import { applyKeywordToSearch, buildJoinFields, collectFieldsFromColumns, getFiltersSearch } from "./tableTools";
-import { TFilterParams, TGetAllParams, TSort, TTableProps } from "./tableTypes";
+import { TFilterParams, TFilters, TGetAllParams, TSort, TTableProps } from "./tableTypes";
 import useColumnsSets from "./useColumnsSets";
 import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
-import safetyRun from "../../tools/safetyRun";
 
 let creatingRecordsCount = 0;
 
@@ -59,12 +58,17 @@ const Table = <Entity extends Record<string | symbol, any>,
     TEntityParams,
     TPathParams>
 ) => {
-  const intl = useIntl();
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
   const [createPopupData, setCreatePopupData] = useState<Partial<Entity> | undefined>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [editableData, setEditableData] = useState<(Entity)[]>([]);
+  const intl = useIntl();
+
+  useEffect(() => {
+    actionRef?.current?.reload();
+  }, [JSON.stringify(pathParams)]);
+
   const {
     columnsSetSelect: localColumnsSetSelect,
     columnsState: localColumnsState,
@@ -79,6 +83,7 @@ const Table = <Entity extends Record<string | symbol, any>,
   const request = async (
     params: TFilterParams,
     sort: TSort = {},
+    filters: TFilters = {},
   ) => {
     const {
       current,
@@ -86,7 +91,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       keyword,
       baseFilters,
       join,
-      ...filter
+      sortMap,
     } = params;
 
     const queryParams: TGetAllParams & TPathParams = {
@@ -99,7 +104,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       .entries(sort)
       .reduce<string[]>(
         (data: string[], [key, direction]) => {
-          data.push(`${key},${direction === 'ascend' ? 'ASC' : 'DESC'}`);
+          data.push(`${sortMap?.[key] || key},${direction === 'ascend' ? 'ASC' : 'DESC'}`);
           return data;
         },
         []
@@ -110,9 +115,10 @@ const Table = <Entity extends Record<string | symbol, any>,
     queryParams.sort = sortBy;
 
     let search = getFiltersSearch({
-      ...baseFilters,
-      ...filter,
-    }, searchableColumns!, columnsState.value!);
+      baseFilters,
+      filters,
+      searchableColumns,
+    });
     search = applyKeywordToSearch(search, searchableColumns!, columnsState.value!, keyword);
     queryParams.s = JSON.stringify(search);
 
@@ -252,7 +258,7 @@ const Table = <Entity extends Record<string | symbol, any>,
               ...data,
             })
           });
-          safetyRun(actionRef?.current?.reload());
+          actionRef?.current?.reload();
           setCreatePopupData(undefined);
         }
         catch (e) {

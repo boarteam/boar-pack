@@ -3,14 +3,23 @@ import { IWithId, TFilters, TSearchableColumn } from "./tableTypes";
 import React, { Key } from "react";
 import { TColumnsStates } from "./useColumnsSets";
 
-export function getFiltersSearch(filters: TFilters = {}, searchableColumns: TSearchableColumn[], columnsState?: TColumnsStates): SCondition {
-  const filterKeys = new Set(Object.keys(filters));
+export function getFiltersSearch({
+  baseFilters = {},
+  filters = {},
+  searchableColumns,
+}: {
+  baseFilters?: TFilters,
+  filters?: TFilters,
+  searchableColumns: TSearchableColumn[],
+}): SCondition {
+  const filterKeys = new Set(Object.keys(filters).concat(Object.keys(baseFilters)));
   const search: SCondition = { '$and': [] };
-  searchableColumns!.forEach((col) => {
-    const field = Array.isArray(col.field) ? col.field.join('.') : col.field;
-    const operator = col.operator;
-    const value = filters[field];
-    filterKeys.delete(field);
+  searchableColumns.forEach((col) => {
+    const colDataIndex = Array.isArray(col.field) ? col.field.join('.') : col.field;
+    const field = col.filterField || colDataIndex;
+    const operator = col.filterOperator || col.operator;
+    const value = filters[colDataIndex] || baseFilters[colDataIndex];
+    filterKeys.delete(colDataIndex);
     if (!value) {
       return;
     }
@@ -50,7 +59,7 @@ export function applyKeywordToSearch(
       return;
     }
 
-    const field = Array.isArray(col.field) ? col.field.join('.') : col.field;
+    const field = col.searchField || (Array.isArray(col.field) ? col.field.join('.') : col.field);
     const operator = col.operator;
     keywordSearch.$or?.push({ [field]: { [operator]: keyword } });
   });
