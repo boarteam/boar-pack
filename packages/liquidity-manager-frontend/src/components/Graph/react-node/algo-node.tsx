@@ -5,10 +5,28 @@ import {
 import { type NsGraph } from '@antv/xflow'
 import './algo-node.less'
 import { MouseEventHandler } from 'react';
-import { useEmotionCss } from "@ant-design/use-emotion-css";
-import cx from 'classnames';
+import { createStyles } from "antd-style";
+
+const useStyles = createStyles(({ token }) => {
+  return {
+    node: {
+      border: `1px solid ${token.colorBorder}`,
+      borderRadius: token.borderRadius,
+      ':hover': {
+        borderColor: `${token.colorPrimary}`,
+        boxShadow: `${token.boxShadowSecondary}`,
+      },
+      '.x6-node-selected &, .node-moving &': {
+        borderColor: `${token.colorPrimary}`,
+        boxShadow: `${token.boxShadowSecondary}`,
+      },
+    }
+  };
+});
 
 export const AlgoNode: NsGraph.INodeRender = ({ data }) => {
+  const { styles, cx } = useStyles();
+
   const { id, ports, onClick } = data;
   const frontPort = ports.items.find(port => port.id === `${id}-front`);
   const backPort = ports.items.find(port => port.id === `${id}-back`);
@@ -21,23 +39,10 @@ export const AlgoNode: NsGraph.INodeRender = ({ data }) => {
     frontPort?.onClick();
   };
 
-  const nodeClass = useEmotionCss(({ token }) => {
-    return {
-      border: `1px solid ${token.colorBorder}`,
-      borderRadius: token.borderRadius,
-      ':hover': {
-        borderColor: `${token.colorPrimary}`,
-        boxShadow: `${token.boxShadowSecondary}`,
-      },
-      '.x6-node-selected &, .node-moving &': {
-        borderColor: `${token.colorPrimary}`,
-        boxShadow: `${token.boxShadowSecondary}`,
-      },
-    }
-  });
+
 
   return (
-    <div className={cx('xflow-algo-node', nodeClass)} onClick={onClick}>
+    <div className={cx('xflow-algo-node', styles.node)} onClick={onClick}>
       {backPort?.onClick && (backPort.connected
         ? <MinusOutlined className="icon" onClick={backPortOnClick} />
         : <PlusOutlined className="icon" onClick={backPortOnClick} />
