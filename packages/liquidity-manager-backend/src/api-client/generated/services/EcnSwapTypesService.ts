@@ -17,6 +17,7 @@ export class EcnSwapTypesService {
      * @throws ApiError
      */
     public getManyBaseGenericLiquidityControllerEcnSwapType({
+        worker,
         fields,
         s,
         filter,
@@ -28,6 +29,7 @@ export class EcnSwapTypesService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -71,7 +73,10 @@ export class EcnSwapTypesService {
     }): CancelablePromise<GetManyEcnSwapTypeResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-swap-types',
+            url: '/{worker}/liquidity/ecn-swap-types',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,

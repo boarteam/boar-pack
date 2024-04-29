@@ -45,9 +45,25 @@ async function bootstrap() {
       .setVersion('1.0')
       .build();
 
-    // @ts-ignore
     const document = SwaggerModule.createDocument(app, swaggerConfig, options);
-    // @ts-ignore
+
+    Object.entries(document.paths).forEach(([path, pathObject]) => {
+      if (path.startsWith('/liquidity/')) {
+        Object.values(pathObject).forEach((methodObject) => {
+          methodObject.parameters.push({
+            in: 'path',
+            name: 'worker',
+            required: true,
+            schema: {
+              type: 'string',
+            },
+          });
+        });
+        document.paths['/{worker}' + path] = pathObject;
+        delete document.paths[path];
+      }
+    });
+
     SwaggerModule.setup('docs', app, document);
     await app.listen(3335);
     await generate({

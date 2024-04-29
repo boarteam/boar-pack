@@ -20,12 +20,14 @@ export class EcnInstrumentsService {
      * @throws ApiError
      */
     public getInConnections({
+        worker,
         compareConnectSchemaId,
         search,
         limit,
         offset,
         showOnlyChanged,
     }: {
+        worker: string,
         compareConnectSchemaId?: number,
         search?: string,
         limit?: number,
@@ -34,7 +36,10 @@ export class EcnInstrumentsService {
     }): CancelablePromise<GetEcnInstrumentsInConnectionsResponse> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-instruments/in-connections',
+            url: '/{worker}/liquidity/ecn-instruments/in-connections',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'compareConnectSchemaId': compareConnectSchemaId,
                 'search': search,
@@ -52,11 +57,13 @@ export class EcnInstrumentsService {
      */
     public getOneBaseEcnInstrumentsControllerEcnInstrument({
         instrumentHash,
+        worker,
         fields,
         join,
         cache,
     }: {
         instrumentHash: string,
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -72,9 +79,10 @@ export class EcnInstrumentsService {
     }): CancelablePromise<EcnInstrument> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-instruments/{instrumentHash}',
+            url: '/{worker}/liquidity/ecn-instruments/{instrumentHash}',
             path: {
                 'instrumentHash': instrumentHash,
+                'worker': worker,
             },
             query: {
                 'fields': fields,
@@ -91,16 +99,19 @@ export class EcnInstrumentsService {
      */
     public updateOneBaseEcnInstrumentsControllerEcnInstrument({
         instrumentHash,
+        worker,
         requestBody,
     }: {
         instrumentHash: string,
+        worker: string,
         requestBody: EcnInstrumentUpdateDto,
     }): CancelablePromise<EcnInstrument> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidity/ecn-instruments/{instrumentHash}',
+            url: '/{worker}/liquidity/ecn-instruments/{instrumentHash}',
             path: {
                 'instrumentHash': instrumentHash,
+                'worker': worker,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -114,14 +125,17 @@ export class EcnInstrumentsService {
      */
     public deleteOneBaseEcnInstrumentsControllerEcnInstrument({
         instrumentHash,
+        worker,
     }: {
         instrumentHash: string,
+        worker: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidity/ecn-instruments/{instrumentHash}',
+            url: '/{worker}/liquidity/ecn-instruments/{instrumentHash}',
             path: {
                 'instrumentHash': instrumentHash,
+                'worker': worker,
             },
         });
     }
@@ -132,6 +146,7 @@ export class EcnInstrumentsService {
      * @throws ApiError
      */
     public getManyBaseEcnInstrumentsControllerEcnInstrument({
+        worker,
         fields,
         s,
         filter,
@@ -143,6 +158,7 @@ export class EcnInstrumentsService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -186,7 +202,10 @@ export class EcnInstrumentsService {
     }): CancelablePromise<GetManyEcnInstrumentResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-instruments',
+            url: '/{worker}/liquidity/ecn-instruments',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,
@@ -208,13 +227,18 @@ export class EcnInstrumentsService {
      * @throws ApiError
      */
     public createOneBaseEcnInstrumentsControllerEcnInstrument({
+        worker,
         requestBody,
     }: {
+        worker: string,
         requestBody: EcnInstrumentCreateDto,
     }): CancelablePromise<EcnInstrument> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidity/ecn-instruments',
+            url: '/{worker}/liquidity/ecn-instruments',
+            path: {
+                'worker': worker,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });

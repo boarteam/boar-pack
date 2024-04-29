@@ -17,6 +17,7 @@ export class DclActionsService {
      * @throws ApiError
      */
     public getManyBaseGenericLiquidityControllerDclAction({
+        worker,
         fields,
         s,
         filter,
@@ -28,6 +29,7 @@ export class DclActionsService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -71,7 +73,10 @@ export class DclActionsService {
     }): CancelablePromise<GetManyDclActionResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/dcl-actions',
+            url: '/{worker}/liquidity/dcl-actions',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,

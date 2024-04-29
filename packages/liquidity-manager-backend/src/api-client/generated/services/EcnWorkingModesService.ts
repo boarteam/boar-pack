@@ -17,6 +17,7 @@ export class EcnWorkingModesService {
      * @throws ApiError
      */
     public getManyBaseGenericLiquidityControllerEcnWorkingMode({
+        worker,
         fields,
         s,
         filter,
@@ -28,6 +29,7 @@ export class EcnWorkingModesService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -71,7 +73,10 @@ export class EcnWorkingModesService {
     }): CancelablePromise<GetManyEcnWorkingModeResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-working-modes',
+            url: '/{worker}/liquidity/ecn-working-modes',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,

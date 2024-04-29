@@ -17,6 +17,7 @@ export class UsersInstCompaniesService {
      * @throws ApiError
      */
     public getManyBaseGenericLiquidityControllerUsersInstCompany({
+        worker,
         fields,
         s,
         filter,
@@ -28,6 +29,7 @@ export class UsersInstCompaniesService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -71,7 +73,10 @@ export class UsersInstCompaniesService {
     }): CancelablePromise<GetManyUsersInstCompanyResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/users-inst-companies',
+            url: '/{worker}/liquidity/users-inst-companies',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,

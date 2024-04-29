@@ -21,11 +21,13 @@ export class EcnConnectSchemaSetupLabelsService {
      */
     public getOneBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel({
         id,
+        worker,
         fields,
         join,
         cache,
     }: {
         id: number,
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -41,9 +43,10 @@ export class EcnConnectSchemaSetupLabelsService {
     }): CancelablePromise<EcnConnectSchemaSetupLabel> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-connect-schema-setup-labels/{id}',
+            url: '/{worker}/liquidity/ecn-connect-schema-setup-labels/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             query: {
                 'fields': fields,
@@ -60,16 +63,19 @@ export class EcnConnectSchemaSetupLabelsService {
      */
     public updateOneBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel({
         id,
+        worker,
         requestBody,
     }: {
         id: number,
+        worker: string,
         requestBody: EcnConnectSchemaSetupLabelUpdateDto,
     }): CancelablePromise<EcnConnectSchemaSetupLabel> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidity/ecn-connect-schema-setup-labels/{id}',
+            url: '/{worker}/liquidity/ecn-connect-schema-setup-labels/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -83,14 +89,17 @@ export class EcnConnectSchemaSetupLabelsService {
      */
     public deleteOneBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel({
         id,
+        worker,
     }: {
         id: number,
+        worker: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidity/ecn-connect-schema-setup-labels/{id}',
+            url: '/{worker}/liquidity/ecn-connect-schema-setup-labels/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
         });
     }
@@ -101,6 +110,7 @@ export class EcnConnectSchemaSetupLabelsService {
      * @throws ApiError
      */
     public getManyBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel({
+        worker,
         fields,
         s,
         filter,
@@ -112,6 +122,7 @@ export class EcnConnectSchemaSetupLabelsService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -155,7 +166,10 @@ export class EcnConnectSchemaSetupLabelsService {
     }): CancelablePromise<GetManyEcnConnectSchemaSetupLabelResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-connect-schema-setup-labels',
+            url: '/{worker}/liquidity/ecn-connect-schema-setup-labels',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,
@@ -177,13 +191,18 @@ export class EcnConnectSchemaSetupLabelsService {
      * @throws ApiError
      */
     public createOneBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel({
+        worker,
         requestBody,
     }: {
+        worker: string,
         requestBody: EcnConnectSchemaSetupLabelCreateDto,
     }): CancelablePromise<EcnConnectSchemaSetupLabel> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidity/ecn-connect-schema-setup-labels',
+            url: '/{worker}/liquidity/ecn-connect-schema-setup-labels',
+            path: {
+                'worker': worker,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });

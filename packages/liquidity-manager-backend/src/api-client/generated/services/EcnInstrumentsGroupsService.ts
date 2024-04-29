@@ -20,6 +20,7 @@ export class EcnInstrumentsGroupsService {
      * @throws ApiError
      */
     public getManyBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup({
+        worker,
         fields,
         s,
         filter,
@@ -31,6 +32,7 @@ export class EcnInstrumentsGroupsService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -74,7 +76,10 @@ export class EcnInstrumentsGroupsService {
     }): CancelablePromise<GetManyEcnInstrumentsGroupResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-instruments-groups',
+            url: '/{worker}/liquidity/ecn-instruments-groups',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,
@@ -96,13 +101,18 @@ export class EcnInstrumentsGroupsService {
      * @throws ApiError
      */
     public createOneBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup({
+        worker,
         requestBody,
     }: {
+        worker: string,
         requestBody: EcnInstrumentsGroupCreateDto,
     }): CancelablePromise<EcnInstrumentsGroup> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidity/ecn-instruments-groups',
+            url: '/{worker}/liquidity/ecn-instruments-groups',
+            path: {
+                'worker': worker,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -115,16 +125,19 @@ export class EcnInstrumentsGroupsService {
      */
     public updateOneBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup({
         id,
+        worker,
         requestBody,
     }: {
         id: number,
+        worker: string,
         requestBody: EcnInstrumentsGroupUpdateDto,
     }): CancelablePromise<EcnInstrumentsGroup> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidity/ecn-instruments-groups/{id}',
+            url: '/{worker}/liquidity/ecn-instruments-groups/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -138,14 +151,17 @@ export class EcnInstrumentsGroupsService {
      */
     public deleteOneBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup({
         id,
+        worker,
     }: {
         id: number,
+        worker: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidity/ecn-instruments-groups/{id}',
+            url: '/{worker}/liquidity/ecn-instruments-groups/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
         });
     }

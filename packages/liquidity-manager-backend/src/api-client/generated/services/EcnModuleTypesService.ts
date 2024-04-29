@@ -20,6 +20,7 @@ export class EcnModuleTypesService {
      * @throws ApiError
      */
     public getManyBaseEcnModuleTypesControllerEcnModuleType({
+        worker,
         fields,
         s,
         filter,
@@ -31,6 +32,7 @@ export class EcnModuleTypesService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -74,7 +76,10 @@ export class EcnModuleTypesService {
     }): CancelablePromise<GetManyEcnModuleTypeResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-module-types',
+            url: '/{worker}/liquidity/ecn-module-types',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,
@@ -96,13 +101,18 @@ export class EcnModuleTypesService {
      * @throws ApiError
      */
     public createOneBaseEcnModuleTypesControllerEcnModuleType({
+        worker,
         requestBody,
     }: {
+        worker: string,
         requestBody: EcnModuleTypeCreateDto,
     }): CancelablePromise<EcnModuleType> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidity/ecn-module-types',
+            url: '/{worker}/liquidity/ecn-module-types',
+            path: {
+                'worker': worker,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -115,16 +125,19 @@ export class EcnModuleTypesService {
      */
     public updateOneBaseEcnModuleTypesControllerEcnModuleType({
         id,
+        worker,
         requestBody,
     }: {
         id: number,
+        worker: string,
         requestBody: EcnModuleTypeUpdateDto,
     }): CancelablePromise<EcnModuleType> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidity/ecn-module-types/{id}',
+            url: '/{worker}/liquidity/ecn-module-types/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -138,14 +151,17 @@ export class EcnModuleTypesService {
      */
     public deleteOneBaseEcnModuleTypesControllerEcnModuleType({
         id,
+        worker,
     }: {
         id: number,
+        worker: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidity/ecn-module-types/{id}',
+            url: '/{worker}/liquidity/ecn-module-types/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
         });
     }

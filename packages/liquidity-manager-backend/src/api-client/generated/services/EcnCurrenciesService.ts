@@ -17,6 +17,7 @@ export class EcnCurrenciesService {
      * @throws ApiError
      */
     public getManyBaseGenericLiquidityControllerEcnCurrency({
+        worker,
         fields,
         s,
         filter,
@@ -28,6 +29,7 @@ export class EcnCurrenciesService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -71,7 +73,10 @@ export class EcnCurrenciesService {
     }): CancelablePromise<GetManyEcnCurrencyResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-currency',
+            url: '/{worker}/liquidity/ecn-currency',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,

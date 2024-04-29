@@ -22,12 +22,14 @@ export class SubloginSettingsService {
     public getOneBaseSubloginsSettingsControllerSubloginSettings({
         usersSubAccountInstId,
         instrument,
+        worker,
         fields,
         join,
         cache,
     }: {
         usersSubAccountInstId: string,
         instrument: string,
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -43,10 +45,11 @@ export class SubloginSettingsService {
     }): CancelablePromise<SubloginSettings> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/sublogins-settings/{usersSubAccountInstId}/{instrument}',
+            url: '/{worker}/liquidity/sublogins-settings/{usersSubAccountInstId}/{instrument}',
             path: {
                 'usersSubAccountInstId': usersSubAccountInstId,
                 'instrument': instrument,
+                'worker': worker,
             },
             query: {
                 'fields': fields,
@@ -64,18 +67,21 @@ export class SubloginSettingsService {
     public updateOneBaseSubloginsSettingsControllerSubloginSettings({
         usersSubAccountInstId,
         instrument,
+        worker,
         requestBody,
     }: {
         usersSubAccountInstId: string,
         instrument: string,
+        worker: string,
         requestBody: SubloginSettingsUpdateDto,
     }): CancelablePromise<SubloginSettings> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidity/sublogins-settings/{usersSubAccountInstId}/{instrument}',
+            url: '/{worker}/liquidity/sublogins-settings/{usersSubAccountInstId}/{instrument}',
             path: {
                 'usersSubAccountInstId': usersSubAccountInstId,
                 'instrument': instrument,
+                'worker': worker,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -90,16 +96,19 @@ export class SubloginSettingsService {
     public deleteOneBaseSubloginsSettingsControllerSubloginSettings({
         usersSubAccountInstId,
         instrument,
+        worker,
     }: {
         usersSubAccountInstId: string,
         instrument: string,
+        worker: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidity/sublogins-settings/{usersSubAccountInstId}/{instrument}',
+            url: '/{worker}/liquidity/sublogins-settings/{usersSubAccountInstId}/{instrument}',
             path: {
                 'usersSubAccountInstId': usersSubAccountInstId,
                 'instrument': instrument,
+                'worker': worker,
             },
         });
     }
@@ -110,6 +119,7 @@ export class SubloginSettingsService {
      * @throws ApiError
      */
     public getManyBaseSubloginsSettingsControllerSubloginSettings({
+        worker,
         fields,
         s,
         filter,
@@ -121,6 +131,7 @@ export class SubloginSettingsService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -164,7 +175,10 @@ export class SubloginSettingsService {
     }): CancelablePromise<GetManySubloginSettingsResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/sublogins-settings',
+            url: '/{worker}/liquidity/sublogins-settings',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,
@@ -186,13 +200,18 @@ export class SubloginSettingsService {
      * @throws ApiError
      */
     public createOneBaseSubloginsSettingsControllerSubloginSettings({
+        worker,
         requestBody,
     }: {
+        worker: string,
         requestBody: SubloginSettingsCreateDto,
     }): CancelablePromise<SubloginSettings> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidity/sublogins-settings',
+            url: '/{worker}/liquidity/sublogins-settings',
+            path: {
+                'worker': worker,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });

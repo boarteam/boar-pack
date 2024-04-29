@@ -17,6 +17,7 @@ export class EcnStatesService {
      * @throws ApiError
      */
     public getManyBaseGenericLiquidityControllerEcnState({
+        worker,
         fields,
         s,
         filter,
@@ -28,6 +29,7 @@ export class EcnStatesService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -71,7 +73,10 @@ export class EcnStatesService {
     }): CancelablePromise<GetManyEcnStateResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-states',
+            url: '/{worker}/liquidity/ecn-states',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,

@@ -17,6 +17,7 @@ export class EcnWeekDaysService {
      * @throws ApiError
      */
     public getManyBaseGenericLiquidityControllerEcnWeekDay({
+        worker,
         fields,
         s,
         filter,
@@ -28,6 +29,7 @@ export class EcnWeekDaysService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -71,7 +73,10 @@ export class EcnWeekDaysService {
     }): CancelablePromise<GetManyEcnWeekDayResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-week-days',
+            url: '/{worker}/liquidity/ecn-week-days',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,

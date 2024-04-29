@@ -21,11 +21,13 @@ export class UsersSubAccountsInstService {
      */
     public getOneBaseUsersSubAccountsInstControllerUsersSubAccountInst({
         id,
+        worker,
         fields,
         join,
         cache,
     }: {
         id: string,
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -41,9 +43,10 @@ export class UsersSubAccountsInstService {
     }): CancelablePromise<UsersSubAccountInst> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/users-sub-accounts-inst/{id}',
+            url: '/{worker}/liquidity/users-sub-accounts-inst/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             query: {
                 'fields': fields,
@@ -60,16 +63,19 @@ export class UsersSubAccountsInstService {
      */
     public updateOneBaseUsersSubAccountsInstControllerUsersSubAccountInst({
         id,
+        worker,
         requestBody,
     }: {
         id: string,
+        worker: string,
         requestBody: UsersSubAccountInstUpdateDto,
     }): CancelablePromise<UsersSubAccountInst> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidity/users-sub-accounts-inst/{id}',
+            url: '/{worker}/liquidity/users-sub-accounts-inst/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -83,14 +89,17 @@ export class UsersSubAccountsInstService {
      */
     public deleteOneBaseUsersSubAccountsInstControllerUsersSubAccountInst({
         id,
+        worker,
     }: {
         id: string,
+        worker: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidity/users-sub-accounts-inst/{id}',
+            url: '/{worker}/liquidity/users-sub-accounts-inst/{id}',
             path: {
                 'id': id,
+                'worker': worker,
             },
         });
     }
@@ -101,6 +110,7 @@ export class UsersSubAccountsInstService {
      * @throws ApiError
      */
     public getManyBaseUsersSubAccountsInstControllerUsersSubAccountInst({
+        worker,
         fields,
         s,
         filter,
@@ -112,6 +122,7 @@ export class UsersSubAccountsInstService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -155,7 +166,10 @@ export class UsersSubAccountsInstService {
     }): CancelablePromise<GetManyUsersSubAccountInstResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/users-sub-accounts-inst',
+            url: '/{worker}/liquidity/users-sub-accounts-inst',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,
@@ -177,13 +191,18 @@ export class UsersSubAccountsInstService {
      * @throws ApiError
      */
     public createOneBaseUsersSubAccountsInstControllerUsersSubAccountInst({
+        worker,
         requestBody,
     }: {
+        worker: string,
         requestBody: UsersSubAccountInstCreateDto,
     }): CancelablePromise<UsersSubAccountInst> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidity/users-sub-accounts-inst',
+            url: '/{worker}/liquidity/users-sub-accounts-inst',
+            path: {
+                'worker': worker,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });

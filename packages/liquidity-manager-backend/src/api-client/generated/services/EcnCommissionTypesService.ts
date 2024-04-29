@@ -17,6 +17,7 @@ export class EcnCommissionTypesService {
      * @throws ApiError
      */
     public getManyBaseGenericLiquidityControllerEcnCommissionType({
+        worker,
         fields,
         s,
         filter,
@@ -28,6 +29,7 @@ export class EcnCommissionTypesService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -71,7 +73,10 @@ export class EcnCommissionTypesService {
     }): CancelablePromise<GetManyEcnCommissionTypeResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-commission-types',
+            url: '/{worker}/liquidity/ecn-commission-types',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,

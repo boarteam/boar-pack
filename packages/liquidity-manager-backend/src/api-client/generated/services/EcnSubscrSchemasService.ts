@@ -21,14 +21,17 @@ export class EcnSubscrSchemasService {
      */
     public getCount({
         connectSchemaId,
+        worker,
     }: {
         connectSchemaId: number,
+        worker: string,
     }): CancelablePromise<SubscSchemasCountResponse> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-subscr-schemas/count/{connectSchemaId}',
+            url: '/{worker}/liquidity/ecn-subscr-schemas/count/{connectSchemaId}',
             path: {
                 'connectSchemaId': connectSchemaId,
+                'worker': worker,
             },
         });
     }
@@ -41,12 +44,14 @@ export class EcnSubscrSchemasService {
     public getOneBaseEcnSubscrSchemaControllerEcnSubscrSchema({
         instrumentHash,
         connectSchemaId,
+        worker,
         fields,
         join,
         cache,
     }: {
         instrumentHash: string,
         connectSchemaId: number,
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -62,10 +67,11 @@ export class EcnSubscrSchemasService {
     }): CancelablePromise<EcnSubscrSchema> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-subscr-schemas/{instrumentHash}/{connectSchemaId}',
+            url: '/{worker}/liquidity/ecn-subscr-schemas/{instrumentHash}/{connectSchemaId}',
             path: {
                 'instrumentHash': instrumentHash,
                 'connectSchemaId': connectSchemaId,
+                'worker': worker,
             },
             query: {
                 'fields': fields,
@@ -83,18 +89,21 @@ export class EcnSubscrSchemasService {
     public updateOneBaseEcnSubscrSchemaControllerEcnSubscrSchema({
         instrumentHash,
         connectSchemaId,
+        worker,
         requestBody,
     }: {
         instrumentHash: string,
         connectSchemaId: number,
+        worker: string,
         requestBody: EcnSubscrSchemaUpdateDto,
     }): CancelablePromise<EcnSubscrSchema> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidity/ecn-subscr-schemas/{instrumentHash}/{connectSchemaId}',
+            url: '/{worker}/liquidity/ecn-subscr-schemas/{instrumentHash}/{connectSchemaId}',
             path: {
                 'instrumentHash': instrumentHash,
                 'connectSchemaId': connectSchemaId,
+                'worker': worker,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -109,16 +118,19 @@ export class EcnSubscrSchemasService {
     public deleteOneBaseEcnSubscrSchemaControllerEcnSubscrSchema({
         instrumentHash,
         connectSchemaId,
+        worker,
     }: {
         instrumentHash: string,
         connectSchemaId: number,
+        worker: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidity/ecn-subscr-schemas/{instrumentHash}/{connectSchemaId}',
+            url: '/{worker}/liquidity/ecn-subscr-schemas/{instrumentHash}/{connectSchemaId}',
             path: {
                 'instrumentHash': instrumentHash,
                 'connectSchemaId': connectSchemaId,
+                'worker': worker,
             },
         });
     }
@@ -129,6 +141,7 @@ export class EcnSubscrSchemasService {
      * @throws ApiError
      */
     public getManyBaseEcnSubscrSchemaControllerEcnSubscrSchema({
+        worker,
         fields,
         s,
         filter,
@@ -140,6 +153,7 @@ export class EcnSubscrSchemasService {
         page,
         cache,
     }: {
+        worker: string,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
@@ -183,7 +197,10 @@ export class EcnSubscrSchemasService {
     }): CancelablePromise<GetManyEcnSubscrSchemaResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidity/ecn-subscr-schemas',
+            url: '/{worker}/liquidity/ecn-subscr-schemas',
+            path: {
+                'worker': worker,
+            },
             query: {
                 'fields': fields,
                 's': s,
@@ -205,13 +222,18 @@ export class EcnSubscrSchemasService {
      * @throws ApiError
      */
     public createOneBaseEcnSubscrSchemaControllerEcnSubscrSchema({
+        worker,
         requestBody,
     }: {
+        worker: string,
         requestBody: EcnSubscrSchemaCreateDto,
     }): CancelablePromise<EcnSubscrSchema> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidity/ecn-subscr-schemas',
+            url: '/{worker}/liquidity/ecn-subscr-schemas',
+            path: {
+                'worker': worker,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
