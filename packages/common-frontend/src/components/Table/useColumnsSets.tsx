@@ -24,19 +24,21 @@ type TUseColumnsSetsResult<Entity> = {
   columnsState: ColumnStateType,
 }
 
+type TColumnsState = Partial<Record<string, ColumnsState>>;
+
 function getColumnsStates<T>(
   columns: TIndexableRecord[],
   shownCols: Set<keyof T>,
-  state: Partial<Record<keyof T, ColumnsState>> = {},
+  state: TColumnsState = {},
 ): Record<string, ColumnsState> {
   columns.forEach(col => {
-    const idx = (Array.isArray(col.dataIndex) ? col.dataIndex.join(',') : col.dataIndex) as keyof T;
+    const idx = Array.isArray(col.dataIndex) ? col.dataIndex.join(',') : col.dataIndex;
     if ('children' in col && Array.isArray(col.children)) {
       getColumnsStates(col.children, shownCols, state);
     }
 
-    if (idx && !shownCols.has(idx)) {
-      state[idx] = { show: false };
+    if (idx && !shownCols.has(idx as keyof T)) {
+      state[idx as string] = { show: false };
     }
   }, state);
 

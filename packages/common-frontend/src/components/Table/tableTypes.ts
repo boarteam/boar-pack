@@ -1,11 +1,10 @@
 import React, { MutableRefObject } from "react";
 import { ActionType, ProTableProps } from "@ant-design/pro-table";
-import { RowEditableConfig } from "@ant-design/pro-utils";
 import { QueryJoin, QuerySortArr } from "@nestjsx/crud-request";
 import { Operators } from "./tableTools";
 import { TColumnsSet } from "./useColumnsSets";
 import { ColumnStateType } from "@ant-design/pro-table/es/typing";
-// import { IntlShape } from "react-intl";
+import { RowEditableConfig } from "@ant-design/pro-utils";
 
 export type IWithId = {
   id: string | number,
@@ -53,8 +52,9 @@ export type TGetAllParams = {
   cache?: number,
 }
 export type TFilters = {
-  [key: string]: number | string | boolean;
+  [key: string]: number | string | boolean | (string | number)[] | null;
 }
+
 export type TGetRequestParams = {
   baseFilters?: TFilters;
   join?: QueryJoin | QueryJoin[];
@@ -65,13 +65,17 @@ export type TGetAllRequestParams = TGetRequestParams & {
 export type TFilterParams = {
   current?: number;
   pageSize?: number;
+  sortMap?: {[key: string]: string};
 } & TGetAllRequestParams;
 export type TSort = {
   [key: string]: 'ascend' | 'descend' | null,
 };
 export type TSearchableColumn = {
   field: string | string[],
+  searchField?: string,
   operator: typeof Operators[keyof typeof Operators],
+  filterField?: string,
+  filterOperator?: typeof Operators[keyof typeof Operators],
 }
 export interface TTableProps<
   Entity,
@@ -99,5 +103,4 @@ export interface TTableProps<
   popupCreation?: boolean,
   columnsState?: ColumnStateType,
   columnsSetSelect?: () => React.ReactNode,
-  // intl: IntlShape,
 }

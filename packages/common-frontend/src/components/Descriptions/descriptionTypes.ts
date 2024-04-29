@@ -38,7 +38,7 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = {}> =
   canEdit?: boolean,
   params?: TDescriptionGetRequestParams,
   columns: ProColumns<Entity>[],
-  record?: Entity,
+  onEntityChange?: (entity: Entity | null) => void;
 }
 
 export type TDescriptionsCreateModalProps<Entity> = Omit<ProDescriptionsProps<Entity>, 'columns'> & {

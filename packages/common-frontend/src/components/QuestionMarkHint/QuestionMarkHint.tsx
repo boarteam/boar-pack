@@ -4,7 +4,7 @@ import { QuestionCircleTwoTone } from "@ant-design/icons";
 import { PrimitiveType } from "intl-messageformat";
 import { useIntl } from "react-intl";
 
-const QuestionMarkHint: React.FC<{
+export const QuestionMarkHint: React.FC<{
   intlPrefix: string,
   values?: Record<string, PrimitiveType | React.ReactElement>
 }> = ({
