@@ -1,6 +1,6 @@
 import { Table, TColumnsSet } from "@jifeon/boar-pack-common-frontend";
-import apiClient from '@api/apiClient';
-import { EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto } from "@api/generated";
+import apiClient from '@@api/apiClient';
+import { EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto } from "@@api/generated";
 import { useEcnInstrumentsColumns } from "./useEcnInstrumentsColumns";
 import pick from "lodash/pick";
 import { ecnInstrumentJoinFields } from "./ecnInstrumentJoinFields";

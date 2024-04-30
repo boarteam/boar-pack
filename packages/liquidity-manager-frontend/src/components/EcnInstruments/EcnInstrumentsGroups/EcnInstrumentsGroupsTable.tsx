@@ -1,6 +1,6 @@
 import { Operators, Table, withNumericId } from "@jifeon/boar-pack-common-frontend";
-import apiClient from '@api/apiClient';
-import { EcnInstrumentsGroup, EcnInstrumentsGroupCreateDto, EcnInstrumentsGroupUpdateDto } from "@api/generated";
+import apiClient from '@@api/apiClient';
+import { EcnInstrumentsGroup, EcnInstrumentsGroupCreateDto, EcnInstrumentsGroupUpdateDto } from "@@api/generated";
 import { useEcnInstrumentsGroupsColumns } from "./useEcnInstrumentsGroupsColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";

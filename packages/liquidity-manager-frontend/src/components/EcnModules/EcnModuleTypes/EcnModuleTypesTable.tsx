@@ -1,6 +1,6 @@
 import { Table } from "@jifeon/boar-pack-common-frontend";
-import apiClient from '@api/apiClient';
-import { EcnModuleType, EcnModuleTypeCreateDto, EcnModuleTypeUpdateDto } from "@api/generated";
+import apiClient from '@@api/apiClient';
+import { EcnModuleType, EcnModuleTypeCreateDto, EcnModuleTypeUpdateDto } from "@@api/generated";
 import { useEcnModuleTypesColumns } from "./useEcnModuleTypesColumns";
 import pick from "lodash/pick";
 import { Operators, withNumericId } from "@jifeon/boar-pack-common-frontend";

@@ -1,6 +1,6 @@
 import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { EcnConnectSchemaSetupLabel } from "@api/generated";
+import { EcnConnectSchemaSetupLabel } from "@@api/generated";
 import { Tag } from "antd";
 import { EcnModulesSelect } from "../EcnModuleSelect";
 import { CopyOutlined, EditOutlined } from "@ant-design/icons";

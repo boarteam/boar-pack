@@ -1,8 +1,8 @@
 import { ProColumns } from "@ant-design/pro-components";
 import { useAccess, useIntl, Link } from "@umijs/max";
-import { EcnCurrency, EcnInstrument, SubloginSettings } from "@api/generated";
+import { EcnCurrency, EcnInstrument, SubloginSettings } from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
-import apiClient from '@api/apiClient';
+import apiClient from '@@api/apiClient';
 import { Tag } from "antd";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { dropTrailZeroes, NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend";

@@ -1,9 +1,9 @@
 import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { EcnModule, EcnModuleType } from "@api/generated";
+import { EcnModule, EcnModuleType } from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { Tag } from "antd";
-import apiClient from '@api/apiClient';
+import apiClient from '@@api/apiClient';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { useEffect, useState } from "react";
 import { NumberInputHandlingNewRecord, NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend";

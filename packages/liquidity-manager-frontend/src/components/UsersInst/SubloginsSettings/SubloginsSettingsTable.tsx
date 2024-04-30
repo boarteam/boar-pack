@@ -1,6 +1,6 @@
 import { Table, useFullscreen } from "@jifeon/boar-pack-common-frontend";
-import apiClient from '@api/apiClient';
-import { SubloginSettings, SubloginSettingsCreateDto, SubloginSettingsUpdateDto } from "@api/generated";
+import apiClient from '@@api/apiClient';
+import { SubloginSettings, SubloginSettingsCreateDto, SubloginSettingsUpdateDto } from "@@api/generated";
 import React from "react";
 import { subloginsSettingsJoinFields } from "./subloginsSettingsJoinFields";
 import { ProColumns } from "@ant-design/pro-components";

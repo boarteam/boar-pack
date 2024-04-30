@@ -1,8 +1,8 @@
 import { ecnModuleToDto } from './EcnModulesTable';
 import { ecnModuleJoinFields } from './ecnModuleJoinFields';
 import { useEcnModulesColumns } from './useEcnModulesColumns';
-import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from '@api/generated';
-import apiClient from '@api/apiClient';
+import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from '@@api/generated';
+import apiClient from '@@api/apiClient';
 import { Button, Drawer } from 'antd';
 import React, { useState } from "react";
 import { DeleteOutlined } from '@ant-design/icons';

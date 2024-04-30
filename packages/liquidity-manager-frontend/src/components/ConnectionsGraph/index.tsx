@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import '@antv/xflow/dist/index.css';
-import apiClient from '@api/apiClient';
-import { EcnModule } from '@api/generated';
+import apiClient from '@@api/apiClient';
+import { EcnModule } from '@@api/generated';
 import { EcnModuleDrawer } from '../EcnModules/EcnModuleDrawer';
 import { EcnConnectSchemaDrawer } from '../EcnModules/EcnConnectSchemaDrawer';
 import { Spin } from 'antd';

@@ -31,7 +31,7 @@ const useStyles = createStyles(({ token }) => {
   };
 });
 
-export default function useFullscreen() {
+export function useFullscreen() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const { styles } = useStyles();
 

@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@jifeon/boar-pack-liquidity-manager-backend": {
-      "signature": "8cb20019d58be89f8bfb50feb3c899a8"
+      "signature": "dc09f68e32156f4268b52706f1b50288"
     }
   }
 }

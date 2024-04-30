@@ -1,6 +1,6 @@
 import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { LiquidityManager } from "@api/generated";
+import { LiquidityManager } from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { Tag } from "antd";
 import { CheckLiquidityManagerConnection } from "./CheckLiquidityManagerConnection";

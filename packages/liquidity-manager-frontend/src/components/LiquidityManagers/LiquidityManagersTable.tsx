@@ -1,6 +1,6 @@
 import { Table } from "@jifeon/boar-pack-common-frontend";
-import apiClient from '@api/apiClient';
-import { LiquidityManager, LiquidityManagerCreateDto, LiquidityManagerUpdateDto } from "@api/generated";
+import apiClient from '@@api/apiClient';
+import { LiquidityManager, LiquidityManagerCreateDto, LiquidityManagerUpdateDto } from "@@api/generated";
 import { useLiquidityManagersColumns } from "./useLiquidityManagersColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";

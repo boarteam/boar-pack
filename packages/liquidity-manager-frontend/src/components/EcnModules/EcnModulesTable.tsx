@@ -1,5 +1,5 @@
-import apiClient from '@api/apiClient';
-import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from "@api/generated";
+import apiClient from '@@api/apiClient';
+import { EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto } from "@@api/generated";
 import { useEcnModulesColumns } from "./useEcnModulesColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";

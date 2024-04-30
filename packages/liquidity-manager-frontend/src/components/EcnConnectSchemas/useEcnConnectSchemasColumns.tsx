@@ -1,6 +1,6 @@
 import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { EcnConnectSchema } from "@api/generated";
+import { EcnConnectSchema } from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { Tag } from "antd";
 import { NumberSwitch } from "@jifeon/boar-pack-common-frontend";

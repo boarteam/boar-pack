@@ -29,7 +29,7 @@ export class LiquidityAppConfig implements TypeOrmOptionsFactory {
       type: 'mysql',
       synchronize: this.configService.get<string>('SYNC_DB') === 'true',
       logging: 'all',
-      entities: [resolve(__dirname, './**/entities/*.entity.{ts,js}')],
+      entities: [resolve(__dirname, '../../**/entities/*.entity.{ts,js}')],
       namingStrategy: new SnakeNamingStrategy(),
       ...dbSettings,
     };
