@@ -1,9 +1,9 @@
 import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { DclAction, EcnCurrency, EcnWorkingMode, UsersGroupsInst, UsersInstCompany } from "@api/generated";
+import { DclAction, EcnCurrency, EcnWorkingMode, UsersGroupsInst, UsersInstCompany } from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
-import apiClient from '@api/apiClient';
+import apiClient from '@@api/apiClient';
 import { Tag } from "antd";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend";

@@ -1,6 +1,6 @@
 import { Table } from "@jifeon/boar-pack-common-frontend";
-import apiClient from '@api/apiClient';
-import { UsersGroupsInst, UsersGroupsInstCreateDto, UsersGroupsInstUpdateDto } from "@api/generated";
+import apiClient from '@@api/apiClient';
+import { UsersGroupsInst, UsersGroupsInstCreateDto, UsersGroupsInstUpdateDto } from "@@api/generated";
 import { useUsersGroupsInstColumns } from "./useUsersGroupsInstColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";

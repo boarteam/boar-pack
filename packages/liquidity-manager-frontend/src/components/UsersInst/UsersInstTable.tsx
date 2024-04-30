@@ -1,6 +1,6 @@
 import { Table, TColumnsSet } from "@jifeon/boar-pack-common-frontend";
-import apiClient from '@api/apiClient';
-import { UsersInst, UsersInstCreateDto, UsersInstUpdateDto } from "@api/generated";
+import apiClient from '@@api/apiClient';
+import { UsersInst, UsersInstCreateDto, UsersInstUpdateDto } from "@@api/generated";
 import { useUsersInstColumns } from "./useUsersInstColumns";
 import pick from "lodash/pick";
 import { useAccess } from "@umijs/max";

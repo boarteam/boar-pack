@@ -1,7 +1,7 @@
 import React from "react";
-import { LiquidityManager, LiquidityManagerCheckResponseDto } from "@api/generated";
+import { LiquidityManager, LiquidityManagerCheckResponseDto } from "@@api/generated";
 import { useIntl } from "umi";
-import apiClient from '@api/apiClient';
+import apiClient from '@@api/apiClient';
 import pick from "lodash/pick";
 import { isRecordNew, useCheckConnection } from "@jifeon/boar-pack-common-frontend";
 

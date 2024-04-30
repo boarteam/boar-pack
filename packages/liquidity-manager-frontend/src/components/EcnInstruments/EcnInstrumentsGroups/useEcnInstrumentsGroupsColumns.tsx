@@ -1,6 +1,6 @@
 import { useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
-import { EcnInstrumentsGroup } from "@api/generated";
+import { EcnInstrumentsGroup } from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
 

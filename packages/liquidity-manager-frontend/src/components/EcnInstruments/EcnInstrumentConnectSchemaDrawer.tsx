@@ -6,8 +6,8 @@ import {
   EcnSubscrSchema,
   EcnSubscrSchemaCreateDto,
   EcnSubscrSchemaUpdateDto
-} from '@api/generated';
-import apiClient from '@api/apiClient';
+} from '@@api/generated';
+import apiClient from '@@api/apiClient';
 import { Button, Drawer } from 'antd';
 import { pick } from 'lodash';
 import React, { useState } from "react";

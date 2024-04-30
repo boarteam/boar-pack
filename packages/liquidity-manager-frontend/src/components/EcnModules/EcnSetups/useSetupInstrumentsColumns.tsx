@@ -5,10 +5,10 @@ import {
   EcnInstrument,
   EcnSubscrSchema,
   GetEcnInstrumentsInConnectionsData
-} from "@api/generated";
+} from "@@api/generated";
 import { Popover, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
-import apiClient from '@api/apiClient';
+import apiClient from '@@api/apiClient';
 import { useEcnSubscrSchemaColumns } from "../EcnSubscrSchemas/useEcnSubscrSchemaColumns";
 import { ColumnsType } from "antd/es/table";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";

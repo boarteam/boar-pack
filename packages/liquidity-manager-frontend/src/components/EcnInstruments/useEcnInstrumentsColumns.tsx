@@ -9,17 +9,15 @@ import {
   EcnProfitCalcMode,
   EcnSwapType,
   EcnWeekDay,
-} from "@api/generated";
+} from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
-import { NumberSwitch } from "../../Inputs/NumberSwitcher";
 import { Tag } from "antd";
-import { dropTrailZeroes } from "@/tools/numberTools";
-import { RelationSelect } from "../../Inputs/RelationSelect";
-import apiClient from '@api/apiClient';
-import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
+import apiClient from '@@api/apiClient';
+import { useLiquidityManagerContext } from "../../tools";
 import { useEffect, useState } from "react";
 import { dividerToMargin, MarginInput } from "./MarginInput";
+import { dropTrailZeroes, NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend";
 
 export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
   const intl = useIntl();

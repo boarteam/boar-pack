@@ -1,11 +1,11 @@
 import { Table, TColumnsSet, useColumnsSets } from "@jifeon/boar-pack-common-frontend";
-import apiClient from '@api/apiClient';
+import apiClient from '@@api/apiClient';
 import {
   SubloginSettings,
   UsersSubAccountInst,
   UsersSubAccountInstCreateDto,
   UsersSubAccountInstUpdateDto
-} from "@api/generated";
+} from "@@api/generated";
 import { useUsersSubAccountsInstColumns } from "./useUsersSubAccountsInstColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";

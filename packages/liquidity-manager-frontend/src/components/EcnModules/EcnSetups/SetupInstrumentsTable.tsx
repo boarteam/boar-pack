@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Card, Space, Switch, Flex } from 'antd';
 import { ActionType, ColumnsState, ProFormSelect, ProTable } from '@ant-design/pro-components';
-import apiClient from '@api/apiClient';
+import apiClient from '@@api/apiClient';
 import {
   EcnConnectSchema,
   EcnConnectSchemaSetupLabel,
   EcnInstrument, EcnInstrumentsGroup,
   GetEcnInstrumentsInConnectionsData,
-} from '@api/generated';
+} from '@@api/generated';
 import s from './SetupInstrumentsTable.less';
 import { useSetupInstrumentsColumns } from './useSetupInstrumentsColumns';
 import { SortOrder } from 'antd/es/table/interface';

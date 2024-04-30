@@ -1,13 +1,13 @@
-import { EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto } from "@api/generated";
-import apiClient from '@api/apiClient';
+import { EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto } from "@@api/generated";
+import apiClient from '@@api/apiClient';
 import { ecnInstrumentToDto } from "./EcnInstrumentsTable";
 import { ecnInstrumentJoinFields } from "./ecnInstrumentJoinFields";
-import Descriptions from "../../Descriptions/Descriptions";
 import React, { useMemo } from "react";
 import { useEcnInstrumentsColumns } from "./useEcnInstrumentsColumns";
 import { useAccess } from "@umijs/max";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
+import { Descriptions } from "@jifeon/boar-pack-common-frontend";
 
 type TEcnInstrumentProps = {
   instrumentHash: string,
@@ -35,7 +35,7 @@ const EcnInstrumentDescriptions: React.FC<TEcnInstrumentProps> = ({
   return (<Descriptions<EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto, {
     instrumentHash: string,
     worker: string,
-  }, number>
+  }>
     mainTitle="General"
     pathParams={pathParams}
     idColumnName="instrumentHash"

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import apiClient from '@api/apiClient';
-import { LiquidityManager } from "@api/generated";
+import apiClient from '@@api/apiClient';
+import { LiquidityManager } from "@@api/generated";
 import * as colors from "@ant-design/colors";
 import { ThemeConfig } from "antd/es/config-provider/context";
 import { useSearchParams } from "react-router-dom";

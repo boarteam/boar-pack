@@ -1,4 +1,4 @@
-import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto } from "@api/generated";
+import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto } from "@@api/generated";
 import { useAccess } from "@umijs/max";
 import { Table, TTableProps, withNumericId } from "@jifeon/boar-pack-common-frontend";
 import { useEcnConnectSchemasColumns } from "./useEcnConnectSchemasColumns";
@@ -6,7 +6,7 @@ import { ecnConnectSchemaJoinFields, ecnConnectSchemaToDto } from "../EcnModules
 import { ecnConnectSchemaSearchableColumns } from "./ecnConnectSchemaSearchableColumns";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
-import apiClient from '@api/apiClient';
+import apiClient from '@@api/apiClient';
 
 const EcnConnectSchemaTable = (props: Partial<TTableProps<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, {}, {worker: string}>>) => {
   let { canManageLiquidity } = useAccess() || {};

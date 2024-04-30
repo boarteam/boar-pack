@@ -3,8 +3,8 @@ import { Select, Tag } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { keyBy } from "lodash";
 import { SFields } from "@nestjsx/crud-request";
-import { EcnModule } from "@api/generated";
-import apiClient from '@api/apiClient';
+import { EcnModule } from "@@api/generated";
+import apiClient from '@@api/apiClient';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 
 type TValue = Pick<EcnModule, 'id' | 'name'>[];

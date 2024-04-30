@@ -1,6 +1,6 @@
 import { useEcnConnectSchemasColumns } from '../EcnConnectSchemas/useEcnConnectSchemasColumns';
-import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto } from '@api/generated';
-import apiClient from '@api/apiClient';
+import { EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto } from '@@api/generated';
+import apiClient from '@@api/apiClient';
 import { Button, Drawer } from 'antd';
 import { pick } from 'lodash';
 import React, { useState } from "react";

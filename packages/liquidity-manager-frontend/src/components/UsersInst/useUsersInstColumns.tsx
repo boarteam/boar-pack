@@ -7,11 +7,11 @@ import {
   UsersGroupsInst,
   UsersInst,
   UsersInstCompany
-} from "@api/generated";
+} from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
 import { Tag } from "antd";
-import apiClient from '@api/apiClient';
+import apiClient from '@@api/apiClient';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { useEffect, useState } from "react";
 import { dropTrailZeroes, NumberSwitch, Password, RelationSelect } from "@jifeon/boar-pack-common-frontend";

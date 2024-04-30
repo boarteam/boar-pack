@@ -1,6 +1,6 @@
 import { Table, useFullscreen } from "@jifeon/boar-pack-common-frontend";
-import apiClient from '@api/apiClient';
-import { EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto } from "@api/generated";
+import apiClient from '@@api/apiClient';
+import { EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto } from "@@api/generated";
 import pick from "lodash/pick";
 import React from "react";
 import { ecnSubscrSchemaJoinFields } from "./ecnSubscrSchemaJoinFields";
