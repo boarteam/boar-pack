@@ -5,7 +5,10 @@
   "repository": "git@github.com:jifeon/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
-  "main": "src/index",
+  "main": "dist/index",
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -13,5 +16,11 @@
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
     "typeorm": "^0.2.25"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "retreat": "yalc retreat --all",
+    "restore": "yalc restore",
+    "push": "npm run build && yalc push"
   }
 }

@@ -1,4 +1,15 @@
 {
   "version": "v1",
-  "packages": {}
+  "packages": {
+    "@jifeon/boar-pack-common-backend": {
+      "signature": "6ae4ecfeda707ce4fd76cc4f6bb2237d",
+      "file": true,
+      "replaced": "^1.2.0"
+    },
+    "@jifeon/boar-pack-users-backend": {
+      "signature": "c3293fb80c75ab954e7fe42ef1e8c361",
+      "file": true,
+      "replaced": "^1.0.8"
+    }
+  }
 }
