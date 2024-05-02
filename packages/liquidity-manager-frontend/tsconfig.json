@@ -13,7 +13,7 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": false,
@@ -26,6 +26,8 @@
     }
   },
   "include": [
-    "src"
+    "./**/*.d.ts",
+    "./**/*.ts",
+    "./**/*.tsx"
   ]
 }

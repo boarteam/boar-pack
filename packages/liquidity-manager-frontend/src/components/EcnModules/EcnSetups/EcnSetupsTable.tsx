@@ -9,7 +9,7 @@ import { ecnSetupsSearchableColumns } from "./ecnSetupsSearchableColumns";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
 
-export const createNewDefaultParams = {
+export const createNewDefaultParams: Pick<EcnConnectSchemaSetupLabel, 'label' | 'modules'> = {
   label: '',
   modules: [],
 };

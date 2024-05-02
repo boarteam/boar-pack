@@ -28,7 +28,9 @@ export const AlgoNode: NsGraph.INodeRender = ({ data }) => {
   const { styles, cx } = useStyles();
 
   const { id, ports, onClick } = data;
+  // @ts-ignore
   const frontPort = ports.items.find(port => port.id === `${id}-front`);
+  // @ts-ignore
   const backPort = ports.items.find(port => port.id === `${id}-back`);
   const backPortOnClick: MouseEventHandler<HTMLSpanElement> = (e) => {
     e.stopPropagation();

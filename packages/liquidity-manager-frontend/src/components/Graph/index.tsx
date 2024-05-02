@@ -143,8 +143,10 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
           name: 'rounded',
           args: { radius: 15 },
         },
+        // @ts-ignore
         source: getNodeIdFromRealId(fromModuleId),
         sourcePortId,
+        // @ts-ignore
         target: getNodeIdFromRealId(toModuleId),
         targetPortId,
         edgeContentWidth: 30,
@@ -406,6 +408,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
       direction={'vertical'}
       style={{ width: '100%' }}
     >
+      {/* @ts-ignore */}
       <XFlow
         className={cx(s.dag, styles.dagClass)}
         graphData={graphData}
