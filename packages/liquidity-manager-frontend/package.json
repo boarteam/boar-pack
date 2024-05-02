@@ -21,5 +21,8 @@
   },
   "devDependencies": {
     "umi-presets-pro": "^2.0.3"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json"
   }
 }

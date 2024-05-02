@@ -6,8 +6,8 @@ import { EcnModuleDrawer } from '../EcnModules/EcnModuleDrawer';
 import { EcnConnectSchemaDrawer } from '../EcnModules/EcnConnectSchemaDrawer';
 import { Spin } from 'antd';
 import { useConnectionsGraph } from '../Graph/useConnectionsGraph';
-import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
-import XFlowGraph, { TData, TElements } from "@/components/Graph";
+import { useLiquidityManagerContext } from "../../tools";
+import XFlowGraph, { TData, TElements } from "../Graph";
 
 export interface IProps {
   modules: Set<EcnModule['id']>,

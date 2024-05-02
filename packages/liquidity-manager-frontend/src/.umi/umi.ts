@@ -3,7 +3,7 @@
 // DO NOT CHANGE IT MANUALLY!
 import './core/polyfill';
 
-import { renderClient } from '/Users/jifeon/projects/boar-pack/packages/common-frontend/node_modules/@umijs/renderer-react';
+import { renderClient } from '/Users/jifeon/.config/yarn/global/node_modules/@umijs/renderer-react';
 import { getRoutes } from './core/route';
 import { createPluginManager } from './core/plugin';
 import { createHistory } from './core/history';
@@ -72,5 +72,5 @@ async function render() {
 render();
 
 window.g_umi = {
-  version: '4.1.5',
+  version: '4.1.10',
 };

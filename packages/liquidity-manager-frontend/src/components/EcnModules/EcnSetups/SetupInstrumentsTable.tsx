@@ -11,14 +11,10 @@ import {
 import s from './SetupInstrumentsTable.less';
 import { useSetupInstrumentsColumns } from './useSetupInstrumentsColumns';
 import { SortOrder } from 'antd/es/table/interface';
-import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
+import { useLiquidityManagerContext } from "../../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
 import { FiltersChooser } from "./InstrumentsFilters/FiltersChooser";
-import {
-  FiltersContext,
-  getParamsFromValues,
-  useFilters,
-} from "@/components/EcnModules/EcnSetups/InstrumentsFilters/filtersContext";
+import { FiltersContext, getParamsFromValues, useFilters } from "./InstrumentsFilters/filtersContext";
 
 type ParamsType = {
   connectSchemasIds?: EcnConnectSchema['id'][],

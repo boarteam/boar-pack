@@ -10,10 +10,10 @@ import { Shape, Graph } from '@antv/x6';
 import { Modal, Space, Tag } from 'antd';
 import { useToken } from '@ant-design/pro-components';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-design/icons';
-import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
-import { useConnectionsGraph } from "@/components/Graph/useConnectionsGraph";
+import { useLiquidityManagerContext } from "../../tools";
 import Paragraph from "antd/es/typography/Paragraph";
 import { createStyles } from "antd-style";
+import { useConnectionsGraph } from "./useConnectionsGraph";
 
 IconStore.set('DeleteOutlined', DeleteOutlined);
 IconStore.set('EditOutlined', EditOutlined);
