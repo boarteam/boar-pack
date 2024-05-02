@@ -13,8 +13,8 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
-    "@jifeon/boar-pack-common-backend": "file:.yalc/@jifeon/boar-pack-common-backend",
-    "@jifeon/boar-pack-users-backend": "file:.yalc/@jifeon/boar-pack-users-backend",
+    "@jifeon/boar-pack-common-backend": "^1.2.0",
+    "@jifeon/boar-pack-users-backend": "^1.0.8",
     "@nestjs/swagger": "^7.3.1",
     "@nestjs/typeorm": "^10.0.2",
     "@nestjsx/crud": "^5.0.0-alpha.3",

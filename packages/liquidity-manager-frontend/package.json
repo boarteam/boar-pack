@@ -4,7 +4,11 @@
   "description": "Liquidity Manager Frontend",
   "repository": "git@github.com:jifeon/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
-  "main": "src/index",
+  "main": "dist/index",
+  "files": [
+    "dist",
+    ".yalc"
+  ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -23,6 +27,9 @@
     "umi-presets-pro": "^2.0.3"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.json"
+    "build": "tsc --project tsconfig.json",
+    "retreat": "yalc retreat --all",
+    "restore": "yalc restore",
+    "push": "npm run build && yalc push"
   }
 }
