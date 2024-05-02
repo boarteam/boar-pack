@@ -48,5 +48,5 @@
     "restore": "yalc restore",
     "push": "npm run build && yalc push"
   },
-  "gitHead": "18903ef9f732716152aaeddbff626c1b7095bc4e"
+  "gitHead": "8bd22bd2364f307911e6e7012c8de00aa6f55265"
 }

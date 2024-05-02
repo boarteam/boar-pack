@@ -3,7 +3,6 @@ import {
   PlusOutlined,
 } from '@ant-design/icons'
 import { type NsGraph } from '@antv/xflow'
-import './algo-node.less'
 import { MouseEventHandler } from 'react';
 import { createStyles } from "antd-style";
 
@@ -11,6 +10,11 @@ const useStyles = createStyles(({ token }) => {
   return {
     node: {
       border: `1px solid ${token.colorBorder}`,
+      display: 'flex',
+      justifyContent: 'space-between',
+      backgroundColor: '#fff',
+      transition: 'all ease-in-out 0.15s',
+      cursor: 'move',
       borderRadius: token.borderRadius,
       ':hover': {
         borderColor: `${token.colorPrimary}`,
@@ -20,6 +24,19 @@ const useStyles = createStyles(({ token }) => {
         borderColor: `${token.colorPrimary}`,
         boxShadow: `${token.boxShadowSecondary}`,
       },
+      '.icon': {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '14px',
+        height: '14px',
+        cursor: 'pointer',
+        margin: 'auto 9px',
+      },
+      '.label': {
+        lineHeight: '1.2',
+        padding: '8px',
+      }
     }
   };
 });
