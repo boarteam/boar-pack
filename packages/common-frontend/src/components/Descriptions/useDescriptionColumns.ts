@@ -28,6 +28,7 @@ export function columnsToDescriptionItemProps<T>(
         children,
         ...rest
       } = column;
+      // @ts-ignore-next-line
       baseSection.columns.push(rest as ProDescriptionsItemProps<T>);
     }
   });

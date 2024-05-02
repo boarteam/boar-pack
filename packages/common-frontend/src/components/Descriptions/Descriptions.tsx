@@ -4,12 +4,12 @@ import { Button, Result, Tooltip } from "antd";
 import { DeleteOutlined, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
-import { buildJoinFields, collectFieldsFromColumns } from "@jifeon/boar-pack-common-frontend";
 import { ProDescriptionsProps } from "@ant-design/pro-descriptions";
 import { PageLoading, ProDescriptions } from "@ant-design/pro-components";
 import { columnsToDescriptionItemProps } from "./useDescriptionColumns";
 import pick from "lodash/pick";
 import safetyRun from "../../tools/safetyRun";
+import { buildJoinFields, collectFieldsFromColumns } from "../Table";
 
 const Descriptions = <Entity extends Record<string | symbol, any>,
   CreateDto = Entity,

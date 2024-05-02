@@ -2730,7 +2730,7 @@
   version "1.0.8"
   dependencies:
     "@casl/ability" "^6.7.0"
-    "@jifeon/boar-pack-common-backend" "file:../../Library/Caches/Yarn/v6/npm-@jifeon-boar-pack-users-backend-1.0.8-69eb1589-8706-41ad-bf1f-921521c18fa7-1714639974971/node_modules/@jifeon/boar-pack-users-backend/.yalc/@jifeon/boar-pack-common-backend"
+    "@jifeon/boar-pack-common-backend" "file:../../Library/Caches/Yarn/v6/npm-@jifeon-boar-pack-users-backend-1.0.8-c28b5b7a-1a45-421d-947a-ce5afc14c660-1714643462762/node_modules/@jifeon/boar-pack-users-backend/.yalc/@jifeon/boar-pack-common-backend"
     "@nestjs/common" "^10.3.3"
     "@nestjs/config" "^3.2.0"
     "@nestjs/core" "^10.3.3"
@@ -17144,6 +17144,11 @@ typescript@^4.5.4:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
+
+typescript@^5.4.5:
+  version "5.4.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.5.tgz#42ccef2c571fdbd0f6718b1d1f5e6e5ef006f611"
+  integrity sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==
 
 ua-parser-js@^0.7.20, ua-parser-js@^0.7.30:
   version "0.7.37"

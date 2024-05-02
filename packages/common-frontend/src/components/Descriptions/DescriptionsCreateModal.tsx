@@ -3,8 +3,8 @@ import { Button, Modal } from "antd";
 import { TDescriptionsCreateModalProps } from "./descriptionTypes";
 import { ProDescriptions } from "@ant-design/pro-components";
 import { columnsToDescriptionItemProps } from "./useDescriptionColumns";
-import { buildFieldsFromColumns } from "@jifeon/boar-pack-common-frontend";
 import { useForm } from "antd/es/form/Form";
+import { buildFieldsFromColumns } from "../Table";
 
 const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
   idColumnName,

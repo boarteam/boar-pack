@@ -21,6 +21,7 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "strict": true,
+    "strictNullChecks": false,
     "noImplicitAny": true,
     "strictPropertyInitialization": false
   },
