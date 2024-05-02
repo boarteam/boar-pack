@@ -5,7 +5,7 @@ import { ecnInstrumentJoinFields } from "./ecnInstrumentJoinFields";
 import React, { useMemo } from "react";
 import { useEcnInstrumentsColumns } from "./useEcnInstrumentsColumns";
 import { useAccess } from "@umijs/max";
-import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
+import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
 import { Descriptions } from "@jifeon/boar-pack-common-frontend";
 

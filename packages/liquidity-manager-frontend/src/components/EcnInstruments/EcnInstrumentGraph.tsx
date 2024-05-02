@@ -5,11 +5,10 @@ import { EcnInstrument } from '@@api/generated';
 import { EcnModuleDrawer } from '../EcnModules/EcnModuleDrawer';
 import { Spin } from 'antd';
 import { useConnectionsGraph } from '../Graph/useConnectionsGraph';
-import { TData, TElements } from '../Graph';
+import XFlowGraph, { TData, TElements } from '../Graph';
 import { buildJoinFields } from '@jifeon/boar-pack-common-frontend';
 import { EcnInstrumentConnectSchemaDrawer } from './EcnInstrumentConnectSchemaDrawer';
 import { useLiquidityManagerContext } from "../../tools";
-import XFlowGraph from "@/components/Graph";
 
 export interface IProps {
   instrumentHash: EcnInstrument['instrumentHash'],
