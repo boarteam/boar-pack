@@ -2717,6 +2717,38 @@
     "@types/yargs" "^17.0.8"
     chalk "^4.0.0"
 
+"@jifeon/boar-pack-common-backend@file:packages/liquidity-manager-backend/.yalc/@jifeon/boar-pack-common-backend":
+  version "1.2.0"
+
+"@jifeon/boar-pack-common-backend@file:packages/liquidity-manager-backend/.yalc/@jifeon/boar-pack-users-backend/.yalc/@jifeon/boar-pack-common-backend":
+  version "1.2.0"
+
+"@jifeon/boar-pack-common-backend@file:packages/users-backend/.yalc/@jifeon/boar-pack-common-backend":
+  version "1.2.0"
+
+"@jifeon/boar-pack-users-backend@file:packages/liquidity-manager-backend/.yalc/@jifeon/boar-pack-users-backend":
+  version "1.0.8"
+  dependencies:
+    "@casl/ability" "^6.7.0"
+    "@jifeon/boar-pack-common-backend" "file:../../Library/Caches/Yarn/v6/npm-@jifeon-boar-pack-users-backend-1.0.8-69eb1589-8706-41ad-bf1f-921521c18fa7-1714639974971/node_modules/@jifeon/boar-pack-users-backend/.yalc/@jifeon/boar-pack-common-backend"
+    "@nestjs/common" "^10.3.3"
+    "@nestjs/config" "^3.2.0"
+    "@nestjs/core" "^10.3.3"
+    "@nestjs/jwt" "^10.2.0"
+    "@nestjs/passport" "^10.0.3"
+    "@nestjs/swagger" "^7.3.0"
+    "@nestjs/typeorm" "^10.0.2"
+    "@nestjsx/crud-typeorm" "^5.0.0-alpha.3"
+    bcrypt "^5.1.1"
+    joi "^17.12.2"
+    lodash "^4.17.21"
+    nestjs-joi "^1.10.0"
+    passport "^0.7.0"
+    passport-jwt "^4.0.1"
+    passport-local "^1.0.0"
+    typeorm "^0.3.20"
+    ws "^8.16.0"
+
 "@jridgewell/gen-mapping@^0.3.5":
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/@jridgewell/gen-mapping/-/gen-mapping-0.3.5.tgz#dcce6aff74bdf6dad1a95802b69b04a2fcb1fb36"
@@ -3922,6 +3954,14 @@
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.5.tgz#ec10755e871497bcd83efe927e43ec46e8c0747e"
   integrity sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==
+
+"@types/node-fetch@^2.6.11":
+  version "2.6.11"
+  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.6.11.tgz#9b39b78665dae0e82a08f02f4967d62c66f95d24"
+  integrity sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==
+  dependencies:
+    "@types/node" "*"
+    form-data "^4.0.0"
 
 "@types/node@*":
   version "20.11.23"
@@ -12110,7 +12150,7 @@ node-fetch@^2.6.1, node-fetch@^2.6.7:
   dependencies:
     whatwg-url "^5.0.0"
 
-node-fetch@^3.2.0:
+node-fetch@^3.2.0, node-fetch@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-3.3.2.tgz#d1e889bacdf733b4ff3b2b243eb7a12866a0b78b"
   integrity sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==
@@ -17095,15 +17135,15 @@ typeorm@^0.3.20:
     uuid "^9.0.0"
     yargs "^17.6.2"
 
-typescript@4, typescript@^4.5.4:
-  version "4.9.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
-  integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
-
 "typescript@>=3 < 6":
   version "5.4.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.2.tgz#0ae9cebcfae970718474fe0da2c090cad6577372"
   integrity sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==
+
+typescript@^4.5.4:
+  version "4.9.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
+  integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 ua-parser-js@^0.7.20, ua-parser-js@^0.7.30:
   version "0.7.37"

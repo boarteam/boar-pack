@@ -11,5 +11,12 @@
   "devDependencies": {
     "lerna": "^8.1.2"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "scripts": {
+    "clean": "lerna clean",
+    "build": "lerna run build",
+    "version": "lerna run retreat && lerna version",
+    "restore": "lerna run restore",
+    "publish": "lerna publish from-package && yarn restore"
+  }
 }
