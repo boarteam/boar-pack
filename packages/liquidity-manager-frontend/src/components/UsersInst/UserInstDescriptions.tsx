@@ -4,7 +4,7 @@ import { useUsersInstColumns } from "./useUsersInstColumns";
 import { UsersInst, UsersInstCreateDto, UsersInstUpdateDto } from "@@api/generated";
 import { usersInstJoinFields } from "./usersInstJoinFields";
 import { usersInstToDto } from "./UsersInstTable";
-import { useAccess } from "@umijs/max";
+import { useAccess } from "umi";
 import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
 import { Descriptions } from "@jifeon/boar-pack-common-frontend";

@@ -10,7 +10,7 @@ import type { GetManyEcnInstrumentResponseDto } from '../models/GetManyEcnInstru
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
+import { EcnInstrumentsGroup } from "../models/EcnInstrumentsGroup";
 export class EcnInstrumentsService {
 
     constructor(public readonly httpRequest: BaseHttpRequest) {}
@@ -20,18 +20,26 @@ export class EcnInstrumentsService {
      * @throws ApiError
      */
     public getInConnections({
+        id,
         worker,
+        filterInstrument,
+        filterInstrumentsGroup,
         compareConnectSchemaId,
         search,
         limit,
         offset,
+        sortDirection,
         showOnlyChanged,
     }: {
+        id: number | number[],
         worker: string,
+        filterInstrument?: EcnInstrument['instrumentHash'][],
+        filterInstrumentsGroup?: EcnInstrumentsGroup["id"][],
         compareConnectSchemaId?: number,
         search?: string,
         limit?: number,
         offset?: number,
+        sortDirection?: 'ASC' | 'DESC',
         showOnlyChanged?: boolean,
     }): CancelablePromise<GetEcnInstrumentsInConnectionsResponse> {
         return this.httpRequest.request({
@@ -41,10 +49,14 @@ export class EcnInstrumentsService {
                 'worker': worker,
             },
             query: {
+                'id': id,
                 'compareConnectSchemaId': compareConnectSchemaId,
+                'filterInstrument': filterInstrument,
+                'filterInstrumentsGroup': filterInstrumentsGroup,
                 'search': search,
                 'limit': limit,
                 'offset': offset,
+                'sortDirection': sortDirection,
                 'showOnlyChanged': showOnlyChanged,
             },
         });

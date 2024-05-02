@@ -39,5 +39,6 @@
     "restore": "yalc restore",
     "push": "npm run build && yalc push",
     "gen-types": "nest start"
-  }
+  },
+  "gitHead": "18903ef9f732716152aaeddbff626c1b7095bc4e"
 }

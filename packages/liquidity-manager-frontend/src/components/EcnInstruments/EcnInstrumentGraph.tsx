@@ -60,6 +60,7 @@ const EcnInstrumentGraph: React.FC<IProps> = ({ instrumentHash }) => {
         const visibleNodes: TElements['nodes'] = new Set();
 
         for (const node of nodes.data) {
+          // @ts-ignore
           nodesMap.set(node.id, {
             ...node,
             frontEdgesIds: new Set(),
@@ -69,9 +70,12 @@ const EcnInstrumentGraph: React.FC<IProps> = ({ instrumentHash }) => {
         }
 
         for (const { subscrSchemas, ...edge } of edges.data) {
+          // @ts-ignore
           edgesMap.set(edge.id, { ...edge, subscrSchemaEnabled: Boolean(subscrSchemas[0].enabled) });
           visibleEdges.add(edge.id);
+          // @ts-ignore
           nodesMap.get(edge.fromModuleId)?.frontEdgesIds.add(edge.id);
+          // @ts-ignore
           nodesMap.get(edge.toModuleId)?.backEdgesIds.add(edge.id);
         }
 

@@ -27,9 +27,10 @@
     "umi-presets-pro": "^2.0.3"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.json",
+    "build": "tsc --project tsconfig.build.json",
     "retreat": "yalc retreat --all",
     "restore": "yalc restore",
     "push": "npm run build && yalc push"
-  }
+  },
+  "gitHead": "18903ef9f732716152aaeddbff626c1b7095bc4e"
 }
