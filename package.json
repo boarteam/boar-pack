@@ -15,7 +15,7 @@
   "scripts": {
     "clean": "lerna clean",
     "build": "lerna run build",
-    "version": "lerna run retreat && lerna version",
+    "ver": "lerna run retreat && lerna version",
     "restore": "lerna run restore",
     "publish": "lerna publish from-package && yarn restore"
   }
