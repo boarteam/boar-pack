@@ -8,13 +8,13 @@ import {
   EcnInstrument, EcnInstrumentsGroup,
   GetEcnInstrumentsInConnectionsData,
 } from '@@api/generated';
-import s from './SetupInstrumentsTable.less';
 import { useSetupInstrumentsColumns } from './useSetupInstrumentsColumns';
 import { SortOrder } from 'antd/es/table/interface';
 import { useLiquidityManagerContext } from "../../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
 import { FiltersChooser } from "./InstrumentsFilters/FiltersChooser";
 import { FiltersContext, getParamsFromValues, useFilters } from "./InstrumentsFilters/filtersContext";
+import { createStyles } from "antd-style";
 
 type ParamsType = {
   connectSchemasIds?: EcnConnectSchema['id'][],
@@ -74,6 +74,19 @@ const Options: React.FC<{
   )
 }
 
+const useStyles = createStyles(({ token }) => {
+  return {
+    table: {
+      '.ant-pro-table-column-setting-overlay .ant-popover-inner-content': {
+        '.ant-pro-table-column-setting-list-item-title': {
+          overflow: 'visible',
+        },
+        width: '400px',
+      },
+    }
+  }
+});
+
 export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['id'] }) => {
   const actionRef = useRef<ActionType>();
   const [connectSchemas, setConnectSchemas] = useState<EcnConnectSchema[]>([]);
@@ -82,6 +95,8 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
   const patchParams = (params: Partial<ParamsType>) => setParams(prevParams => ({ ...prevParams, ...params }));
   const { worker } = useLiquidityManagerContext();
   const filters = useFilters();
+
+  const { styles } = useStyles();
 
   useEffect(() => {
     if (!worker) return;
@@ -190,7 +205,7 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
         <ProTable<GetEcnInstrumentsInConnectionsData, ParamsType>
           ghost
           rowKey={'instrumentHash'}
-          className={s['setup-instruments-table']}
+          className={styles.table}
           scroll={{ x: 'max-content' }}
           actionRef={actionRef}
           tableExtraRender={() => (

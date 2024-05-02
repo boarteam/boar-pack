@@ -13,8 +13,8 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "peerDependencies": {
-    "@nestjs/common": "^7.0.0",
-    "@nestjs/core": "^7.0.0",
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/core": "^9.0.0",
     "typeorm": "^0.2.25"
   },
   "scripts": {
@@ -23,5 +23,5 @@
     "restore": "yalc restore",
     "push": "npm run build && yalc push"
   },
-  "gitHead": "18903ef9f732716152aaeddbff626c1b7095bc4e"
+  "gitHead": "8bd22bd2364f307911e6e7012c8de00aa6f55265"
 }

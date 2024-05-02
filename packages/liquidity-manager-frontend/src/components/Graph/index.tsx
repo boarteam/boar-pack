@@ -1,8 +1,20 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import type { IAppLoad, IGraphCommandService, NsGraph } from '@antv/xflow';
-import { CanvasContextMenu, CanvasScaleToolbar, CanvasSnapline, createCtxMenuConfig, createGraphConfig  , IconStore, MenuItemType, XFlow, XFlowCanvas, XFlowEdgeCommands, XFlowGraphCommands, XFlowNodeCommands } from '@antv/xflow';
+import {
+  CanvasContextMenu,
+  CanvasScaleToolbar,
+  CanvasSnapline,
+  createCtxMenuConfig,
+  createGraphConfig,
+  IconStore,
+  MenuItemType,
+  XFlow,
+  XFlowCanvas,
+  XFlowEdgeCommands,
+  XFlowGraphCommands,
+  XFlowNodeCommands
+} from '@antv/xflow';
 import '@antv/xflow/dist/index.css';
-import s from './index.less';
 import apiClient from '@@api/apiClient';
 import { EcnConnectSchema, EcnModule } from '@@api/generated';
 import { AlgoNode } from './react-node/algo-node';
@@ -82,19 +94,58 @@ export const deleteEdgeConfirm = async (edgeId: EcnConnectSchema['id'], onOk: ()
       content: `Are you sure you want to delete this connection? It will affect ${subscrCount} Subscribe Schemas.`,
       onOk,
     });
-  }
-  else {
+  } else {
     await onOk();
   }
 }
 
 const useStyles = createStyles(({ token }) => {
+  const primary = '#1890ff';
+
   return {
     dagClass: {
-      border: `1px solid ${token.colorPrimary} !important`,
+      border: `1px solid ${primary} !important`,
       borderRadius: token.borderRadiusLG,
+      position: 'relative',
+      height: 'calc(100vh - 290px)',
       '.x6-node:hover .front-port': {
         stroke: token.colorPrimary,
+        strokeWidth: 2,
+        transition: 'all ease-in-out 0.15s',
+      },
+      '.x6-edge': {
+        '.x6-edge-label': {
+          cursor: 'pointer',
+          rect: {
+            strokeWidth: 10,
+            fill: '#d9d9d9',
+            stroke: '#d9d9d9',
+          },
+        },
+        '&:hover': {
+          rect: {
+            fill: primary,
+            stroke: primary,
+          },
+          text: {
+            fill: 'white',
+          },
+          'path:nth-child(2)': {
+            stroke: primary,
+          },
+        },
+        '&.x6-edge-selected': {
+          rect: {
+            fill: primary,
+            stroke: primary,
+          },
+          text: {
+            fill: 'white',
+          },
+          'path:nth-child(2)': {
+            stroke: primary,
+          },
+        },
       },
     }
   };
@@ -119,7 +170,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
   const { token } = useToken();
   const color = token.colorPrimary;
   const { worker } = useLiquidityManagerContext();
-  const { styles, cx } = useStyles();
+  const { styles } = useStyles();
 
   const graphData = useMemo(() => {
     const connectedPorts = new Set<string>();
@@ -242,8 +293,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
           newEdges.add(newEdge.id);
           return { ...prevState, edges: newEdges };
         })
-      }
-      catch(error) {
+      } catch (error) {
         console.error(error)
       }
     });
@@ -410,7 +460,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
     >
       {/* @ts-ignore */}
       <XFlow
-        className={cx(s.dag, styles.dagClass)}
+        className={styles.dagClass}
         graphData={graphData}
         graphLayout={{
           layoutType: 'dagre',

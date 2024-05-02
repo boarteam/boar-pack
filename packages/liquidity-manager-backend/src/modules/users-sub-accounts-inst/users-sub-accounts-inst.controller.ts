@@ -9,7 +9,7 @@ import { UsersSubAccountInst } from "./entities/users-sub-account-inst.entity";
 import { UsersSubAccountInstCreateDto } from "./dto/users-sub-account-inst-create.dto";
 import { UsersSubAccountInstUpdateDto } from "./dto/users-sub-account-inst-update.dto";
 import { AutoincrementIdPipe } from "../../tools/autoincrement_id.pipe";
-import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/tools";
+import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/dist/tools";
 
 @Crud({
   model: {

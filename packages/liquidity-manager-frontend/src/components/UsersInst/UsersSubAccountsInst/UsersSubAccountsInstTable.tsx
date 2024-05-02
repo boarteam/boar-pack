@@ -14,8 +14,7 @@ import React from "react";
 import SubloginsSettingsTable
   from "../SubloginsSettings/SubloginsSettingsTable";
 import { useSubloginsSettingsColumns } from "../SubloginsSettings/useSubloginsSettingsColumns";
-import s from './UsersSubaccountsInst.less';
-import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
+import { useLiquidityManagerContext } from "../../../tools";
 import { PageLoading } from "@ant-design/pro-components";
 
 function userSubAccountToDto<T extends Partial<UsersSubAccountInst>,
@@ -166,7 +165,6 @@ const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
       ]}
       viewOnly={!canManageLiquidity}
       expandable={{
-        expandedRowClassName: () => s.expandableRow,
         expandedRowRender: (record) => {
           return <SubloginsSettingsTable
             usersSubAccountInstId={record.id}
