@@ -3,6 +3,7 @@
     "module": "esnext",
     "target": "esnext",
     "baseUrl": "./",
+    "outDir": "./dist",
     "lib": [
       "esnext",
       "dom"
@@ -21,22 +22,9 @@
     "experimentalDecorators": true,
     "strict": true,
     "noImplicitAny": true,
-    "strictPropertyInitialization": false,
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@@/*": [
-        "./src/.umi/*"
-      ],
-      "@@test/*": [
-        "./src/.umi-test/*"
-      ]
-    }
+    "strictPropertyInitialization": false
   },
   "include": [
-    "./**/*.d.ts",
-    "./**/*.ts",
-    "./**/*.tsx"
+    "src"
   ]
 }

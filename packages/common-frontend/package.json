@@ -5,7 +5,10 @@
   "repository": "git@github.com:jifeon/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
-  "main": "src/index",
+  "main": "dist/index",
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -37,5 +40,11 @@
     "react-dom": "^18.2.0",
     "react-intl": "^6.6.2",
     "umi": "^4.1.5"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "retreat": "yalc retreat --all",
+    "restore": "yalc restore",
+    "push": "npm run build && yalc push"
   }
 }
