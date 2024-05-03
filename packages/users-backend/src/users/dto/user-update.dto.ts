@@ -26,7 +26,7 @@ export class UserUpdateDto {
     ).optional().custom((value: string[], helpers) => {
       value.forEach((permission) => {
         if (!Permissions.isValidPermission(permission as Permission)) {
-          return helpers.error('any.invalid');
+          helpers.error('any.invalid');
         }
       });
 
