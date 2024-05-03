@@ -1,9 +1,9 @@
 import { PageContainer } from "@ant-design/pro-components";
 import React from "react";
 import { useIntl } from "@umijs/max";
-// import EcnModulesTable from "../../components/EcnModules/EcnModulesTable";
-// import EcnModuleTypesTable from "../../components/EcnModules/EcnModuleTypes/EcnModuleTypesTable";
-// import EcnSetupsTable from "../../components/EcnModules/EcnSetups/EcnSetupsTable";
+import EcnModulesTable from "../../components/EcnModules/EcnModulesTable";
+import EcnModuleTypesTable from "../../components/EcnModules/EcnModuleTypes/EcnModuleTypesTable";
+import EcnSetupsTable from "../../components/EcnModules/EcnSetups/EcnSetupsTable";
 
 enum Tabs {
   modules = 'modules',
@@ -36,9 +36,9 @@ const Users: React.FC = () => {
       tabActiveKey={activeTab}
       onTabChange={setActiveTab}
     >
-      {/*{activeTab === Tabs.modules ? <EcnModulesTable /> : null}*/}
-      {/*{activeTab === Tabs.setups ? <EcnSetupsTable /> : null}*/}
-      {/*{activeTab === Tabs.moduleTypes ? <EcnModuleTypesTable /> : null}*/}
+      {activeTab === Tabs.modules ? <EcnModulesTable /> : null}
+      {activeTab === Tabs.setups ? <EcnSetupsTable /> : null}
+      {activeTab === Tabs.moduleTypes ? <EcnModuleTypesTable /> : null}
     </PageContainer>
   )
 }
