@@ -12,7 +12,7 @@ const useStyles = createStyles(({ token }) => {
       border: `1px solid ${token.colorBorder}`,
       display: 'flex',
       justifyContent: 'space-between',
-      backgroundColor: '#fff',
+      backgroundColor: token.colorBgBase,
       transition: 'all ease-in-out 0.15s',
       cursor: 'move',
       borderRadius: token.borderRadius,

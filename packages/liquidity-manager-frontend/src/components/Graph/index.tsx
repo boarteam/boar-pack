@@ -104,7 +104,7 @@ const useStyles = createStyles(({ token }) => {
 
   return {
     dagClass: {
-      border: `1px solid ${primary} !important`,
+      border: `1px solid ${token.colorPrimary} !important`,
       borderRadius: token.borderRadiusLG,
       position: 'relative',
       height: 'calc(100vh - 290px)',
@@ -477,7 +477,13 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
       >
         <CanvasContextMenu config={menuConfig} />
         <XFlowCanvas config={graphConfig} />
-        <CanvasScaleToolbar position={{ top: 12, left: 12 }} />
+        <CanvasScaleToolbar
+          position={{ top: 12, left: 12 }}
+          style={{
+            backgroundColor: 'black',
+            color: 'white',
+          }}
+        />
         <CanvasSnapline color="#1890ff" />
       </XFlow>
       <Paragraph>
