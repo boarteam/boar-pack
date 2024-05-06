@@ -1,4 +1,4 @@
-import { Controller, UsePipes } from '@nestjs/common';
+import {Controller, UseFilters, UsePipes} from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersGroupsInstService } from './users-groups-inst.service';
@@ -10,6 +10,7 @@ import { ViewUsersGroupsInstPolicy } from './policies/view-users-groups-inst.pol
 import { ManageUsersGroupsInstPolicy } from './policies/manage-users-groups-inst.policy';
 import { UniqueIdPipe } from '../../tools/unique-id.pipe';
 import { AutoincrementIdPipe } from '../../tools/autoincrement_id.pipe';
+import { TypeOrmExceptionFilter } from "../../../tools/typeorm.execption-filter";
 
 @Crud({
   model: {
@@ -53,6 +54,7 @@ import { AutoincrementIdPipe } from '../../tools/autoincrement_id.pipe';
   },
 })
 @ApiTags('UsersGroupsInst')
+@UseFilters(TypeOrmExceptionFilter)
 @CheckPolicies(new ManageUsersGroupsInstPolicy())
 @Controller('liquidity/users-groups-inst')
 export class UsersGroupsInstController {
