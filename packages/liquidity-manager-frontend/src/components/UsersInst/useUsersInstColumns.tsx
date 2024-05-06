@@ -422,7 +422,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           formItemProps: {
             rules: [
               {
-                required: true,
+                type: "string",
               }
             ]
           },
@@ -683,6 +683,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
     {
       title: intl.formatMessage({ id: 'pages.usersInst.company' }),
       dataIndex: 'company',
+      sorter: true,
       formItemProps: {
         rules: [
           {

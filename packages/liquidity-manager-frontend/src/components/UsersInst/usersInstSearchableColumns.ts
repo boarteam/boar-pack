@@ -49,7 +49,7 @@ export const usersInstSearchableColumns = [
   { field: 'hedgeFactor', operator: Operators.containsLow, },
   {
     field: 'enabled',
-    operator: Operators.in,
+    operator: Operators.equals,
   },
   { field: 'ts', operator: Operators.containsLow, },
   { field: 'tsMs', operator: Operators.containsLow, },

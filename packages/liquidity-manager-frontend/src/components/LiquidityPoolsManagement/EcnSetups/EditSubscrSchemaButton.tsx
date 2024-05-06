@@ -106,13 +106,15 @@ const SubscrSchemaDrawer: React.FC<{
       title="Subscription Schema"
       onClose={onClose}
       width='33%'
-      extra={(
-        <DeleteSubscrSchemaButton
-          instrumentHash={instrumentHash}
-          connectSchemaId={connectSchemaId}
-          onDelete={onDelete}
-        />
-      )}
+      extra={
+        canManageLiquidity && (
+          <DeleteSubscrSchemaButton
+            instrumentHash={instrumentHash}
+            connectSchemaId={connectSchemaId}
+            onDelete={onDelete}
+          />
+        )
+      }
     >
       <Flex style={{ flexDirection: 'column', gap: 10 }}>
         <Card>

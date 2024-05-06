@@ -65,6 +65,7 @@ const EcnInstrumentRelations: React.FC<TEcnInstrumentProps> = ({
               { field: 'connections' },
               { field: 'connections.subscrSchemas' },
             ],
+            sortMap: { type: 'type.name' },
           }}
         />
       </Card>

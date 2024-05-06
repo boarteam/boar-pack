@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import type { IAppLoad, IGraphCommandService, NsGraph } from '@antv/xflow';
-import {
-  CanvasContextMenu,
-  CanvasScaleToolbar,
+import { CanvasContextMenu,
   CanvasSnapline,
   createCtxMenuConfig,
   createGraphConfig,
@@ -26,6 +24,8 @@ import { useLiquidityManagerContext } from "../../tools";
 import Paragraph from "antd/es/typography/Paragraph";
 import { createStyles } from "antd-style";
 import { useConnectionsGraph } from "./useConnectionsGraph";
+import { CanvasScaleToolbar } from "./canvas-scale-toolbar";
+import { useAccess } from "@umijs/max";
 
 IconStore.set('DeleteOutlined', DeleteOutlined);
 IconStore.set('EditOutlined', EditOutlined);
@@ -40,7 +40,7 @@ export type TElements = {
   edges: Set<EcnConnectSchema['id']>,
 }
 
-const defaultGraphNodeProps: Partial<NsGraph.INodeConfig> = {
+const getDefaultGraphNodeProps: (canManageLiquidity?: boolean) => Partial<NsGraph.INodeConfig> = (canManageLiquidity = false) => ({
   width: 200,
   renderKey: 'node',
   ports: {
@@ -50,7 +50,7 @@ const defaultGraphNodeProps: Partial<NsGraph.INodeConfig> = {
         attrs: {
           circle: {
             r: 5,
-            magnet: true,
+            magnet: canManageLiquidity,
             stroke: '#d9d9d9',
             fill: 'white',
             class: 'x6-port-body front-port'
@@ -62,7 +62,7 @@ const defaultGraphNodeProps: Partial<NsGraph.INodeConfig> = {
         attrs: {
           circle: {
             r: 5,
-            magnet: true,
+            magnet: canManageLiquidity,
             stroke: '#d9d9d9',
             fill: '#d9d9d9',
           },
@@ -71,7 +71,7 @@ const defaultGraphNodeProps: Partial<NsGraph.INodeConfig> = {
     },
     items: [],
   },
-};
+});
 
 export const deleteNodeConfirm = async (onOk: () => Promise<void>) => {
   Modal.confirm({
@@ -171,6 +171,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
   const commandServiceRef = useRef<IGraphCommandService>(null);
   const { token } = useToken();
   const color = token.colorPrimary;
+  const { canManageLiquidity } = useAccess() || {};
   const { worker } = useLiquidityManagerContext();
   const { styles } = useStyles();
 
@@ -202,8 +203,6 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
         // @ts-ignore
         target: getNodeIdFromRealId(toModuleId),
         targetPortId,
-        edgeContentWidth: 30,
-        edgeContentHeight: 60,
         attrs: {
           line: {
             targetMarker: {
@@ -219,6 +218,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
       });
     }
 
+    const defaultGraphNodeProps = getDefaultGraphNodeProps(canManageLiquidity);
     const nodes: NsGraph.IGraphData['nodes'] = [];
     for (const nodeId of visibleElementsIds.nodes) {
       const nodeData = data.nodesMap.get(nodeId);
@@ -256,7 +256,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
     }
 
     return { nodes, edges };
-  }, [data, visibleElementsIds]);
+  }, [data, visibleElementsIds, canManageLiquidity]);
 
   const onLoad: IAppLoad = async (app) => {
     if (!worker) {
@@ -272,107 +272,134 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
       setSelectedEdge(getRealIdFromEdgeId(edge.data.id));
     });
 
-    graph.on('edge:connected', async ({ edge }) => {
-      graph.removeEdge(edge);
-      try {
-        const newEdge = await apiClient.ecnConnectSchemas.createOneBaseEcnConnectSchemaControllerEcnConnectSchema({
-          requestBody: {
-            fromModuleId: getRealIdFromNodeId(edge.getSourceCellId()),
-            toModuleId: getRealIdFromNodeId(edge.getTargetCellId()),
-          },
-          worker,
-        });
-        setData(prevState => {
-          const newEdgesMap = new Map(prevState.edgesMap);
-          newEdgesMap.set(newEdge.id, newEdge);
-          const newNodesMap = new Map(prevState.nodesMap);
-          newNodesMap.get(newEdge.fromModuleId)?.frontEdgesIds?.add(newEdge.id);
-          newNodesMap.get(newEdge.toModuleId)?.backEdgesIds?.add(newEdge.id);
-          return { edgesMap: newEdgesMap, nodesMap: newNodesMap };
-        });
-        setVisibleElementsIds(prevState => {
-          const newEdges = new Set(prevState.edges);
-          newEdges.add(newEdge.id);
-          return { ...prevState, edges: newEdges };
-        })
-      } catch (error) {
-        console.error(error)
-      }
-    });
+    if (canManageLiquidity) {
+      graph.on('edge:connected', async ({ edge }) => {
+        graph.removeEdge(edge);
+        try {
+          const newEdge = await apiClient.ecnConnectSchemas.createOneBaseEcnConnectSchemaControllerEcnConnectSchema({
+            requestBody: {
+              fromModuleId: getRealIdFromNodeId(edge.getSourceCellId()),
+              toModuleId: getRealIdFromNodeId(edge.getTargetCellId()),
+            },
+            worker,
+          });
+          setData(prevState => {
+            const newEdgesMap = new Map(prevState.edgesMap);
+            newEdgesMap.set(newEdge.id, newEdge);
+            const newNodesMap = new Map(prevState.nodesMap);
+            newNodesMap.get(newEdge.fromModuleId)?.frontEdgesIds?.add(newEdge.id);
+            newNodesMap.get(newEdge.toModuleId)?.backEdgesIds?.add(newEdge.id);
+            return { edgesMap: newEdgesMap, nodesMap: newNodesMap };
+          });
+          setVisibleElementsIds(prevState => {
+            const newEdges = new Set(prevState.edges);
+            newEdges.add(newEdge.id);
+            return { ...prevState, edges: newEdges };
+          })
+        }
+        catch(error) {
+          console.error(error)
+        }
+      });
+    }
   };
 
   const graphConfig = createGraphConfig(config => {
-    config.setX6Config({
+    let options: Parameters<typeof config.setX6Config>[0] = {
       grid: true,
       scaling: {
         min: 0.6,
         max: 5,
       },
-      highlighting: {
-        magnetAvailable: {
-          name: 'stroke',
-          args: {
-            attrs: {
-              'stroke-width': 0,
-            },
-          },
-        },
-        magnetAdsorbed: {
-          name: 'stroke',
-          args: {
-            attrs: {
-              stroke: color,
-            },
-          },
-        },
-      },
-      connecting: {
-        snap: true,
-        allowBlank: false,
-        highlight: true,
-        validateMagnet({ magnet }) {
-          return magnet.getAttribute('port-group') === 'front';
-        },
-        validateConnection({ sourceView, sourceMagnet, targetView, targetMagnet }) {
-          if (sourceView === targetView) {
-            return false;
-          }
+    };
 
-          const isSourceRight = sourceMagnet?.getAttribute('port-group') === 'front';
-          const isTargetLeft = targetMagnet?.getAttribute('port-group') === 'back';
-
-          return isSourceRight && isTargetLeft;
-        },
-        createEdge() {
-          return new Shape.Edge({
-            router: {
-              name: 'manhattan',
-            },
-            connector: {
-              name: 'rounded',
-              args: { radius: 15 },
-            },
-            attrs: {
-              line: {
-                targetMarker: {
-                  name: "classic",
-                  width: 6,
-                  height: 8,
-                },
-                strokeDasharray: "",
-                stroke: "#cbcbcb",
-                strokeWidth: 2,
+    if (canManageLiquidity) {
+      options = {
+        ...options,
+        highlighting: {
+          magnetAvailable: {
+            name: 'stroke',
+            args: {
+              attrs: {
+                'stroke-width': 0,
               },
             },
-          });
+          },
+          magnetAdsorbed: {
+            name: 'stroke',
+            args: {
+              attrs: {
+                stroke: color,
+              },
+            },
+          },
         },
-      },
-    });
+        connecting: {
+          snap: true,
+          allowBlank: false,
+          highlight: true,
+          validateMagnet({magnet}) {
+            return magnet.getAttribute('port-group') === 'front';
+          },
+          validateConnection({sourceView, sourceMagnet, targetView, targetMagnet}) {
+            if (sourceView === targetView) {
+              return false;
+            }
+
+            const isSourceRight = sourceMagnet?.getAttribute('port-group') === 'front';
+            const isTargetLeft = targetMagnet?.getAttribute('port-group') === 'back';
+
+            return isSourceRight && isTargetLeft;
+          },
+          createEdge() {
+            return new Shape.Edge({
+              router: {
+                name: 'manhattan',
+              },
+              connector: {
+                name: 'rounded',
+                args: {radius: 15},
+              },
+              attrs: {
+                line: {
+                  targetMarker: {
+                    name: "classic",
+                    width: 6,
+                    height: 8,
+                  },
+                  strokeDasharray: "",
+                  stroke: "#cbcbcb",
+                  strokeWidth: 2,
+                },
+              },
+            });
+          },
+        }
+      };
+    }
+
+    config.setX6Config(options);
     config.setNodeRender('node', AlgoNode);
   })();
 
   const menuConfig = createCtxMenuConfig(config => {
     config.setMenuModelService(async (target, model) => {
+      if (!canManageLiquidity) {
+        model.setValue({
+          id: 'root',
+          type: MenuItemType.Root,
+          submenu: [
+            {
+              id: 'EMPTY_MENU_ITEM',
+              label: 'No action',
+              isEnabled: false,
+              iconName: 'DeleteOutlined',
+            },
+          ],
+        });
+        return;
+      }
+
       switch (target?.type) {
         case 'node':
           model.setValue({
