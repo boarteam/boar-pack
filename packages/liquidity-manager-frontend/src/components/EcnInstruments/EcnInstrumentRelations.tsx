@@ -1,5 +1,5 @@
 import React from "react";
-import EcnSetupsTable from "../EcnModules/EcnSetups/EcnSetupsTable";
+import EcnSetupsTable from "../EcnSetups/EcnSetupsTable";
 import EcnModulesTable from "../EcnModules/EcnModulesTable";
 import EcnConnectSchemaTable from "../EcnConnectSchemas/EcnConnectSchemasTable";
 import { Card, Space } from "antd";
@@ -8,7 +8,7 @@ import { ecnModuleJoinFields } from "../EcnModules/ecnModuleJoinFields";
 import { ecnConnectSchemaJoinFields } from "./EcnInstrumentConnectSchemaDrawer";
 import { ecnModuleSearchableColumns } from "../EcnModules/ecnModuleSearchableColumns";
 import { ecnConnectSchemaSearchableColumns } from "../EcnConnectSchemas/ecnConnectSchemaSearchableColumns";
-import { ecnSetupsSearchableColumns } from "../EcnModules/EcnSetups/ecnSetupsSearchableColumns";
+import { ecnSetupsSearchableColumns } from "../EcnSetups/ecnSetupsSearchableColumns";
 
 type TEcnInstrumentProps = {
   instrumentHash: string,
