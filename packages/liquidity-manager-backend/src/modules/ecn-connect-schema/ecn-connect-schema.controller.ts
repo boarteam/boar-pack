@@ -1,5 +1,11 @@
 import { BadRequestException, Controller, Req, UsePipes } from '@nestjs/common';
-import { Crud, CrudRequest, Override, ParsedBody, ParsedRequest } from '@nestjsx/crud';
+import {
+  Crud,
+  CrudRequest,
+  Override,
+  ParsedBody,
+  ParsedRequest,
+} from '@nestjsx/crud';
 import { ApiTags } from '@nestjs/swagger';
 import { EcnConnectSchemaService } from './ecn-connect-schema.service';
 import { EcnConnectSchema } from './entities/ecn-connect-schema.entity';
@@ -34,19 +40,21 @@ import { CheckPolicies } from "@jifeon/boar-pack-users-backend";
         alias: 'toModuleSetupLabels',
       },
       subscrSchemas: {},
-    }
+    },
   },
   routes: {
-    only: ['getOneBase', 'getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    only: [
+      'getOneBase',
+      'getManyBase',
+      'createOneBase',
+      'updateOneBase',
+      'deleteOneBase',
+    ],
     getOneBase: {
-      decorators: [
-        CheckPolicies(new ViewEcnConnectSchemaPolicy()),
-      ],
+      decorators: [CheckPolicies(new ViewEcnConnectSchemaPolicy())],
     },
     getManyBase: {
-      decorators: [
-        CheckPolicies(new ViewEcnConnectSchemaPolicy()),
-      ],
+      decorators: [CheckPolicies(new ViewEcnConnectSchemaPolicy())],
     },
     createOneBase: {
       decorators: [
@@ -66,15 +74,13 @@ import { CheckPolicies } from "@jifeon/boar-pack-users-backend";
 @ApiTags('EcnConnectSchemas')
 @Controller('liquidity/ecn-connect-schemas')
 export class EcnConnectSchemaController {
-  constructor(
-    private readonly service: EcnConnectSchemaService,
-  ) {}
+  constructor(private readonly service: EcnConnectSchemaService) {}
 
   @Override()
   async createOne(
     @Req() req: any,
     @ParsedRequest() crudRequest: CrudRequest,
-    @ParsedBody() dto: EcnConnectSchemaCreateDto
+    @ParsedBody() dto: EcnConnectSchemaCreateDto,
   ) {
     const existingConnection = await this.service.findOne({
       where: {
@@ -84,7 +90,9 @@ export class EcnConnectSchemaController {
     });
 
     if (existingConnection) {
-      throw new BadRequestException('A connection with these properties already exists.');
+      throw new BadRequestException(
+        'A connection with these properties already exists.',
+      );
     }
 
     return this.service.createOne(crudRequest, dto);
