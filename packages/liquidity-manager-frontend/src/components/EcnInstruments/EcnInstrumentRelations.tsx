@@ -1,5 +1,5 @@
 import React from "react";
-import EcnSetupsTable from "../EcnSetups/EcnSetupsTable";
+import EcnSetupsTableBase from "../EcnSetups/EcnSetupsTableBase";
 import EcnModulesTable from "../EcnModules/EcnModulesTable";
 import EcnConnectSchemaTable from "../EcnConnectSchemas/EcnConnectSchemasTable";
 import { Card, Space } from "antd";
@@ -20,7 +20,7 @@ const EcnInstrumentRelations: React.FC<TEcnInstrumentProps> = ({
   return (
     <Space direction="vertical" size="large" style={{ width: '100%' }}>
       <Card title="Related Setups">
-        <EcnSetupsTable
+        <EcnSetupsTableBase
           ghost
           viewOnly={true}
           searchableColumns={[

@@ -5,7 +5,7 @@ import { Tag } from "antd";
 import { EcnModulesSelect } from "../EcnModules/EcnModuleSelect";
 import { CopyOutlined, EditOutlined } from "@ant-design/icons";
 import { KEY_SYMBOL, getNewId } from "@/components/Table/Table";
-import { createNewDefaultParams } from "./EcnSetupsTable";
+import { createNewDefaultParams } from "./EcnSetupsTableBase";
 
 export const useEcnSetupsColumns = (canManageEcnSetupsColumns: boolean): ProColumns<EcnConnectSchemaSetupLabel>[] => {
   const intl = useIntl();
@@ -15,6 +15,7 @@ export const useEcnSetupsColumns = (canManageEcnSetupsColumns: boolean): ProColu
       title: intl.formatMessage({ id: 'pages.ecnSetups.label' }),
       dataIndex: 'label',
       sorter: true,
+      width: 200,
       formItemProps: {
         rules: [
           {
