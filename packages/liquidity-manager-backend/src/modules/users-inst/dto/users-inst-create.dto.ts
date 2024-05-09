@@ -58,7 +58,7 @@ export class UsersInstCreateDto {
   @JoiSchema(Joi.string().required())
   stopoutHash: string;
 
-  @JoiSchema(Joi.string().max(128).required())
+  @JoiSchema(Joi.string().max(128).allow('').required())
   stopoutName: string;
 
   @JoiSchema(Joi.number().integer().min(0).max(1).required())
