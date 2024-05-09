@@ -2,9 +2,9 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { LiquidityManagersService } from './liquidity-managers.service';
 import { LiquidityManagersController } from './liquidity-managers.controller';
 import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
-import { LiquidityManager } from './entities/liquidity-manager.entity';
+import { LiquidityManager, WORKER_UNIQUE_CONSTRAINT } from './entities/liquidity-manager.entity';
 import { LiquidityManagersCluster } from "./liquidity-managers.cluster";
-import { ClusterModule, ClusterService, ScryptModule, ScryptService } from "@jifeon/boar-pack-common-backend";
+import { ClusterModule, ClusterService, ScryptModule, ScryptService, Tools } from "@jifeon/boar-pack-common-backend";
 
 @Module({})
 export class LiquidityManagersModule {
@@ -39,6 +39,7 @@ export class LiquidityManagersModule {
     private readonly cluster: ClusterService,
     private readonly liquidityManagersCluster: LiquidityManagersCluster,
   ) {
+    Tools.TypeOrmExceptionFilter.setUniqueConstraintMessage(WORKER_UNIQUE_CONSTRAINT, 'Choose another worker for this liquidity manager');
     this.cluster.addCluster(this.liquidityManagersCluster);
   }
 }
