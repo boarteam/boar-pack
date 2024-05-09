@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { SetupConnectionsGraph } from "../../components/EcnSetups/EcnSetupsConnectionsGraph";
 import { SetupInstrumentsTable } from "../../components/EcnSetups/SetupInstrumentsTable";
 import { EcnConnectSchemaSetupLabel } from "@@api/generated";
+import { useTabs } from "@jifeon/boar-pack-common-frontend";
 
 enum Tabs {
   graph = 'graph',
@@ -14,7 +15,7 @@ enum Tabs {
 
 const EcnSetupPage: React.FC = () => {
   const { id } = useParams();
-  const [activeTab, setActiveTab] = useState<string>(Tabs.graph);
+  const [activeTab, setActiveTab] = useTabs<Tabs>(Tabs.graph);
   const intl = useIntl();
 
   const tabList = [
@@ -44,6 +45,7 @@ const EcnSetupPage: React.FC = () => {
     <PageContainer
       tabList={tabList}
       tabActiveKey={activeTab}
+      // @ts-ignore-next-line
       onTabChange={setActiveTab}
     >
       {activeTab === Tabs.graph && <SetupConnectionsGraph id={setupId} />}
