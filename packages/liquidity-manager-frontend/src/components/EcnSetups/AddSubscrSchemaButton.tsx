@@ -3,24 +3,17 @@ import {
   EcnSubscrSchema,
   EcnSubscrSchemaCreateDto,
   EcnSubscrSchemaUpdateDto
-} from '@/tools/api';
+} from '@@api/generated';
 import { Button, Drawer, Flex } from 'antd';
 import React, { useEffect, useState } from "react";
 import { useAccess } from '@umijs/max';
-import { useLiquidityManagerContext } from "../liquidityManagerContext";
-import {
-  ecnSubscriptionSchemaToDto
-} from "@/components/LiquidityPoolsManagement/EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable";
-import {
-  ecnSubscrSchemaJoinFields
-} from "@/components/LiquidityPoolsManagement/EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
-import Descriptions from "@/components/Descriptions/Descriptions";
-import {
-  useEcnSubscrSchemaColumns
-} from "@/components/LiquidityPoolsManagement/EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns";
-import { RelationSelect } from "@/components/Inputs/RelationSelect";
-import apiClient from "@/tools/client/apiClient";
+import apiClient from "@@api/apiClient";
 import { PlusSquareOutlined } from "@ant-design/icons";
+import { useLiquidityManagerContext } from '../../tools';
+import { useEcnSubscrSchemaColumns } from "../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns";
+import { ecnSubscrSchemaJoinFields } from "../EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
+import { ecnSubscriptionSchemaToDto } from "../EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable";
+import { Descriptions, RelationSelect } from '@jifeon/boar-pack-common-frontend';
 
 const AddSubscrSchemaDrawer: React.FC<{
   open: boolean;
@@ -95,6 +88,7 @@ const AddSubscrSchemaDrawer: React.FC<{
               limit: 0,
             }).then(response => {
               response.data.forEach(subscrSchema => {
+                // @ts-ignore-next-line
                 subscrSchema.connectSchemaDescr = subscrSchema.connectSchema.descr;
               });
 

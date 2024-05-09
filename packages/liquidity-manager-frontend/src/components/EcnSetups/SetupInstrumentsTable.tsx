@@ -1,16 +1,17 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Card, Space, Switch, Flex } from 'antd';
+import { Card, Flex, Space, Switch } from 'antd';
 import { ActionType, ColumnsState, ProFormSelect, ProTable } from '@ant-design/pro-components';
 import apiClient from '@@api/apiClient';
 import {
   EcnConnectSchema,
   EcnConnectSchemaSetupLabel,
-  EcnInstrument, EcnInstrumentsGroup,
+  EcnInstrument,
+  EcnInstrumentsGroup,
   GetEcnInstrumentsInConnectionsData,
 } from '@@api/generated';
 import { useSetupInstrumentsColumns } from './useSetupInstrumentsColumns';
 import { SortOrder } from 'antd/es/table/interface';
-import { useLiquidityManagerContext } from "../../../tools";
+import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
 import { FiltersChooser } from "./InstrumentsFilters/FiltersChooser";
 import { FiltersContext, getParamsFromValues, useFilters } from "./InstrumentsFilters/filtersContext";
@@ -82,6 +83,14 @@ const useStyles = createStyles(({ token }) => {
           overflow: 'visible',
         },
         width: '400px',
+      },
+      '.ant-table-cell': {
+        '.ant-table-cell_edit-button': {
+          opacity: 0,
+          transition: 'opacity 300ms',
+          cursor: 'pointer',
+        },
+        overflow: 'visible',
       },
     }
   }

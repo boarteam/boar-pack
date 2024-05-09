@@ -1,16 +1,14 @@
-import Table, { isRecordNew } from "../../Table/Table";
-import apiClient from "../../../tools/client/apiClient";
-import { EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto } from "../../../tools/api";
+import apiClient from "@@api/apiClient";
 import pick from "lodash/pick";
-import { withNumericId } from "../../Table/tableTools";
 import { useEcnSetupsColumns } from "./useEcnSetupsColumns";
 import { useAccess } from "@umijs/max";
-import { TTableProps } from "@/components/Table/tableTypes";
 import { ecnSetupsSearchableColumns } from "./ecnSetupsSearchableColumns";
-import { useLiquidityManagerContext } from "../liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
+import { useLiquidityManagerContext } from "../../tools";
+import { EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto } from "@@api/generated";
+import { isRecordNew, Table, TTableProps, withNumericId } from "@jifeon/boar-pack-common-frontend";
 
-export const createNewDefaultParams = {
+export const createNewDefaultParams: Pick<EcnConnectSchemaSetupLabel, 'label' | 'modules'> = {
   label: '',
   modules: [],
 };

@@ -8,37 +8,22 @@ import {
   EcnSubscrSchema,
   EcnSubscrSchemaCreateDto,
   EcnSubscrSchemaUpdateDto
-} from '@/tools/api';
-import apiClient from '../../../tools/client/apiClient';
+} from '@@api/generated';
+import apiClient from '@@api/apiClient';
 import { Button, Card, Drawer, Flex, Modal } from 'antd';
 import React, { useState } from "react";
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { useAccess } from '@umijs/max';
-import { useLiquidityManagerContext } from "../liquidityManagerContext";
-import {
-  ecnSubscriptionSchemaToDto
-} from "@/components/LiquidityPoolsManagement/EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable";
-import {
-  ecnSubscrSchemaJoinFields
-} from "@/components/LiquidityPoolsManagement/EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
-import Descriptions from "@/components/Descriptions/Descriptions";
-import {
-  useEcnSubscrSchemaColumns
-} from "@/components/LiquidityPoolsManagement/EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns";
-import {
-  useEcnConnectSchemasColumns
-} from "@/components/LiquidityPoolsManagement/EcnConnectSchemas/useEcnConnectSchemasColumns";
-import { useEcnInstrumentsColumns } from "@/components/LiquidityPoolsManagement/EcnInstruments/useEcnInstrumentsColumns";
-import { withNumericId } from "@/components/Table/tableTools";
-import { ecnInstrumentJoinFields } from "@/components/LiquidityPoolsManagement/EcnInstruments/ecnInstrumentJoinFields";
-import {
-  ecnConnectSchemaJoinFields,
-  ecnConnectSchemaToDto
-} from "@/components/LiquidityPoolsManagement/EcnModules/EcnConnectSchemaDrawer";
-import {
-  ecnConnectSchemaSearchableColumns
-} from "@/components/LiquidityPoolsManagement/EcnConnectSchemas/ecnConnectSchemaSearchableColumns";
-import { ecnInstrumentToDto } from "@/components/LiquidityPoolsManagement/EcnInstruments/EcnInstrumentsTable";
+import { useLiquidityManagerContext } from '../../tools';
+import { useEcnSubscrSchemaColumns } from '../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns';
+import { useEcnConnectSchemasColumns } from "../EcnConnectSchemas/useEcnConnectSchemasColumns";
+import { useEcnInstrumentsColumns } from "../EcnInstruments/useEcnInstrumentsColumns";
+import { ecnInstrumentJoinFields } from "../EcnInstruments/ecnInstrumentJoinFields";
+import { ecnInstrumentToDto } from "../EcnInstruments/EcnInstrumentsTable";
+import { ecnSubscrSchemaJoinFields } from "../EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
+import { ecnSubscriptionSchemaToDto } from "../EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable";
+import { Descriptions, withNumericId } from '@jifeon/boar-pack-common-frontend';
+import { ecnConnectSchemaJoinFields, ecnConnectSchemaToDto } from "../EcnModules/EcnConnectSchemaDrawer";
 
 export const deleteSubscrConfirm = (onOk: () => Promise<void>) => {
   Modal.confirm({
@@ -172,14 +157,11 @@ const SubscrSchemaDrawer: React.FC<{
               await onDelete();
               return response;
             }}
-            entityToCreateDto={ecnConnectSchemaToDto}
             entityToUpdateDto={ecnConnectSchemaToDto}
             columns={connectSchemaColumns}
             params={{
               join: ecnConnectSchemaJoinFields,
             }}
-            defaultSort={['id', 'DESC']}
-            searchableColumns={ecnConnectSchemaSearchableColumns}
             canEdit={canManageLiquidity}
           />
         </Card>

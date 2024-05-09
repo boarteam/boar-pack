@@ -1,10 +1,10 @@
-import apiClient from "../../../tools/client/apiClient";
+import apiClient from "@@api/apiClient";
 import { useAccess } from "@umijs/max";
-import { useLiquidityManagerContext } from "../liquidityManagerContext";
-import EcnSetupsTableBase from "@/components/LiquidityPoolsManagement/EcnSetups/EcnSetupsTableBase";
 import { Button } from "antd";
 import {useRef} from "react";
 import {ActionType} from "@ant-design/pro-table";
+import { useLiquidityManagerContext } from "../../tools";
+import EcnSetupsTableBase from "./EcnSetupsTableBase";
 
 const GenerateButton = ({ onClick }: { onClick: () => void }) => {
   const { canManageLiquidity } = useAccess() || {};

@@ -3,7 +3,7 @@ import React from "react";
 import { useIntl } from "@umijs/max";
 import EcnModulesTable from "../../components/EcnModules/EcnModulesTable";
 import EcnModuleTypesTable from "../../components/EcnModules/EcnModuleTypes/EcnModuleTypesTable";
-import EcnSetupsTable from "../../components/EcnModules/EcnSetups/EcnSetupsTable";
+import EcnSetupsTable from "../../components/EcnSetups/EcnSetupsTable";
 
 enum Tabs {
   modules = 'modules',

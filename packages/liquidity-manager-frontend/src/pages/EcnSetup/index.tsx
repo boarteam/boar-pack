@@ -3,8 +3,8 @@ import { PageContainer } from '@ant-design/pro-components';
 import { useParams } from 'react-router-dom';
 import { useIntl } from '@umijs/max';
 import React, { useState } from 'react';
-import { SetupConnectionsGraph } from "../../components/EcnModules/EcnSetups/EcnSetupsConnectionsGraph";
-import { SetupInstrumentsTable } from "../../components/EcnModules/EcnSetups/SetupInstrumentsTable";
+import { SetupConnectionsGraph } from "../../components/EcnSetups/EcnSetupsConnectionsGraph";
+import { SetupInstrumentsTable } from "../../components/EcnSetups/SetupInstrumentsTable";
 import { EcnConnectSchemaSetupLabel } from "@@api/generated";
 
 enum Tabs {
