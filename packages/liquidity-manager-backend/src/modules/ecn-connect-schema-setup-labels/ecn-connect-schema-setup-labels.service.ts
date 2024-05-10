@@ -49,7 +49,7 @@ export class EcnConnectSchemaSetupLabelsService extends TypeOrmCrudService<EcnCo
   }
 
   async generateSetups() {
-    const [modules, connectSchemas, lastSetupLabelId] = await Promise.all([
+    const [modules, connectSchemas] = await Promise.all([
       this.dataSource
         .createQueryBuilder()
         .select('id')
@@ -69,12 +69,6 @@ export class EcnConnectSchemaSetupLabelsService extends TypeOrmCrudService<EcnCo
           from_moduleid: EcnConnectSchema['fromModuleId'];
           to_moduleid: EcnConnectSchema['toModuleId'];
         }>(),
-      this.dataSource
-        .createQueryBuilder()
-        .select('max(id)', 'lastSetupLabelId')
-        .from(EcnConnectSchemaSetupLabel, 'connectSchemaSetupLabels')
-        .getRawOne<{ lastSetupLabelId: string }>()
-        .then((result) => Number(result?.lastSetupLabelId ?? 0)),
     ]);
 
     const connectSchemasMap: Record<EcnConnectSchema['id'], EcnModule['id'][]> =
@@ -104,14 +98,14 @@ export class EcnConnectSchemaSetupLabelsService extends TypeOrmCrudService<EcnCo
         moduleId !== undefined;
         moduleId = modulesToVisit.pop()
       ) {
+        if (visitedModules.has(moduleId)) continue;
+
         newVisitedModules.push({ id: moduleId });
         visitedModules.add(moduleId);
 
         for (const connectSchemaId of modulesMap[moduleId]) {
           for (const moduleId of connectSchemasMap[connectSchemaId]) {
-            if (!visitedModules.has(moduleId)) {
-              modulesToVisit.push(moduleId);
-            }
+            modulesToVisit.push(moduleId);
           }
         }
       }
@@ -126,7 +120,7 @@ export class EcnConnectSchemaSetupLabelsService extends TypeOrmCrudService<EcnCo
     await Promise.all(
       modulesGroups.map((modules, index) => {
         return this.repo.save({
-          label: `Setup ${lastSetupLabelId + index + 1}`,
+          label: `${new Date().toISOString()}\nSetup ${index + 1}`,
           modules,
         });
       }),
