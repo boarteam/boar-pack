@@ -90,6 +90,11 @@ const useStyles = createStyles(({ token }) => {
           transition: 'opacity 300ms',
           cursor: 'pointer',
         },
+        '&:hover': {
+          '.ant-table-cell_edit-button': {
+            opacity: 1,
+          },
+        },
         overflow: 'visible',
       },
     }
