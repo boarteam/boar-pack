@@ -13,6 +13,7 @@
   },
   "dependencies": {},
   "scripts": {
+    "push": "lerna run push",
     "clean": "lerna clean",
     "build": "lerna run build",
     "ver": "lerna run retreat && lerna version",
