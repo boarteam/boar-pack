@@ -24,7 +24,7 @@ import { useLiquidityManagerContext } from "../../tools";
 import Paragraph from "antd/es/typography/Paragraph";
 import { createStyles } from "antd-style";
 import { useConnectionsGraph } from "./useConnectionsGraph";
-import { CanvasScaleToolbar } from "./canvas-scale-toolbar";
+import { CanvasScaleToolbar } from "./canvas-scale-toolbar/index";
 import { useAccess } from "@umijs/max";
 
 IconStore.set('DeleteOutlined', DeleteOutlined);
