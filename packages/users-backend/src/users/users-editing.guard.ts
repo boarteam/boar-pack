@@ -1,13 +1,14 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable, Logger, } from '@nestjs/common';
-import { Request as ExpressRequest } from 'express';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
+import { Request } from 'express';
 import { getAction } from "@nestjsx/crud";
 import { isEqual } from 'lodash';
-import { TUser } from "./entities/user.entity";
-
-// todo: drop after moving auth module in
-interface Request extends ExpressRequest {
-  user: TUser
-}
 
 @Injectable()
 export class UsersEditingGuard implements CanActivate {
@@ -16,6 +17,11 @@ export class UsersEditingGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     const user = request.user;
+
+    if (!user) {
+      this.logger.warn(`User not found in users editing guard`);
+      throw new InternalServerErrorException(`User not found in users editing guard`);
+    }
 
     const editingUserId = request.params['id'];
     switch (getAction(context.getHandler())) {
