@@ -37,17 +37,19 @@ export const EcnModuleDrawer: React.FC<{
       onClose={onClose}
       width='33%'
       extra={
-        <Button
-          onClick={() => {
-            deleteNodeConfirm(async () => {
-              await onDelete(id);
-              onClose();
-            })
-          }}
-          danger
-        >
-          <DeleteOutlined />
-        </Button>
+        canManageLiquidity && (
+          <Button
+            onClick={() => {
+              deleteNodeConfirm(async () => {
+                await onDelete(id);
+                onClose();
+              })
+            }}
+            danger
+          >
+            <DeleteOutlined />
+          </Button>
+        )
       }
     >
       <Descriptions<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, { id: number, worker: string }>

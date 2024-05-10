@@ -188,6 +188,17 @@ const EcnInstrumentsTable = () => {
       }}
       params={{
         join: ecnInstrumentJoinFields,
+        sortMap: {
+          instrumentGroup: 'instrumentGroup.name',
+          swapType: 'swapType.name',
+          swapRollover3Days: 'swapRollover3Days.name',
+          commissionType: 'commissionType.name',
+          commissionLotsMode: 'commissionLotsMode.name',
+          commissionAgentType: 'commissionAgentType.name',
+          commissionAgentLotsMode: 'commissionAgentLotsMode.name',
+          profitMode: 'profitMode.name',
+          marginMode: 'marginMode.name',
+        }
       }}
       defaultSort={['name', 'ASC']}
       searchableColumns={ecnInstrumentSearchableColumns}

@@ -10,6 +10,7 @@ import { useLiquidityManagerContext } from "../../../tools";
 import EcnInstrumentGraph from "../../../components/EcnInstruments/EcnInstrumentGraph";
 import { EcnInstrument } from "@@api/generated";
 import apiClient from "@@api/apiClient";
+import { useTabs } from "@jifeon/boar-pack-common-frontend";
 
 enum Tabs {
   information = 'information',
@@ -20,7 +21,7 @@ enum Tabs {
 const EcnInstrumentPage: React.FC = () => {
   const { hash: instrumentHash } = useParams();
   const [instrument, setInstrument] = React.useState<EcnInstrument | null | undefined>(undefined);
-  const [activeTab, setActiveTab] = React.useState<string>(Tabs.information);
+  const [activeTab, setActiveTab] = useTabs<Tabs>(Tabs.information);
   const intl = useIntl();
   const { worker } = useLiquidityManagerContext();
 
@@ -74,6 +75,7 @@ const EcnInstrumentPage: React.FC = () => {
       title={instrument.name}
       tabList={tabList}
       tabActiveKey={activeTab}
+      // @ts-ignore-next-line
       onTabChange={setActiveTab}
     >
       {activeTab === Tabs.information ? <Card><EcnInstrumentDescriptions instrumentHash={instrumentHash} /></Card> : null}

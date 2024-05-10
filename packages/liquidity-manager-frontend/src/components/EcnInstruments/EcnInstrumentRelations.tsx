@@ -1,5 +1,5 @@
 import React from "react";
-import EcnSetupsTable from "../EcnModules/EcnSetups/EcnSetupsTable";
+import EcnSetupsTableBase from "../EcnSetups/EcnSetupsTableBase";
 import EcnModulesTable from "../EcnModules/EcnModulesTable";
 import EcnConnectSchemaTable from "../EcnConnectSchemas/EcnConnectSchemasTable";
 import { Card, Space } from "antd";
@@ -8,7 +8,7 @@ import { ecnModuleJoinFields } from "../EcnModules/ecnModuleJoinFields";
 import { ecnConnectSchemaJoinFields } from "./EcnInstrumentConnectSchemaDrawer";
 import { ecnModuleSearchableColumns } from "../EcnModules/ecnModuleSearchableColumns";
 import { ecnConnectSchemaSearchableColumns } from "../EcnConnectSchemas/ecnConnectSchemaSearchableColumns";
-import { ecnSetupsSearchableColumns } from "../EcnModules/EcnSetups/ecnSetupsSearchableColumns";
+import { ecnSetupsSearchableColumns } from "../EcnSetups/ecnSetupsSearchableColumns";
 
 type TEcnInstrumentProps = {
   instrumentHash: string,
@@ -20,7 +20,7 @@ const EcnInstrumentRelations: React.FC<TEcnInstrumentProps> = ({
   return (
     <Space direction="vertical" size="large" style={{ width: '100%' }}>
       <Card title="Related Setups">
-        <EcnSetupsTable
+        <EcnSetupsTableBase
           ghost
           viewOnly={true}
           searchableColumns={[
@@ -65,6 +65,7 @@ const EcnInstrumentRelations: React.FC<TEcnInstrumentProps> = ({
               { field: 'connections' },
               { field: 'connections.subscrSchemas' },
             ],
+            sortMap: { type: 'type.name' },
           }}
         />
       </Card>

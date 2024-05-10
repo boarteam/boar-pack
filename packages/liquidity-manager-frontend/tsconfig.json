@@ -20,7 +20,7 @@
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
     "paths": {
-      "@@api/*": ["node_modules/@jifeon/boar-pack-liquidity-manager-backend/dist/api-client/*"],
+      "@@api/*": ["node_modules/@jifeon/boar-pack-liquidity-manager-backend/dist/src/api-client/*"],
       "@/*": ["./src/*"],
       "@@/*": ["./src/.umi/*"]
     }

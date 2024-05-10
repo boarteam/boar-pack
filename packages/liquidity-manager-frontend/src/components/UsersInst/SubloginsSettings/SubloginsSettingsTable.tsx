@@ -73,7 +73,14 @@ const SubloginsSettingsTable: React.FC<TSubloginSettingsTableProps> = ({
         baseFilters: {
           usersSubAccountInstId,
         },
+        sortMap: {
+          instrumentRel: 'instrumentRel.name',
+          hedgeCurrency: 'hedgeCurrency.name',
+          'instrumentRel,priceDigits': 'instrumentRel.priceDigits',
+        }
       }}
+      // fixes settings list height
+      options={{}}
       defaultSort={['instrument', 'ASC']}
       searchableColumns={subloginsSearchableColumns}
       createNewDefaultParams={{

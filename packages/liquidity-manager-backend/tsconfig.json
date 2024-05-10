@@ -27,6 +27,8 @@
     "esModuleInterop": true
   },
   "include": [
-    "src"
+    "src",
+    "node_modules/@jifeon/boar-pack-users-backend",
+    "node_modules/@jifeon/boar-pack-users-backend/package.json"
   ]
 }

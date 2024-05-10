@@ -79,10 +79,10 @@ export const useLiquidityManagers = (): LiquidityManagersHookResult => {
       },
     } : {});
     localStorage.setItem(LIQUIDITY_MANAGER_LOCAL_STORAGE_KEY, liquidityManager?.id || '');
-    setSearchParams({
-      ...searchParams,
-      [LIQUIDITY_MANAGER_SEARCH_KEY]: liquidityManager?.id || '',
-    });
+
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set(LIQUIDITY_MANAGER_SEARCH_KEY, liquidityManager?.id || '');
+    setSearchParams(newSearchParams);
   }, [liquidityManager]);
 
   return {

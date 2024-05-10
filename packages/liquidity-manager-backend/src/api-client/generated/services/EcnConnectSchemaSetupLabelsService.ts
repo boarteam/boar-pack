@@ -15,6 +15,24 @@ export class EcnConnectSchemaSetupLabelsService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
+     * @returns any
+     * @throws ApiError
+     */
+    public generateSetups({
+        worker,
+    }: {
+        worker: string,
+    }): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/{worker}/liquidity/ecn-connect-schema-setup-labels/generate-setups',
+            path: {
+                'worker': worker,
+            },
+        });
+    }
+
+    /**
      * Retrieve a single EcnConnectSchemaSetupLabel
      * @returns EcnConnectSchemaSetupLabel Get one base response
      * @throws ApiError

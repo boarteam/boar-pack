@@ -21,16 +21,15 @@ export type TGetOneParams = {
 export type TDescriptionGetRequestParams = {
   join?: QueryJoin | QueryJoin[];
 };
-export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = {}> = {
+export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = object> = {
   mainTitle?: ProColumns<Entity>['title'] | null,
-  getOne: ({}: TGetOneParams & TPathParams) => Promise<Entity | null>,
-  // onCreate: ({}: { requestBody: CreateDto } & TPathParams) => Promise<Entity>,
-  onUpdate: ({}: Record<keyof Entity, string> & { requestBody: UpdateDto } & TPathParams) => Promise<Entity>,
+  entity?: Partial<Entity>,
+  getOne?: ({}: TGetOneParams & TPathParams) => Promise<Entity | null>,
+  onUpdate?: ({}: Record<keyof Entity, string> & { requestBody: UpdateDto } & TPathParams) => Promise<Entity>,
   onDelete?: ({}: Record<keyof Entity, string> & TPathParams) => Promise<void>,
-  pathParams: TPathParams,
+  pathParams?: TPathParams,
   idColumnName?: string & keyof Entity,
-  // entityToCreateDto: (entity: Entity) => CreateDto,
-  entityToUpdateDto: (entity: Partial<Entity>) => UpdateDto,
+  entityToUpdateDto?: (entity: Partial<Entity>) => UpdateDto,
   createNewDefaultParams?: Partial<Entity>,
   afterSave?: (record: Entity) => Promise<void>,
   actionRef?: MutableRefObject<ActionType | undefined>,

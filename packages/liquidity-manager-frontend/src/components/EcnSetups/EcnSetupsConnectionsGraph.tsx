@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { Spin } from 'antd';
 import apiClient from '@@api/apiClient';
 import { EcnConnectSchemaSetupLabel, EcnModule } from '@@api/generated';
-import { useLiquidityManagerContext } from "../../../tools";
+import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
-import ConnectionsGraph from "../../ConnectionsGraph";
+import ConnectionsGraph from "../ConnectionsGraph";
 
 export const SetupConnectionsGraph = ({ id }: { id: EcnConnectSchemaSetupLabel['id'] }) => {
   const [modules, setModules] = useState<Set<EcnModule['id']>>();
