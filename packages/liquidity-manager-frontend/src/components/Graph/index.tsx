@@ -107,6 +107,10 @@ const useStyles = createStyles(({ token }) => {
       border: `1px solid ${token.colorPrimary} !important`,
       borderRadius: token.borderRadiusLG,
       position: 'relative',
+      ':fullscreen': {
+        background: 'white !important',
+        border: 'none !important',
+      },
       height: 'calc(100vh - 290px)',
       '.x6-node:hover .front-port': {
         stroke: token.colorPrimary,
