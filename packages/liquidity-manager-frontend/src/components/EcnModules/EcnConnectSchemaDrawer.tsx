@@ -54,21 +54,23 @@ export const EcnConnectSchemaDrawer: React.FC<{
       onClose={onClose}
       width='33%'
       extra={
-        <Button
-          onClick={async () => {
-            await deleteEdgeConfirm(
-              id,
-              async () => {
-                await onDelete(id);
-                onClose();
-              },
-              worker,
-            )
-          }}
-          danger
-        >
-          <DeleteOutlined />
-        </Button>
+        canManageLiquidity && (
+          <Button
+            onClick={async () => {
+              await deleteEdgeConfirm(
+                id,
+                async () => {
+                  await onDelete(id);
+                  onClose();
+                },
+                worker,
+              )
+            }}
+            danger
+          >
+            <DeleteOutlined />
+          </Button>
+        )
       }
     >
       <Descriptions<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, { id: number, worker: string }>

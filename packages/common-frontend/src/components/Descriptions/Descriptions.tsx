@@ -10,6 +10,8 @@ import { columnsToDescriptionItemProps } from "./useDescriptionColumns";
 import pick from "lodash/pick";
 import safetyRun from "../../tools/safetyRun";
 import { buildJoinFields, collectFieldsFromColumns } from "../Table";
+import { RowEditableConfig } from "@ant-design/pro-utils";
+import { useForm } from "antd/es/form/Form";
 
 const Descriptions = <Entity extends Record<string | symbol, any>,
   CreateDto = Entity,
@@ -18,6 +20,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
   >(
   {
     mainTitle,
+    entity,
     getOne,
     onUpdate,
     pathParams,
@@ -36,18 +39,19 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     UpdateDto,
     TPathParams> & Omit<ProDescriptionsProps<Entity>, 'columns'>
 ) => {
+  const [form] = useForm<Entity>();
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
   const intl = useIntl();
-  const [data, setData] = useState<Entity | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<Partial<Entity> | undefined>(entity);
+  const [loading, setLoading] = useState(false);
 
   const sections = columnsToDescriptionItemProps(columns, mainTitle);
 
   const queryParams = useMemo(() => {
     const join = params?.join;
     const queryParams: TGetOneParams & TPathParams = {
-      ...pathParams,
+      ...(pathParams ?? {} as TPathParams),
     };
 
     const { joinSelect, joinFields } = buildJoinFields(join);
@@ -62,6 +66,10 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
   }, [params, pathParams]);
 
   const requestData = async () => {
+    if (!getOne) {
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -76,9 +84,35 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     }
   }
 
+  const onSave: RowEditableConfig<Entity>['onSave'] = async (propName, record) => {
+    try {
+      await form.validateFields();
+      if (onUpdate && entityToUpdateDto) {
+        await onUpdate({
+          ...queryParams,
+          ...{} as Record<keyof Entity, string>, // todo: fix this
+          // @ts-ignore
+          requestBody: entityToUpdateDto(pick(record, [propName])),
+        });
+      }
+
+      setData(record);
+      if (typeof afterSave === 'function') {
+        await afterSave(record);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   useEffect(() => {
     safetyRun(requestData());
-  }, [queryParams])
+  }, [])
+
+  useEffect(() => {
+    setData(entity);
+    form.setFieldsValue(entity as Entity);
+  }, [entity])
 
   if (loading) {
     return <PageLoading />;
@@ -95,12 +129,13 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     );
   }
 
-
   return (
     <>
       {sections.map((section, index) => (
         <ProDescriptions<Entity>
-          key={index + String(pathParams[idColumnName as keyof TPathParams])}
+          // @ts-ignore-next-line
+          form={form}
+          key={index + String(pathParams?.[idColumnName as keyof TPathParams])}
           title={section.title as React.ReactNode}
           actionRef={actionRef}
           size={"small"}
@@ -109,29 +144,10 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
           style={{ marginBottom: 20 }}
           labelStyle={{ width: '15%' }}
           contentStyle={{ width: '20%' }}
-          dataSource={data}
+          dataSource={data as Entity}
           editable={canEdit ? {
             type: 'multiple',
-            async onSave(
-              propName,
-              record,
-            ) {
-              try {
-                await onUpdate({
-                  ...queryParams,
-                  ...{} as Record<keyof Entity, string>, // todo: fix this
-                  // @ts-ignore
-                  requestBody: entityToUpdateDto(pick(record, [propName])),
-                });
-
-                setData(record);
-                if (typeof afterSave === 'function') {
-                  await afterSave(record);
-                }
-              } catch (e) {
-                console.error(e);
-              }
-            },
+            onSave,
             deletePopconfirmMessage: intl.formatMessage({ id: 'table.deletePopconfirmMessage' }),
             onlyAddOneLineAlertMessage: intl.formatMessage({ id: 'table.onlyAddOneLineAlertMessage' }),
             cancelText: <Tooltip title={intl.formatMessage({ id: 'table.cancelText' })}><StopOutlined /></Tooltip>,

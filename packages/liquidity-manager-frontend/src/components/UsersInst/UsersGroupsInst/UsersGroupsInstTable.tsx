@@ -68,6 +68,12 @@ const UsersGroupsInstTable = () => {
       }}
       params={{
         join: usersGroupsJoinFields,
+        sortMap: {
+          action: 'action.name',
+          company: 'company.name',
+          workingMode: 'workingMode.name',
+          currency: 'currency.name',
+        }
       }}
       defaultSort={['name', 'ASC']}
       searchableColumns={usersGroupsSearchableColumns}

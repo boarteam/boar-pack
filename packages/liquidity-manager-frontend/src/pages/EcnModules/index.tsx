@@ -3,7 +3,8 @@ import React from "react";
 import { useIntl } from "@umijs/max";
 import EcnModulesTable from "../../components/EcnModules/EcnModulesTable";
 import EcnModuleTypesTable from "../../components/EcnModules/EcnModuleTypes/EcnModuleTypesTable";
-import EcnSetupsTable from "../../components/EcnModules/EcnSetups/EcnSetupsTable";
+import EcnSetupsTable from "../../components/EcnSetups/EcnSetupsTable";
+import { useTabs } from "@jifeon/boar-pack-common-frontend";
 
 enum Tabs {
   modules = 'modules',
@@ -12,7 +13,7 @@ enum Tabs {
 }
 
 const Users: React.FC = () => {
-  const [activeTab, setActiveTab] = React.useState<string>(Tabs.modules);
+  const [activeTab, setActiveTab] = useTabs<Tabs>(Tabs.modules);
   const intl = useIntl();
 
   const tabList = [
@@ -34,6 +35,7 @@ const Users: React.FC = () => {
     <PageContainer
       tabList={tabList}
       tabActiveKey={activeTab}
+      // @ts-ignore-next-line
       onTabChange={setActiveTab}
     >
       {activeTab === Tabs.modules ? <EcnModulesTable /> : null}

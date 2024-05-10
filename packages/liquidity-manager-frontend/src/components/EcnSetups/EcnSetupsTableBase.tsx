@@ -1,13 +1,12 @@
-import apiClient from '@@api/apiClient';
-import { EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto } from "@@api/generated";
+import apiClient from "@@api/apiClient";
 import pick from "lodash/pick";
-import { isRecordNew, Table, withNumericId } from "@jifeon/boar-pack-common-frontend";
 import { useEcnSetupsColumns } from "./useEcnSetupsColumns";
 import { useAccess } from "@umijs/max";
-import { TTableProps } from "@jifeon/boar-pack-common-frontend";
 import { ecnSetupsSearchableColumns } from "./ecnSetupsSearchableColumns";
-import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
+import { useLiquidityManagerContext } from "../../tools";
+import { EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto } from "@@api/generated";
+import { isRecordNew, Table, TTableProps, withNumericId } from "@jifeon/boar-pack-common-frontend";
 
 export const createNewDefaultParams: Pick<EcnConnectSchemaSetupLabel, 'label' | 'modules'> = {
   label: '',
@@ -24,7 +23,7 @@ export function entityToDto(entity: EcnConnectSchemaSetupLabel) {
   };
 }
 
-const EcnSetupsTable = (props: Partial<TTableProps<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, {worker: string}>>) => {
+const EcnSetupsTableBase = (props: Partial<TTableProps<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, {worker: string}>>) => {
   let { canManageLiquidity } = useAccess() || {};
   if (props.viewOnly !== undefined) {
     canManageLiquidity = !props.viewOnly;
@@ -64,4 +63,4 @@ const EcnSetupsTable = (props: Partial<TTableProps<EcnConnectSchemaSetupLabel, E
   );
 }
 
-export default EcnSetupsTable;
+export default EcnSetupsTableBase;

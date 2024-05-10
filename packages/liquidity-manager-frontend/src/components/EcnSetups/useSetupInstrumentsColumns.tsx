@@ -9,9 +9,11 @@ import {
 import { Popover, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
 import apiClient from '@@api/apiClient';
-import { useEcnSubscrSchemaColumns } from "../EcnSubscrSchemas/useEcnSubscrSchemaColumns";
+import { useEcnSubscrSchemaColumns } from "../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns";
 import { ColumnsType } from "antd/es/table";
-import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
+import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
+import { AddSubscrSchemaButton } from "./AddSubscrSchemaButton";
+import { EditSubscrSchemaButton } from "./EditSubscrSchemaButton";
 
 const subscrSchemaEnabledColorMap = new Map([
   ['Enabled', 'green'],
@@ -105,7 +107,7 @@ export const useSetupInstrumentsColumns = (connectSchemas: EcnConnectSchema[], c
         sorter: false,
         title: connectSchema.descr,
         dataIndex: ['connections', connectSchema.id],
-        render: (text, record) => {
+        render: (text, record, _, action) => {
           const subscrState = record.connections[connectSchema.id] as TSubscrState | undefined;
           let value = subscrState === undefined ? undefined : subscrState.enabled ? 'Enabled' : 'Disabled';
           if (value === 'Enabled' && subscrState?.equal === false && subscrState.referenceEnabled) {
@@ -127,6 +129,31 @@ export const useSetupInstrumentsColumns = (connectSchemas: EcnConnectSchema[], c
               </Popover>
             );
           }
+
+          Component = (
+            <>
+              {Component}
+              {value
+                ? (
+                  <EditSubscrSchemaButton
+                    instrumentHash={record.instrumentHash}
+                    connectSchemaId={connectSchema.id}
+                    onDelete={async () => action?.reload()}
+                    onUpdate={async () => action?.reload()}
+                    className={'ant-table-cell_edit-button'}
+                  />
+                )
+                : (
+                  <AddSubscrSchemaButton
+                    instrumentHash={record.instrumentHash}
+                    connectSchemaId={connectSchema.id}
+                    onCreate={async () => action?.reload()}
+                    className={'ant-table-cell_edit-button'}
+                  />
+                )
+              }
+            </>
+          );
 
           return Component;
         }

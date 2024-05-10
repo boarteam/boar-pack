@@ -2,9 +2,9 @@ import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import { EcnConnectSchemaSetupLabel } from "@@api/generated";
 import { Tag } from "antd";
-import { EcnModulesSelect } from "../EcnModuleSelect";
+import { EcnModulesSelect } from "../EcnModules/EcnModuleSelect";
 import { CopyOutlined, EditOutlined } from "@ant-design/icons";
-import { createNewDefaultParams } from "./EcnSetupsTable";
+import { createNewDefaultParams } from "./EcnSetupsTableBase";
 import { getNewId, KEY_SYMBOL } from "@jifeon/boar-pack-common-frontend";
 
 export const useEcnSetupsColumns = (canManageEcnSetupsColumns: boolean): ProColumns<EcnConnectSchemaSetupLabel>[] => {
@@ -15,6 +15,7 @@ export const useEcnSetupsColumns = (canManageEcnSetupsColumns: boolean): ProColu
       title: intl.formatMessage({ id: 'pages.ecnSetups.label' }),
       dataIndex: 'label',
       sorter: true,
+      width: 200,
       formItemProps: {
         rules: [
           {

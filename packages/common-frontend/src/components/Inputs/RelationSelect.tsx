@@ -6,7 +6,7 @@ type RelationSelectProps<T> = ProFormSelectProps & {
   selectedItem: T | null | undefined,
   onChange?: (type: T | null) => void,
   filter?: string[],
-  fetchItems: (filter: string[]) => Promise<{data: T[]}>,
+  fetchItems: (filter: string[], keyword?: string) => Promise<{data: T[]}>,
   fieldNames?: {
     value: string,
     label: string,
@@ -35,7 +35,7 @@ export const RelationSelect = function<T>({
     if (keyword) {
       reqFilter.push(labelKey + '||$contL||' + keyword);
     }
-    const resp = await fetchItems(reqFilter);
+    const resp = await fetchItems(reqFilter, keyword);
     return resp.data;
   }
 
@@ -45,6 +45,9 @@ export const RelationSelect = function<T>({
       mode={'single'}
       request={request}
       formItemProps={{
+        // correct color for invalid relational fields (#64)
+        // @ts-ignore-next-line
+        validateStatus: rest['aria-invalid'] === 'true' ? 'error' : 'success',
         style: {
           margin: 0,
           display: 'inline-block',

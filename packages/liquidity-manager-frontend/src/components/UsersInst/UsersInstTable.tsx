@@ -144,6 +144,15 @@ const UsersInstTable = () => {
       }}
       params={{
         join: usersInstJoinFields,
+        sortMap: {
+          module: 'module.name',
+          marginModule: 'marginModule.name',
+          company: 'company.name',
+          action: 'action.name',
+          commissionType: 'commissionType.name',
+          commissionLotsMode: 'commissionLotsMode.name',
+          group: 'group.name',
+        }
       }}
       scroll={{
         x: 'max-content',

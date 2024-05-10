@@ -1,6 +1,6 @@
-import { Operators } from "@jifeon/boar-pack-common-frontend";
+import { Operators, TSearchableColumn } from "@jifeon/boar-pack-common-frontend";
 
-export const ecnSetupsSearchableColumns = [
+export const ecnSetupsSearchableColumns: TSearchableColumn[] = [
   {
     field: 'label',
     operator: Operators.containsLow,

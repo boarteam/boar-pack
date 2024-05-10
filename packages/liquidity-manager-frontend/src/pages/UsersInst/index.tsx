@@ -3,6 +3,7 @@ import React from "react";
 import { useIntl } from "@umijs/max";
 import UsersGroupsInstTable from "../../components/UsersInst/UsersGroupsInst/UsersGroupsInstTable";
 import UsersInstTable from "../../components/UsersInst/UsersInstTable";
+import { useTabs } from "@jifeon/boar-pack-common-frontend";
 
 enum Tabs {
   usersInst = 'usersInst',
@@ -10,7 +11,7 @@ enum Tabs {
 }
 
 const UsersInst: React.FC = () => {
-  const [activeTab, setActiveTab] = React.useState<string>(Tabs.usersInst);
+  const [activeTab, setActiveTab] = useTabs<Tabs>(Tabs.usersInst);
   const intl = useIntl();
 
   const tabList = [
@@ -28,6 +29,7 @@ const UsersInst: React.FC = () => {
     <PageContainer
       tabList={tabList}
       tabActiveKey={activeTab}
+      // @ts-ignore-next-line
       onTabChange={setActiveTab}
     >
       {activeTab === Tabs.usersInst ? <UsersInstTable /> : null}

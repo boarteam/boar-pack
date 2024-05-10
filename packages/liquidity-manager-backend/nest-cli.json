@@ -1,11 +1,11 @@
 {
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
-  "entryFile": "src/generateTypes.js",
+  "entryFile": "generateTypes",
   "compilerOptions": {
     "plugins": [
       "@nestjs/swagger"
     ],
-    "tsConfigPath": "./tsconfig-swagger.json"
+    "tsConfigPath": "./tsconfig.json"
   }
 }

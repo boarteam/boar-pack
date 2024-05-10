@@ -63,14 +63,14 @@ const LiquidityManagersTable = () => {
           field: 'database',
           operator: Operators.containsLow,
         },
-        {
-          field: 'worker',
-          operator: Operators.equals,
-        },
-        {
-          field: 'color',
-          operator: Operators.equals,
-        }
+        // {
+        //   field: 'worker',
+        //   operator: Operators.equals,
+        // },
+        // {
+        //   field: 'color',
+        //   operator: Operators.equals,
+        // }
       ]}
       viewOnly={!canManageLiquidity}
     ></Table>
