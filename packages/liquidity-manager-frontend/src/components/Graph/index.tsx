@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import type { IAppLoad, IGraphCommandService, NsGraph } from '@antv/xflow';
-import { CanvasContextMenu,
+import {
+  CanvasContextMenu,
   CanvasSnapline,
   createCtxMenuConfig,
   createGraphConfig,
@@ -108,7 +109,7 @@ const useStyles = createStyles(({ token }) => {
       borderRadius: token.borderRadiusLG,
       position: 'relative',
       ':fullscreen': {
-        background: 'white !important',
+        background: `${token.colorBgBase} !important`,
         border: 'none !important',
       },
       height: 'calc(100vh - 290px)',
@@ -150,6 +151,12 @@ const useStyles = createStyles(({ token }) => {
             stroke: primary,
           },
         },
+      },
+    },
+    scaleToolbar: {
+      backgroundColor: token.colorBgBase,
+      '.x6-toolbar-item': {
+        color: `${token.colorPrimary} !important`,
       },
     }
   };
@@ -300,8 +307,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
             newEdges.add(newEdge.id);
             return { ...prevState, edges: newEdges };
           })
-        }
-        catch(error) {
+        } catch (error) {
           console.error(error)
         }
       });
@@ -342,10 +348,10 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
           snap: true,
           allowBlank: false,
           highlight: true,
-          validateMagnet({magnet}) {
+          validateMagnet({ magnet }) {
             return magnet.getAttribute('port-group') === 'front';
           },
-          validateConnection({sourceView, sourceMagnet, targetView, targetMagnet}) {
+          validateConnection({ sourceView, sourceMagnet, targetView, targetMagnet }) {
             if (sourceView === targetView) {
               return false;
             }
@@ -362,7 +368,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
               },
               connector: {
                 name: 'rounded',
-                args: {radius: 15},
+                args: { radius: 15 },
               },
               attrs: {
                 line: {
@@ -511,6 +517,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
         <CanvasContextMenu config={menuConfig} />
         <XFlowCanvas config={graphConfig} />
         <CanvasScaleToolbar
+          className={styles.scaleToolbar}
           position={{ top: 12, left: 12 }}
         />
         <CanvasSnapline color="#1890ff" />
