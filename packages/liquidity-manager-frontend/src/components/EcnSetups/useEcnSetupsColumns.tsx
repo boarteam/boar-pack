@@ -53,7 +53,7 @@ export const useEcnSetupsColumns = (canManageEcnSetupsColumns: boolean): ProColu
           <EditOutlined />
         </a>,
          <a
-         key="editable"
+         key="copy"
          onClick={() => {
            const newId = getNewId();
            // eslint-disable-next-line @typescript-eslint/no-unused-vars
