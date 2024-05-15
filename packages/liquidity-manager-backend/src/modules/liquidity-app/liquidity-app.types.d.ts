@@ -27,5 +27,6 @@ declare module '@jifeon/boar-pack-users-backend' {
     UsersSubAccountInst: typeof UsersSubAccountInst;
     SubloginSettings: typeof SubloginSettings;
     LiquidityManager: typeof LiquidityManager;
+    Liquidity: 'Liquidity';
   }
 }
