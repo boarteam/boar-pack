@@ -2,7 +2,7 @@ import { Controller, UseFilters, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Crud } from '@nestjsx/crud';
 import { User } from './entities/user.entity';
-import { CheckPolicies } from '../casl/policies.guard';
+import { CheckPolicies, ManageAllPolicy } from '../casl';
 import { UserCreateDto } from './dto/user-create.dto';
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { UserUpdateDto } from "./dto/user-update.dto";
@@ -10,7 +10,6 @@ import { HashPasswordInterceptor } from "./hash-password.interceptor";
 import { PermissionDto } from "./dto/permission.dto";
 import { UsersEditingGuard } from "./users-editing.guard";
 import { ViewUsersPolicy } from "./policies/view-users.policy";
-import { ManageAllPolicy } from "../casl/policies/manage-all.policy";
 import { Tools } from "@jifeon/boar-pack-common-backend";
 
 @Crud({
