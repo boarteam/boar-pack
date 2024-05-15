@@ -19,6 +19,7 @@ import { JoiPipeModule } from "nestjs-joi";
 import { LiquidityManagersModule } from "../liquidity-managers";
 import { AuthModule } from "@jifeon/boar-pack-users-backend";
 import { ClusterModule } from "@jifeon/boar-pack-common-backend";
+import { CaslPermissionsModule } from "../casl-permissions/casl-permissions.module";
 
 export const restModules = [
   EcnModulesModule,
@@ -59,6 +60,7 @@ export class LiquidityAppModule {
           withControllers: false,
           dataSourceName: config.dataSourceName,
         }),
+        CaslPermissionsModule,
         JoiPipeModule,
         ...restModules,
       ],
