@@ -116,6 +116,14 @@ const columnsSets: TColumnsSet<UsersInst>[] = [
       'fixTradingEnabled',
       'fixUserinfoRequestsEnabled',
     ],
+  },
+  {
+    name: 'Authentication Columns',
+    columns: [
+      'id',
+      'name',
+      'password',
+    ],
   }
 ];
 

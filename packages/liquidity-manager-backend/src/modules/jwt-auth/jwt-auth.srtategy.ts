@@ -4,17 +4,17 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JWTAuthConfigService } from './jwt-auth.config';
 import { Request } from 'express';
 import { JWT_AUTH, tokenName } from '../auth';
-import { UsersService } from '../users';
+import { UsersInstService } from "../users-inst/users-inst.service";
 
 export type TJWTPayload = {
-  email: string;
+  name: string;
   sub: string;
 };
 
 @Injectable()
 export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {
   constructor(
-    private usersService: UsersService,
+    private usersService: UsersInstService,
     private jwtAuthConfigService: JWTAuthConfigService,
   ) {
     super({
@@ -41,7 +41,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {
   async validate(payload: TJWTPayload) {
     const userId = payload.sub;
     const user = await this.usersService.findOne({
-      select: ['id', 'email', 'role', 'permissions'],
+      select: ['id', 'name'],
       where: { id: userId },
     });
 

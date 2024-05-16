@@ -19,13 +19,14 @@ import { JoiPipeModule } from "nestjs-joi";
 import { LiquidityManagersModule } from "../liquidity-managers";
 import { AuthModule } from "@jifeon/boar-pack-users-backend";
 import { ClusterModule } from "@jifeon/boar-pack-common-backend";
-import { CaslPermissionsModule } from "../casl-permissions/casl-permissions.module";
+import { CaslPermissionsModule } from "../casl-permissions";
+import { AuthModule as LMAuthModule } from "../auth";
 
 export const restModules = [
   EcnModulesModule,
   EcnModuleTypesModule,
   UsersGroupsInstModule,
-  UsersInstModule,
+  UsersInstModule.forRoot(),
   UsersSubAccountsInstModule,
   SubloginsSettingsModule,
   EcnInstrumentsGroupsModule,
@@ -63,6 +64,32 @@ export class LiquidityAppModule {
         CaslPermissionsModule,
         JoiPipeModule,
         ...restModules,
+      ],
+      providers: [],
+      exports: [],
+    }
+  }
+
+  static forManagerPanel(config: {
+    dataSourceName: string;
+  }): DynamicModule {
+    return {
+      module: LiquidityAppModule,
+      imports: [
+        ConfigModule,
+        TypeOrmModule.forRootAsync({
+          name: AMTS_DB_NAME,
+          imports: [
+            ConfigModule,
+            ClusterModule,
+            LiquidityManagersModule.forConfig({ dataSourceName: config.dataSourceName }),
+          ],
+          useClass: LiquidityAppConfig,
+        }),
+        LMAuthModule,
+        // CaslPermissionsModule,
+        // JoiPipeModule,
+        // ...restModules,
       ],
       providers: [],
       exports: [],

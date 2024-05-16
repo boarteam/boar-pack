@@ -1,9 +1,11 @@
 import { BadRequestException, CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
-import { createHash } from 'crypto';
+import { UsersInstService } from "./users-inst.service";
 
 @Injectable()
 export class Md5PasswordInterceptor implements NestInterceptor {
-  constructor() {}
+  constructor(
+    private readonly users: UsersInstService,
+  ) {}
 
   async intercept(
     context: ExecutionContext,
@@ -16,9 +18,8 @@ export class Md5PasswordInterceptor implements NestInterceptor {
       if (!name) {
         throw new BadRequestException('Name is required is change password');
       }
-      const hash = createHash('md5');
-      hash.update(name + request.body.password);
-      request.body.password = hash.digest('hex');
+
+      request.body.password = this.users.generatePasswordHash(name, request.body.password);
     }
 
     return next.handle();
