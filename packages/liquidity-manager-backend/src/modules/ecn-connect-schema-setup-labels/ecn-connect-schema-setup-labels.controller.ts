@@ -27,6 +27,7 @@ import { ManageEcnConnectSchemaPolicy } from '../ecn-connect-schema/policies/man
     alwaysPaginate: true,
     join: {
       modules: {},
+      'modules.type': {},
       // this field is not in the Entity, refer to the service to understand the logic
       'modules.connections': {},
       // this field is not in the Entity, refer to the service to understand the logic

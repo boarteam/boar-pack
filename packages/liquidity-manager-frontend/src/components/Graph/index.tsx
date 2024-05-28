@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { IAppLoad, IGraphCommandService, NsGraph } from '@antv/xflow';
 import {
   CanvasContextMenu,
@@ -18,7 +18,7 @@ import apiClient from '@@api/apiClient';
 import { EcnConnectSchema, EcnModule } from '@@api/generated';
 import { AlgoNode } from './react-node/algo-node';
 import { Shape, Graph } from '@antv/x6';
-import { Modal, Space, Tag } from 'antd';
+import { Modal, Space, Switch, Tag } from 'antd';
 import { useToken } from '@ant-design/pro-components';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { useLiquidityManagerContext } from "../../tools";
@@ -185,6 +185,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
   const { canManageLiquidity } = useAccess() || {};
   const { worker } = useLiquidityManagerContext();
   const { styles } = useStyles();
+  const [showDisabled, setShowDisabled] = useState(true);
 
   const graphData = useMemo(() => {
     const connectedPorts = new Set<string>();
@@ -192,7 +193,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
     const edges: NsGraph.IGraphData['edges'] = [];
     for (const edgeId of visibleElementsIds.edges) {
       const edgeData = data.edgesMap.get(edgeId);
-      if (!edgeData) continue;
+      if (!edgeData || (!showDisabled && !edgeData.enabled)) continue;
 
       const { id, fromModuleId, toModuleId, enabled } = edgeData;
       const sourcePortId = getPortIdFromRealId(fromModuleId, 'frnt');
@@ -267,7 +268,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
     }
 
     return { nodes, edges };
-  }, [data, visibleElementsIds, canManageLiquidity]);
+  }, [data, visibleElementsIds, canManageLiquidity, showDisabled]);
 
   const onLoad: IAppLoad = async (app) => {
     if (!worker) {
@@ -514,6 +515,9 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
         }}
         onLoad={onLoad}
       >
+        <Space size='small' style={{ top: 10, right: 10, position: 'absolute', zIndex: 1 }}>
+          <Switch checked={showDisabled} onChange={checked => setShowDisabled(checked)} />Show Disabled
+        </Space>
         <CanvasContextMenu config={menuConfig} />
         <XFlowCanvas config={graphConfig} />
         <CanvasScaleToolbar

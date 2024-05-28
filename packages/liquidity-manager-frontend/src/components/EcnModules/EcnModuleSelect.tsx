@@ -1,5 +1,5 @@
 import { useIntl } from "@umijs/max";
-import { Select, Tag } from "antd";
+import { Select, Space, Tag } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { keyBy } from "lodash";
 import { SFields } from "@nestjsx/crud-request";
@@ -7,7 +7,7 @@ import { EcnModule } from "@@api/generated";
 import apiClient from '@@api/apiClient';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 
-type TValue = Pick<EcnModule, 'id' | 'name'>[];
+type TValue = Pick<EcnModule, 'id' | 'name' | 'descr'>[];
 type TOption = { value: EcnModule['id'], label: EcnModule['name'] };
 
 export const EcnModulesSelect: React.FC<{
@@ -20,7 +20,7 @@ export const EcnModulesSelect: React.FC<{
   const { worker } = useLiquidityManagerContext();
 
   const modulesById = useMemo(() => keyBy(modules, 'id'), [modules]);
-  const options = useMemo(() => modules.map(module => ({ label: module.name, value: module.id })), [modules]);
+  const options = useMemo(() => modules.map(module => ({ label: module.name, value: module.id, descr: module.descr })), [modules]);
 
   const updateOptions = useCallback((selectedGroups: TValue, search: string) => {
     if (!worker) return;
@@ -35,7 +35,7 @@ export const EcnModulesSelect: React.FC<{
     apiClient.ecnModules
       .getManyBaseEcnModulesControllerEcnModule({
         s: JSON.stringify({ "$and": filters }),
-        fields: ['name,id'],
+        fields: ['name,id,descr'],
         limit: 10,
         worker,
       })
@@ -65,6 +65,12 @@ export const EcnModulesSelect: React.FC<{
       onChange={newValues => onChange?.(newValues.map(id => modulesById[id]))}
       value={value?.map(({ id }) => id) ?? []}
       options={options}
+      optionRender={(option) => (
+        <Space>
+          {option.data.label}
+          <span style={{ fontSize: 10, color: '#626262' }}>{option.data.descr}</span>
+        </Space>
+      )}
       onSearch={search => updateOptions(value ?? [], search)}
       placeholder={intl.formatMessage({ id: 'pages.ecnModules.selector.placeholder' })}
     />

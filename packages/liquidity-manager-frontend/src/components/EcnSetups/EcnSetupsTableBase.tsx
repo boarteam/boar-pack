@@ -45,6 +45,10 @@ const EcnSetupsTableBase = (props: Partial<TTableProps<EcnConnectSchemaSetupLabe
         join: [
           {
             field: 'modules',
+            select: ['name,type'],
+          },
+          {
+            field: 'modules.type',
             select: ['name'],
           },
         ],
