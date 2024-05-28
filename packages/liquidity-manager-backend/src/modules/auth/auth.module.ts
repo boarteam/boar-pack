@@ -7,10 +7,12 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtAuthGuard, JwtAuthModule } from "../jwt-auth";
 import { APP_GUARD } from "@nestjs/core";
 import { UsersInstModule } from '../users-inst/users-inst.module';
+import { CaslModule } from "@jifeon/boar-pack-users-backend";
 
 @Module({
   imports: [
     ConfigModule,
+    CaslModule,
     UsersInstModule.forAuth(),
     PassportModule,
     JwtAuthModule.forRoot(),

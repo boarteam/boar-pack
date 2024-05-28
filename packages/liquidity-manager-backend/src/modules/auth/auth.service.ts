@@ -3,10 +3,15 @@ import { JWTAuthService, TJWTPayload } from '../jwt-auth';
 import { UsersInstService } from '../users-inst/users-inst.service';
 import { LocalAuthTokenDto } from "./local-auth.dto";
 import { UsersInst } from "../users-inst/entities/users-inst.entity";
+import { Roles, User } from "@jifeon/boar-pack-users-backend";
+import { Permissions } from "../casl-permissions";
 
-export interface AMTSUser {
+export class AMTSUser {
   id: string;
   name: string;
+  role: User['role'];
+  permissions: User['permissions'];
+  policies?: User['policies'];
 }
 
 declare global {
@@ -29,8 +34,12 @@ export class AuthService {
     }
 
     if (user && this.usersService.comparePasswordHash(name, pass, user.password)) {
-      const { password, ...result } = user;
-      return result;
+      return {
+        id: user.id,
+        name: user.name,
+        role: Roles.USER,
+        permissions: [Permissions.VIEW_LIQUIDITY],
+      };
     }
     return null;
   }

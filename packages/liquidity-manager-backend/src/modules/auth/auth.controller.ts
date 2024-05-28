@@ -1,26 +1,27 @@
 import { Body, Controller, Get, Post, Req, Res, UnauthorizedException, UseGuards, } from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
-import { AuthService } from './auth.service';
+import { AMTSUser, AuthService } from './auth.service';
 import { tokenName } from './auth.constants';
 import { SkipJWTGuard } from '../jwt-auth';
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { LocalAuthLoginDto, LocalAuthTokenDto } from "./local-auth.dto";
-import { SkipPoliciesGuard } from "@jifeon/boar-pack-users-backend";
-import { UsersInst } from "../users-inst/entities/users-inst.entity";
+import { CaslAbilityFactory, SkipPoliciesGuard } from "@jifeon/boar-pack-users-backend";
 
 @SkipPoliciesGuard()
 @ApiTags('AMTS Authentication')
-@ApiExtraModels(LocalAuthTokenDto)
+@ApiExtraModels(LocalAuthTokenDto, AMTSUser)
 @Controller('auth')
 export default class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private caslAbilityFactory: CaslAbilityFactory,
+  ) {}
 
   @Get('me')
   async me(
     @Req() req: Request,
-  ): Promise<UsersInst> {
-    console.log('req.user', req.user);
+  ): Promise<AMTSUser> {
     if (!req.user) {
       throw new UnauthorizedException(`User is not authorized`);
     }
@@ -29,7 +30,15 @@ export default class AuthController {
       throw new UnauthorizedException(`User is not authorized`);
     }
 
-    return user;
+    const ability = this.caslAbilityFactory.createForUser(req.user);
+
+    return {
+      id: user.id,
+      name: user.name,
+      role: req.user.role,
+      permissions: req.user.permissions,
+      policies: this.caslAbilityFactory.packAbility(ability),
+    };
   }
 
   @SkipJWTGuard()
