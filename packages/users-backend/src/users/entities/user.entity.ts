@@ -1,8 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn, } from 'typeorm';
 import { SubjectRawRule } from '@casl/ability';
 import { PackRule } from '@casl/ability/extra';
-import { Action } from '../../casl/action.enum';
-import { TSubjectsNames } from '../../casl/casl-ability.factory';
+import { Action, TSubjectsNames } from '../../casl';
 import { Permission } from './permissions';
 
 export enum Roles {

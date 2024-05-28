@@ -16,7 +16,10 @@ export class UsersInstService extends TypeOrmCrudService<UsersInst> {
   }
 
   findByName(name: string): Promise<UsersInst | null> {
-    return this.repo.findOne({ where: { name } });
+    return this.repo.findOne({
+      select: ['id', 'name', 'password'],
+      where: { name },
+    });
   }
 
   generatePasswordHash(name: string, password: string): string {

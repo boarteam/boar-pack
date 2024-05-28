@@ -17,7 +17,7 @@ import { UsersSubAccountsInstModule } from "../users-sub-accounts-inst/users-sub
 import { SubloginsSettingsModule } from "../sublogin-settings/sublogins-settings.module";
 import { JoiPipeModule } from "nestjs-joi";
 import { LiquidityManagersModule } from "../liquidity-managers";
-import { AuthModule } from "@jifeon/boar-pack-users-backend";
+import { AuthModule, CaslModule } from "@jifeon/boar-pack-users-backend";
 import { ClusterModule } from "@jifeon/boar-pack-common-backend";
 import { CaslPermissionsModule } from "../casl-permissions";
 import { AuthModule as LMAuthModule } from "../auth";
@@ -61,6 +61,7 @@ export class LiquidityAppModule {
           withControllers: false,
           dataSourceName: config.dataSourceName,
         }),
+        CaslModule,
         CaslPermissionsModule,
         JoiPipeModule,
         ...restModules,
@@ -87,6 +88,7 @@ export class LiquidityAppModule {
           useClass: LiquidityAppConfig,
         }),
         LMAuthModule,
+        CaslModule,
         CaslPermissionsModule,
         JoiPipeModule,
         LiquidityManagersModule.register({
