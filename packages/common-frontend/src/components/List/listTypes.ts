@@ -17,6 +17,7 @@ export interface TListProps<
   onUpdate: ({}: Record<keyof Entity, string> & { requestBody: UpdateDto } & TPathParams) => Promise<Entity>,
   onDelete: ({}: Record<keyof Entity, string> & TPathParams) => Promise<void>,
   pathParams: TPathParams,
+  idColumnName?: string & keyof Entity,
   entityToCreateDto: (entity: Entity) => CreateDto,
   entityToUpdateDto: (entity: Entity) => UpdateDto,
   createNewDefaultParams?: Partial<Entity>,
