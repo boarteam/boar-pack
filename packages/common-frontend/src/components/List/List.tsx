@@ -5,7 +5,7 @@ import { DeleteOutlined, PlusOutlined, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { flushSync } from "react-dom";
 import { ProList } from "@ant-design/pro-components";
-import { getNewId, KEY_SYMBOL } from "./Table";
+import { getNewId, KEY_SYMBOL } from "../Table";
 import { createStyles } from "antd-style";
 import { TListProps } from "./listTypes";
 import {
@@ -17,7 +17,7 @@ import {
   TGetAllParams,
   TSort
 } from "../Table";
-import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
+// import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
 
 const useStyles = createStyles(() => {
   return {
@@ -56,7 +56,7 @@ const List = <Entity extends Record<string | symbol, any>,
     searchableColumns = [],
     viewOnly = false,
     columns = [],
-    columnsSets,
+    // columnsSets,
     popupCreation = false,
     toolBarRender,
     metas,
@@ -133,7 +133,7 @@ const List = <Entity extends Record<string | symbol, any>,
   }
 
   const createButton = <Button
-    size={rest.size}
+    size='small'
     type="primary"
     key="create"
     onClick={() => {
@@ -158,6 +158,8 @@ const List = <Entity extends Record<string | symbol, any>,
     <ProList<Entity>
       className={useStyles().styles.list}
       actionRef={actionRef}
+      // todo: fix ts
+      // @ts-ignore
       request={request}
       rowKey={record => record[KEY_SYMBOL] ?? record[idColumnName]}
       bordered
@@ -165,7 +167,9 @@ const List = <Entity extends Record<string | symbol, any>,
       options={{
         fullScreen: true,
         reload: true,
-        search: {},
+        search: {
+          allowClear: true,
+        },
       }}
       editable={{
         type: 'multiple',
