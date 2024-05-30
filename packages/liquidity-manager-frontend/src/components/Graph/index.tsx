@@ -236,7 +236,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
       const nodeData = data.nodesMap.get(nodeId);
       if (!nodeData) continue;
 
-      const { id, name, frontEdgesIds, backEdgesIds } = nodeData;
+      const { id, name, frontEdgesIds, backEdgesIds, descr } = nodeData;
       const backPortId = getPortIdFromRealId(id, 'back');
       const frontPortId = getPortIdFromRealId(id, 'frnt');
       const backPortConnected = connectedPorts.has(backPortId);
@@ -246,6 +246,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
         id: getNodeIdFromRealId(id),
         height: 32,
         label: name,
+        descr,
         onClick: () => setSelectedNode(id),
         ports: {
           ...defaultGraphNodeProps.ports,
