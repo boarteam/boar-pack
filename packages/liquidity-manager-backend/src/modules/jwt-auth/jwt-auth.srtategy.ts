@@ -5,7 +5,7 @@ import { JWTAuthConfigService } from './jwt-auth.config';
 import { Request } from 'express';
 import { AMTSUser, JWT_AUTH, tokenName } from '../auth';
 import { UsersInstService } from "../users-inst/users-inst.service";
-import { Roles } from "@jifeon/boar-pack-users-backend/dist";
+import { Roles } from "@jifeon/boar-pack-users-backend";
 import { Permissions } from "../casl-permissions";
 
 export type TJWTPayload = {
