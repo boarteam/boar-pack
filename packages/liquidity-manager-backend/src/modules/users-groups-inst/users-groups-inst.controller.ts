@@ -10,7 +10,7 @@ import { ViewUsersGroupsInstPolicy } from './policies/view-users-groups-inst.pol
 import { ManageUsersGroupsInstPolicy } from './policies/manage-users-groups-inst.policy';
 import { UniqueIdPipe } from '../../tools/unique-id.pipe';
 import { AutoincrementIdPipe } from '../../tools/autoincrement_id.pipe';
-import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/dist/tools";
+import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/tools";
 
 @Crud({
   model: {

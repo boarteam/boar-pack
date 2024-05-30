@@ -6,7 +6,7 @@ import { ThemeConfig } from "antd/es/config-provider/context";
 import { useSearchParams } from "react-router-dom";
 import { once } from "lodash";
 import { history } from "@umijs/max";
-import safetyRun from "@jifeon/boar-pack-common-frontend/dist/tools/safetyRun";
+import safetyRun from "@jifeon/boar-pack-common-frontend/src/tools/safetyRun";
 
 export type LiquidityManagersHookResult = {
   liquidityManager: LiquidityManager | null;
