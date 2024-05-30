@@ -10,7 +10,7 @@ import { ViewLiquidityManagersPolicy } from "./policies/view-liquidity-managers.
 import { LiquidityManagersInterceptor } from './liquidity-managers.interceptor';
 import { LiquidityManagerCheckDto, LiquidityManagerCheckResponseDto } from "./dto/liquidity-manager-check.dto";
 import { CheckPolicies } from "@jifeon/boar-pack-users-backend";
-import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/dist/tools";
+import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/tools";
 
 @Crud({
   model: {
