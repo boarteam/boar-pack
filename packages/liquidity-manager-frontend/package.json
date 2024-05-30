@@ -4,10 +4,9 @@
   "description": "Liquidity Manager Frontend",
   "repository": "git@github.com:jifeon/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
-  "main": "dist/index",
+  "main": "src/index",
   "files": [
-    "dist",
-    ".yalc"
+    "src"
   ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
@@ -30,7 +29,7 @@
     "build": "tsc --project tsconfig.build.json",
     "retreat": "yalc retreat --all",
     "restore": "yalc restore",
-    "push": "npm run build && yalc push"
+    "push": "yalc push"
   },
   "gitHead": "8bd22bd2364f307911e6e7012c8de00aa6f55265"
 }
