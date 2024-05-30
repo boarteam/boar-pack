@@ -1,12 +1,18 @@
 import apiClient from "@@api/apiClient";
 import pick from "lodash/pick";
-import { useEcnSetupsColumns } from "./useEcnSetupsColumns";
+import { defaultTypesIds, useEcnSetupsMetas } from "./useEcnSetupsMetas";
 import { useAccess } from "@umijs/max";
 import { ecnSetupsSearchableColumns } from "./ecnSetupsSearchableColumns";
 import { PageLoading } from "@ant-design/pro-layout";
 import { useLiquidityManagerContext } from "../../tools";
-import { EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto } from "@@api/generated";
-import { isRecordNew, Table, TTableProps, withNumericId } from "@jifeon/boar-pack-common-frontend";
+import {
+  EcnConnectSchemaSetupLabel,
+  EcnConnectSchemaSetupLabelCreateDto,
+  EcnConnectSchemaSetupLabelUpdateDto,
+  EcnModuleType
+} from "@@api/generated";
+import { isRecordNew, List, TTableProps, withNumericId } from "@jifeon/boar-pack-common-frontend";
+import React, { useEffect, useState } from "react";
 
 export const createNewDefaultParams: Pick<EcnConnectSchemaSetupLabel, 'label' | 'modules'> = {
   label: '',
@@ -23,18 +29,29 @@ export function entityToDto(entity: EcnConnectSchemaSetupLabel) {
   };
 }
 
-const EcnSetupsTableBase = (props: Partial<TTableProps<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, {worker: string}>>) => {
+export const EcnSetupsListBase = (props: Partial<TTableProps<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, {worker: string}>>) => {
   let { canManageLiquidity } = useAccess() || {};
   if (props.viewOnly !== undefined) {
     canManageLiquidity = !props.viewOnly;
   }
-  const columns = useEcnSetupsColumns(canManageLiquidity ?? false);
   const { worker } = useLiquidityManagerContext();
-
   if (!worker) return <PageLoading />;
 
+  const [presetModulesTypes, setPresetModulesTypes] = useState<EcnModuleType[]>([]);
+  useEffect(() => {
+    apiClient.ecnModuleTypes.getManyBaseEcnModuleTypesControllerEcnModuleType({
+      worker,
+      s: JSON.stringify({
+        'id': { in: defaultTypesIds },
+      }),
+    }).then(types => {
+      setPresetModulesTypes(types.data);
+    });
+  }, []);
+  const metas = useEcnSetupsMetas(canManageLiquidity ?? false, presetModulesTypes);
+
   return (
-    <Table<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, { worker: string }, number>
+    <List<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, { worker: string }, number>
       getAll={params => apiClient.ecnConnectSchemaSetupLabels.getManyBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel(params)}
       onCreate={params => apiClient.ecnConnectSchemaSetupLabels.createOneBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel(params)}
       onUpdate={params => apiClient.ecnConnectSchemaSetupLabels.updateOneBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel(withNumericId(params))}
@@ -45,7 +62,7 @@ const EcnSetupsTableBase = (props: Partial<TTableProps<EcnConnectSchemaSetupLabe
         join: [
           {
             field: 'modules',
-            select: ['name,type'],
+            select: ['name,type,descr'],
           },
           {
             field: 'modules.type',
@@ -53,7 +70,8 @@ const EcnSetupsTableBase = (props: Partial<TTableProps<EcnConnectSchemaSetupLabe
           },
         ],
       }}
-      columns={columns}
+      metas={metas}
+      columns={[{ dataIndex: 'label' }, { dataIndex: 'modules' }]}
       idColumnName='id'
       pathParams={{
         worker,
@@ -63,8 +81,6 @@ const EcnSetupsTableBase = (props: Partial<TTableProps<EcnConnectSchemaSetupLabe
       searchableColumns={ecnSetupsSearchableColumns}
       viewOnly={!canManageLiquidity}
       {...props}
-    ></Table>
+    ></List>
   );
 }
-
-export default EcnSetupsTableBase;
