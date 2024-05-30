@@ -133,7 +133,7 @@ const List = <Entity extends Record<string | symbol, any>,
   }
 
   const createButton = <Button
-    size='small'
+    size='middle'
     type="primary"
     key="create"
     onClick={() => {
