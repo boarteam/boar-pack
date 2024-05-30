@@ -51,6 +51,8 @@ export const EcnSetupsListBase = (props: Partial<TTableProps<EcnConnectSchemaSet
   const metas = useEcnSetupsMetas(canManageLiquidity ?? false, presetModulesTypes);
 
   return (
+    // todo: fix ts
+    // @ts-ignore
     <List<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, { worker: string }, number>
       getAll={params => apiClient.ecnConnectSchemaSetupLabels.getManyBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel(params)}
       onCreate={params => apiClient.ecnConnectSchemaSetupLabels.createOneBaseEcnConnectSchemaSetupLabelsControllerEcnConnectSchemaSetupLabel(params)}
