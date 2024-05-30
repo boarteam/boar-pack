@@ -61,7 +61,6 @@ export const ModulesTypes = ({ modules, presetModulesTypes }: { modules: EcnModu
   }
 
   for (const typeWithModule of typesWithModules.values()) {
-    console.log(typeWithModule)
     result.push(getTypeRow(typeWithModule));
   }
 
