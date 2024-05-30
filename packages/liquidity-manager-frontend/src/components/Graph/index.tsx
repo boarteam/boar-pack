@@ -112,7 +112,7 @@ const useStyles = createStyles(({ token }) => {
         background: `${token.colorBgBase} !important`,
         border: 'none !important',
       },
-      height: 'calc(100vh - 290px)',
+      height: 'calc(100vh - 290px) !important',
       '.x6-node:hover .front-port': {
         stroke: token.colorPrimary,
         strokeWidth: 2,
