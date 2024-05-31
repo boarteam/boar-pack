@@ -14,7 +14,6 @@
   "dependencies": {
     "@antv/xflow": "^1.0.55",
     "@jifeon/boar-pack-common-frontend": "^1.4.1",
-    "@jifeon/boar-pack-liquidity-manager-backend": "^1.5.4",
     "@umijs/max": "^4.1.10",
     "@umijs/plugins": "^4.1.10",
     "@umijs/route-utils": "^4.0.1",
