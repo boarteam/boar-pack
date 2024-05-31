@@ -26,7 +26,7 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "push": "yalc push"
+    "yalc:push": "yalc push"
   },
   "gitHead": "8bd22bd2364f307911e6e7012c8de00aa6f55265"
 }
