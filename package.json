@@ -9,15 +9,22 @@
     ]
   },
   "devDependencies": {
-    "lerna": "^8.1.2"
+    "chokidar-cli": "^3.0.0",
+    "lerna": "^8.1.2",
+    "npm-run-all": "^4.1.5"
   },
-  "dependencies": {},
   "scripts": {
     "push": "lerna run push",
     "clean": "lerna clean",
     "build": "lerna run build",
     "ver": "lerna run retreat && lerna version",
     "restore": "lerna run restore",
-    "pub": "lerna publish from-package"
+    "pub": "lerna publish from-package",
+    "watch:common-fontend": "chokidar 'packages/common-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/common-frontend'",
+    "watch:common-backend": "chokidar 'packages/common-backend/src/**/*' -c 'npm run yalc:push --prefix packages/common-backend'",
+    "watch:users-backend": "chokidar 'packages/users-backend/src/**/*' -c 'npm run yalc:push --prefix packages/users-backend'",
+    "watch:liquidity-manager-backend": "chokidar 'packages/liquidity-manager-backend/src/**/*' -c 'npm run yalc:push --prefix packages/liquidity-manager-backend'",
+    "watch:liquidity-manager-frontend": "chokidar 'packages/liquidity-manager-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/liquidity-manager-frontend'",
+    "watch": "npm-run-all --parallel watch:*"
   }
 }

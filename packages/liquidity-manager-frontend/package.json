@@ -27,8 +27,6 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "retreat": "yalc retreat --all",
-    "restore": "yalc restore",
     "push": "yalc push"
   },
   "gitHead": "8bd22bd2364f307911e6e7012c8de00aa6f55265"
