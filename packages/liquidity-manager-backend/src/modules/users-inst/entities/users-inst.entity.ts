@@ -149,6 +149,9 @@ export class UsersInst {
   @Column('varchar', { length: 64, nullable: true, default: '', comment: 'salt' })
   salt?: string;
 
+  @Column('int', { default: 0, comment: 'password hash type', name: 'pwd_hash_type' })
+  pwdHashTypeId: number;
+
   @ManyToOne<EcnPasswordHashType>(() => EcnPasswordHashType, type => type.id, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'

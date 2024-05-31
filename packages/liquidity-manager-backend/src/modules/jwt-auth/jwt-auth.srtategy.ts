@@ -9,7 +9,6 @@ import { Roles } from "@jifeon/boar-pack-users-backend";
 import { Permissions } from "../casl-permissions";
 
 export type TJWTPayload = {
-  name: string;
   sub: string;
 };
 
@@ -42,10 +41,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {
 
   async validate(payload: TJWTPayload): Promise<AMTSUser> {
     const userId = payload.sub;
-    const user = await this.usersService.findOne({
-      select: ['id', 'name'],
-      where: { id: userId },
-    });
+    const user = await this.usersService.findById(userId);
 
     if (!user) {
       throw new UnauthorizedException();

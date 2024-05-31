@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AMTS_DB_NAME } from "../liquidity-app/liquidity-app.config";
 import { createHash } from "crypto";
+import bcrypt from "bcrypt";
 
 @Injectable()
 export class UsersInstService extends TypeOrmCrudService<UsersInst> {
@@ -15,20 +16,24 @@ export class UsersInstService extends TypeOrmCrudService<UsersInst> {
     super(repo);
   }
 
-  findByName(name: string): Promise<UsersInst | null> {
+  findById(id: string): Promise<UsersInst | null> {
     return this.repo.findOne({
-      select: ['id', 'name', 'password'],
-      where: { name },
+      select: ['id', 'name', 'password', 'pwdHashTypeId'],
+      where: { id },
     });
   }
 
-  generateMd5PasswordHash(name: string, password: string): string {
+  generateMd5PasswordHash(id: string, password: string): string {
     const hash = createHash('md5');
-    hash.update(name + password);
+    hash.update(id + password);
     return hash.digest('hex');
   }
 
-  comparePasswordHash(name: string, password: string, hash: string): boolean {
-    return this.generateMd5PasswordHash(name, password) === hash;
+  comparePasswordMd5Hash(id: string, password: string, hash: string): boolean {
+    return this.generateMd5PasswordHash(id, password) === hash;
+  }
+
+  comparePasswordBcryptHash(password: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(password, hash);
   }
 }
