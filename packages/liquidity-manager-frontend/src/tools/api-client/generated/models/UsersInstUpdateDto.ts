@@ -40,5 +40,6 @@ export type UsersInstUpdateDto = {
     fixUserinfoRequestsEnabled?: number;
     alwaysBookA?: number;
     hedgeFactor?: string;
+    pwdHashType?: number;
 };
 

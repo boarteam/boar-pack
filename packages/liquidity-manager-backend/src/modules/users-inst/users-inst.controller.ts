@@ -33,6 +33,7 @@ import { Md5PasswordInterceptor } from "./md5-password.interceptor";
       commissionType: {},
       commissionLotsMode: {},
       action: {},
+      pwdHashType: {},
     },
     exclude: ['password'],
   },

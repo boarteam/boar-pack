@@ -18,6 +18,7 @@ import { EcnInstrumentsGroupsService } from './services/EcnInstrumentsGroupsServ
 import { EcnMarginCalcModesService } from './services/EcnMarginCalcModesService';
 import { EcnModulesService } from './services/EcnModulesService';
 import { EcnModuleTypesService } from './services/EcnModuleTypesService';
+import { EcnPasswordHashTypesService } from './services/EcnPasswordHashTypesService';
 import { EcnProfitCalcModesService } from './services/EcnProfitCalcModesService';
 import { EcnStatesService } from './services/EcnStatesService';
 import { EcnSubscrSchemasService } from './services/EcnSubscrSchemasService';
@@ -47,6 +48,7 @@ export class ApiClient {
     public readonly ecnMarginCalcModes: EcnMarginCalcModesService;
     public readonly ecnModules: EcnModulesService;
     public readonly ecnModuleTypes: EcnModuleTypesService;
+    public readonly ecnPasswordHashTypes: EcnPasswordHashTypesService;
     public readonly ecnProfitCalcModes: EcnProfitCalcModesService;
     public readonly ecnStates: EcnStatesService;
     public readonly ecnSubscrSchemas: EcnSubscrSchemasService;
@@ -87,6 +89,7 @@ export class ApiClient {
         this.ecnMarginCalcModes = new EcnMarginCalcModesService(this.request);
         this.ecnModules = new EcnModulesService(this.request);
         this.ecnModuleTypes = new EcnModuleTypesService(this.request);
+        this.ecnPasswordHashTypes = new EcnPasswordHashTypesService(this.request);
         this.ecnProfitCalcModes = new EcnProfitCalcModesService(this.request);
         this.ecnStates = new EcnStatesService(this.request);
         this.ecnSubscrSchemas = new EcnSubscrSchemasService(this.request);

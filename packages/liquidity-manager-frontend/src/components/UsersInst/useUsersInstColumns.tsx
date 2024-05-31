@@ -1,7 +1,8 @@
 import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import {
-  DclAction, EcnCommissionLotsMode,
+  DclAction,
+  EcnCommissionLotsMode,
   EcnCommissionType,
   EcnModule,
   UsersGroupsInst,
@@ -12,9 +13,10 @@ import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
 import { Tag } from "antd";
 import apiClient from '@@api/apiClient';
-import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
+import { useLiquidityManagerContext } from "../../tools";
 import { useEffect, useState } from "react";
 import { dropTrailZeroes, NumberSwitch, Password, RelationSelect } from "@jifeon/boar-pack-common-frontend";
+import { EcnPasswordHashType } from "@jifeon/boar-pack-liquidity-manager-backend/dist/src/api-client";
 
 type TOptions = { text: string, value: number | string }[];
 
@@ -156,13 +158,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       dataIndex: 'password',
       sorter: true,
       valueType: 'password',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-          }
-        ]
-      },
+      formItemProps: {},
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
@@ -832,6 +828,50 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+    },
+    // {
+    //   title: intl.formatMessage({ id: 'pages.usersInst.salt' }),
+    //   dataIndex: 'salt',
+    //   sorter: true,
+    //   formItemProps: {
+    //     rules: [
+    //       {
+    //         required: true,
+    //       }
+    //     ]
+    //   },
+    //   fieldProps: {
+    //     autoComplete: 'one-time-code', // disable browser autocomplete
+    //   },
+    // },
+    {
+      title: intl.formatMessage({ id: 'pages.usersInst.pwdHashType' }),
+      dataIndex: 'pwdHashType',
+      sorter: true,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          }
+        ]
+      },
+      fieldProps: {
+        autoComplete: 'one-time-code', // disable browser autocomplete
+      },
+      render: (text, record) => record.pwdHashType?.name,
+      renderFormItem: (schema, config) => {
+        return worker && <RelationSelect<EcnPasswordHashType>
+          selectedItem={config.record?.pwdHashType}
+          fetchItems={filter => {
+            console.log('fetchItems', filter);
+            console.log(apiClient.ecnPasswordHashTypes);
+            return apiClient.ecnPasswordHashTypes.getManyBaseGenericLiquidityControllerEcnPasswordHashType({
+              filter,
+              worker,
+            })
+          }}
+        /> || null;
+      }
     },
   ];
 

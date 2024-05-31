@@ -8,6 +8,7 @@ import { EcnCommissionType } from "../../entities/ecn-commission-type.entity";
 import { GenericLiquidityModule } from "../../tools/generic-liquidity.module";
 import { ViewUsersInstPolicy } from "./policies/view-users-inst.policy";
 import { EcnCommissionLotsMode } from "../../entities/ecn-commission-lots-mode.entity";
+import { EcnPasswordHashType } from "./entities/ecn-password-hash-type.entity";
 
 @Module({})
 export class UsersInstModule {
@@ -26,6 +27,12 @@ export class UsersInstModule {
           endpoint: 'liquidity/ecn-commission-lots-modes',
           apiTag: 'Ecn Commission Lots Modes',
           Entity: EcnCommissionLotsMode,
+          policy: new ViewUsersInstPolicy,
+        }),
+        GenericLiquidityModule.generate<EcnPasswordHashType>({
+          endpoint: 'liquidity/ecn-password-hash-types',
+          apiTag: 'Ecn Password Hash Types',
+          Entity: EcnPasswordHashType,
           policy: new ViewUsersInstPolicy,
         }),
       ],

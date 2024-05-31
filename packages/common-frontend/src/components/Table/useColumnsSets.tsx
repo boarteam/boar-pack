@@ -4,6 +4,7 @@ import { Select } from "antd";
 import { ColumnStateType } from "@ant-design/pro-table/es/typing";
 import { TIndexableRecord } from "./tableTools";
 import QuestionMarkHint from "../QuestionMarkHint/QuestionMarkHint";
+import { SettingOutlined } from "@ant-design/icons";
 
 export type TColumnsSet<Entity> = {
   name: string,
@@ -84,7 +85,9 @@ export default function useColumnsSets<Entity>({
       }}
       options={options}
     />
-    <QuestionMarkHint intlPrefix={'tables.columnsSetSelect'} />
+    <QuestionMarkHint intlPrefix={'tables.columnsSetSelect'} values={{
+      gearIcon: <SettingOutlined />,
+    }} />
   </> : null;
 
   const columnsState = {

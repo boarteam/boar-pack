@@ -34,6 +34,7 @@ export type { EcnModuleType } from './models/EcnModuleType';
 export type { EcnModuleTypeCreateDto } from './models/EcnModuleTypeCreateDto';
 export type { EcnModuleTypeUpdateDto } from './models/EcnModuleTypeUpdateDto';
 export type { EcnModuleUpdateDto } from './models/EcnModuleUpdateDto';
+export type { EcnPasswordHashType } from './models/EcnPasswordHashType';
 export type { EcnProfitCalcMode } from './models/EcnProfitCalcMode';
 export type { EcnState } from './models/EcnState';
 export type { EcnSubscrSchema } from './models/EcnSubscrSchema';
@@ -57,6 +58,7 @@ export type { GetManyEcnInstrumentsGroupResponseDto } from './models/GetManyEcnI
 export type { GetManyEcnMarginCalcModeResponseDto } from './models/GetManyEcnMarginCalcModeResponseDto';
 export type { GetManyEcnModuleResponseDto } from './models/GetManyEcnModuleResponseDto';
 export type { GetManyEcnModuleTypeResponseDto } from './models/GetManyEcnModuleTypeResponseDto';
+export type { GetManyEcnPasswordHashTypeResponseDto } from './models/GetManyEcnPasswordHashTypeResponseDto';
 export type { GetManyEcnProfitCalcModeResponseDto } from './models/GetManyEcnProfitCalcModeResponseDto';
 export type { GetManyEcnStateResponseDto } from './models/GetManyEcnStateResponseDto';
 export type { GetManyEcnSubscrSchemaResponseDto } from './models/GetManyEcnSubscrSchemaResponseDto';
@@ -101,6 +103,7 @@ export { EcnInstrumentsGroupsService } from './services/EcnInstrumentsGroupsServ
 export { EcnMarginCalcModesService } from './services/EcnMarginCalcModesService';
 export { EcnModulesService } from './services/EcnModulesService';
 export { EcnModuleTypesService } from './services/EcnModuleTypesService';
+export { EcnPasswordHashTypesService } from './services/EcnPasswordHashTypesService';
 export { EcnProfitCalcModesService } from './services/EcnProfitCalcModesService';
 export { EcnStatesService } from './services/EcnStatesService';
 export { EcnSubscrSchemasService } from './services/EcnSubscrSchemasService';

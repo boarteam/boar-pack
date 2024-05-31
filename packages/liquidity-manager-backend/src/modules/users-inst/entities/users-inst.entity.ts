@@ -5,6 +5,7 @@ import { UsersGroupsInst } from "../../users-groups-inst/entities/users-groups-i
 import { DclAction } from "../../../entities/dcl-action.entity";
 import { EcnCommissionType } from '../../../entities/ecn-commission-type.entity';
 import { EcnCommissionLotsMode } from "../../../entities/ecn-commission-lots-mode.entity";
+import { EcnPasswordHashType } from "./ecn-password-hash-type.entity";
 
 @Entity('users_inst')
 export class UsersInst {
@@ -144,4 +145,15 @@ export class UsersInst {
 
   @Column('decimal', { precision: 18, scale: 8, default: '1.00000000', comment: 'hedge factor' })
   hedgeFactor: string;
+
+  @Column('varchar', { length: 64, nullable: true, default: '', comment: 'salt' })
+  salt?: string;
+
+  @ManyToOne<EcnPasswordHashType>(() => EcnPasswordHashType, type => type.id, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn({ name: 'pwd_hash_type' })
+  @Column('int', { default: 0, comment: 'password hash type' })
+  pwdHashType: EcnPasswordHashType;
 }

@@ -53,6 +53,7 @@ export function usersInstToDto<
     action: entity.action?.id,
     commissionType: entity.commissionType?.id,
     commissionLotsMode: entity.commissionLotsMode?.id,
+    pwdHashType: entity.pwdHashType?.id,
   } as R;
 }
 
@@ -123,6 +124,8 @@ const columnsSets: TColumnsSet<UsersInst>[] = [
       'id',
       'name',
       'password',
+      'salt',
+      'pwdHashType',
     ],
   }
 ];
