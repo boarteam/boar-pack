@@ -28,7 +28,9 @@
   },
   "include": [
     "src",
-    "node_modules/@jifeon/boar-pack-users-backend",
-    "node_modules/@jifeon/boar-pack-users-backend/package.json"
+    "node_modules/@jifeon/boar-pack-users-backend/src",
+    "node_modules/@jifeon/boar-pack-users-backend/package.json",
+    "node_modules/@jifeon/boar-pack-common-backend/src",
+    "node_modules/@jifeon/boar-pack-common-backend/package.json"
   ]
 }
