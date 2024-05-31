@@ -10,7 +10,7 @@ import { ViewUsersInstPolicy } from './policies/view-users-inst.policy';
 import { ManageUsersInstPolicy } from './policies/manage-users-inst.policy';
 import { UniqueIdPipe } from "../../tools/unique-id.pipe";
 import { AutoincrementIdPipe } from "../../tools/autoincrement_id.pipe";
-import { Md5PasswordInterceptor } from "./md5-password.interceptor";
+import { PasswordInterceptor } from "./password-interceptor.service";
 
 @Crud({
   model: {
@@ -57,12 +57,12 @@ import { Md5PasswordInterceptor } from "./md5-password.interceptor";
         ),
       ],
       interceptors: [
-        Md5PasswordInterceptor,
+        PasswordInterceptor,
       ],
     },
     updateOneBase: {
       interceptors: [
-        Md5PasswordInterceptor,
+        PasswordInterceptor,
       ],
     },
   },

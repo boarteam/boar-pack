@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { AMTS_DB_NAME } from "./modules/liquidity-app/liquidity-app.config";
 import { resolve } from "path";
 import { ConfigModule } from "@nestjs/config";
+// @ts-ignore-next-line - Ignore the error because the package on project level
 import { generate } from "openapi-typescript-codegen";
 
 @Module({

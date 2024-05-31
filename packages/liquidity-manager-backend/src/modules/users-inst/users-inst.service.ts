@@ -22,13 +22,13 @@ export class UsersInstService extends TypeOrmCrudService<UsersInst> {
     });
   }
 
-  generatePasswordHash(name: string, password: string): string {
+  generateMd5PasswordHash(name: string, password: string): string {
     const hash = createHash('md5');
     hash.update(name + password);
     return hash.digest('hex');
   }
 
   comparePasswordHash(name: string, password: string, hash: string): boolean {
-    return this.generatePasswordHash(name, password) === hash;
+    return this.generateMd5PasswordHash(name, password) === hash;
   }
 }
