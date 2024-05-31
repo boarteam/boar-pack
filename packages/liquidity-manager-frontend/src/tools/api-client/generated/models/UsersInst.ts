@@ -51,6 +51,7 @@ export type UsersInst = {
     alwaysBookA: number;
     hedgeFactor: string;
     salt?: string;
+    pwdHashTypeId: number;
     pwdHashType: EcnPasswordHashType;
 };
 

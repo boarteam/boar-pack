@@ -9,6 +9,8 @@ import { GenericLiquidityModule } from "../../tools/generic-liquidity.module";
 import { ViewUsersInstPolicy } from "./policies/view-users-inst.policy";
 import { EcnCommissionLotsMode } from "../../entities/ecn-commission-lots-mode.entity";
 import { EcnPasswordHashType } from "./entities/ecn-password-hash-type.entity";
+import { JwtModule } from "@nestjs/jwt";
+import { UsersInstAuthService } from "./users-inst-auth.service";
 
 @Module({})
 export class UsersInstModule {
@@ -17,6 +19,9 @@ export class UsersInstModule {
       module: UsersInstModule,
       imports: [
         TypeOrmModule.forFeature([UsersInst], AMTS_DB_NAME),
+        JwtModule.register({
+          secret: process.env.JWT_SECRET,
+        }),
         GenericLiquidityModule.generate<EcnCommissionType>({
           endpoint: 'liquidity/ecn-commission-types',
           apiTag: 'Ecn Commission Types',
@@ -38,6 +43,7 @@ export class UsersInstModule {
       ],
       providers: [
         UsersInstService,
+        UsersInstAuthService,
       ],
       exports: [
         UsersInstService,

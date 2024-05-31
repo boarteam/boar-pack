@@ -86,6 +86,7 @@ export type { UsersGroupsInstUpdateDto } from './models/UsersGroupsInstUpdateDto
 export type { UsersInst } from './models/UsersInst';
 export type { UsersInstCompany } from './models/UsersInstCompany';
 export type { UsersInstCreateDto } from './models/UsersInstCreateDto';
+export type { UsersInstResetPassDto } from './models/UsersInstResetPassDto';
 export type { UsersInstUpdateDto } from './models/UsersInstUpdateDto';
 export type { UsersSubAccountInst } from './models/UsersSubAccountInst';
 export type { UsersSubAccountInstCreateDto } from './models/UsersSubAccountInstCreateDto';

@@ -5,6 +5,7 @@
 import type { GetManyUsersInstResponseDto } from '../models/GetManyUsersInstResponseDto';
 import type { UsersInst } from '../models/UsersInst';
 import type { UsersInstCreateDto } from '../models/UsersInstCreateDto';
+import type { UsersInstResetPassDto } from '../models/UsersInstResetPassDto';
 import type { UsersInstUpdateDto } from '../models/UsersInstUpdateDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -13,6 +14,27 @@ import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class UsersInstService {
 
     constructor(public readonly httpRequest: BaseHttpRequest) {}
+
+    /**
+     * @returns UsersInstResetPassDto
+     * @throws ApiError
+     */
+    public generateResetPasswordLink({
+        userId,
+        worker,
+    }: {
+        userId: string,
+        worker: string,
+    }): CancelablePromise<UsersInstResetPassDto> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/{worker}/liquidity/users-inst/reset-password-uri/{userId}',
+            path: {
+                'userId': userId,
+                'worker': worker,
+            },
+        });
+    }
 
     /**
      * Retrieve a single UsersInst
