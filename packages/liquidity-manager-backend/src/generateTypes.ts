@@ -68,7 +68,7 @@ async function bootstrap() {
     await app.listen(3335);
     await generate({
       input: 'http://localhost:3335/docs-json',
-      output: resolve(__dirname, '../../src/api-client/generated'),
+      output: resolve(__dirname, '../../../liquidity-manager-frontend/src/tools/api-client/generated'),
       httpClient: 'node',
       clientName: 'ApiClient',
       useOptions: true,
