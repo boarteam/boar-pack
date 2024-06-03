@@ -179,6 +179,7 @@ export function HistoryModal<Entity, CreateDto, UpdateDto, TEntityParams = {}, T
                   // }
                   okText="OK"
                   cancelText="Cancel"
+                  placement='bottomLeft'
                 >
                   <Button type="link" icon={<UndoOutlined />}>Revert</Button>
                 </Popconfirm>
