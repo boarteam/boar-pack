@@ -201,7 +201,7 @@ const Table = <Entity extends Record<string | symbol, any>,
               requestBody: entityToCreateDto(data)
             });
           } else {
-            await onUpdate({
+            await onUpdate?.({
               ...pathParams,
               ...{ [idColumnName]: String(id) } as Record<keyof Entity, string>,
               requestBody: entityToUpdateDto({
@@ -231,7 +231,7 @@ const Table = <Entity extends Record<string | symbol, any>,
           })
         },
         async onDelete(id) {
-          await onDelete({ ...{ [idColumnName]: String(id) } as Record<keyof Entity, string>, ...pathParams });
+          await onDelete?.({ ...{ [idColumnName]: String(id) } as Record<keyof Entity, string>, ...pathParams });
         },
         deletePopconfirmMessage: intl.formatMessage({ id: 'table.deletePopconfirmMessage' }),
         onlyAddOneLineAlertMessage: intl.formatMessage({ id: 'table.onlyAddOneLineAlertMessage' }),
