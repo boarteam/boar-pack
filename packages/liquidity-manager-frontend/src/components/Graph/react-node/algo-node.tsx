@@ -12,7 +12,6 @@ const useStyles = createStyles(({ token }) => {
     node: {
       border: `1px solid ${token.colorBorder}`,
       display: 'flex',
-      justifyContent: 'space-between',
       backgroundColor: token.colorBgBase,
       transition: 'all ease-in-out 0.15s',
       cursor: 'move',
@@ -32,11 +31,24 @@ const useStyles = createStyles(({ token }) => {
         width: '14px',
         height: '14px',
         cursor: 'pointer',
-        margin: 'auto 9px',
+        margin: '8px',
+      },
+      '.text': {
+        flexGrow: 1,
+        padding: '8px',
+        'br': {
+          display: 'block',
+          content: '""',
+          marginTop: '4px',
+        },
       },
       '.label': {
-        lineHeight: '1.2',
-        padding: '8px',
+        display: 'flex',
+      },
+      '.descr': {
+        display: 'flex',
+        fontSize: 8,
+        color: 'grey',
       }
     }
   };
@@ -59,15 +71,17 @@ export const AlgoNode: NsGraph.INodeRender = ({ data }) => {
     frontPort?.onClick();
   };
 
-
-
   return (
     <div className={cx('xflow-algo-node', styles.node)} onClick={onClick}>
       {backPort?.onClick && (backPort.connected
         ? <MinusOutlined className="icon" onClick={backPortOnClick} />
         : <PlusOutlined className="icon" onClick={backPortOnClick} />
       )}
-      <span className="label">{data.label}</span>
+      <div className='text'>
+        <span className="label">{data.label}</span>
+        <br/>
+        <span className="descr">{data.descr ?? 'No Description'}</span>
+      </div>
       {frontPort?.onClick && (frontPort.connected
         ? <MinusOutlined className="icon" onClick={frontPortOnClick} />
         : <PlusOutlined className="icon" onClick={frontPortOnClick} />

@@ -4,7 +4,7 @@ import { Button } from "antd";
 import {useRef} from "react";
 import {ActionType} from "@ant-design/pro-table";
 import { useLiquidityManagerContext } from "../../tools";
-import EcnSetupsTableBase from "./EcnSetupsTableBase";
+import { EcnSetupsListBase } from "./EcnSetupsListBase";
 
 const GenerateButton = ({ onClick }: { onClick: () => void }) => {
   const { canManageLiquidity } = useAccess() || {};
@@ -27,11 +27,11 @@ const GenerateButton = ({ onClick }: { onClick: () => void }) => {
   )
 }
 
-const EcnSetupsTable = () => {
+const EcnSetupsList = () => {
   const ref = useRef<ActionType>();
 
   return (
-    <EcnSetupsTableBase
+    <EcnSetupsListBase
       actionRef={ref}
       toolBarRender={() => [<GenerateButton onClick={() => {
         ref.current?.reload()
@@ -40,4 +40,4 @@ const EcnSetupsTable = () => {
   );
 }
 
-export default EcnSetupsTable;
+export default EcnSetupsList;
