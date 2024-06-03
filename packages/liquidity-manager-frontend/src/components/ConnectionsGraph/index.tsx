@@ -33,7 +33,7 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
     setIsLoading(true);
     Promise.all([
       apiClient.ecnModules.getManyBaseEcnModulesControllerEcnModule({
-        fields: ['id,name'],
+        fields: ['id,name,descr'],
         worker,
       }),
       apiClient.ecnConnectSchemas.getManyBaseEcnConnectSchemaControllerEcnConnectSchema({
