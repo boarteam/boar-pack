@@ -104,13 +104,7 @@ const Content = <Entity extends Record<string | symbol, any>>({
   )
 }
 
-export const HistoryModal = <
-  Entity,
-  CreateDto,
-  UpdateDto,
-  TEntityParams = {},
-  TPathParams = {}
->({
+export function HistoryModal<Entity, CreateDto, UpdateDto, TEntityParams = {}, TPathParams = {}>({
   getAll,
   onCreate,
   onUpdate,
@@ -122,7 +116,7 @@ export const HistoryModal = <
   onUpdate?: ({}: Record<keyof Entity, string> & { requestBody: UpdateDto } & TPathParams) => Promise<Entity>,
   onDelete?: ({}: Record<keyof Entity, string> & TPathParams) => Promise<void>,
   pathParams: TPathParams,
-}) => {
+}) {
   const [open, setOpen] = useState<boolean>(false);
   const intl = useIntl();
 
@@ -176,10 +170,8 @@ export const HistoryModal = <
                 <Popconfirm
                   title="Undo this action?"
                   description="Do you want to undo this action?"
-                  onConfirm={
-                  /*
-                   */
-                  }
+                  // onConfirm={
+                  // }
                   okText="OK"
                   cancelText="Cancel"
                 >
