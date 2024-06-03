@@ -16,6 +16,7 @@ import { EcnCurrenciesService } from './services/EcnCurrenciesService';
 import { EcnExecutionModesService } from './services/EcnExecutionModesService';
 import { EcnInstrumentsService } from './services/EcnInstrumentsService';
 import { EcnInstrumentsGroupsService } from './services/EcnInstrumentsGroupsService';
+import { EcnInstrumentsGroupsHistoryService } from './services/EcnInstrumentsGroupsHistoryService';
 import { EcnMarginCalcModesService } from './services/EcnMarginCalcModesService';
 import { EcnModulesService } from './services/EcnModulesService';
 import { EcnModuleTypesService } from './services/EcnModuleTypesService';
@@ -47,6 +48,7 @@ export class ApiClient {
     public readonly ecnExecutionModes: EcnExecutionModesService;
     public readonly ecnInstruments: EcnInstrumentsService;
     public readonly ecnInstrumentsGroups: EcnInstrumentsGroupsService;
+    public readonly ecnInstrumentsGroupsHistory: EcnInstrumentsGroupsHistoryService;
     public readonly ecnMarginCalcModes: EcnMarginCalcModesService;
     public readonly ecnModules: EcnModulesService;
     public readonly ecnModuleTypes: EcnModuleTypesService;
@@ -89,6 +91,7 @@ export class ApiClient {
         this.ecnExecutionModes = new EcnExecutionModesService(this.request);
         this.ecnInstruments = new EcnInstrumentsService(this.request);
         this.ecnInstrumentsGroups = new EcnInstrumentsGroupsService(this.request);
+        this.ecnInstrumentsGroupsHistory = new EcnInstrumentsGroupsHistoryService(this.request);
         this.ecnMarginCalcModes = new EcnMarginCalcModesService(this.request);
         this.ecnModules = new EcnModulesService(this.request);
         this.ecnModuleTypes = new EcnModuleTypesService(this.request);

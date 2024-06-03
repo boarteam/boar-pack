@@ -106,6 +106,7 @@ export { EcnCurrenciesService } from './services/EcnCurrenciesService';
 export { EcnExecutionModesService } from './services/EcnExecutionModesService';
 export { EcnInstrumentsService } from './services/EcnInstrumentsService';
 export { EcnInstrumentsGroupsService } from './services/EcnInstrumentsGroupsService';
+export { EcnInstrumentsGroupsHistoryService } from './services/EcnInstrumentsGroupsHistoryService';
 export { EcnMarginCalcModesService } from './services/EcnMarginCalcModesService';
 export { EcnModulesService } from './services/EcnModulesService';
 export { EcnModuleTypesService } from './services/EcnModuleTypesService';
