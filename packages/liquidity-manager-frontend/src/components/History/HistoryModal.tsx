@@ -1,12 +1,13 @@
 // @ts-nocheck
 
 import React, { useState } from "react";
-import { Modal } from "antd";
+import { Modal, Tooltip, Button } from "antd";
 import { ArrowRightOutlined, HistoryOutlined, UndoOutlined } from "@ant-design/icons";
 import Table from "@jifeon/boar-pack-common-frontend/src/components/Table/Table";
 import { useIntl } from "react-intl";
 import { Table as AntdTable, Popconfirm } from 'antd'
 import { createStyles } from "antd-style";
+import moment from "moment";
 // import apiClient from "@@api/apiClient";
 import { ColumnsType } from "antd/es/table";
 import { TGetAllParams } from "@jifeon/boar-pack-common-frontend";
@@ -150,7 +151,12 @@ export function HistoryModal<Entity, CreateDto, UpdateDto, TEntityParams = {}, T
               dataIndex: 'ts',
               width: '200px',
               copyable: true,
-              render: (_, record) => Date(record.ts)
+              render(_, record) {
+                const date = new Date(record.ts * 1000);
+                return <Tooltip title={date.toLocaleString()}>
+                  <Button type={'link'}>{moment(date).fromNow()}</Button>
+                </Tooltip>;
+              },
             },
             {
               title: 'Change',

@@ -19,6 +19,7 @@
     "@umijs/route-utils": "^4.0.1",
     "@umijs/utils": "^4.1.10",
     "antd-style": "^3.6.2",
+    "moment": "^2.30.1",
     "umi": "^4.1.10"
   },
   "devDependencies": {
