@@ -31,18 +31,9 @@ const actions = {
 
 const useStyles = createStyles(({ token }) => {
   return {
-    innerTable: {
-      '.ant-table': {
-        marginBlock: '-16px !important',
-        borderRadius: '0px !important',
-        marginInline: '0px !important',
-        borderRight: '5px white solid !important',
-        'td': {
-          textAlign: 'center',
-        },
-        '.ant-table-cell': {
-          textAlign: 'center',
-        },
+    table: {
+      '.ant-table-cell': {
+        verticalAlign: 'top',
       },
     },
     created: {
@@ -72,51 +63,39 @@ const Content = <Entity extends Record<string | symbol, any>>({
   newEntity: Entity,
   oldEntity: Entity,
 }) => {
-  const { styles, cx } = useStyles();
-  const columns: ColumnsType<Entity>['key'][] = [];
-  const dataRow: Partial<Entity> = {};
   const intl = useIntl();
+  const data = [];
 
   for (const [key, value0] of Object.entries(oldEntity)) {
     const value1 = newEntity[key];
     if ((haction === 3 || value0 !== value1) && key !== 'id') {
-      columns.push(key as keyof Entity);
-      dataRow[key as keyof Entity] = [value0, value1];
+      data.push([key, value0, value1]);
     }
   }
 
-  const className = cx(
-    styles.innerTable,
-    ({ 1: styles.created, 2: styles.updated, 3: styles.deleted }[haction]),
-  );
-
   return (
-      <AntdTable
-        className={className}
-        pagination={false}
-        size='small'
-        dataSource={[dataRow]}
-        columns={columns.map(key => ({
-          // todo: fix for general names
-          title: intl.formatMessage({ id: `pages.ecnInstrumentsGroups.${key}` }),
-          dataIndex: key,
-          render: (_, record) => {
-            if (haction === 1) {
-              return record[key][1]
-            }
+    <table>
+      {
+        data.map(([key, prevValue, newValue]) => {
+        const dataCells = [<td style={{ width: 150 }}>{intl.formatMessage({ id: `pages.ecnInstrumentsGroups.${key}` })}:</td>];
 
-            if (haction === 3) {
-              return record[key][0]
-            }
+        if (haction === 1) {
+          dataCells.push(<td>{newValue}</td>);
+        }
+        else if (haction === 3) {
+          dataCells.push(<td>{prevValue}</td>);
+        }
+        else {
+          dataCells.push(<td>{prevValue} <ArrowRightOutlined style={{ margin: '0 20px' }} /> {newValue}</td>);
+        }
 
-            return (<>
-              {record[key][0]}
-              <ArrowRightOutlined style={{ margin: '0 20px' }} />
-              {record[key][1]}
-            </>);
-          }
-        }))}
-      />
+        return (
+          <tr>
+            {dataCells}
+          </tr>
+        )
+      })}
+    </table>
   )
 }
 
@@ -134,6 +113,7 @@ export function HistoryModal<Entity, CreateDto, UpdateDto, TEntityParams = {}, T
   pathParams: TPathParams,
 }) {
   const [open, setOpen] = useState<boolean>(false);
+  const { styles } = useStyles();
   const intl = useIntl();
 
   return (
@@ -151,6 +131,7 @@ export function HistoryModal<Entity, CreateDto, UpdateDto, TEntityParams = {}, T
           pagination={{
             defaultPageSize: 6,
           }}
+          className={styles.table}
           getAll={getAll}
           idColumnName='hid'
           columns={[
