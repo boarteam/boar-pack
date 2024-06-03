@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import React, { useState } from "react";
-import { Modal, Tooltip, Button } from "antd";
+import { Modal, Tooltip, Button, Badge } from "antd";
 import { ArrowRightOutlined, HistoryOutlined, UndoOutlined } from "@ant-design/icons";
 import Table from "@jifeon/boar-pack-common-frontend/src/components/Table/Table";
 import { useIntl } from "react-intl";
@@ -13,6 +13,21 @@ import { ColumnsType } from "antd/es/table";
 import { TGetAllParams } from "@jifeon/boar-pack-common-frontend";
 
 type HAction = 1 | 2 | 3;
+
+const actions = {
+  1: {
+    color: 'lightgreen',
+    name: 'Create',
+  },
+  2: {
+    color: 'yellow',
+    name: 'Update',
+  },
+  3: {
+    color: 'red',
+    name: 'Delete',
+  },
+} as const;
 
 const useStyles = createStyles(({ token }) => {
   return {
@@ -165,8 +180,11 @@ export function HistoryModal<Entity, CreateDto, UpdateDto, TEntityParams = {}, T
             {
               title: 'Action',
               dataIndex: 'haction',
-              width: '40px',
-              render: (_, record) => ({ 1: 'Create', 2: 'Update', 3: 'Delete' }[record.haction])
+              width: '100px',
+              render(_, record) {
+                const action = actions[record.haction];
+                return <Badge color={action.color} text={action.name} />;
+              }
             },
             {
               title: intl.formatMessage({ id: 'table.actions' }),
