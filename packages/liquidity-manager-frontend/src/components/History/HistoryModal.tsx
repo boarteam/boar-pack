@@ -33,7 +33,7 @@ const useStyles = createStyles(({ token }) => {
   return {
     table: {
       '.ant-table-cell': {
-        verticalAlign: 'top',
+        verticalAlign: 'baseline',
       },
     },
     created: {
