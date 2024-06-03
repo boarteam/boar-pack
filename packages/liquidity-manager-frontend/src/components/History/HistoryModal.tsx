@@ -189,7 +189,7 @@ export function HistoryModal<Entity, CreateDto, UpdateDto, TEntityParams = {}, T
             {
               title: intl.formatMessage({ id: 'table.actions' }),
               valueType: 'option',
-              width: '30px',
+              width: '100px',
               render: (text, record, _, action) => [
                 <Popconfirm
                   title="Undo this action?"
@@ -199,7 +199,7 @@ export function HistoryModal<Entity, CreateDto, UpdateDto, TEntityParams = {}, T
                   okText="OK"
                   cancelText="Cancel"
                 >
-                  <UndoOutlined />
+                  <Button type="link" icon={<UndoOutlined />}>Revert</Button>
                 </Popconfirm>
               ],
             },
