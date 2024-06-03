@@ -52,12 +52,16 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
 
   const generateResetPasswordLink = async (record: UsersInst) => {
     setLinks({ ...links, [record.id]: null });
-    const uriResponse = await apiClient.usersInst.generateResetPasswordLink({
-      userId: record.id,
-      worker,
-    });
-    const resetPasswordLink = uriResponse.resetUri;
-    setLinks({ ...links, [record.id]: { link: resetPasswordLink }});
+    try {
+      const uriResponse = await apiClient.usersInst.generateResetPasswordLink({
+        userId: record.id,
+        worker,
+      });
+      const resetPasswordLink = uriResponse.resetUri;
+      setLinks({ ...links, [record.id]: { link: resetPasswordLink } });
+    } catch (e) {
+      setLinks({ ...links, [record.id]: { link: undefined } });
+    }
   }
 
   const columns: ProColumns<UsersInst>[] = [

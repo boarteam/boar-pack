@@ -86,8 +86,7 @@ export class UsersInstController {
 
   @Get('reset-password-uri/:userId')
   generateResetPasswordLink(@Param('userId') userId: string): UsersInstResetPassDto {
-    const token = this.userInstAuthService.generatePasswordResetToken(userId);
-    const resetUri = `/reset-password/${token}`;
+    const resetUri = this.userInstAuthService.generatePasswordResetUrl(userId);
     return { resetUri };
   }
 }
