@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JWTAuthService, TJWTPayload } from '../jwt-auth';
 import { UsersInstService } from '../users-inst/users-inst.service';
-import { LocalAuthTokenDto } from "./local-auth.dto";
+import { LocalAuthTokenDto } from "./dto/local-auth.dto";
 import { UsersInst } from "../users-inst/entities/users-inst.entity";
 import { Roles, User } from "@jifeon/boar-pack-users-backend";
 import { Permissions } from "../casl-permissions";

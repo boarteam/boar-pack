@@ -10,6 +10,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { AMTSUser } from './models/AMTSUser';
 export type { DclAction } from './models/DclAction';
 export type { EcnCommissionLotsMode } from './models/EcnCommissionLotsMode';
 export type { EcnCommissionType } from './models/EcnCommissionType';
@@ -76,6 +77,9 @@ export type { LiquidityManagerCheckDto } from './models/LiquidityManagerCheckDto
 export { LiquidityManagerCheckResponseDto } from './models/LiquidityManagerCheckResponseDto';
 export { LiquidityManagerCreateDto } from './models/LiquidityManagerCreateDto';
 export { LiquidityManagerUpdateDto } from './models/LiquidityManagerUpdateDto';
+export type { LocalAuthLoginDto } from './models/LocalAuthLoginDto';
+export type { LocalAuthTokenDto } from './models/LocalAuthTokenDto';
+export type { ResetPasswordDto } from './models/ResetPasswordDto';
 export type { SubloginSettings } from './models/SubloginSettings';
 export type { SubloginSettingsCreateDto } from './models/SubloginSettingsCreateDto';
 export type { SubloginSettingsUpdateDto } from './models/SubloginSettingsUpdateDto';
@@ -92,6 +96,7 @@ export type { UsersSubAccountInst } from './models/UsersSubAccountInst';
 export type { UsersSubAccountInstCreateDto } from './models/UsersSubAccountInstCreateDto';
 export type { UsersSubAccountInstUpdateDto } from './models/UsersSubAccountInstUpdateDto';
 
+export { AmtsAuthenticationService } from './services/AmtsAuthenticationService';
 export { DclActionsService } from './services/DclActionsService';
 export { EcnCommissionLotsModesService } from './services/EcnCommissionLotsModesService';
 export { EcnCommissionTypesService } from './services/EcnCommissionTypesService';

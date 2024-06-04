@@ -6,6 +6,7 @@ import type { BaseHttpRequest } from './core/BaseHttpRequest';
 import type { OpenAPIConfig } from './core/OpenAPI';
 import { NodeHttpRequest } from './core/NodeHttpRequest';
 
+import { AmtsAuthenticationService } from './services/AmtsAuthenticationService';
 import { DclActionsService } from './services/DclActionsService';
 import { EcnCommissionLotsModesService } from './services/EcnCommissionLotsModesService';
 import { EcnCommissionTypesService } from './services/EcnCommissionTypesService';
@@ -36,6 +37,7 @@ type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 
 export class ApiClient {
 
+    public readonly amtsAuthentication: AmtsAuthenticationService;
     public readonly dclActions: DclActionsService;
     public readonly ecnCommissionLotsModes: EcnCommissionLotsModesService;
     public readonly ecnCommissionTypes: EcnCommissionTypesService;
@@ -77,6 +79,7 @@ export class ApiClient {
             ENCODE_PATH: config?.ENCODE_PATH,
         });
 
+        this.amtsAuthentication = new AmtsAuthenticationService(this.request);
         this.dclActions = new DclActionsService(this.request);
         this.ecnCommissionLotsModes = new EcnCommissionLotsModesService(this.request);
         this.ecnCommissionTypes = new EcnCommissionTypesService(this.request);

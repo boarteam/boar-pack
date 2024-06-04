@@ -13,7 +13,7 @@ export class LocalAuthStrategy extends PassportStrategy(Strategy, LOCAL_AUTH) {
   async validate(id: string, password: string): Promise<AMTSUser> {
     const user = await this.authService.validateUser(id, password);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('You have been logged out, please login again');
     }
     return user;
   }

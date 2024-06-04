@@ -7,8 +7,6 @@ export const SKIP_JWT_GUARD = 'skipJWTGuard';
 export const SkipJWTGuard = () =>
   SetMetadata<string, boolean>(SKIP_JWT_GUARD, true);
 
-console.log('JWT_AUTH:', JWT_AUTH);
-
 @Injectable()
 export class JwtAuthGuard extends AuthGuard(JWT_AUTH) {
   constructor(private reflector: Reflector) {

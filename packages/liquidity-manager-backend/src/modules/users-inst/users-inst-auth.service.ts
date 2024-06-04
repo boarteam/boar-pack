@@ -23,6 +23,6 @@ export class UsersInstAuthService {
       expiresIn: '1d',
     });
 
-    return this.config.managerPanelHost + `/reset-password/${token}`;
+    return this.config.managerPanelHost + `/user/reset-password/${token}`;
   }
 }
