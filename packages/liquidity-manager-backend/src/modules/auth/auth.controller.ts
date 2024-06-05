@@ -88,6 +88,9 @@ export default class AuthController {
     @Param('token') token: string,
     @Body() body: ResetPasswordDto,
   ) {
-    return {yo: 'yo'};
+    if (!req.user) {
+      throw new UnauthorizedException(`User is not authorized`);
+    }
+    await this.authService.resetPassword(req.user, body.password);
   }
 }

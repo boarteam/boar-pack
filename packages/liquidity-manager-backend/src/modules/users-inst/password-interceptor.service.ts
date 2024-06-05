@@ -7,7 +7,6 @@ import {
   NestInterceptor
 } from '@nestjs/common';
 import { UsersInstService } from "./users-inst.service";
-import bcrypt from "bcrypt";
 import { EcnPasswordHashType } from "./users-inst.constants";
 
 @Injectable()
@@ -34,16 +33,14 @@ export class PasswordInterceptor implements NestInterceptor {
         throw new BadRequestException('pwdHashType must be either 0 or 1');
       }
 
-      if (pwdHashType === EcnPasswordHashType.MD5) {
-        this.logger.log('Generating MD5 password hash');
-        request.body.password = this.users.generateMd5PasswordHash(id, request.body.password);
-      } else {
-        this.logger.log('Generating bcrypt password hash');
-        const salt = await bcrypt.genSalt();
-        request.body.password = await bcrypt.hash(request.body.password, salt);
-        request.body.salt = salt;
-      }
+      const passParams = await this.users.generatePassword({
+        id,
+        password: request.body.password,
+        pwdHashTypeId: pwdHashType
+      });
 
+      request.body.password = passParams.password;
+      request.body.salt = passParams.salt;
     }
 
     return next.handle();
