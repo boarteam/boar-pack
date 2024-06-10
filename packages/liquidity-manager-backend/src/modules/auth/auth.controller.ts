@@ -93,4 +93,15 @@ export default class AuthController {
     }
     await this.authService.resetPassword(req.user, body.password);
   }
+
+  @Post('reset-password')
+  async resetUserPassword(
+    @Req() req: Request,
+    @Body() body: ResetPasswordDto,
+  ) {
+    if (!req.user) {
+      throw new UnauthorizedException(`User is not authorized`);
+    }
+    await this.authService.resetPassword(req.user, body.password);
+  }
 }

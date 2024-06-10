@@ -75,4 +75,21 @@ export class AmtsAuthenticationService {
         });
     }
 
+    /**
+     * @returns any
+     * @throws ApiError
+     */
+    public resetUserPassword({
+        requestBody,
+    }: {
+        requestBody: ResetPasswordDto,
+    }): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/auth/reset-password',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+
 }

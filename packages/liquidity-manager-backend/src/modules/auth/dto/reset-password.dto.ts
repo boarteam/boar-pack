@@ -6,7 +6,7 @@ export class ResetPasswordDto {
     Joi.string()
       .min(8)
       .max(32)
-      .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).*$/)
+      .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#]).*$/)
       .required()
       .messages({
         'string.min': 'Password must be at least 8 characters long',
