@@ -3,18 +3,17 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JWTAuthConfigService } from './jwt-auth.config';
 import { Request } from 'express';
-import { AMTSUser, JWT_AUTH, tokenName } from '../auth';
+import { AMTSUser, JWT_URI_AUTH } from '../auth';
 import { UsersInstService } from "../users-inst/users-inst.service";
 import { Roles } from "@jifeon/boar-pack-users-backend";
 import { Permissions } from "../casl-permissions";
 
 export type TJWTPayload = {
   sub: string;
-  rememberMe?: boolean;
 };
 
 @Injectable()
-export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {
+export class JwtUriAuthStrategy extends PassportStrategy(Strategy, JWT_URI_AUTH) {
   constructor(
     private usersService: UsersInstService,
     private jwtAuthConfigService: JWTAuthConfigService,
@@ -22,17 +21,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          const cookies = req.headers.cookie?.split('; ');
-          if (!cookies) {
-            return null;
-          }
-
-          const cookie = cookies.find(c => c.startsWith(`${tokenName}=`));
-          if (!cookie) {
-            return null;
-          }
-
-          return cookie.split('=')[1];
+          return req.params.token;
         },
       ]),
       ignoreExpiration: false,
@@ -45,7 +34,8 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
-      throw new UnauthorizedException();
+      console.log('User not found, id:', userId);
+      throw new UnauthorizedException({ messageText: 'Your token is invalid or expired' });
     }
 
     return {

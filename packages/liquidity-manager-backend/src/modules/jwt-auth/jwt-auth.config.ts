@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 export type TJWTAuthConfig = {
   jwtSecret: string;
+  passwordResetTokenExpiresIn?: string;
 };
 
 @Injectable()
@@ -19,6 +20,7 @@ export class JWTAuthConfigService {
 
     return {
       jwtSecret,
+      passwordResetTokenExpiresIn: '1d',
     };
   }
 }

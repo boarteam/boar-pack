@@ -1,6 +1,6 @@
 export * from './auth.constants';
 export * from './auth-strategies.constants';
-export * from './local-auth.dto';
+export * from './dto/local-auth.dto';
 export * from './local-auth.guard';
 export * from './local-auth.strategy';
 export * from './auth.service';

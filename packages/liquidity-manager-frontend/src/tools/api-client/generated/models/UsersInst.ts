@@ -7,6 +7,7 @@ import type { DclAction } from './DclAction';
 import type { EcnCommissionLotsMode } from './EcnCommissionLotsMode';
 import type { EcnCommissionType } from './EcnCommissionType';
 import type { EcnModule } from './EcnModule';
+import type { EcnPasswordHashType } from './EcnPasswordHashType';
 import type { UsersGroupsInst } from './UsersGroupsInst';
 import type { UsersInstCompany } from './UsersInstCompany';
 
@@ -49,5 +50,8 @@ export type UsersInst = {
     fixUserinfoRequestsEnabled: number;
     alwaysBookA: number;
     hedgeFactor: string;
+    salt?: string;
+    pwdHashTypeId: number;
+    pwdHashType: EcnPasswordHashType;
 };
 

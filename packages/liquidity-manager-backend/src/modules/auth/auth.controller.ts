@@ -1,12 +1,26 @@
-import { Body, Controller, Get, Post, Req, Res, UnauthorizedException, UseGuards, } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AMTSUser, AuthService } from './auth.service';
 import { tokenName } from './auth.constants';
 import { SkipJWTGuard } from '../jwt-auth';
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { LocalAuthLoginDto, LocalAuthTokenDto } from "./local-auth.dto";
+import { LocalAuthLoginDto, LocalAuthTokenDto } from "./dto/local-auth.dto";
 import { CaslAbilityFactory, SkipPoliciesGuard } from "@jifeon/boar-pack-users-backend";
+import { JwtUriAuthGuard } from "../jwt-auth/jwt-uri-auth.guard";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
+import { JWTUriExceptionFilter } from "../jwt-auth/jwt-uri.exception-filter";
 
 @SkipPoliciesGuard()
 @ApiTags('AMTS Authentication')
@@ -52,7 +66,7 @@ export default class AuthController {
     if (!req.user) {
       throw new UnauthorizedException(`User is not authorized`);
     }
-    const loginResult = await this.authService.login(req.user);
+    const loginResult = await this.authService.login(req.user, body.rememberMe);
     res.cookie(tokenName, loginResult.accessToken);
     return loginResult;
   }
@@ -63,5 +77,31 @@ export default class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     res.cookie(tokenName, '');
+  }
+
+  @SkipJWTGuard()
+  @UseGuards(JwtUriAuthGuard)
+  @UseFilters(JWTUriExceptionFilter)
+  @Post('reset-password/:token')
+  async resetPassword(
+    @Req() req: Request,
+    @Param('token') token: string,
+    @Body() body: ResetPasswordDto,
+  ) {
+    if (!req.user) {
+      throw new UnauthorizedException(`User is not authorized`);
+    }
+    await this.authService.resetPassword(req.user, body.password);
+  }
+
+  @Post('reset-password')
+  async resetUserPassword(
+    @Req() req: Request,
+    @Body() body: ResetPasswordDto,
+  ) {
+    if (!req.user) {
+      throw new UnauthorizedException(`User is not authorized`);
+    }
+    await this.authService.resetPassword(req.user, body.password);
   }
 }

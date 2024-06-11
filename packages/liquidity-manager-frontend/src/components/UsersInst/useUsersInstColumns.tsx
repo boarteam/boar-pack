@@ -1,21 +1,24 @@
 import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import {
-  DclAction, EcnCommissionLotsMode,
+  DclAction,
+  EcnCommissionLotsMode,
   EcnCommissionType,
   EcnModule,
+  EcnPasswordHashType,
   UsersGroupsInst,
   UsersInst,
   UsersInstCompany
 } from "@@api/generated";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, LoadingOutlined, ThunderboltOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
-import { Tag } from "antd";
+import { Popover, Tag, Tooltip, Typography } from "antd";
 import apiClient from '@@api/apiClient';
-import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
+import { useLiquidityManagerContext } from "../../tools";
 import { useEffect, useState } from "react";
 import { dropTrailZeroes, NumberSwitch, Password, RelationSelect } from "@jifeon/boar-pack-common-frontend";
 
+const { Paragraph } = Typography;
 type TOptions = { text: string, value: number | string }[];
 
 export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
@@ -25,6 +28,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
   const [userGroups, setUserGroups] = useState<TOptions>([]);
   const [modules, setModules] = useState<TOptions>([]);
   const [marginModules, setMarginModules] = useState<TOptions>([]);
+  const [links, setLinks] = useState<{ [key: string]: { link: null | string } }>({});
 
   useEffect(() => {
     if (worker) {
@@ -46,6 +50,19 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
     }
   }, [worker]);
 
+  const generateResetPasswordLink = async (record: UsersInst) => {
+    setLinks({ ...links, [record.id]: null });
+    try {
+      const uriResponse = await apiClient.usersInst.generateResetPasswordLink({
+        userId: record.id,
+        worker,
+      });
+      const resetPasswordLink = uriResponse.resetUri;
+      setLinks({ ...links, [record.id]: { link: resetPasswordLink } });
+    } catch (e) {
+      setLinks({ ...links, [record.id]: { link: undefined } });
+    }
+  }
 
   const columns: ProColumns<UsersInst>[] = [
     {
@@ -156,13 +173,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       dataIndex: 'password',
       sorter: true,
       valueType: 'password',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-          }
-        ]
-      },
+      formItemProps: {},
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
@@ -737,7 +748,8 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
         );
       },
       render(text, record) {
-        return <Tag color={record.fixTradingEnabled ? 'green' : 'red'}>{record.fixTradingEnabled ? 'Enabled' : 'Disabled'}</Tag>;
+        return <Tag
+          color={record.fixTradingEnabled ? 'green' : 'red'}>{record.fixTradingEnabled ? 'Enabled' : 'Disabled'}</Tag>;
       },
     },
     {
@@ -757,7 +769,8 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
         );
       },
       render(text, record) {
-        return <Tag color={record.fixUserinfoRequestsEnabled ? 'green' : 'red'}>{record.fixUserinfoRequestsEnabled ? 'Enabled' : 'Disabled'}</Tag>;
+        return <Tag
+          color={record.fixUserinfoRequestsEnabled ? 'green' : 'red'}>{record.fixUserinfoRequestsEnabled ? 'Enabled' : 'Disabled'}</Tag>;
       },
     },
     {
@@ -833,6 +846,33 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
     },
+    {
+      title: intl.formatMessage({ id: 'pages.usersInst.pwdHashType' }),
+      dataIndex: 'pwdHashType',
+      sorter: true,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          }
+        ]
+      },
+      fieldProps: {
+        autoComplete: 'one-time-code', // disable browser autocomplete
+      },
+      render: (text, record) => record.pwdHashType?.name,
+      renderFormItem: (schema, config) => {
+        return worker && <RelationSelect<EcnPasswordHashType>
+          selectedItem={config.record?.pwdHashType}
+          fetchItems={filter => {
+            return apiClient.ecnPasswordHashTypes.getManyBaseGenericLiquidityControllerEcnPasswordHashType({
+              filter,
+              worker,
+            })
+          }}
+        /> || null;
+      }
+    },
   ];
 
   if (canManageLiquidity) {
@@ -841,16 +881,47 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       valueType: 'option',
       width: '50px',
       fixed: 'right',
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          <EditOutlined />
-        </a>,
-      ],
+      render(text, record, _, action) {
+        const link = links[record.id]?.link;
+        let linkElement = null;
+
+        if (link === undefined) {
+          linkElement = <Tooltip key={'resetPassword'} title="Generate reset password link">
+            <a
+              key="resetPassword"
+              onClick={() => generateResetPasswordLink(record)}
+            >
+              <ThunderboltOutlined />
+            </a>
+          </Tooltip>;
+        } else if (link === null) {
+          linkElement = <Tooltip key={'resetPassword'} title="Generating reset password link">
+            <LoadingOutlined />
+          </Tooltip>;
+        } else {
+          linkElement = <Popover
+            content={<Paragraph copyable={{ text: link }}>Click to copy!</Paragraph>}
+            title="Reset password link"
+            open
+            key="resetPassword"
+            onOpenChange={() => setLinks({ ...links, [record.id]: undefined })}
+          >
+            <ThunderboltOutlined />
+          </Popover>;
+        }
+
+        return [
+          <a
+            key="editable"
+            onClick={() => {
+              action?.startEditable?.(record.id);
+            }}
+          >
+            <EditOutlined />
+          </a>,
+          linkElement,
+        ];
+      },
     });
   }
 

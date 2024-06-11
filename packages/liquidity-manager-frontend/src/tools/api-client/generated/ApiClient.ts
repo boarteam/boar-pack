@@ -6,6 +6,7 @@ import type { BaseHttpRequest } from './core/BaseHttpRequest';
 import type { OpenAPIConfig } from './core/OpenAPI';
 import { NodeHttpRequest } from './core/NodeHttpRequest';
 
+import { AmtsAuthenticationService } from './services/AmtsAuthenticationService';
 import { DclActionsService } from './services/DclActionsService';
 import { EcnCommissionLotsModesService } from './services/EcnCommissionLotsModesService';
 import { EcnCommissionTypesService } from './services/EcnCommissionTypesService';
@@ -18,6 +19,7 @@ import { EcnInstrumentsGroupsService } from './services/EcnInstrumentsGroupsServ
 import { EcnMarginCalcModesService } from './services/EcnMarginCalcModesService';
 import { EcnModulesService } from './services/EcnModulesService';
 import { EcnModuleTypesService } from './services/EcnModuleTypesService';
+import { EcnPasswordHashTypesService } from './services/EcnPasswordHashTypesService';
 import { EcnProfitCalcModesService } from './services/EcnProfitCalcModesService';
 import { EcnStatesService } from './services/EcnStatesService';
 import { EcnSubscrSchemasService } from './services/EcnSubscrSchemasService';
@@ -35,6 +37,7 @@ type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 
 export class ApiClient {
 
+    public readonly amtsAuthentication: AmtsAuthenticationService;
     public readonly dclActions: DclActionsService;
     public readonly ecnCommissionLotsModes: EcnCommissionLotsModesService;
     public readonly ecnCommissionTypes: EcnCommissionTypesService;
@@ -47,6 +50,7 @@ export class ApiClient {
     public readonly ecnMarginCalcModes: EcnMarginCalcModesService;
     public readonly ecnModules: EcnModulesService;
     public readonly ecnModuleTypes: EcnModuleTypesService;
+    public readonly ecnPasswordHashTypes: EcnPasswordHashTypesService;
     public readonly ecnProfitCalcModes: EcnProfitCalcModesService;
     public readonly ecnStates: EcnStatesService;
     public readonly ecnSubscrSchemas: EcnSubscrSchemasService;
@@ -75,6 +79,7 @@ export class ApiClient {
             ENCODE_PATH: config?.ENCODE_PATH,
         });
 
+        this.amtsAuthentication = new AmtsAuthenticationService(this.request);
         this.dclActions = new DclActionsService(this.request);
         this.ecnCommissionLotsModes = new EcnCommissionLotsModesService(this.request);
         this.ecnCommissionTypes = new EcnCommissionTypesService(this.request);
@@ -87,6 +92,7 @@ export class ApiClient {
         this.ecnMarginCalcModes = new EcnMarginCalcModesService(this.request);
         this.ecnModules = new EcnModulesService(this.request);
         this.ecnModuleTypes = new EcnModuleTypesService(this.request);
+        this.ecnPasswordHashTypes = new EcnPasswordHashTypesService(this.request);
         this.ecnProfitCalcModes = new EcnProfitCalcModesService(this.request);
         this.ecnStates = new EcnStatesService(this.request);
         this.ecnSubscrSchemas = new EcnSubscrSchemasService(this.request);
