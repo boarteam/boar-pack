@@ -23,7 +23,7 @@ type TOptions = { text: string, value: number | string }[];
 
 export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
   const intl = useIntl();
-  const { canManageLiquidity } = useAccess() || {};
+  const { canManageLiquidity, canGenerateResetPasswordLink } = useAccess() || {};
   const { worker } = useLiquidityManagerContext();
   const [userGroups, setUserGroups] = useState<TOptions>([]);
   const [modules, setModules] = useState<TOptions>([]);
@@ -883,34 +883,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
       fixed: 'right',
       render(text, record, _, action) {
         const link = links[record.id]?.link;
-        let linkElement = null;
-
-        if (link === undefined) {
-          linkElement = <Tooltip key={'resetPassword'} title="Generate reset password link">
-            <a
-              key="resetPassword"
-              onClick={() => generateResetPasswordLink(record)}
-            >
-              <ThunderboltOutlined />
-            </a>
-          </Tooltip>;
-        } else if (link === null) {
-          linkElement = <Tooltip key={'resetPassword'} title="Generating reset password link">
-            <LoadingOutlined />
-          </Tooltip>;
-        } else {
-          linkElement = <Popover
-            content={<Paragraph copyable={{ text: link }}>Click to copy!</Paragraph>}
-            title="Reset password link"
-            open
-            key="resetPassword"
-            onOpenChange={() => setLinks({ ...links, [record.id]: undefined })}
-          >
-            <ThunderboltOutlined />
-          </Popover>;
-        }
-
-        return [
+        const actions = [
           <a
             key="editable"
             onClick={() => {
@@ -919,8 +892,39 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
           >
             <EditOutlined />
           </a>,
-          linkElement,
         ];
+
+        if (canGenerateResetPasswordLink) {
+          let linkElement = null;
+          if (link === undefined) {
+            linkElement = <Tooltip key={'resetPassword'} title="Generate reset password link">
+              <a
+                key="resetPassword"
+                onClick={() => generateResetPasswordLink(record)}
+              >
+                <ThunderboltOutlined />
+              </a>
+            </Tooltip>;
+          } else if (link === null) {
+            linkElement = <Tooltip key={'resetPassword'} title="Generating reset password link">
+              <LoadingOutlined />
+            </Tooltip>;
+          } else {
+            linkElement = <Popover
+              content={<Paragraph copyable={{ text: link }}>Click to copy!</Paragraph>}
+              title="Reset password link"
+              open
+              key="resetPassword"
+              onOpenChange={() => setLinks({ ...links, [record.id]: undefined })}
+            >
+              <ThunderboltOutlined />
+            </Popover>;
+          }
+
+          actions.push(linkElement);
+        }
+
+        return actions;
       },
     });
   }
