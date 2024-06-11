@@ -124,7 +124,6 @@ const columnsSets: TColumnsSet<UsersInst>[] = [
       'id',
       'name',
       'password',
-      'salt',
       'pwdHashType',
     ],
   }
