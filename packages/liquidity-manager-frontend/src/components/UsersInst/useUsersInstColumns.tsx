@@ -865,8 +865,6 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
         return worker && <RelationSelect<EcnPasswordHashType>
           selectedItem={config.record?.pwdHashType}
           fetchItems={filter => {
-            console.log('fetchItems', filter);
-            console.log(apiClient.ecnPasswordHashTypes);
             return apiClient.ecnPasswordHashTypes.getManyBaseGenericLiquidityControllerEcnPasswordHashType({
               filter,
               worker,
