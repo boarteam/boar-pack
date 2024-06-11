@@ -6,5 +6,6 @@
 export type LocalAuthLoginDto = {
     name: string;
     password: string;
+    rememberMe: boolean;
 };
 
