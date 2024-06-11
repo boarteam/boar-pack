@@ -10,6 +10,7 @@ import { Permissions } from "../casl-permissions";
 
 export type TJWTPayload = {
   sub: string;
+  rememberMe?: boolean;
 };
 
 @Injectable()

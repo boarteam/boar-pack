@@ -66,7 +66,7 @@ export default class AuthController {
     if (!req.user) {
       throw new UnauthorizedException(`User is not authorized`);
     }
-    const loginResult = await this.authService.login(req.user);
+    const loginResult = await this.authService.login(req.user, body.rememberMe);
     res.cookie(tokenName, loginResult.accessToken);
     return loginResult;
   }

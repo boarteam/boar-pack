@@ -24,6 +24,9 @@ export class JwtAuthModule {
           inject: [JWTAuthConfigService],
           useFactory: async (jwtAuthConfigService: JWTAuthConfigService) => ({
             secret: jwtAuthConfigService.config.jwtSecret,
+            signOptions: {
+              expiresIn: '1h',
+            }
           }),
         }),
       ],

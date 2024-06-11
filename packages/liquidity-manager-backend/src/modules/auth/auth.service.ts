@@ -49,10 +49,15 @@ export class AuthService {
     return null;
   }
 
-  async login(user: AMTSUser): Promise<LocalAuthTokenDto> {
-    const payload: TJWTPayload = { sub: user.id };
+  async login(user: AMTSUser, rememberMe: boolean): Promise<LocalAuthTokenDto> {
+    const payload: TJWTPayload = {
+      sub: user.id,
+      rememberMe,
+    };
     return {
-      accessToken: this.jwtAuthService.sign(payload),
+      accessToken: this.jwtAuthService.sign(payload, {
+        expiresIn: rememberMe ? '7d' : '1h',
+      }),
     };
   }
 
