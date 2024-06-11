@@ -8,6 +8,7 @@ import { JWTAuthConfigService } from "./jwt-auth.config";
 import { PassportModule } from "@nestjs/passport";
 import { JWTAuthService } from "./jwt-auth.service";
 import { UsersInstModule } from "../users-inst/users-inst.module";
+import { JwtUriAuthStrategy } from "./jwt-uri-auth.srtategy";
 
 @Module({})
 export class JwtAuthModule {
@@ -23,6 +24,9 @@ export class JwtAuthModule {
           inject: [JWTAuthConfigService],
           useFactory: async (jwtAuthConfigService: JWTAuthConfigService) => ({
             secret: jwtAuthConfigService.config.jwtSecret,
+            signOptions: {
+              expiresIn: '1h',
+            }
           }),
         }),
       ],
@@ -30,6 +34,7 @@ export class JwtAuthModule {
         JWTAuthConfigService,
         JwtAuthStrategy,
         JWTAuthService,
+        JwtUriAuthStrategy,
         {
           provide: APP_GUARD,
           useClass: JwtAuthGuard,

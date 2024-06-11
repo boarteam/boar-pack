@@ -1,13 +1,11 @@
 import { ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
-import { JWT_AUTH } from '../auth';
+import { JWT_AUTH } from '../auth/auth-strategies.constants';
 
 export const SKIP_JWT_GUARD = 'skipJWTGuard';
 export const SkipJWTGuard = () =>
   SetMetadata<string, boolean>(SKIP_JWT_GUARD, true);
-
-console.log('JWT_AUTH:', JWT_AUTH);
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard(JWT_AUTH) {

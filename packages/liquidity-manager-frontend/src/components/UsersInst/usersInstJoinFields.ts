@@ -26,4 +26,8 @@ export const usersInstJoinFields = [
     field: 'group',
     select: ['id'],
   },
+  {
+    field: 'pwdHashType',
+    select: ['name'],
+  }
 ];

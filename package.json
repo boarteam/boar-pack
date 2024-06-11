@@ -14,7 +14,7 @@
     "npm-run-all": "^4.1.5"
   },
   "scripts": {
-    "push": "lerna run push",
+    "push": "lerna run yalc:push",
     "clean": "lerna clean",
     "build": "lerna run build",
     "ver": "lerna version",

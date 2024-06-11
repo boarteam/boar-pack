@@ -40,5 +40,6 @@ export type UsersInstCreateDto = {
     fixUserinfoRequestsEnabled: number;
     alwaysBookA: number;
     hedgeFactor: string;
+    pwdHashType?: number;
 };
 

@@ -2,6 +2,7 @@ import Joi from 'joi';
 import { JoiSchema } from 'nestjs-joi';
 import { UsersInstCompany } from '../../../entities/users-inst-company.entity';
 import { EcnModule } from "../../ecn-modules/entities/ecn-module.entity";
+import { EcnPasswordHashType } from "../entities/ecn-password-hash-type.entity";
 
 export class UsersInstCreateDto {
   @JoiSchema(Joi.number().integer().min(0).required())
@@ -111,4 +112,7 @@ export class UsersInstCreateDto {
 
   @JoiSchema(Joi.string().required())
   hedgeFactor: string;
+
+  @JoiSchema(Joi.number().integer().required())
+  pwdHashType?: EcnPasswordHashType['id'];
 }

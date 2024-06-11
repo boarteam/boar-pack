@@ -28,8 +28,13 @@ import { Tools } from "@jifeon/boar-pack-common-backend";
     exclude: ['pass'],
   },
   routes: {
-    only: ['getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    only: ['getManyBase', 'getOneBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
     getManyBase: {
+      decorators: [
+        CheckPolicies(new ViewUsersPolicy()),
+      ],
+    },
+    getOneBase: {
       decorators: [
         CheckPolicies(new ViewUsersPolicy()),
       ],

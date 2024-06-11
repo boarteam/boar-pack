@@ -2,3 +2,4 @@ node_modules
 yarn-error.log
 .yalc
 dist
+lerna-debug.log
