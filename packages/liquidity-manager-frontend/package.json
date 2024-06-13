@@ -1,6 +1,6 @@
 {
   "name": "@jifeon/boar-pack-liquidity-manager-frontend",
-  "version": "1.8.1",
+  "version": "1.8.2-alpha.0",
   "description": "Liquidity Manager Frontend",
   "repository": "git@github.com:jifeon/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
