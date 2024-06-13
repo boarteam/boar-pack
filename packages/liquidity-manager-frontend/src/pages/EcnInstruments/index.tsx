@@ -3,6 +3,7 @@ import React from "react";
 import { useIntl } from "@umijs/max";
 import EcnInstrumentsTable from "../../components/EcnInstruments/EcnInstrumentsTable";
 import EcnInstrumentsGroupsTable from "../../components/EcnInstruments/EcnInstrumentsGroups/EcnInstrumentsGroupsTable";
+import { useTabs } from "@jifeon/boar-pack-common-frontend";
 
 enum Tabs {
   instruments = 'instruments',
@@ -10,7 +11,7 @@ enum Tabs {
 }
 
 const EcnInstruments: React.FC = () => {
-  const [activeTab, setActiveTab] = React.useState<string>(Tabs.instruments);
+  const [activeTab, setActiveTab] = useTabs<Tabs>(Tabs.instruments);
   const intl = useIntl();
 
   const tabList = [
@@ -28,6 +29,7 @@ const EcnInstruments: React.FC = () => {
     <PageContainer
       tabList={tabList}
       tabActiveKey={activeTab}
+      // @ts-ignore-next-line
       onTabChange={setActiveTab}
     >
       {activeTab === Tabs.instruments ? <EcnInstrumentsTable /> : null}
