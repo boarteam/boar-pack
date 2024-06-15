@@ -65,7 +65,7 @@ export type TGetAllRequestParams = TGetRequestParams & {
 export type TFilterParams = {
   current?: number;
   pageSize?: number;
-  sortMap?: {[key: string]: string};
+  sortMap?: { [key: string]: string };
 } & TGetAllRequestParams;
 export type TSort = {
   [key: string]: 'ascend' | 'descend' | null,
@@ -77,30 +77,48 @@ export type TSearchableColumn = {
   filterField?: string,
   filterOperator?: typeof Operators[keyof typeof Operators],
 }
-export interface TTableProps<
-  Entity,
+
+interface BaseProps<Entity,
   CreateDto,
   UpdateDto,
   TEntityParams = {},
-  TPathParams = {}
-> extends ProTableProps<Entity, TEntityParams & TFilterParams> {
-  getAll: ({}: TGetAllParams & TPathParams) => Promise<{ data: Entity[] }>,
-  onCreate?: ({}: { requestBody: CreateDto } & TPathParams) => Promise<Entity>,
-  onUpdate: ({}: Record<keyof Entity, string> & { requestBody: UpdateDto } & TPathParams) => Promise<Entity>,
-  onDelete: ({}: Record<keyof Entity, string> & TPathParams) => Promise<void>,
-  pathParams: TPathParams,
-  idColumnName?: string & keyof Entity,
-  entityToCreateDto: (entity: Entity) => CreateDto,
-  entityToUpdateDto: (entity: Entity) => UpdateDto,
-  createNewDefaultParams?: Partial<Entity>,
-  afterSave?: (record: Entity) => Promise<void>,
-  actionRef?: MutableRefObject<ActionType | undefined>,
-  editable?: RowEditableConfig<Entity>,
-  defaultSort?: QuerySortArr,
-  searchableColumns?: TSearchableColumn[],
-  viewOnly?: boolean,
-  columnsSets?: TColumnsSet<Entity>[],
-  popupCreation?: boolean,
-  columnsState?: ColumnStateType,
-  columnsSetSelect?: () => React.ReactNode,
+  TPathParams = {}> extends ProTableProps<Entity, TEntityParams & TFilterParams> {
+  getAll: ({}: TGetAllParams & TPathParams) => Promise<{ data: Entity[] }>;
+  pathParams: TPathParams;
+  idColumnName?: string & keyof Entity;
+  createNewDefaultParams?: Partial<Entity>;
+  afterSave?: (record: Entity) => Promise<void>;
+  actionRef?: MutableRefObject<ActionType | undefined>;
+  editable?: RowEditableConfig<Entity>;
+  defaultSort?: QuerySortArr;
+  searchableColumns?: TSearchableColumn[];
+  viewOnly?: boolean;
+  columnsSets?: TColumnsSet<Entity>[];
+  popupCreation?: boolean;
+  columnsState?: ColumnStateType;
+  columnsSetSelect?: () => React.ReactNode;
 }
+
+interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {
+  onCreate?: ({}: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
+  onUpdate: ({}: Record<keyof Entity, string> & { requestBody: UpdateDto } & TPathParams) => Promise<Entity>;
+  onDelete: ({}: Record<keyof Entity, string> & TPathParams) => Promise<void>;
+  entityToCreateDto: (entity: Entity) => CreateDto;
+  entityToUpdateDto: (entity: Entity) => UpdateDto;
+}
+
+// Conditional type to merge base and editable props conditionally
+type ConditionalProps<Entity,
+  CreateDto,
+  UpdateDto,
+  TEntityParams,
+  TPathParams> = { viewOnly: true } extends { viewOnly: boolean }
+  ? BaseProps<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams> & Partial<EditableProps<Entity, CreateDto, UpdateDto, TPathParams>>
+  : BaseProps<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams> & EditableProps<Entity, CreateDto, UpdateDto, TPathParams>;
+
+// Main type
+export type TTableProps<Entity,
+  CreateDto,
+  UpdateDto,
+  TEntityParams = {},
+  TPathParams = {}> = ConditionalProps<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams>;
