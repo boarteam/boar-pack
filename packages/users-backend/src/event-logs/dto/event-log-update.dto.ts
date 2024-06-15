@@ -1,13 +1,16 @@
 import Joi from "joi";
 import { JoiSchema } from 'nestjs-joi';
-import { AuditAction, LogType, UserRole } from '../entities/event-log.entity';
+import { LogType, UserRole } from '../entities/event-log.entity';
 
 export class EventLogUpdateDto {
   @JoiSchema(Joi.string().valid(...Object.values(LogType)).optional())
   logType?: LogType;
 
-  @JoiSchema(Joi.string().valid(...Object.values(AuditAction)).optional())
-  action?: AuditAction;
+  @JoiSchema(Joi.string().optional())
+  action?: string;
+
+  @JoiSchema(Joi.string().optional())
+  method?: string;
 
   @JoiSchema(Joi.string().uuid().allow(null).optional())
   userId?: string;

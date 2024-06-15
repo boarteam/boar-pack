@@ -6,6 +6,8 @@ import { EventLog } from './entities/event-log.entity';
 import { EventLogsPermissions } from "./event-logs.permissions";
 import { Action, CaslAbilityFactory, CaslModule } from "../casl";
 import { DataSource } from "typeorm";
+import { APP_INTERCEPTOR } from "@nestjs/core";
+import { EventLogInterceptor } from "./event-logs.interceptor";
 
 @Module({})
 export class EventLogsModule {
@@ -17,7 +19,6 @@ export class EventLogsModule {
         TypeOrmModule.forFeature([EventLog], config.dataSourceName),
       ],
       providers: [
-        EventLogsService,
         {
           provide: EventLogsService,
           inject: [getDataSourceToken(config.dataSourceName)],
@@ -32,6 +33,30 @@ export class EventLogsModule {
       controllers: [
         EventLogsController,
       ]
+    }
+  }
+
+  static forInterceptor(config: { dataSourceName: string }) {
+    return {
+      module: EventLogsModule,
+      imports: [
+        CaslModule,
+        TypeOrmModule.forFeature([EventLog], config.dataSourceName),
+      ],
+      providers: [
+        {
+          provide: EventLogsService,
+          inject: [getDataSourceToken(config.dataSourceName)],
+          useFactory: (dataSource: DataSource) => {
+            return new EventLogsService(dataSource.getRepository(EventLog));
+          }
+        },
+        {
+          provide: APP_INTERCEPTOR,
+          useClass: EventLogInterceptor,
+        },
+      ],
+      exports: [],
     }
   }
 
