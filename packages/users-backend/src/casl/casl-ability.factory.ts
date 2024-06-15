@@ -5,9 +5,11 @@ import { Injectable } from '@nestjs/common';
 import { PackRule, packRules } from '@casl/ability/extra';
 import { AnyObject } from '@casl/ability/dist/types/types';
 import { Permission } from '../users/entities/permissions';
+import { EventLog } from '../event-logs';
 
 export interface TSubjects {
   User: typeof User;
+  EventLog: typeof EventLog;
 }
 
 export type TTextSubjects = 'all';
