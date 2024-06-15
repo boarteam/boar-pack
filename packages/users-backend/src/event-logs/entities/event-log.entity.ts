@@ -1,25 +1,17 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
-
-export enum AuditAction {
-  CREATE = 'CREATE',
-  UPDATE = 'UPDATE',
-  DELETE = 'DELETE',
-  VIEW = 'VIEW',
-  SERVICE_START = 'SERVICE_START',
-  SERVICE_STOP = 'SERVICE_STOP',
-}
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
+import { User } from "../../users";
 
 export enum LogType {
-  AUDIT = 'AUDIT',
-  OPERATIONAL = 'OPERATIONAL',
-  APPLICATION = 'APPLICATION',
+  AUDIT = 'Audit',
+  OPERATIONAL = 'Operational',
+  APPLICATION = 'Application',
 }
 
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-  GUEST = 'GUEST',
-  SYSTEM = 'SYSTEM',
+  ADMIN = 'Admin',
+  USER = 'User',
+  GUEST = 'Guest',
+  SYSTEM = 'System',
 }
 
 @Entity('event_logs')
@@ -33,56 +25,69 @@ export class EventLog {
   })
   logType: LogType;
 
-  @Column({
-    type: 'enum',
-    enum: AuditAction,
-  })
-  action: AuditAction;
+  @Column()
+  action: string;
 
   @Column({
+    type: 'varchar',
     nullable: true,
   })
-  userId: string;
+  method: string | null;
+
+  @Column({
+    type: 'uuid',
+    nullable: true,
+  })
+  userId: string | null;
+
+  @ManyToOne(() => User)
+  user: User | null;
 
   @Column({
     type: 'enum',
     enum: UserRole,
   })
-  userRole: string;
+  userRole: UserRole;
 
   @Column()
   entity: string;
 
   @Column({
+    type: 'uuid',
     nullable: true,
   })
-  entityId: string;
+  entityId: string | null;
 
   @Column('jsonb', { nullable: true })
-  payload: Record<string, any>;
+  payload: Record<string, any> | null;
 
   @Column({
+    type: 'varchar',
     nullable: true,
   })
-  url: string;
+  url: string | null;
 
   @Column({
+    type: 'varchar',
     nullable: true,
   })
-  ipAddress: string;
+  ipAddress: string | null;
 
-  @Column({ nullable: true })
-  userAgent: string;
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  userAgent: string | null;
 
   @Column('int', {
     nullable: true,
   })
-  duration: number;
+  duration: number | null;
 
   @Column('int', {
     nullable: true,
   })
-  statusCode: number;
+  statusCode: number | null;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

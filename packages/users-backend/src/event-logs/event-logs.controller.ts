@@ -22,6 +22,11 @@ import { CheckPolicies } from "../casl";
   },
   query: {
     alwaysPaginate: true,
+    join: {
+      user: {
+        allow: ['id', 'name'],
+      },
+    },
   },
   routes: {
     only: ['getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],

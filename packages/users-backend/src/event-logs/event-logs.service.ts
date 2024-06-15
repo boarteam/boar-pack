@@ -10,4 +10,8 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
   ) {
     super(repo);
   }
+
+  async create(eventLog: EventLog): Promise<EventLog> {
+    return this.repo.save(eventLog);
+  }
 }
