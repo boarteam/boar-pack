@@ -6,8 +6,9 @@ import { EventLog } from './entities/event-log.entity';
 import { EventLogsPermissions } from "./event-logs.permissions";
 import { Action, CaslAbilityFactory, CaslModule } from "../casl";
 import { DataSource } from "typeorm";
-import { APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
 import { EventLogInterceptor } from "./event-logs.interceptor";
+import { EventLogsExceptionFilter } from "./event-logs.filter";
 
 @Module({})
 export class EventLogsModule {
@@ -55,6 +56,10 @@ export class EventLogsModule {
           provide: APP_INTERCEPTOR,
           useClass: EventLogInterceptor,
         },
+        {
+          provide: APP_FILTER,
+          useClass: EventLogsExceptionFilter,
+        }
       ],
       exports: [],
     }

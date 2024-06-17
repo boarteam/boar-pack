@@ -53,7 +53,7 @@ export class EventLog {
   entity: string;
 
   @Column({
-    type: 'uuid',
+    type: 'varchar',
     nullable: true,
   })
   entityId: string | null;
