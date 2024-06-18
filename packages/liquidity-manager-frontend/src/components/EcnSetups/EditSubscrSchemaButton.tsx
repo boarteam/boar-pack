@@ -68,20 +68,19 @@ const DeleteSubscrSchemaButton: React.FC<{
 }
 
 const SubscrSchemaDrawer: React.FC<{
-  open: boolean;
   instrumentHash: EcnSubscrSchema['instrumentHash'];
   connectSchemaId: EcnSubscrSchema['connectSchemaId'];
   onUpdate: () => Promise<void>,
   onDelete: () => Promise<void>;
   onClose: () => void;
-}> = ({ open, instrumentHash, connectSchemaId, onUpdate, onDelete, onClose }) => {
+}> = ({ instrumentHash, connectSchemaId, onUpdate, onDelete, onClose }) => {
   const { canManageLiquidity } = useAccess() || {};
   const { worker } = useLiquidityManagerContext();
   const subscrColumns = useEcnSubscrSchemaColumns();
   const connectSchemaColumns = useEcnConnectSchemasColumns(canManageLiquidity ?? false);
   const instrumentColumns = useEcnInstrumentsColumns();
 
-  if (!worker || !canManageLiquidity || !open) {
+  if (!worker || !canManageLiquidity) {
     return <></>;
   }
 
@@ -221,17 +220,18 @@ export const EditSubscrSchemaButton: React.FC<{
       <Button type="link" onClick={() => setOpened(prevState => !prevState)} {...restProps}>
         <EditOutlined />
       </Button>
-      <SubscrSchemaDrawer
-        open={opened}
-        instrumentHash={instrumentHash}
-        connectSchemaId={connectSchemaId}
-        onClose={() => setOpened(false)}
-        onDelete={async () => {
-          setOpened(false);
-          await onDelete();
-        }}
-        onUpdate={onUpdate}
-      />
+      {opened && (
+        <SubscrSchemaDrawer
+          instrumentHash={instrumentHash}
+          connectSchemaId={connectSchemaId}
+          onClose={() => setOpened(false)}
+          onDelete={async () => {
+            setOpened(false);
+            await onDelete();
+          }}
+          onUpdate={onUpdate}
+        />
+      )}
     </>
   )
 }
