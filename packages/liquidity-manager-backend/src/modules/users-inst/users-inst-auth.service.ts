@@ -15,7 +15,7 @@ export class UsersInstAuthService {
 
   generatePasswordResetUrl(userId: string): string {
     if (!this.config.managerPanelHost) {
-      throw new PreconditionFailedException('MANAGER_PANEL_HOST env variable is not set');
+      throw new PreconditionFailedException('MANAGER_PANEL_URL env variable is not set');
     }
 
 
