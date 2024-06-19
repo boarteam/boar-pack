@@ -57,11 +57,11 @@ export class LiquidityAppModule {
         AuthModule.forRoot({
           googleAuth: false,
           msAuth: false,
-          localAuth: true,
+          localAuth: false,
           withControllers: false,
           dataSourceName: config.dataSourceName,
         }),
-        CaslModule,
+        CaslModule.forRoot(),
         CaslPermissionsModule,
         JoiPipeModule,
         ...restModules,
@@ -88,7 +88,7 @@ export class LiquidityAppModule {
           useClass: LiquidityAppConfig,
         }),
         LMAuthModule,
-        CaslModule,
+        CaslModule.forRoot(),
         CaslPermissionsModule,
         JoiPipeModule,
         LiquidityManagersModule.register({

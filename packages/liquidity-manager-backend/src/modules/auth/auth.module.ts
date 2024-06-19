@@ -12,7 +12,7 @@ import { CaslModule } from "@jifeon/boar-pack-users-backend";
 @Module({
   imports: [
     ConfigModule,
-    CaslModule,
+    CaslModule.forFeature(),
     UsersInstModule.forAuth(),
     PassportModule,
     JwtAuthModule.forRoot(),
