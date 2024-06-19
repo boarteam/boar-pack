@@ -2,7 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { AmtsDcService } from "../amts-dc/amts-dc.service";
 import { mtPlatformsIds, MTVersions } from "../amts-dc/amts-dc.constants";
 import { MessagesStream } from "./dto/quotes.dto";
-import { MTQuoteWSMessage, MTWSMessage } from "../amts-dc/dto/amts-dc.dto";
+import { MTLoginResult, MTQuoteWSMessage, MTWSMessage } from "../amts-dc/dto/amts-dc.dto";
 import { Subject } from "rxjs";
 
 @Injectable()
@@ -27,18 +27,32 @@ export class QuotesAmtsConnector {
     return `ws://amts-tst-srv-01:3000/stream?server_id=server_1`;
   }
 
-  public async auth() {
+  public async auth(): Promise<MTLoginResult> {
     // todo: fix credentials
     const password = 'password';
     if (!password) {
       throw new Error('Password is required');
     }
 
-    return this.amtsDcService.auth(this.getUrl(), {
-      login: 123,
-      password,
-      platform_id: mtPlatformsIds[MTVersions.MT5],
-    });
+    // return this.amtsDcService.auth(this.getUrl(), {
+    //   login: 123,
+    //   password,
+    //   platform_id: mtPlatformsIds[MTVersions.MT5],
+    // });
+
+    return {
+      daylight: true,
+      pin: 123,
+      session_id: 123,
+      timezone: 123,
+      timeserver: 'string',
+      volume_div: 123,
+      td: 0,
+      aes_key_b64: 'string',
+      aes_iv_b64: 'string',
+      token: 'string',
+      token_lifetime: 123,
+    } as any;
   }
 
   public async getMessagesStream(instruments: string[]): Promise<MessagesStream> {
