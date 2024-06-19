@@ -1,4 +1,5 @@
 import { Subject } from "rxjs";
+import { WebsocketsEventDto } from "@jifeon/boar-pack-common-backend";
 
 export class QuoteDto {
   symbol: string;
@@ -7,12 +8,7 @@ export class QuoteDto {
   timestamp: number;
 }
 
-export interface EventDto {
-  event: string;
-  data: object;
-}
-
-export class SubscribeEventDto implements EventDto {
+export class SubscribeEventDto implements WebsocketsEventDto {
   event: 'subscribe';
   data: {
     symbols: QuoteDto['symbol'][];
@@ -22,7 +18,7 @@ export class SubscribeEventDto implements EventDto {
 export type MessageEventDto = QuoteEventDto;
 export type MessagesStream = Subject<MessageEventDto>;
 
-export class QuoteEventDto implements EventDto {
+export class QuoteEventDto implements WebsocketsEventDto {
   event: 'quote';
   data: QuoteDto;
 }
