@@ -29,8 +29,7 @@ const UsersInst: React.FC = () => {
     <PageContainer
       tabList={tabList}
       tabActiveKey={activeTab}
-      // @ts-ignore-next-line
-      onTabChange={setActiveTab}
+      onTabChange={(tab: Tabs) => setActiveTab(tab)}
     >
       {activeTab === Tabs.usersInst ? <UsersInstTable /> : null}
       {activeTab === Tabs.usersGroupsInst ? <UsersGroupsInstTable /> : null}

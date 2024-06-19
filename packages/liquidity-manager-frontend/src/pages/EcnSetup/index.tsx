@@ -45,8 +45,7 @@ const EcnSetupPage: React.FC = () => {
     <PageContainer
       tabList={tabList}
       tabActiveKey={activeTab}
-      // @ts-ignore-next-line
-      onTabChange={setActiveTab}
+      onTabChange={(tab: Tabs) => setActiveTab(tab)}
     >
       {activeTab === Tabs.graph && <SetupConnectionsGraph id={setupId} />}
       {activeTab === Tabs.instruments && <SetupInstrumentsTable id={setupId} />}

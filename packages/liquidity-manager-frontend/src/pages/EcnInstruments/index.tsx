@@ -29,7 +29,7 @@ const EcnInstruments: React.FC = () => {
     <PageContainer
       tabList={tabList}
       tabActiveKey={activeTab}
-      onTabChange={setActiveTab}
+      onTabChange={(tab: Tabs) => setActiveTab(tab)}
     >
       {activeTab === Tabs.instruments ? <EcnInstrumentsTable /> : null}
       {activeTab === Tabs.instrumentsGroups ? <EcnInstrumentsGroupsTable /> : null}
