@@ -44,11 +44,17 @@ export class ClusterService {
     callback?: () => void,
   }) {
     this.logger.log(`Starting worker ${settings.workerId}...`);
-    const workerProcess = cluster.fork({
+
+    const vars: Record<string, string> = {
       APP_ROLE: clusterSettings.appRole,
       WORKER: settings.workerId,
-      PORT: String(this.config.port + settings.portIncrement),
-    });
+    }
+
+    if (settings.portIncrement !== null) {
+      vars.PORT = String(this.config.port + settings.portIncrement);
+    }
+
+    const workerProcess = cluster.fork(vars);
 
     workerProcess.on('exit', (code, signal) => {
       this.logger.error(`Worker ${settings.workerId} died with code ${code} and signal ${signal}`);

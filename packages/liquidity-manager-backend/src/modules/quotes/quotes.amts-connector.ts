@@ -24,7 +24,7 @@ export class QuotesAmtsConnector {
   }
 
   public getWsUrl(): string {
-    return `ws://amts-tst-srv-01:3000/stream?server_id=server_1`;
+    return `ws://amts-tst-srv-01:54011/stream?server_id=server_1`;
   }
 
   public async auth(): Promise<MTLoginResult> {
@@ -133,7 +133,7 @@ export class QuotesAmtsConnector {
       if ('quote' in msg) {
         this.processQuoteMessage(messagesStream, msg);
       } else {
-        this.logger.warn(`Unknown WS message type`);
+        this.logger.warn(`Unknown WS message type for message: ${data}`);
       }
     } catch (e) {
       this.logger.error(`Error while processing WS message`);

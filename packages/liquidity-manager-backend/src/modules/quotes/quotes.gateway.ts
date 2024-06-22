@@ -91,6 +91,6 @@ export class QuotesGateway implements OnGatewayConnection, OnGatewayDisconnect {
       throw new WsException('Symbols should be a non-empty array of strings');
     }
 
-    return this.proxy.getMessagesStream(client, symbols);
+    return this.proxy.getMessagesStream(client, symbols.filter((symbol) => symbol.length > 0));
   }
 }

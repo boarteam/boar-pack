@@ -31,7 +31,7 @@ export class QuotesAppModule {
         CaslModule.forRoot(),
         CaslPermissionsModule,
         JoiPipeModule,
-        // QuotesModule.forWorker(),
+        QuotesModule.forWorker(),
       ],
       providers: [],
       exports: [],

@@ -131,6 +131,7 @@ export class AmtsDcService {
     };
 
     this.logger.log(`Attaching stream to ${url}`);
+    this.logger.verbose(data);
     const ws = new WebSocket(url);
 
     ws.on('error', (e) => {

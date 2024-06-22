@@ -1,6 +1,6 @@
 export interface WorkerSettings {
   workerId: string;
-  portIncrement: number;
+  portIncrement: number | null;
 }
 
 export interface ClusterSettings {
