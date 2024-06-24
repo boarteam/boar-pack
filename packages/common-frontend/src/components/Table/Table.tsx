@@ -92,6 +92,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       baseFilters,
       join,
       sortMap,
+      ...filtersFromSearchForm
     } = params;
 
     const queryParams: TGetAllParams & TPathParams = {
@@ -116,7 +117,10 @@ const Table = <Entity extends Record<string | symbol, any>,
 
     let search = getFiltersSearch({
       baseFilters,
-      filters,
+      filters: {
+        ...filters,
+        ...filtersFromSearchForm,
+      },
       searchableColumns,
     });
     search = applyKeywordToSearch(search, searchableColumns!, columnsState.value!, keyword);
