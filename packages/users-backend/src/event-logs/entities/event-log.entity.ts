@@ -101,6 +101,18 @@ export class EventLog {
   })
   statusCode: number | null;
 
+  @Column({
+    default: 'main'
+  })
+  service: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    default: null,
+  })
+  serviceId: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
