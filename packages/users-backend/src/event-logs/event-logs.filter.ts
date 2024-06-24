@@ -1,5 +1,5 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { EventLog } from './entities/event-log.entity';
+import { ArgumentsHost, Catch, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { EventLog, LogLevel } from './entities/event-log.entity';
 import { Request } from 'express';
 import { EventLogsService } from "./event-logs.service";
 import { BaseExceptionFilter } from '@nestjs/core';
@@ -29,6 +29,7 @@ export class EventLogsExceptionFilter extends BaseExceptionFilter {
     logEntry.entity = entity
     logEntry.duration = 0; // Duration is 0 because we log immediately on exception
     logEntry.statusCode = status;
+    logEntry.logLevel = status >= 500 ? LogLevel.ERROR : LogLevel.WARNING;
 
     await this.eventLogsService.audit(logEntry, request);
 
