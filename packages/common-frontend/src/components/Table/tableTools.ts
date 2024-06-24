@@ -40,6 +40,7 @@ export const Operators = {
   equals: CondOperator.EQUALS,
   in: CondOperator.IN,
   inLow: CondOperator.IN_LOW,
+  between: CondOperator.BETWEEN,
 } as const;
 
 export function applyKeywordToSearch(
