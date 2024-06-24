@@ -72,7 +72,7 @@ export type TSort = {
 };
 export type TSearchableColumn = {
   field: string | string[],
-  searchField?: string,
+  searchField?: string | null,
   operator: typeof Operators[keyof typeof Operators],
   filterField?: string,
   filterOperator?: typeof Operators[keyof typeof Operators],
