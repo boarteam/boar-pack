@@ -54,6 +54,10 @@ export function applyKeywordToSearch(
 
   const keywordSearch: SCondition = { $or: [] };
   searchableColumns!.forEach((col) => {
+    if (col.searchField === null) {
+      return;
+    }
+
     const dataIndex = Array.isArray(col.field) ? col.field.join(',') : col.field;
     if (columnsState?.[dataIndex] && !columnsState[dataIndex].show) {
       return;
