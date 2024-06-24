@@ -1,10 +1,12 @@
-import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Inject, Injectable, Logger, NestInterceptor } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { EventLog, LogLevel } from './entities/event-log.entity';
 import { EventLogsService } from "./event-logs.service";
 import { Request, Response } from 'express';
 import { HttpException } from "@nestjs/common/exceptions/http.exception";
+import { SERVICE_CONFIG_TOKEN } from "./evnet-logs.constants";
+import { TEventLogServiceConfig } from "./evnet-logs.types";
 
 @Injectable()
 export class EventLogInterceptor implements NestInterceptor {
@@ -12,6 +14,7 @@ export class EventLogInterceptor implements NestInterceptor {
 
   constructor(
     private readonly eventLogService: EventLogsService,
+    @Inject(SERVICE_CONFIG_TOKEN) private readonly serviceConfig?: TEventLogServiceConfig,
   ) {
   }
 
@@ -24,6 +27,11 @@ export class EventLogInterceptor implements NestInterceptor {
     const logEntry = new EventLog();
     logEntry.action = handler.name;
     logEntry.entity = controller.name;
+
+    if (this.serviceConfig) {
+      logEntry.service = this.serviceConfig.name;
+      logEntry.serviceId = this.serviceConfig.id || null;
+    }
 
     const now = Date.now();
 

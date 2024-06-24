@@ -1,14 +1,17 @@
-import { ArgumentsHost, Catch, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ArgumentsHost, Catch, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { EventLog, LogLevel } from './entities/event-log.entity';
 import { Request } from 'express';
 import { EventLogsService } from "./event-logs.service";
 import { BaseExceptionFilter } from '@nestjs/core';
+import { SERVICE_CONFIG_TOKEN } from "./evnet-logs.constants";
+import { TEventLogServiceConfig } from "./evnet-logs.types";
 
 @Injectable()
 @Catch()
 export class EventLogsExceptionFilter extends BaseExceptionFilter {
   constructor(
     private readonly eventLogsService: EventLogsService,
+    @Inject(SERVICE_CONFIG_TOKEN) private readonly serviceConfig: TEventLogServiceConfig,
   ) {
     super();
   }
@@ -30,6 +33,11 @@ export class EventLogsExceptionFilter extends BaseExceptionFilter {
     logEntry.duration = 0; // Duration is 0 because we log immediately on exception
     logEntry.statusCode = status;
     logEntry.logLevel = status >= 500 ? LogLevel.ERROR : LogLevel.WARNING;
+
+    if (this.serviceConfig) {
+      logEntry.service = this.serviceConfig.name;
+      logEntry.serviceId = this.serviceConfig.id || null;
+    }
 
     await this.eventLogsService.audit(logEntry, request);
 
