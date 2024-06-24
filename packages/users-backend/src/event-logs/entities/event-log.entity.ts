@@ -14,6 +14,12 @@ export enum UserRole {
   SYSTEM = 'System',
 }
 
+export enum LogLevel {
+  INFO = 'Info',
+  WARNING = 'Warning',
+  ERROR = 'Error',
+}
+
 @Entity('event_logs')
 export class EventLog {
   @PrimaryGeneratedColumn('uuid')
@@ -24,6 +30,12 @@ export class EventLog {
     enum: LogType,
   })
   logType: LogType;
+
+  @Column({
+    type: 'enum',
+    enum: LogLevel,
+  })
+  logLevel: LogLevel;
 
   @Column()
   action: string;
