@@ -10,9 +10,9 @@ import { useAccess } from '@umijs/max';
 import apiClient from "@@api/apiClient";
 import { PlusSquareOutlined } from "@ant-design/icons";
 import { useLiquidityManagerContext } from '../../tools';
-import { useEcnSubscrSchemaColumns } from "../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns";
-import { ecnSubscrSchemaJoinFields } from "../EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
-import { ecnSubscriptionSchemaToDto } from "../EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable";
+import { useEcnSubscrSchemaColumns } from "../EcnSubscrSchemas/useEcnSubscrSchemaColumns";
+import { ecnSubscrSchemaJoinFields } from "../EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
+import { ecnSubscriptionSchemaToDto } from "../EcnSubscrSchemas/EcnSubscrSchemasTable";
 import { Descriptions, RelationSelect } from '@jifeon/boar-pack-common-frontend';
 
 const AddSubscrSchemaDrawer: React.FC<{

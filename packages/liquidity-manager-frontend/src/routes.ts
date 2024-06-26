@@ -31,7 +31,12 @@ const routes = () => ({
       path: '/liquidity/ecn-connect-schemas/:connectSchemaId/subscription-schemas/:hash',
       name: 'ecn-subscription-schema',
       hideInMenu: true,
-      component: '@/../node_modules/@jifeon/boar-pack-liquidity-manager-frontend/src/pages/EcnConnectSchemas/EcnSubscrSchema',
+      component: '@/../node_modules/@jifeon/boar-pack-liquidity-manager-frontend/src/pages/EcnSubscrSchemas/EcnSubscrSchema',
+    },
+    {
+      path: '/liquidity/ecn-subscr-schemas',
+      name: 'ecn-subscription-schemas',
+      component: '@/../node_modules/@jifeon/boar-pack-liquidity-manager-frontend/src/pages/EcnSubscrSchemas',
     },
     {
       path: '/liquidity/ecn-instruments',

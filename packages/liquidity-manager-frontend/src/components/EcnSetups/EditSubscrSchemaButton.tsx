@@ -15,13 +15,13 @@ import React, { useState } from "react";
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { useAccess } from '@umijs/max';
 import { useLiquidityManagerContext } from '../../tools';
-import { useEcnSubscrSchemaColumns } from '../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns';
+import { useEcnSubscrSchemaColumns } from '../EcnSubscrSchemas/useEcnSubscrSchemaColumns';
 import { useEcnConnectSchemasColumns } from "../EcnConnectSchemas/useEcnConnectSchemasColumns";
 import { useEcnInstrumentsColumns } from "../EcnInstruments/useEcnInstrumentsColumns";
 import { ecnInstrumentJoinFields } from "../EcnInstruments/ecnInstrumentJoinFields";
 import { ecnInstrumentToDto } from "../EcnInstruments/EcnInstrumentsTable";
-import { ecnSubscrSchemaJoinFields } from "../EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
-import { ecnSubscriptionSchemaToDto } from "../EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable";
+import { ecnSubscrSchemaJoinFields } from "../EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
+import { ecnSubscriptionSchemaToDto } from "../EcnSubscrSchemas/EcnSubscrSchemasTable";
 import { Descriptions, withNumericId } from '@jifeon/boar-pack-common-frontend';
 import { ecnConnectSchemaJoinFields, ecnConnectSchemaToDto } from "../EcnModules/EcnConnectSchemaDrawer";
 
