@@ -77,7 +77,7 @@ export class LiquidityManagersService extends TypeOrmCrudService<LiquidityManage
   }
 
   async getDbConnectionForWorker(
-    worker: LiquidityManagerWorkers
+    worker?: LiquidityManagerWorkers
   ): Promise<Pick<MysqlConnectionOptions, 'host' | 'port' | 'username' | 'password' | 'database'>> {
     const liquidityManager = await this.repo.findOneOrFail({
       where: {

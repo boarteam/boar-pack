@@ -22,7 +22,7 @@ export class QuotesAppConfig implements TypeOrmOptionsFactory {
   }
 
   async createTypeOrmOptions(name: string): Promise<TypeOrmModuleOptions> {
-    const dbSettings = await this.liquidityManagersService.getDbConnectionForWorker(this.config.worker as LiquidityManagerWorkers);
+    const dbSettings = await this.liquidityManagersService.getDbConnectionForWorker();
 
     return {
       name: AMTS_DB_NAME,
