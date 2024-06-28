@@ -143,11 +143,10 @@ export class GenericHistoryModule {
         if (search) {
           dataQuery.andWhere(
             new Brackets(qb => {
-              // for (let i = 0; i < f.length; i++) {
-                // if (f[i][1] === 'haction') continue;
-                qb.orWhere('lower(new.descr) like lower(:search)', { search: `%${search}%` })
-                qb.orWhere('lower(old.descr) like lower(:search)', { search: `%${search}%` })
-              // }
+              for (const { databaseName: columnName } of this.repo.metadata.columns) {
+                qb.orWhere(`lower(new.${columnName}) like lower(:search)`, { search: `%${search}%` })
+                qb.orWhere(`lower(old.${columnName}) like lower(:search)`, { search: `%${search}%` })
+              }
             })
           )
         }
