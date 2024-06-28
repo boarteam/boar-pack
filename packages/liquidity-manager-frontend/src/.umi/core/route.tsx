@@ -23,7 +23,7 @@ export async function getRoutes() {
   return {
     routes,
     routeComponents: {
-'EcnConnectSchemas/EcnSubscrSchema/index': React.lazy(() => import(/* webpackChunkName: "src__pages__EcnConnectSchemas__EcnSubscrSchema__index" */'../../../src/pages/EcnConnectSchemas/EcnSubscrSchema/index.tsx')),
+'EcnConnectSchemas/EcnSubscrSchema/index': React.lazy(() => import(/* webpackChunkName: "src__pages__EcnConnectSchemas__EcnSubscrSchema__index" */'../../pages/EcnSubscrSchemas/EcnSubscrSchema')),
 'EcnInstruments/EcnInstrument/index': React.lazy(() => import(/* webpackChunkName: "src__pages__EcnInstruments__EcnInstrument__index" */'../../../src/pages/EcnInstruments/EcnInstrument/index.tsx')),
 'UsersInst/UserInst/index': React.lazy(() => import(/* webpackChunkName: "src__pages__UsersInst__UserInst__index" */'../../../src/pages/UsersInst/UserInst/index.tsx')),
 'LiquidityManagerWrapper': React.lazy(() => import(/* webpackChunkName: "src__pages__LiquidityManagerWrapper" */'../../../src/pages/LiquidityManagerWrapper.tsx')),

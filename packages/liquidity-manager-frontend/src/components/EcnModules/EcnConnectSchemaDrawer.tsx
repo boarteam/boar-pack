@@ -4,7 +4,7 @@ import apiClient from '@@api/apiClient';
 import { Button, Drawer } from 'antd';
 import { pick } from 'lodash';
 import React, { useState } from "react";
-import EcnSubscrSchemasTable from "./EcnSubscrSchemas/EcnSubscrSchemasTable";
+import EcnSubscrSchemasOnConnectionTable from "../EcnSubscrSchemas/EcnSubscrSchemasOnConnectionTable";
 import { DeleteOutlined } from '@ant-design/icons';
 import { deleteEdgeConfirm } from '../Graph';
 import { useAccess } from '@umijs/max';
@@ -97,7 +97,7 @@ export const EcnConnectSchemaDrawer: React.FC<{
           join: ecnConnectSchemaJoinFields,
         }}
       />
-      <EcnSubscrSchemasTable
+      <EcnSubscrSchemasOnConnectionTable
         connectSchemaId={id}
       />
     </Drawer>

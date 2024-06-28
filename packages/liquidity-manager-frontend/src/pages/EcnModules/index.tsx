@@ -35,8 +35,7 @@ const Users: React.FC = () => {
     <PageContainer
       tabList={tabList}
       tabActiveKey={activeTab}
-      // @ts-ignore-next-line
-      onTabChange={setActiveTab}
+      onTabChange={(tab: Tabs) => setActiveTab(tab)}
     >
       {activeTab === Tabs.modules ? <EcnModulesTable /> : null}
       {activeTab === Tabs.setups ? <EcnSetupsList /> : null}

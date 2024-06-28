@@ -14,9 +14,9 @@ import React, { useState } from "react";
 import { DeleteOutlined } from '@ant-design/icons';
 import { deleteEdgeConfirm } from '../Graph';
 import { useAccess } from '@umijs/max';
-import { ecnSubscriptionSchemaToDto } from '../EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable';
-import { useEcnSubscrSchemaColumns } from '../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns';
-import { ecnSubscrSchemaJoinFields } from '../EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields';
+import { ecnSubscriptionSchemaToDto } from '../EcnSubscrSchemas/EcnSubscrSchemasTable';
+import { useEcnSubscrSchemaColumns } from '../EcnSubscrSchemas/useEcnSubscrSchemaColumns';
+import { ecnSubscrSchemaJoinFields } from '../EcnSubscrSchemas/ecnSubscrSchemaJoinFields';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { Descriptions } from '@jifeon/boar-pack-common-frontend';
 

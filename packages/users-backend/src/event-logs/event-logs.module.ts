@@ -9,6 +9,8 @@ import { DataSource } from "typeorm";
 import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
 import { EventLogInterceptor } from "./event-logs.interceptor";
 import { EventLogsExceptionFilter } from "./event-logs.filter";
+import { SERVICE_CONFIG_TOKEN } from "./evnet-logs.constants";
+import { TEventLogServiceConfig } from "./evnet-logs.types";
 
 @Module({})
 export class EventLogsModule {
@@ -37,7 +39,10 @@ export class EventLogsModule {
     }
   }
 
-  static forInterceptor(config: { dataSourceName: string }) {
+  static forInterceptor(config: {
+    dataSourceName: string,
+    service?: TEventLogServiceConfig,
+  }) {
     return {
       module: EventLogsModule,
       imports: [
@@ -51,6 +56,10 @@ export class EventLogsModule {
           useFactory: (dataSource: DataSource) => {
             return new EventLogsService(dataSource.getRepository(EventLog));
           }
+        },
+        {
+          provide: SERVICE_CONFIG_TOKEN,
+          useValue: config.service,
         },
         {
           provide: APP_INTERCEPTOR,

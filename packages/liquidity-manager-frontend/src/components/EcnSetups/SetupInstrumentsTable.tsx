@@ -34,10 +34,12 @@ type RequestParams = ParamsType & {
 const Options: React.FC<{
   connectSchemas: EcnConnectSchema[];
   patchParams: (params: Partial<ParamsType>) => void;
+  setShowDisabledConnectSchemas: (arg: boolean) => void;
   reload?: () => void;
 }> = ({
   connectSchemas,
   patchParams,
+  setShowDisabledConnectSchemas,
   reload,
 }) => {
   return (
@@ -63,13 +65,25 @@ const Options: React.FC<{
         />
       </Space>
       <Space>
-        Show only rows with changes:
-        <Switch
-          onChange={checked => {
-            patchParams({ showOnlyChanged: checked });
-            reload?.();
-          }}
-        />
+        <Space>
+          Show only rows with changes:
+          <Switch
+            onChange={checked => {
+              patchParams({ showOnlyChanged: checked });
+              reload?.();
+            }}
+          />
+        </Space>
+        <Space>
+          Show disabled Connection Schemas:
+          <Switch
+            defaultChecked
+            onChange={checked => {
+              setShowDisabledConnectSchemas(checked);
+              reload?.();
+            }}
+          />
+        </Space>
       </Space>
     </Flex>
   )
@@ -105,6 +119,7 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
   const actionRef = useRef<ActionType>();
   const [connectSchemas, setConnectSchemas] = useState<EcnConnectSchema[]>([]);
   const [params, setParams] = useState<ParamsType>({});
+  const [showDisabledConnectSchemas, setShowDisabledConnectSchemas] = useState(true);
   const columns = useSetupInstrumentsColumns(connectSchemas, params.compareConnectSchemaId);
   const patchParams = (params: Partial<ParamsType>) => setParams(prevParams => ({ ...prevParams, ...params }));
   const { worker } = useLiquidityManagerContext();
@@ -115,13 +130,19 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
   useEffect(() => {
     if (!worker) return;
 
+    const sParams: Record<string, any>[] = [
+      { "fromModuleSetupLabels.id": { "$eq": id } },
+      { "toModuleSetupLabels.id": { "$eq": id } },
+    ];
+
+    if (!showDisabledConnectSchemas) {
+      sParams.push({ "enabled": { "$eq": true } });
+    }
+
     apiClient.ecnConnectSchemas.getManyBaseEcnConnectSchemaControllerEcnConnectSchema({
       worker,
       s: JSON.stringify({
-        "$and": [
-          { "fromModuleSetupLabels.id": { "$eq": id } },
-          { "toModuleSetupLabels.id": { "$eq": id } },
-        ]
+        "$and": sParams,
       }),
       fields: ['descr'],
       join: ['fromModule', 'fromModule.setupLabels', 'toModule', 'toModule.setupLabels'],
@@ -131,7 +152,7 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
         setConnectSchemas(connectSchemas.data);
         patchParams({ connectSchemasIds: connectSchemas.data.map(connectSchema => connectSchema.id) });
       });
-  }, [worker]);
+  }, [worker, showDisabledConnectSchemas]);
 
   const requestData = async (receivedParams: RequestParams, sort: Record<string, SortOrder>) => {
     const {
@@ -226,6 +247,7 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
             <Options
               connectSchemas={connectSchemas}
               patchParams={patchParams}
+              setShowDisabledConnectSchemas={setShowDisabledConnectSchemas}
               reload={() => actionRef.current?.reload}
             />
           )}

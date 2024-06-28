@@ -1,10 +1,10 @@
 import { Tag } from "antd";
 import { ProColumns } from "@ant-design/pro-components";
 import { useAccess, useIntl, Link } from "@umijs/max";
-import { EcnExecutionMode, EcnInstrument, EcnSubscrSchema } from "@@api/generated";
+import { EcnConnectSchema, EcnConnectSchemaSetupLabel, EcnExecutionMode, EcnInstrument, EcnSubscrSchema } from "@@api/generated";
 import apiClient from '@@api/apiClient';
 import { EditOutlined } from "@ant-design/icons";
-import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
+import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend";
 
 export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
@@ -37,6 +37,29 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       }
     },
     {
+      title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.connectSchemaId' }),
+      dataIndex: 'connectSchema',
+      sorter: true,
+      width: 30,
+      formItemProps: {
+        rules: [{ required: true }]
+      },
+      render: (value, record) => record.connectSchemaId,
+      renderFormItem(schema, config) {
+        return worker && <RelationSelect<EcnConnectSchema>
+          selectedItem={config.record?.connectSchema}
+          fieldNames={{
+            value: 'id',
+            label: 'id',
+          }}
+          fetchItems={filter => apiClient.ecnConnectSchemas.getManyBaseEcnConnectSchemaControllerEcnConnectSchema({
+            filter,
+            worker,
+          })}
+        /> || null;
+      }
+    },
+    {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.enabled' }),
       dataIndex: 'enabled',
       sorter: true,
@@ -48,6 +71,20 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       },
       render(text, record) {
         return <Tag color={record.enabled ? 'green' : 'red'}>{record.enabled ? 'Enabled' : 'Disabled'}</Tag>;
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.tradeEnabled' }),
+      dataIndex: 'tradeEnabled',
+      sorter: true,
+      formItemProps: {
+        rules: [{ required: true }]
+      },
+      renderFormItem() {
+        return <NumberSwitch />;
+      },
+      render(text, record) {
+        return <Tag color={record.tradeEnabled ? 'green' : 'red'}>{record.tradeEnabled ? 'Enabled' : 'Disabled'}</Tag>;
       },
     },
     {
@@ -176,20 +213,6 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
     },
-    {
-      title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.tradeEnabled' }),
-      dataIndex: 'tradeEnabled',
-      sorter: true,
-      formItemProps: {
-        rules: [{ required: true }]
-      },
-      renderFormItem() {
-        return <NumberSwitch />;
-      },
-      render(text, record) {
-        return <Tag color={record.tradeEnabled ? 'green' : 'red'}>{record.tradeEnabled ? 'Enabled' : 'Disabled'}</Tag>;
-      },
-    }
   ];
 
 
@@ -203,7 +226,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.instrumentHash);
+            action?.startEditable?.(`${record.instrumentHash}-${record.connectSchemaId}`);
           }}
         >
           <EditOutlined />

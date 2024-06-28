@@ -10,18 +10,17 @@ import { useAccess } from '@umijs/max';
 import apiClient from "@@api/apiClient";
 import { PlusSquareOutlined } from "@ant-design/icons";
 import { useLiquidityManagerContext } from '../../tools';
-import { useEcnSubscrSchemaColumns } from "../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns";
-import { ecnSubscrSchemaJoinFields } from "../EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
-import { ecnSubscriptionSchemaToDto } from "../EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable";
+import { useEcnSubscrSchemaColumns } from "../EcnSubscrSchemas/useEcnSubscrSchemaColumns";
+import { ecnSubscrSchemaJoinFields } from "../EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
+import { ecnSubscriptionSchemaToDto } from "../EcnSubscrSchemas/EcnSubscrSchemasTable";
 import { Descriptions, RelationSelect } from '@jifeon/boar-pack-common-frontend';
 
 const AddSubscrSchemaDrawer: React.FC<{
-  open: boolean;
   instrumentHash: EcnSubscrSchema['instrumentHash'];
   connectSchemaId: EcnSubscrSchema['connectSchemaId'];
   onCreate: () => Promise<void>,
   onClose: () => void;
-}> = ({ open, instrumentHash, connectSchemaId, onCreate, onClose }) => {
+}> = ({ instrumentHash, connectSchemaId, onCreate, onClose }) => {
   const { canManageLiquidity } = useAccess() || {};
   const { worker } = useLiquidityManagerContext();
   const subscrColumns = useEcnSubscrSchemaColumns();
@@ -55,7 +54,7 @@ const AddSubscrSchemaDrawer: React.FC<{
     })
   }, [selectedSubscrSchema, instrument, connectSchemaId]);
 
-  if (!worker || !canManageLiquidity || !open) {
+  if (!worker || !canManageLiquidity) {
     return <></>;
   }
 
@@ -156,13 +155,14 @@ export const AddSubscrSchemaButton: React.FC<{
       <Button type="link" onClick={() => setOpened(prevState => !prevState)} {...restProps}>
         <PlusSquareOutlined />
       </Button>
-      <AddSubscrSchemaDrawer
-        open={opened}
-        instrumentHash={instrumentHash}
-        connectSchemaId={connectSchemaId}
-        onClose={() => setOpened(false)}
-        onCreate={onCreate}
-      />
+      {opened && (
+        <AddSubscrSchemaDrawer
+          instrumentHash={instrumentHash}
+          connectSchemaId={connectSchemaId}
+          onClose={() => setOpened(false)}
+          onCreate={onCreate}
+        />
+      )}
     </>
   )
 }

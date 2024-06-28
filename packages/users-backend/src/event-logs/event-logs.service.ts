@@ -29,8 +29,6 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       return;
     }
 
-
-
     const logPartial: Partial<EventLog> = {};
     if (request) {
       const { user } = request;

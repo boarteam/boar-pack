@@ -75,8 +75,7 @@ const EcnInstrumentPage: React.FC = () => {
       title={instrument.name}
       tabList={tabList}
       tabActiveKey={activeTab}
-      // @ts-ignore-next-line
-      onTabChange={setActiveTab}
+      onTabChange={(tab: Tabs) => setActiveTab(tab)}
     >
       {activeTab === Tabs.information ? <Card><EcnInstrumentDescriptions instrumentHash={instrumentHash} /></Card> : null}
       {activeTab === Tabs.relations ? <EcnInstrumentRelations instrumentHash={instrumentHash} /> : null}

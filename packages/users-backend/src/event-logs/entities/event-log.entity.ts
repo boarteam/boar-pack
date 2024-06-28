@@ -14,6 +14,12 @@ export enum UserRole {
   SYSTEM = 'System',
 }
 
+export enum LogLevel {
+  INFO = 'Info',
+  WARNING = 'Warning',
+  ERROR = 'Error',
+}
+
 @Entity('event_logs')
 export class EventLog {
   @PrimaryGeneratedColumn('uuid')
@@ -24,6 +30,12 @@ export class EventLog {
     enum: LogType,
   })
   logType: LogType;
+
+  @Column({
+    type: 'enum',
+    enum: LogLevel,
+  })
+  logLevel: LogLevel;
 
   @Column()
   action: string;
@@ -89,9 +101,27 @@ export class EventLog {
   })
   statusCode: number | null;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @Column({
+    default: 'main'
+  })
+  service: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    default: null,
+  })
+  serviceId: string | null;
+
+  @CreateDateColumn({
+    type: 'timestamp with time zone',
+    name: 'created_at'
+  })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({
+    type: 'timestamp with time zone',
+    name: 'updated_at'
+  })
   updatedAt: Date;
 }
