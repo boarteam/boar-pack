@@ -51,6 +51,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     columnsSetSelect: managedColumnsSetSelect,
     popupCreation = false,
     toolBarRender,
+    toolBarAfterRender,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -241,9 +242,10 @@ const Table = <Entity extends Record<string | symbol, any>,
         ...editable,
       }}
       toolBarRender={(...args) => [
-        ...toolBarRender && toolBarRender(...args) || [],
+        ...(toolBarRender ? toolBarRender(...args) : []),
         columnsSetSelect?.() || null,
         !viewOnly && createButton || null,
+        ...(toolBarAfterRender ? toolBarAfterRender(...args) : []),
       ]}
       columns={columns}
       defaultSize='small'

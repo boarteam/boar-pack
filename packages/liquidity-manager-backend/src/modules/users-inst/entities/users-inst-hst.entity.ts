@@ -1,8 +1,8 @@
 import { Entity, Column } from 'typeorm';
-import { EcnInstrumentsGroup } from "./ecn-instruments-group.entity";
+import { UsersInst } from "./users-inst.entity";
 
-@Entity('ecn_instruments_groups_hts')
-export class EcnInstrumentsGroupHistory extends EcnInstrumentsGroup {
+@Entity('uesrs_inst_hst')
+export class UsersInstHistory extends UsersInst {
   @Column({ type: 'int', comment: 'HID' })
   hid: number;
 
@@ -10,5 +10,5 @@ export class EcnInstrumentsGroupHistory extends EcnInstrumentsGroup {
   haction: number;
 
   @Column({ type: 'int', comment: 'TS' })
-  ts: number;
+  hts: number;
 }

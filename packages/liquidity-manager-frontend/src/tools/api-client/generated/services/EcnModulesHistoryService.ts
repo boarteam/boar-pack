@@ -5,7 +5,7 @@
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
-export class EcnInstrumentsGroupsHistoryService {
+export class EcnModulesHistoryService {
 
     constructor(public readonly httpRequest: BaseHttpRequest) {}
 
@@ -32,7 +32,7 @@ export class EcnInstrumentsGroupsHistoryService {
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/{worker}/liquidity/ecn-instruments-groups-hst',
+            url: '/{worker}/liquidity/ecn-modules-history',
             path: {
                 'worker': worker,
             },

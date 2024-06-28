@@ -7,7 +7,6 @@ import { useAccess } from "umi";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
 import { HistoryModal } from "../../History/HistoryModal";
-import React from "react";
 
 function entityToDto(entity: EcnInstrumentsGroup) {
   return pick(entity, [
@@ -24,7 +23,7 @@ const EcnInstrumentsGroupsTable = () => {
   if (!worker) return <PageLoading />;
 
   return (
-    <Table<EcnInstrumentsGroup, EcnInstrumentsGroupCreateDto, EcnInstrumentsGroupUpdateDto, {}, { worker: string }, number, typeof apiClient.ecnInstrumentsGroupsHistory.getMany>
+    <Table<EcnInstrumentsGroup, EcnInstrumentsGroupCreateDto, EcnInstrumentsGroupUpdateDto, {}, { worker: string }, number>
       getAll={params => apiClient.ecnInstrumentsGroups.getManyBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup(params)}
       onCreate={params => apiClient.ecnInstrumentsGroups.createOneBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup(params)}
       onUpdate={params => apiClient.ecnInstrumentsGroups.updateOneBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup(withNumericId(params))}
@@ -39,6 +38,10 @@ const EcnInstrumentsGroupsTable = () => {
       defaultSort={['name', 'ASC']}
       searchableColumns={[
         {
+          field: 'id',
+          operator: Operators.containsLow,
+        },
+        {
           field: 'name',
           operator: Operators.containsLow,
         },
@@ -48,14 +51,11 @@ const EcnInstrumentsGroupsTable = () => {
         },
       ]}
       viewOnly={!canManageLiquidity}
-      toolBarRender={() => [
-        <HistoryModal<any, EcnInstrumentsGroupCreateDto, EcnInstrumentsGroupUpdateDto, {}, { worker: string }>
-          pathParams={{ worker }}
-          getAll={params => apiClient.ecnInstrumentsGroupsHistory.getMany(params)}
-          onCreate={params => apiClient.ecnInstrumentsGroups.createOneBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup(params)}
-          onUpdate={params => apiClient.ecnInstrumentsGroups.updateOneBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup(withNumericId(params))}
-          onDelete={params => apiClient.ecnInstrumentsGroups.deleteOneBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup(withNumericId(params))}
-        />,
+      toolBarAfterRender={() => [
+        <HistoryModal
+          entityName="ecnInstrumentsGroups"
+          getAll={params => apiClient.ecnInstrumentsGroupsHistory.getMany({ worker, ...params })}
+        />
       ]}
     ></Table>
   );

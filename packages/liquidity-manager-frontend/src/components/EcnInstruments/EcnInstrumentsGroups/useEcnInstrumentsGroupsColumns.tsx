@@ -10,6 +10,15 @@ export const useEcnInstrumentsGroupsColumns = (): ProColumns<EcnInstrumentsGroup
 
   const columns: ProColumns<EcnInstrumentsGroup>[] = [
     {
+      title: 'ID',
+      dataIndex: 'id',
+      sorter: true,
+      editable: false,
+      fixed: 'left',
+      width: 60,
+      hideInDescriptions: true,
+    },
+    {
       title: intl.formatMessage({ id: 'pages.ecnInstrumentsGroups.name' }),
       dataIndex: 'name',
       sorter: true,

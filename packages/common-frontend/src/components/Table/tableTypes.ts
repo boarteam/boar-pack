@@ -97,6 +97,7 @@ interface BaseProps<Entity,
   popupCreation?: boolean;
   columnsState?: ColumnStateType;
   columnsSetSelect?: () => React.ReactNode;
+  toolBarAfterRender?: ProTableProps<Entity, TEntityParams & TFilterParams>['toolBarRender'];
 }
 
 interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {

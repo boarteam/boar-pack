@@ -14,6 +14,8 @@ import { EcnState } from "../../entities/ecn-state.entity";
 import { EcnCurrency } from '../../entities/ecn-currency.entity';
 import { EcnWorkingMode } from '../../entities/ecn-working-modes.entity';
 import { EcnSubscrSchema } from '../ecn-subscr-schema/entities/ecn-subscr-schema.entity';
+import { GenericHistoryModule } from '../../tools/generic-history.module';
+import { EcnInstrumentsHistory } from './entities/ecn-instruments-hst.entity';
 
 @Module({
   imports: [
@@ -28,6 +30,16 @@ import { EcnSubscrSchema } from '../ecn-subscr-schema/entities/ecn-subscr-schema
       EcnWorkingMode,
       EcnSubscrSchema,
     ], AMTS_DB_NAME),
+    GenericHistoryModule.generate<EcnInstrumentsHistory>({
+      endpoint: 'liquidity/ecn-instruments-history',
+      apiTag: 'Ecn Instruments History',
+      Entity: EcnInstrumentsHistory,
+      policy: new ViewEcnInstrumentsPolicy,
+      tableName: 'ecn_instruments_history',
+      htsType: 'ms',
+      hactionColumnExists: false,
+      idColumnName: 'instrument_hash',
+    }),
     GenericLiquidityModule.generate<EcnSwapType>({
       endpoint: 'liquidity/ecn-swap-types',
       apiTag: 'Ecn Swap Types',
