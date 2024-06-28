@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Tooltip, Button, Badge, Popconfirm, Checkbox } from "antd";
-import { ArrowRightOutlined, HistoryOutlined, UndoOutlined } from "@ant-design/icons";
-import Table from "@jifeon/boar-pack-common-frontend/src/components/Table/Table";
+import { useState } from "react";
+import { Modal, Button, Badge, Popconfirm, Checkbox } from "antd";
+import { ArrowRightOutlined, UndoOutlined } from "@ant-design/icons";
 import { useIntl } from "react-intl";
 import { createStyles } from "antd-style";
-import { MultiStringSelect, TGetAllParams } from "@jifeon/boar-pack-common-frontend";
 import ProTable from "@ant-design/pro-table";
-import moment from "moment";
-import { DatePicker, Space } from 'antd';
+import { DatePicker } from 'antd';
 
 type HAction = 'Created' | 'Updated' | 'Deleted';
 
@@ -103,7 +100,7 @@ const Content = <Entity extends Record<string | symbol, any>>({
 type ExtraParams = {
   hts: [number | undefined, number | undefined] | [],
   ids: string[],
-  actions: HAction[],
+  hactions: HAction[],
   search: string,
 }
 
@@ -121,20 +118,25 @@ function HistoryTable<T, K>({
   getAll: T,
   onRevert?: K,
 }) {
-  const [extraParams, setExtraParams] = useState<ExtraParams>({ hts: [], ids: [], actions: [], search: '' });
+  const [extraParams, setExtraParams] = useState<ExtraParams>({ hts: [], ids: [], hactions: [], search: '' });
   const patchExtraParams = (params: Partial<ExtraParams>) => setExtraParams(prevState => ({ ...prevState, ...params }));
 
   return (
     <ProTable
       request={(params, sort, filter) => {
-        // const sortParams = Object.entries(sort)[0];
+        const sortParams = Object.entries(sort)[0];
         return getAll({
           limit: params.pageSize,
           offset: params.pageSize * (params.current - 1),
-          // sort: sortParams.length > 0 ? [sortParams[0], sortOrderMap[sortParams[1]]] : [],
           search: params.search,
           ids: params.ids,
           hts: params.hts,
+          hactions: params.hactions,
+          ...(
+            sortParams 
+              ? { sort: [sortParams[0], sortOrderMap[sortParams[1]]] }
+              : {}
+          )
         })
       }}
       params={extraParams}
@@ -172,7 +174,7 @@ function HistoryTable<T, K>({
                 { label: 'Deleted', value: 'Deleted' },
               ]} 
               defaultValue={[]}
-              onChange={actions => patchExtraParams({ actions })}
+              onChange={hactions => patchExtraParams({ hactions })}
             />
           ),
           render(value) {

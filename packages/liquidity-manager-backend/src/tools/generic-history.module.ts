@@ -75,6 +75,15 @@ export class GenericHistoryModule {
           delete columnsMap['new.haction'];
           delete columnsMap['old.haction'];
         }
+        else {
+          columnsMap[`
+            case 
+              when old.${config.idColumnName} is null then 'Created'
+              when new.${config.idColumnName} is not null then 'Updated'
+              when new.${config.idColumnName} is null then 'Deleted'
+            end 
+          `] = 'haction';
+        }
 
         this._htsColumnName = columnsMap['new.hts'] ? 'hts' : 'ts';
         columnsMap[`new.${this._htsColumnName}`] = 'hts';
@@ -99,6 +108,7 @@ export class GenericHistoryModule {
         sort,
         ids,
         hts,
+        hactions,
       }: GetHistoryDatasQueryDto): Promise<GetHistoryResponse<Entity>> {
         const tableName = config.tableName;
 
@@ -123,8 +133,8 @@ export class GenericHistoryModule {
         if (hts) {
           dataQuery.andWhere(
             new Brackets(qb => {
-              qb.andWhere(`new.${this._htsColumnName} >= ${this.convertMsToHts(hts[0])}`)
-              qb.andWhere(`new.${this._htsColumnName} <= ${this.convertMsToHts(hts[1])}`)
+              qb.andWhere(`new.${this.htsColumnName} >= ${this.convertMsToHts(hts[0])}`)
+              qb.andWhere(`new.${this.htsColumnName} <= ${this.convertMsToHts(hts[1])}`)
             })
           )
         }
@@ -147,6 +157,10 @@ export class GenericHistoryModule {
               }
             })
           )
+        }
+
+        if (hactions) {
+          dataQuery.orHaving('haction in (:...hactions)', { hactions: Array.isArray(hactions) ? hactions : [hactions] })
         }
 
         const totalQuery = this.dataSource
