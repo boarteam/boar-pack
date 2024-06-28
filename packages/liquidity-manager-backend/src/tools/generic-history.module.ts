@@ -1,6 +1,6 @@
 import { Controller, DynamicModule, Get, Post, Param, Module, Query } from '@nestjs/common';
 import { InjectDataSource, InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
-import { DataSource, ObjectLiteral, Repository } from "typeorm";
+import { DataSource, ObjectLiteral, Repository, getMetadataArgsStorage } from "typeorm";
 import { ApiTags } from "@nestjs/swagger";
 import { AMTS_DB_NAME } from "../modules/liquidity-app/liquidity-app.config";
 import { CheckPolicies, IPolicyHandler } from "@jifeon/boar-pack-users-backend";
@@ -25,6 +25,7 @@ export class GenericHistoryModule {
     class GenericHistoryService {
       private _htsColumnName: string;
       private _selectColumns: string[];
+      private readonly keysMap: Record<string, string> = {};
 
       constructor(
         @InjectRepository(config.Entity, AMTS_DB_NAME)
@@ -32,6 +33,10 @@ export class GenericHistoryModule {
         @InjectDataSource(AMTS_DB_NAME)
         readonly dataSource: DataSource,
       ) {
+        getMetadataArgsStorage().columns.forEach(column => {
+          const dbColumnName = column.options.name || column.propertyName;
+          this.keysMap[dbColumnName] = column.propertyName;
+        });
       }
 
       private get htsColumnName() {
@@ -209,16 +214,27 @@ export class GenericHistoryModule {
                 resultValue[type][entityProp] = value;
               }
 
-              // @ts-ignore
-              resultValue.new = newEmpty ? resultValue.new : this.repo.create(resultValue.new);
-              // @ts-ignore
-              resultValue.old = oldEmpty ? resultValue.new : this.repo.create(resultValue.old);
+              resultValue.new = this.replaceKeys(resultValue.new);
+              resultValue.old = this.replaceKeys(resultValue.old);
 
               return resultValue;
             }) as GetHistoryResponse<Entity>['data']);
 
         const [data, total] = await Promise.all([dataPromise, totalPromise]);
         return { data, total };
+      }
+
+      private replaceKeys(obj: Record<string, any>) {
+        return Object.entries(obj).reduce((acc, [key, value]) => {
+          let newKey = this.keysMap[key];
+          if (!newKey) {
+            newKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+            this.keysMap[key] = newKey;
+          }
+
+          acc[newKey] = value;
+          return acc;
+        }, {} as any);
       }
 
       async revert(hid: string) {
