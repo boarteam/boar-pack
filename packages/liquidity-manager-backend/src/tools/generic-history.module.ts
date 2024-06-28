@@ -29,7 +29,6 @@ export class GenericHistoryModule {
       constructor(
         @InjectRepository(config.Entity, AMTS_DB_NAME)
         readonly repo: Repository<Entity>,
-
         @InjectDataSource(AMTS_DB_NAME)
         readonly dataSource: DataSource,
       ) {
@@ -60,7 +59,7 @@ export class GenericHistoryModule {
           columnsMap[`new.${columnName}`] = `new_${columnName}`;
           columnsMap[`old.${columnName}`] = `old_${columnName}`;
         }
-        
+
         columnsMap['new.hid'] = 'hid';
         delete columnsMap['old.hid'];
 
@@ -74,8 +73,7 @@ export class GenericHistoryModule {
           `] = 'haction';
           delete columnsMap['new.haction'];
           delete columnsMap['old.haction'];
-        }
-        else {
+        } else {
           columnsMap[`
             case 
               when old.${config.idColumnName} is null then 'Created'
@@ -95,9 +93,11 @@ export class GenericHistoryModule {
 
       convertMsToHts(ms: number) {
         switch (config.htsType) {
-          case 's': return ms / 1000;
+          case 's':
+            return ms / 1000;
           case 'ms':
-          default: return ms;
+          default:
+            return ms;
         }
       }
 
@@ -166,8 +166,11 @@ export class GenericHistoryModule {
         const totalQuery = this.dataSource
           .createQueryBuilder()
           .select('count(*)', 'total')
-          .from('(' + dataQuery.getQuery() + ')', 'data')
-          .setParameters(dataQuery.getParameters());
+          .from(tableName, 'data');
+        // todo: to enable this, we need to refactor history tables to have formalized structure i.e. contain
+        // old and new values in separate columns
+        // .from('(' + dataQuery.getQuery() + ')', 'data')
+        // .setParameters(dataQuery.getParameters());
 
         if (limit) dataQuery.limit(limit);
         if (offset) dataQuery.offset(offset);
