@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Modal, Button, Badge, Popconfirm, Checkbox } from "antd";
+import { Modal, Button, Badge, Popconfirm, Checkbox, Descriptions, Table } from "antd";
 import { ArrowRightOutlined, UndoOutlined } from "@ant-design/icons";
 import { useIntl } from "react-intl";
 import { createStyles } from "antd-style";
 import ProTable from "@ant-design/pro-table";
-import { DatePicker } from 'antd';
+import { DatePicker, Typography } from 'antd';
+
+const { Text } = Typography;
 
 type HAction = 'Created' | 'Updated' | 'Deleted';
 
@@ -42,59 +44,82 @@ const Content = <Entity extends Record<string | symbol, any>>({
   oldEntity: Entity,
 }) => {
   const intl = useIntl();
-  const [open, setOpen] = useState(false);
+  let dataItems: { key: string, label: string, children: any }[] = [];
 
-  const maxEntries = open ? Infinity : 3;
-  const tableData = [];
-
-  let currentIndex = 0;
   if (haction === 'Created') {
-    for (const [key, newValue] of Object.entries(newEntity)) {
-      if (currentIndex >= maxEntries) break;
-      tableData.push(
-        <tr key={key}>
-          <td style={{ width: 150 }}>{intl.formatMessage({ id: `pages.${entityName}.${key}` })}:</td>
-          <td>{newValue}</td>
-        </tr>
-      )
-      currentIndex++;
-    }
-  }
-  else if (haction === 'Deleted') {
-    for (const [key, oldValue] of Object.entries(oldEntity)) {
-      if (currentIndex >= maxEntries) break;
-      tableData.push(
-        <tr key={key}>
-          <td style={{ width: 150 }}>{intl.formatMessage({ id: `pages.${entityName}.${key}` })}:</td>
-          <td>{oldValue}</td>
-        </tr>
-      )
-      currentIndex++;
-    }
-  }
-  else {
-    for (const [key, oldValue] of Object.entries(oldEntity)) {
-      if (currentIndex >= maxEntries) break;
-      const newValue = newEntity[key];
-      if (oldValue !== newValue) {
-        tableData.push(
-          <tr key={key}>
-            <td style={{ width: 150 }}>{intl.formatMessage({ id: `pages.${entityName}.${key}` })}:</td>
-            <td>{oldValue} <ArrowRightOutlined style={{ margin: '0 20px' }} /> {newValue}</td>
-          </tr>
-        )
-        currentIndex++;
-      }
-    }
+    dataItems = Object.entries(newEntity).map(([key, value]) => ({
+      key,
+      label: intl.formatMessage({ id: `pages.${entityName}.${key}` }),
+      children: value,
+    }));
+  } else if (haction === 'Deleted') {
+    dataItems = Object.entries(oldEntity).map(([key, value]) => ({
+      key,
+      label: intl.formatMessage({ id: `pages.${entityName}.${key}` }),
+      children: value,
+    }));
+  } else {
+    dataItems = Object.entries(newEntity).filter(([key, value]) => newEntity[key] !== oldEntity[key]).map(([key, value]) => ({
+      key,
+      label: intl.formatMessage({ id: `pages.${entityName}.${key}` }),
+      children: <>{oldEntity[key]} <ArrowRightOutlined style={{ margin: '0 10px' }} /> {value}</>,
+    }));
   }
 
 
-  return (
-    <>
-      <table style={{ lineHeight: 1 }}>{tableData}</table>
-      <Button style={{ padding: 0 }} onClick={() => setOpen(prev => !prev)} type='link'>{open ? 'Show less' : 'Show more'}</Button>
-    </>
-  );
+  return (<Descriptions
+    items={dataItems}
+    column={3}
+    size={'small'}
+    bordered={true}
+    labelStyle={{
+      width: '0',
+      whiteSpace: 'nowrap',
+  }}
+  />);
+}
+
+const FirstLine = <Entity extends Record<string | symbol, any>>({
+  entityName,
+  haction,
+  newEntity,
+  oldEntity,
+}: {
+  entityName: string,
+  haction: HAction,
+  newEntity: Entity,
+  oldEntity: Entity,
+}) => {
+  const intl = useIntl();
+
+  if (haction === 'Created') {
+    const keys = Object.keys(newEntity);
+    const othersEl = keys.length > 1 ? ` and ${keys.length - 1} other fields` : '';
+    return (
+      <Text ellipsis={true}>
+        Created with <Text type={'secondary'}>{intl.formatMessage({ id: `pages.${entityName}.${keys[0]}` })}:</Text>&nbsp;
+        {newEntity[keys[0]]} {othersEl}
+      </Text>
+    )
+  } else if (haction === 'Deleted') {
+    const keys = Object.keys(oldEntity);
+    const othersEl = keys.length > 1 ? ` and ${keys.length - 1} other fields` : '';
+    return (
+      <Text ellipsis={true}>
+        Deleted with <Text type={'secondary'}>{intl.formatMessage({ id: `pages.${entityName}.${keys[0]}` })}:</Text>&nbsp;
+        {oldEntity[keys[0]]} {othersEl}
+      </Text>
+    )
+  } else {
+    const changedFields = Object.keys(newEntity).filter(key => newEntity[key] !== oldEntity[key]);
+    const othersEl = changedFields.length > 1 ? ` and ${changedFields.length - 1} other fields` : '';
+    return (
+      <Text ellipsis={true}>
+        Updated <Text type={'secondary'}>{intl.formatMessage({ id: `pages.${entityName}.${changedFields[0]}` })}:</Text>&nbsp;
+        {oldEntity[changedFields[0]]} <ArrowRightOutlined style={{ margin: '0 10px' }} /> {newEntity[changedFields[0]]} {othersEl}
+      </Text>
+    )
+  }
 }
 
 type ExtraParams = {
@@ -124,6 +149,9 @@ function HistoryTable<T, K>({
 
   return (
     <ProTable
+      size={'small'}
+      ghost={true}
+      rowKey={'hid'}
       request={(params, sort, filter) => {
         const sortParams = Object.entries(sort)[0];
         return getAll({
@@ -134,7 +162,7 @@ function HistoryTable<T, K>({
           hts: params.hts,
           hactions: params.hactions,
           ...(
-            sortParams 
+            sortParams
               ? { sort: [sortParams[0], sortOrderMap[sortParams[1]]] }
               : {}
           )
@@ -146,9 +174,26 @@ function HistoryTable<T, K>({
           onSearch: (search) => patchExtraParams({ search }),
         }
       }}
+      bordered
       tableClassName={styles.table}
       tableLayout="fixed"
       search={false}
+      expandable={{
+        expandedRowRender: (record) => <Content
+          entityName={entityName}
+          haction={record.haction}
+          newEntity={record.new}
+          oldEntity={record.old}
+        />,
+        rowExpandable(record) {
+          if (record.haction === 'Created' || record.haction === 'Deleted') {
+            return true;
+          }
+
+          const changedFields = Object.keys(record.new).filter(key => record.new[key] !== record.old[key]);
+          return changedFields.length > 1;
+        }
+      }}
       columns={[
         // {
         //   title: 'ID',
@@ -175,7 +220,7 @@ function HistoryTable<T, K>({
                 { label: 'Created', value: 'Created' },
                 { label: 'Updated', value: 'Updated' },
                 { label: 'Deleted', value: 'Deleted' },
-              ]} 
+              ]}
               defaultValue={[]}
               onChange={hactions => patchExtraParams({ hactions })}
             />
@@ -184,9 +229,17 @@ function HistoryTable<T, K>({
             return <Badge color={actionColors[value]} text={value} />;
           }
         },
+        Table.EXPAND_COLUMN,
         {
           title: 'Change',
-          render: (_, record) => <Content entityName={entityName} haction={record.haction} newEntity={record.new} oldEntity={record.old} />
+          render(_, record) {
+            return <FirstLine
+              entityName={entityName}
+              haction={record.haction}
+              newEntity={record.new}
+              oldEntity={record.old}
+            />;
+          }
         },
         {
           title: 'Time',
@@ -247,6 +300,7 @@ export function HistoryModal<T, K>({
         History
       </Button>
       <Modal
+        title={`History`}
         onCancel={() => setOpen(false)}
         destroyOnClose
         open={open}
