@@ -13,6 +13,8 @@ import { JwtModule } from "@nestjs/jwt";
 import { UsersInstAuthService } from "./users-inst-auth.service";
 import { UsersInstConfigService } from "./users-inst.config";
 import { ConfigModule } from "@nestjs/config";
+import { GenericHistoryModule } from '../../tools/generic-history.module';
+import { UsersInstHistory } from './entities/users-inst-hst.entity';
 
 @Module({})
 export class UsersInstModule {
@@ -42,6 +44,16 @@ export class UsersInstModule {
           apiTag: 'Ecn Password Hash Types',
           Entity: EcnPasswordHashType,
           policy: new ViewUsersInstPolicy,
+        }),
+        GenericHistoryModule.generate<UsersInstHistory>({
+          endpoint: 'liquidity/users-inst-hst',
+          apiTag: 'Users History',
+          Entity: UsersInstHistory,
+          policy: new ViewUsersInstPolicy,
+          tableName: 'users_inst_hst',
+          htsType: 'ms',
+          hactionColumnExists: true,
+          idColumnName: 'id',
         }),
       ],
       providers: [

@@ -1,8 +1,8 @@
 import { ObjectLiteral } from "typeorm";
 
 export class HistoryData<T extends ObjectLiteral> {
-  haction: 1 | 2 | 3;
-  ts: number;
+  haction?: 'Created' | 'Updated' | 'Deleted';
+  hts: number;
   hid: number;
   new: T;
   old: T;

@@ -9,8 +9,13 @@ export class GetHistoryDatasQueryDto {
   limit?: number;
 
   @JoiSchema(Joi.number().integer().positive().allow(0).optional())
-  page?: number;
+  offset?: number;
 
-  @JoiSchema(Joi.string().valid('ASC', 'DESC').optional())
-  sortDirection?: 'ASC' | 'DESC';
+  sort?: [string, 'ASC' | 'DESC'];
+
+  ids?: string[];
+
+  actions?: ('Created' | 'Deleted' | 'Updated')[];
+
+  hts?: [number, number];
 }

@@ -1,32 +1,20 @@
-// @ts-nocheck
-
-import React, { useState } from "react";
-import { Modal, Tooltip, Button, Badge } from "antd";
+import React, { useState, useEffect } from "react";
+import { Modal, Tooltip, Button, Badge, Popconfirm, Checkbox } from "antd";
 import { ArrowRightOutlined, HistoryOutlined, UndoOutlined } from "@ant-design/icons";
 import Table from "@jifeon/boar-pack-common-frontend/src/components/Table/Table";
 import { useIntl } from "react-intl";
-import { Table as AntdTable, Popconfirm } from 'antd'
 import { createStyles } from "antd-style";
+import { MultiStringSelect, TGetAllParams } from "@jifeon/boar-pack-common-frontend";
+import ProTable from "@ant-design/pro-table";
 import moment from "moment";
-// import apiClient from "@@api/apiClient";
-import { ColumnsType } from "antd/es/table";
-import { TGetAllParams } from "@jifeon/boar-pack-common-frontend";
+import { DatePicker, Space } from 'antd';
 
-type HAction = 1 | 2 | 3;
+type HAction = 'Created' | 'Updated' | 'Deleted';
 
-const actions = {
-  1: {
-    color: 'lightgreen',
-    name: 'Create',
-  },
-  2: {
-    color: 'yellow',
-    name: 'Update',
-  },
-  3: {
-    color: 'red',
-    name: 'Delete',
-  },
+const actionColors = {
+  'Created': 'lightgreen',
+  'Updated': 'yellow',
+  'Deleted': 'red',
 } as const;
 
 const useStyles = createStyles(({ token }) => {
@@ -36,158 +24,235 @@ const useStyles = createStyles(({ token }) => {
         verticalAlign: 'baseline',
       },
     },
-    created: {
-      '.ant-table': {
-        borderColor: 'lightgreen !important',
+    modal: {
+      '.ant-modal-content': {
+        marginTop: 40,
+        marginBottom: 40,
       },
-    },
-    updated: {
-      '.ant-table': {
-        borderColor: 'yellow !important',
-      },
-    },
-    deleted: {
-      '.ant-table': {
-        borderColor: 'red !important',
-      },
-    },
+    }
   };
 });
 
 const Content = <Entity extends Record<string | symbol, any>>({
+  entityName,
   haction,
   newEntity,
   oldEntity,
 }: {
+  entityName: string,
   haction: HAction,
   newEntity: Entity,
   oldEntity: Entity,
 }) => {
   const intl = useIntl();
-  const data = [];
+  const [open, setOpen] = useState(false);
 
-  for (const [key, value0] of Object.entries(oldEntity)) {
-    const value1 = newEntity[key];
-    if ((haction === 3 || value0 !== value1) && key !== 'id') {
-      data.push([key, value0, value1]);
+  const maxEntries = open ? Infinity : 3;
+  const tableData = [];
+
+  let currentIndex = 0;
+  if (haction === 'Created') {
+    for (const [key, newValue] of Object.entries(newEntity)) {
+      if (currentIndex >= maxEntries) break;
+      tableData.push(
+        <tr key={key}>
+          <td style={{ width: 150 }}>{intl.formatMessage({ id: `pages.${entityName}.${key}` })}:</td>
+          <td>{newValue}</td>
+        </tr>
+      )
+      currentIndex++;
+    }
+  }
+  else if (haction === 'Deleted') {
+    for (const [key, oldValue] of Object.entries(oldEntity)) {
+      if (currentIndex >= maxEntries) break;
+      tableData.push(
+        <tr key={key}>
+          <td style={{ width: 150 }}>{intl.formatMessage({ id: `pages.${entityName}.${key}` })}:</td>
+          <td>{oldValue}</td>
+        </tr>
+      )
+      currentIndex++;
+    }
+  }
+  else {
+    for (const [key, oldValue] of Object.entries(oldEntity)) {
+      if (currentIndex >= maxEntries) break;
+      const newValue = newEntity[key];
+      if (oldValue !== newValue) {
+        tableData.push(
+          <tr key={key}>
+            <td style={{ width: 150 }}>{intl.formatMessage({ id: `pages.${entityName}.${key}` })}:</td>
+            <td>{oldValue} <ArrowRightOutlined style={{ margin: '0 20px' }} /> {newValue}</td>
+          </tr>
+        )
+        currentIndex++;
+      }
     }
   }
 
-  return (
-    <table>
-      {
-        data.map(([key, prevValue, newValue]) => {
-        const dataCells = [<td style={{ width: 150 }}>{intl.formatMessage({ id: `pages.ecnInstrumentsGroups.${key}` })}:</td>];
-
-        if (haction === 1) {
-          dataCells.push(<td>{newValue}</td>);
-        }
-        else if (haction === 3) {
-          dataCells.push(<td>{prevValue}</td>);
-        }
-        else {
-          dataCells.push(<td>{prevValue} <ArrowRightOutlined style={{ margin: '0 20px' }} /> {newValue}</td>);
-        }
-
-        return (
-          <tr>
-            {dataCells}
-          </tr>
-        )
-      })}
-    </table>
-  )
-}
-
-export function HistoryModal<Entity, CreateDto, UpdateDto, TEntityParams = {}, TPathParams = {}>({
-  getAll,
-  onCreate,
-  onUpdate,
-  onDelete,
-  pathParams,
-}: {
-  getAll: ({}: TGetAllParams & TPathParams) => Promise<{ data: Entity[] }>,
-  onCreate?: ({}: { requestBody: CreateDto } & TPathParams) => Promise<Entity>,
-  onUpdate?: ({}: Record<keyof Entity, string> & { requestBody: UpdateDto } & TPathParams) => Promise<Entity>,
-  onDelete?: ({}: Record<keyof Entity, string> & TPathParams) => Promise<void>,
-  pathParams: TPathParams,
-}) {
-  const [open, setOpen] = useState<boolean>(false);
-  const { styles } = useStyles();
-  const intl = useIntl();
 
   return (
     <>
-      <HistoryOutlined onClick={() => setOpen(prev => !prev)} />,
+      <table style={{ lineHeight: 1 }}>{tableData}</table>
+      <Button style={{ padding: 0 }} onClick={() => setOpen(prev => !prev)} type='link'>{open ? 'Show less' : 'Show more'}</Button>
+    </>
+  );
+}
+
+type ExtraParams = {
+  hts: [number | undefined, number | undefined] | [],
+  ids: string[],
+  actions: HAction[],
+  search: string,
+}
+
+const sortOrderMap = {
+  'ascend': 'ASC',
+  'descend': 'DESC',
+}
+
+function HistoryTable<T, K>({
+  entityName,
+  getAll,
+  onRevert,
+}: {
+  entityName: string,
+  getAll: T,
+  onRevert?: K,
+}) {
+  const [extraParams, setExtraParams] = useState<ExtraParams>({ hts: [], ids: [], actions: [], search: '' });
+  const patchExtraParams = (params: Partial<ExtraParams>) => setExtraParams(prevState => ({ ...prevState, ...params }));
+
+  return (
+    <ProTable
+      request={(params, sort, filter) => {
+        // const sortParams = Object.entries(sort)[0];
+        return getAll({
+          limit: params.pageSize,
+          offset: params.pageSize * (params.current - 1),
+          // sort: sortParams.length > 0 ? [sortParams[0], sortOrderMap[sortParams[1]]] : [],
+          search: params.search,
+          ids: params.ids,
+          hts: params.hts,
+        })
+      }}
+      params={extraParams}
+      toolbar={{
+        search: {
+          onSearch: (search) => patchExtraParams({ search }),
+        }
+      }}
+      search={false}
+      columns={[
+        // {
+        //   title: 'ID',
+        //   dataIndex: 'new.id',
+        //   render(value, record) {
+        //     return record.new.id ?? record.old.id
+        //   },
+        //   filterDropdown: (
+        //     <MultiStringSelect
+        //       value={extraParams.ids}
+        //       onChange={ids => patchExtraParams({ ids })}
+        //     />
+        //   )
+        // },
+        {
+          title: 'Action',
+          dataIndex: 'haction',
+          width: '90px',
+          sorter: true,
+          filterDropdown: (
+            <Checkbox.Group<HAction>
+              style={{ flexDirection: 'column' }}
+              options={[
+                { label: 'Created', value: 'Created' },
+                { label: 'Updated', value: 'Updated' },
+                { label: 'Deleted', value: 'Deleted' },
+              ]} 
+              defaultValue={[]}
+              onChange={actions => patchExtraParams({ actions })}
+            />
+          ),
+          render(value) {
+            return <Badge color={actionColors[value]} text={value} />;
+          }
+        },
+        {
+          title: 'Change',
+          render: (_, record) => <Content entityName={entityName} haction={record.haction} newEntity={record.new} oldEntity={record.old} />
+        },
+        {
+          title: 'Time',
+          dataIndex: 'hts',
+          width: '200px',
+          filterDropdown: (
+            <DatePicker.RangePicker
+              onChange={value => {
+                patchExtraParams({
+                  hts: value === null ? [] : [value[0].valueOf(), value[1].valueOf()],
+                });
+              }}
+            />
+          ),
+          copyable: true,
+          sorter: true,
+          render(_, record) {
+            return new Date(record.hts * 1000).toLocaleString()
+          },
+        },
+        {
+          title: 'Actions',
+          fixed: 'right',
+          width: '50px',
+          render: (text, record, _, action) => [
+            <Popconfirm
+              title="Undo this action?"
+              description="Do you want to undo this action?"
+              onConfirm={() => onRevert(record.hid)}
+              okText="OK"
+              cancelText="Cancel"
+              placement='bottomLeft'
+            >
+              <Button type="link" style={{ padding: 0 }}>Revert <UndoOutlined /></Button>
+            </Popconfirm>
+          ],
+        },
+      ]}
+    />
+  )
+}
+
+export function HistoryModal<T, K>({
+  entityName,
+  getAll,
+  onRevert,
+}: {
+  entityName: string,
+  getAll: T,
+  onRevert: K,
+}) {
+  const [open, setOpen] = useState<boolean>(false);
+  const { styles } = useStyles();
+
+  return (
+    <>
+      <Button type='default' onClick={() => setOpen(prev => !prev)}>
+        History
+      </Button>
       <Modal
         onCancel={() => setOpen(false)}
+        destroyOnClose
         open={open}
-        centered
+        className={styles.modal}
         footer={null}
         width='90%'
       >
-        <Table<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams>
-          pathParams={pathParams}
-          pagination={{
-            defaultPageSize: 6,
-          }}
-          className={styles.table}
+        <HistoryTable
+          entityName={entityName}
           getAll={getAll}
-          idColumnName='hid'
-          columns={[
-            {
-              title: 'Id',
-              dataIndex: 'new.id',
-              width: '40px',
-              copyable: true,
-              render: (_, record) => record.new.id,
-            },
-            {
-              title: 'Time',
-              dataIndex: 'ts',
-              width: '200px',
-              copyable: true,
-              render(_, record) {
-                const date = new Date(record.ts * 1000);
-                return <Tooltip title={date.toLocaleString()}>
-                  <Button type={'link'}>{moment(date).fromNow()}</Button>
-                </Tooltip>;
-              },
-            },
-            {
-              title: 'Change',
-              render: (_, record) => <Content haction={record.haction} newEntity={record.new} oldEntity={record.old} />
-            },
-            {
-              title: 'Action',
-              dataIndex: 'haction',
-              width: '100px',
-              render(_, record) {
-                const action = actions[record.haction];
-                return <Badge color={action.color} text={action.name} />;
-              }
-            },
-            {
-              title: intl.formatMessage({ id: 'table.actions' }),
-              valueType: 'option',
-              width: '100px',
-              render: (text, record, _, action) => [
-                <Popconfirm
-                  title="Undo this action?"
-                  description="Do you want to undo this action?"
-                  // onConfirm={
-                  // }
-                  okText="OK"
-                  cancelText="Cancel"
-                  placement='bottomLeft'
-                >
-                  <Button type="link" icon={<UndoOutlined />}>Revert</Button>
-                </Popconfirm>
-              ],
-            },
-          ]}
-          defaultSort={['ts', 'DESC']}
-          viewOnly
+          onRevert={onRevert}
         />
       </Modal>
     </>
