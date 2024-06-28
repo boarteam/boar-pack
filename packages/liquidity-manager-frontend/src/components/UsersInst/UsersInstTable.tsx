@@ -8,6 +8,7 @@ import { usersInstJoinFields } from "./usersInstJoinFields";
 import { usersInstSearchableColumns } from "./usersInstSearchableColumns";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
+import { HistoryModal } from "../History/HistoryModal";
 
 export function usersInstToDto<
   T extends Partial<UsersInst>,
@@ -209,6 +210,12 @@ const UsersInstTable = () => {
       searchableColumns={usersInstSearchableColumns}
       viewOnly={!canManageLiquidity}
       popupCreation
+      toolBarAfterRender={() => [
+        <HistoryModal
+          entityName="usersInst"
+          getAll={params => apiClient.usersHistory.getMany({ worker, ...params })}
+        />
+      ]}
     />
   );
 }

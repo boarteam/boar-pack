@@ -19,6 +19,7 @@
     "@umijs/route-utils": "^4.0.1",
     "@umijs/utils": "^4.1.10",
     "antd-style": "^3.6.2",
+    "moment": "^2.30.1",
     "umi": "^4.1.10"
   },
   "devDependencies": {
@@ -26,6 +27,7 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
+    "setup": "umi setup",
     "yalc:push": "yalc push"
   },
   "gitHead": "8bd22bd2364f307911e6e7012c8de00aa6f55265"

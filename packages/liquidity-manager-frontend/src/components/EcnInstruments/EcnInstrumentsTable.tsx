@@ -8,6 +8,7 @@ import { useAccess } from "@umijs/max";
 import { ecnInstrumentSearchableColumns } from "./ecnInstrumentSearchableColumns";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
+import { HistoryModal } from "../History/HistoryModal";
 
 export function ecnInstrumentToDto<
   T extends Partial<EcnInstrument>,
@@ -204,6 +205,12 @@ const EcnInstrumentsTable = () => {
       searchableColumns={ecnInstrumentSearchableColumns}
       viewOnly={!canManageLiquidity}
       popupCreation
+      toolBarAfterRender={() => [
+        <HistoryModal
+          entityName="ecnInstruments"
+          getAll={params => apiClient.ecnInstrumentsHistory.getMany({ worker, ...params })}
+        />
+      ]}
     />
   );
 }

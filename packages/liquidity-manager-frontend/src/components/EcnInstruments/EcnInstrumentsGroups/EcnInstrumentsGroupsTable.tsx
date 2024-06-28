@@ -6,6 +6,7 @@ import pick from "lodash/pick";
 import { useAccess } from "umi";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
+import { HistoryModal } from "../../History/HistoryModal";
 
 function entityToDto(entity: EcnInstrumentsGroup) {
   return pick(entity, [
@@ -37,6 +38,10 @@ const EcnInstrumentsGroupsTable = () => {
       defaultSort={['name', 'ASC']}
       searchableColumns={[
         {
+          field: 'id',
+          operator: Operators.containsLow,
+        },
+        {
           field: 'name',
           operator: Operators.containsLow,
         },
@@ -46,6 +51,12 @@ const EcnInstrumentsGroupsTable = () => {
         },
       ]}
       viewOnly={!canManageLiquidity}
+      toolBarAfterRender={() => [
+        <HistoryModal
+          entityName="ecnInstrumentsGroups"
+          getAll={params => apiClient.ecnInstrumentsGroupsHistory.getMany({ worker, ...params })}
+        />
+      ]}
     ></Table>
   );
 }

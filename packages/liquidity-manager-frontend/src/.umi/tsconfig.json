@@ -27,7 +27,7 @@
         "src/.umi/*"
       ],
       "umi": [
-        "/Users/jifeon/.config/yarn/global/node_modules/umi"
+        "/Users/jifeon/projects/boar-pack/node_modules/umi"
       ],
       "umi/typings": [
         "src/.umi/typings"

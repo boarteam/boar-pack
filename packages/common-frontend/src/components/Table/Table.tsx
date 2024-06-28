@@ -51,6 +51,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     columnsSetSelect: managedColumnsSetSelect,
     popupCreation = false,
     toolBarRender,
+    toolBarAfterRender,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -201,7 +202,7 @@ const Table = <Entity extends Record<string | symbol, any>,
               requestBody: entityToCreateDto(data)
             });
           } else {
-            await onUpdate({
+            await onUpdate?.({
               ...pathParams,
               ...{ [idColumnName]: String(id) } as Record<keyof Entity, string>,
               requestBody: entityToUpdateDto({
@@ -231,7 +232,7 @@ const Table = <Entity extends Record<string | symbol, any>,
           })
         },
         async onDelete(id) {
-          await onDelete({ ...{ [idColumnName]: String(id) } as Record<keyof Entity, string>, ...pathParams });
+          await onDelete?.({ ...{ [idColumnName]: String(id) } as Record<keyof Entity, string>, ...pathParams });
         },
         deletePopconfirmMessage: intl.formatMessage({ id: 'table.deletePopconfirmMessage' }),
         onlyAddOneLineAlertMessage: intl.formatMessage({ id: 'table.onlyAddOneLineAlertMessage' }),
@@ -241,9 +242,10 @@ const Table = <Entity extends Record<string | symbol, any>,
         ...editable,
       }}
       toolBarRender={(...args) => [
-        ...toolBarRender && toolBarRender(...args) || [],
+        ...(toolBarRender ? toolBarRender(...args) : []),
         columnsSetSelect?.() || null,
         !viewOnly && createButton || null,
+        ...(toolBarAfterRender ? toolBarAfterRender(...args) : []),
       ]}
       columns={columns}
       defaultSize='small'
