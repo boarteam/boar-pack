@@ -211,14 +211,6 @@ export class GenericHistoryModule {
               // @ts-ignore
               resultValue.old = oldEmpty ? resultValue.new : this.repo.create(resultValue.old);
 
-              if (haction === undefined) {
-                resultValue.haction = newEmpty 
-                  ? 'Deleted' 
-                  : oldEmpty 
-                    ? 'Updated'
-                    : 'Created'
-              }
-
               return resultValue;
             }) as GetHistoryResponse<Entity>['data']);
 
