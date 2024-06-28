@@ -17,8 +17,8 @@ const actionColors = {
 const useStyles = createStyles(({ token }) => {
   return {
     table: {
-      '.ant-table-cell': {
-        verticalAlign: 'baseline',
+      '.ant-table-tbody': {
+        verticalAlign: 'top',
       },
     },
     modal: {
@@ -120,6 +120,7 @@ function HistoryTable<T, K>({
 }) {
   const [extraParams, setExtraParams] = useState<ExtraParams>({ hts: [], ids: [], hactions: [], search: '' });
   const patchExtraParams = (params: Partial<ExtraParams>) => setExtraParams(prevState => ({ ...prevState, ...params }));
+  const { styles } = useStyles();
 
   return (
     <ProTable
@@ -145,6 +146,8 @@ function HistoryTable<T, K>({
           onSearch: (search) => patchExtraParams({ search }),
         }
       }}
+      tableClassName={styles.table}
+      tableLayout="fixed"
       search={false}
       columns={[
         // {
@@ -207,7 +210,7 @@ function HistoryTable<T, K>({
         {
           title: 'Actions',
           fixed: 'right',
-          width: '50px',
+          width: '90px',
           render: (text, record, _, action) => [
             <Popconfirm
               title="Undo this action?"
@@ -217,7 +220,7 @@ function HistoryTable<T, K>({
               cancelText="Cancel"
               placement='bottomLeft'
             >
-              <Button type="link" style={{ padding: 0 }}>Revert <UndoOutlined /></Button>
+              <Button type="link" style={{ padding: 0, height: 'auto' }}>Revert <UndoOutlined /></Button>
             </Popconfirm>
           ],
         },
