@@ -15,13 +15,13 @@ import React, { useState } from "react";
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { useAccess } from '@umijs/max';
 import { useLiquidityManagerContext } from '../../tools';
-import { useEcnSubscrSchemaColumns } from '../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns';
+import { useEcnSubscrSchemaColumns } from '../EcnSubscrSchemas/useEcnSubscrSchemaColumns';
 import { useEcnConnectSchemasColumns } from "../EcnConnectSchemas/useEcnConnectSchemasColumns";
 import { useEcnInstrumentsColumns } from "../EcnInstruments/useEcnInstrumentsColumns";
 import { ecnInstrumentJoinFields } from "../EcnInstruments/ecnInstrumentJoinFields";
 import { ecnInstrumentToDto } from "../EcnInstruments/EcnInstrumentsTable";
-import { ecnSubscrSchemaJoinFields } from "../EcnModules/EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
-import { ecnSubscriptionSchemaToDto } from "../EcnModules/EcnSubscrSchemas/EcnSubscrSchemasTable";
+import { ecnSubscrSchemaJoinFields } from "../EcnSubscrSchemas/ecnSubscrSchemaJoinFields";
+import { ecnSubscriptionSchemaToDto } from "../EcnSubscrSchemas/EcnSubscrSchemasTable";
 import { Descriptions, withNumericId } from '@jifeon/boar-pack-common-frontend';
 import { ecnConnectSchemaJoinFields, ecnConnectSchemaToDto } from "../EcnModules/EcnConnectSchemaDrawer";
 
@@ -68,20 +68,19 @@ const DeleteSubscrSchemaButton: React.FC<{
 }
 
 const SubscrSchemaDrawer: React.FC<{
-  open: boolean;
   instrumentHash: EcnSubscrSchema['instrumentHash'];
   connectSchemaId: EcnSubscrSchema['connectSchemaId'];
   onUpdate: () => Promise<void>,
   onDelete: () => Promise<void>;
   onClose: () => void;
-}> = ({ open, instrumentHash, connectSchemaId, onUpdate, onDelete, onClose }) => {
+}> = ({ instrumentHash, connectSchemaId, onUpdate, onDelete, onClose }) => {
   const { canManageLiquidity } = useAccess() || {};
   const { worker } = useLiquidityManagerContext();
   const subscrColumns = useEcnSubscrSchemaColumns();
   const connectSchemaColumns = useEcnConnectSchemasColumns(canManageLiquidity ?? false);
   const instrumentColumns = useEcnInstrumentsColumns();
 
-  if (!worker || !canManageLiquidity || !open) {
+  if (!worker || !canManageLiquidity) {
     return <></>;
   }
 
@@ -221,17 +220,18 @@ export const EditSubscrSchemaButton: React.FC<{
       <Button type="link" onClick={() => setOpened(prevState => !prevState)} {...restProps}>
         <EditOutlined />
       </Button>
-      <SubscrSchemaDrawer
-        open={opened}
-        instrumentHash={instrumentHash}
-        connectSchemaId={connectSchemaId}
-        onClose={() => setOpened(false)}
-        onDelete={async () => {
-          setOpened(false);
-          await onDelete();
-        }}
-        onUpdate={onUpdate}
-      />
+      {opened && (
+        <SubscrSchemaDrawer
+          instrumentHash={instrumentHash}
+          connectSchemaId={connectSchemaId}
+          onClose={() => setOpened(false)}
+          onDelete={async () => {
+            setOpened(false);
+            await onDelete();
+          }}
+          onUpdate={onUpdate}
+        />
+      )}
     </>
   )
 }

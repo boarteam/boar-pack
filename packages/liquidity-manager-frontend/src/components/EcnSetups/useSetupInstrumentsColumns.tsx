@@ -9,7 +9,7 @@ import {
 import { Popover, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
 import apiClient from '@@api/apiClient';
-import { useEcnSubscrSchemaColumns } from "../EcnModules/EcnSubscrSchemas/useEcnSubscrSchemaColumns";
+import { useEcnSubscrSchemaColumns } from "../EcnSubscrSchemas/useEcnSubscrSchemaColumns";
 import { ColumnsType } from "antd/es/table";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { AddSubscrSchemaButton } from "./AddSubscrSchemaButton";
