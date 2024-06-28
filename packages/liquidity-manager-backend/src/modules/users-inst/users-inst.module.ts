@@ -51,7 +51,7 @@ export class UsersInstModule {
           Entity: UsersInstHistory,
           policy: new ViewUsersInstPolicy,
           tableName: 'users_inst_hst',
-          htsType: 'ms',
+          htsType: 's',
           hactionColumnExists: true,
           idColumnName: 'id',
         }),

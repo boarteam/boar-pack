@@ -36,7 +36,7 @@ import { EcnInstrumentsHistory } from './entities/ecn-instruments-hst.entity';
       Entity: EcnInstrumentsHistory,
       policy: new ViewEcnInstrumentsPolicy,
       tableName: 'ecn_instruments_history',
-      htsType: 'ms',
+      htsType: 's',
       hactionColumnExists: false,
       idColumnName: 'instrument_hash',
     }),

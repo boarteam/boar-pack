@@ -17,7 +17,7 @@ import { EcnInstrumentsGroupHistory } from "./entities/ecn-instruments-group-hst
       Entity: EcnInstrumentsGroupHistory,
       policy: new ViewEcnInstrumentsGroupsPolicy,
       tableName: 'ecn_instruments_groups_hst',
-      htsType: 'ms',
+      htsType: 's',
       hactionColumnExists: true,
       idColumnName: 'id',
     }),

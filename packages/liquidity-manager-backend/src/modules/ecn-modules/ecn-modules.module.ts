@@ -17,7 +17,7 @@ import { EcnModulesHistory } from './entities/ecn-modules-history.entity';
       Entity: EcnModulesHistory,
       policy: new ViewEcnModulesPolicy,
       tableName: 'ecn_modules_history',
-      htsType: 'ms',
+      htsType: 's',
       hactionColumnExists: false,
       idColumnName: 'id',
     }),

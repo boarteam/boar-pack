@@ -1,7 +1,7 @@
 import { Controller, DynamicModule, Get, Post, Param, Module, Query } from '@nestjs/common';
 import { InjectDataSource, InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource, ObjectLiteral, Repository } from "typeorm";
-import { ApiExtraModels, ApiOkResponse, ApiTags, getSchemaPath } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 import { AMTS_DB_NAME } from "../modules/liquidity-app/liquidity-app.config";
 import { CheckPolicies, IPolicyHandler } from "@jifeon/boar-pack-users-backend";
 import { GetHistoryResponse } from "./dto/history-get-many-response.dto";
@@ -123,9 +123,8 @@ export class GenericHistoryModule {
         if (hts) {
           dataQuery.andWhere(
             new Brackets(qb => {
-              qb
-                .andWhere(`new.${this._htsColumnName} < ${this.convertMsToHts(hts[1])}`)
-                .andWhere(`new.${this._htsColumnName} > ${this.convertMsToHts(hts[0])}`)
+              qb.andWhere(`new.${this._htsColumnName} >= ${this.convertMsToHts(hts[0])}`)
+              qb.andWhere(`new.${this._htsColumnName} <= ${this.convertMsToHts(hts[1])}`)
             })
           )
         }
@@ -133,9 +132,8 @@ export class GenericHistoryModule {
         if (ids?.length) {
           dataQuery.andWhere(
             new Brackets(qb => {
-              qb
-                .orWhere(`new.${config.idColumnName} in (:...ids)`, { ids: Array.isArray(ids) ? ids : [ids] })
-                .orWhere(`old.${config.idColumnName} in (:...ids)`, { ids: Array.isArray(ids) ? ids : [ids] })
+              qb.orWhere(`new.${config.idColumnName} in (:...ids)`, { ids: Array.isArray(ids) ? ids : [ids] })
+              qb.orWhere(`old.${config.idColumnName} in (:...ids)`, { ids: Array.isArray(ids) ? ids : [ids] })
             })
           )
         }
