@@ -24,7 +24,6 @@ export class GenericHistoryModule {
   static generate<Entity extends ObjectLiteral>(config: TGenericHistoryModuleConfig<Entity>): DynamicModule {
     class GenericHistoryService {
       private _htsColumnName: string;
-      private _selectColumns: string[];
 
       constructor(
         @InjectRepository(config.Entity, AMTS_DB_NAME)
@@ -50,47 +49,46 @@ export class GenericHistoryModule {
         return this._htsColumnName;
       }
 
-      private get selectColumns() {
-        if (this._selectColumns) {
-          return this._selectColumns;
-        }
-
+      private selectColumns(withOld = true, withHaction = true) {
         const columnsMap: Record<string, string> = {};
         for (const { databaseName: columnName } of this.repo.metadata.columns) {
           columnsMap[`new.${columnName}`] = `new_${columnName}`;
-          columnsMap[`old.${columnName}`] = `old_${columnName}`;
+          if (withOld) columnsMap[`old.${columnName}`] = `old_${columnName}`;
         }
-        
+
         columnsMap['new.hid'] = 'hid';
         delete columnsMap['old.hid'];
 
-        if (config.hactionColumnExists) {
-          columnsMap[`
+        if (withHaction) {
+          if (config.hactionColumnExists) {
+            columnsMap[`
             case 
                 when new.haction = 1 then 'Created'
                 when new.haction = 2 then 'Updated'
                 when new.haction = 3 then 'Deleted'
             end
           `] = 'haction';
-          delete columnsMap['new.haction'];
-          delete columnsMap['old.haction'];
-        }
-        else {
-          columnsMap[`
+            delete columnsMap['new.haction'];
+            delete columnsMap['old.haction'];
+          } else {
+            columnsMap[`
             case 
               when old.${config.idColumnName} is null then 'Created'
               when new.${config.idColumnName} is not null then 'Updated'
               when new.${config.idColumnName} is null then 'Deleted'
             end 
           `] = 'haction';
+          }
+        } else {
+          delete columnsMap['new.haction'];
+          delete columnsMap['old.haction'];
         }
 
         this._htsColumnName = columnsMap['new.hts'] ? 'hts' : 'ts';
         columnsMap[`new.${this._htsColumnName}`] = 'hts';
         delete columnsMap[`old.${this._htsColumnName}`];
 
-        this._selectColumns = Object.entries(columnsMap).map(([columnName, alias]) => `${columnName} as ${alias}`);
-        return this._selectColumns;
+        return Object.entries(columnsMap).map(([columnName, alias]) => `${columnName} as ${alias}`);
       }
 
       convertMsToHts(ms: number) {
@@ -101,34 +99,35 @@ export class GenericHistoryModule {
         }
       }
 
-      async getMany({
+      private getDataQuery(tableName: string, {
         search,
-        limit,
-        offset,
-        sort,
         ids,
         hts,
         hactions,
-      }: GetHistoryDatasQueryDto): Promise<GetHistoryResponse<Entity>> {
-        const tableName = config.tableName;
-
+      }: GetHistoryDatasQueryDto, withOld = true) {
         const dataQuery = this.dataSource
           .createQueryBuilder()
-          .from(tableName, 'new')
-          .select(this.selectColumns)
-          .leftJoin(
-            tableName,
+          .from(tableName, 'new');
+
+        if (withOld) {
+          dataQuery.select(this.selectColumns(withOld, withOld));
+        }
+
+        if (withOld) {
+          dataQuery.leftJoin(
+            config.tableName,
             'old',
             `
               old.${config.idColumnName} = new.${config.idColumnName}
               and 
               old.${this.htsColumnName} = (
                 select max(${this.htsColumnName})
-                from ${tableName}
+                from ${config.tableName}
                 where ${config.idColumnName} = new.${config.idColumnName}
                 and ${this.htsColumnName} < new.${this.htsColumnName}
               )
-          `)
+          `);
+        }
 
         if (hts) {
           dataQuery.andWhere(
@@ -142,8 +141,10 @@ export class GenericHistoryModule {
         if (ids?.length) {
           dataQuery.andWhere(
             new Brackets(qb => {
-              qb.orWhere(`new.${config.idColumnName} in (:...ids)`, { ids: Array.isArray(ids) ? ids : [ids] })
-              qb.orWhere(`old.${config.idColumnName} in (:...ids)`, { ids: Array.isArray(ids) ? ids : [ids] })
+              qb.orWhere(`new.${config.idColumnName} in (:...ids)`, { ids: Array.isArray(ids) ? ids : [ids] });
+              if (withOld) {
+                qb.orWhere(`old.${config.idColumnName} in (:...ids)`, { ids: Array.isArray(ids) ? ids : [ids] });
+              }
             })
           )
         }
@@ -153,7 +154,9 @@ export class GenericHistoryModule {
             new Brackets(qb => {
               for (const { databaseName: columnName } of this.repo.metadata.columns) {
                 qb.orWhere(`lower(new.${columnName}) like lower(:search)`, { search: `%${search}%` })
-                qb.orWhere(`lower(old.${columnName}) like lower(:search)`, { search: `%${search}%` })
+                if (withOld) {
+                  qb.orWhere(`lower(old.${columnName}) like lower(:search)`, { search: `%${search}%` });
+                }
               }
             })
           )
@@ -163,11 +166,48 @@ export class GenericHistoryModule {
           dataQuery.orHaving('haction in (:...hactions)', { hactions: Array.isArray(hactions) ? hactions : [hactions] })
         }
 
+        return dataQuery;
+      }
+
+      async getMany({
+        search,
+        limit,
+        offset,
+        sort,
+        ids,
+        hts,
+        hactions,
+      }: GetHistoryDatasQueryDto): Promise<GetHistoryResponse<Entity>> {
+        const tableName = config.tableName;
+
+        const dataQueryForTotal = this.getDataQuery('searched_records', {
+          search,
+          ids,
+          hts,
+          hactions,
+        });
+
         const totalQuery = this.dataSource
           .createQueryBuilder()
+          .addCommonTableExpression(
+            this.getDataQuery(tableName, {
+              search,
+              ids,
+              hts: undefined,
+              hactions,
+            }, false),
+            'searched_records'
+          )
           .select('count(*)', 'total')
-          .from('(' + dataQuery.getQuery() + ')', 'data')
-          .setParameters(dataQuery.getParameters());
+          .from('(' + dataQueryForTotal.getQuery() + ')', 'data')
+          .setParameters(dataQueryForTotal.getParameters());
+
+        const dataQuery = this.getDataQuery(tableName, {
+          search,
+          ids,
+          hts,
+          hactions,
+        });
 
         if (limit) dataQuery.limit(limit);
         if (offset) dataQuery.offset(offset);
@@ -212,9 +252,9 @@ export class GenericHistoryModule {
               resultValue.old = oldEmpty ? resultValue.new : this.repo.create(resultValue.old);
 
               if (haction === undefined) {
-                resultValue.haction = newEmpty 
-                  ? 'Deleted' 
-                  : oldEmpty 
+                resultValue.haction = newEmpty
+                  ? 'Deleted'
+                  : oldEmpty
                     ? 'Updated'
                     : 'Created'
               }
