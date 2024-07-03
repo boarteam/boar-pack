@@ -43,11 +43,14 @@ export class ClusterService {
     settings: WorkerSettings,
     callback?: () => void,
   }) {
-    this.logger.log(`Starting worker ${settings.workerId}...`);
+    const workerName = settings.workerName || settings.workerId;
+    this.logger.log(`Starting worker ${workerName}...`);
 
     const vars: Record<string, string> = {
       APP_ROLE: clusterSettings.appRole,
       WORKER: settings.workerId,
+      WORKER_NAME: workerName,
+      ...settings.extraEnv,
     }
 
     if (settings.portIncrement !== null) {
@@ -57,7 +60,7 @@ export class ClusterService {
     const workerProcess = cluster.fork(vars);
 
     workerProcess.on('exit', (code, signal) => {
-      this.logger.error(`Worker ${settings.workerId} died with code ${code} and signal ${signal}`);
+      this.logger.error(`Worker ${workerName} died with code ${code} and signal ${signal}`);
 
       if (signal === this.STOP_WORKER) {
         return;
@@ -67,14 +70,14 @@ export class ClusterService {
         this.runWorker({ clusterSettings, settings });
       } else {
         setTimeout(() => {
-          this.logger.log(`Restarting worker ${settings.workerId}...`);
+          this.logger.log(`Restarting worker ${workerName}...`);
           this.runWorker({ clusterSettings, settings });
         }, clusterSettings.restartDelay);
       }
     });
 
     workerProcess.once('listening', () => {
-      this.logger.log(`Worker ${settings.workerId} started`);
+      this.logger.log(`Worker ${workerName} started`);
       callback?.();
     });
   }
