@@ -20,7 +20,7 @@ export function getFiltersSearch({
     const operator = col.filterOperator || col.operator;
     const value = filters[colDataIndex] || baseFilters[colDataIndex];
     filterKeys.delete(colDataIndex);
-    if (!value) {
+    if (!value || col.numeric && !Number.isFinite(value)) {
       return;
     }
 
@@ -66,7 +66,10 @@ export function applyKeywordToSearch(
 
     const field = col.searchField || (Array.isArray(col.field) ? col.field.join('.') : col.field);
     const operator = col.operator;
-    keywordSearch.$or?.push({ [field]: { [operator]: keyword } });
+
+    if (!col.numeric || Number.isFinite(keyword)) {
+      keywordSearch.$or?.push({ [field]: { [operator]: keyword } });
+    }
   });
 
   if (!Array.isArray(filterSearch.$and)) {
