@@ -20,7 +20,7 @@ export function getFiltersSearch({
     const operator = col.filterOperator || col.operator;
     const value = filters[colDataIndex] || baseFilters[colDataIndex];
     filterKeys.delete(colDataIndex);
-    if (!value || col.numeric && !Number.isFinite(value)) {
+    if (!value || col.numeric && !Number.isFinite(Number(value))) {
       return;
     }
 
@@ -53,23 +53,28 @@ export function applyKeywordToSearch(
     return filterSearch;
   }
 
-  const keywordSearch: SCondition = { $or: [] };
-  searchableColumns!.forEach((col) => {
-    if (col.searchField === null) {
-      return;
-    }
+  const keywordSearches: SCondition[] = [];
+  keyword.split(' ').forEach((word) => {
+    const keywordSearch: SCondition = { $or: [] };
+    searchableColumns!.forEach((col) => {
+      if (col.searchField === null) {
+        return;
+      }
 
-    const dataIndex = Array.isArray(col.field) ? col.field.join(',') : col.field;
-    if (columnsState?.[dataIndex] && !columnsState[dataIndex].show) {
-      return;
-    }
+      const dataIndex = Array.isArray(col.field) ? col.field.join(',') : col.field;
+      if (columnsState?.[dataIndex] && !columnsState[dataIndex].show) {
+        return;
+      }
 
-    const field = col.searchField || (Array.isArray(col.field) ? col.field.join('.') : col.field);
-    const operator = col.operator;
+      const field = col.searchField || (Array.isArray(col.field) ? col.field.join('.') : col.field);
+      const operator = col.operator;
 
-    if (!col.numeric || Number.isFinite(keyword)) {
-      keywordSearch.$or?.push({ [field]: { [operator]: keyword } });
-    }
+      if (!col.numeric || Number.isFinite(Number(word))) {
+        keywordSearch.$or.push({ [field]: { [operator]: word } });
+      }
+    });
+
+    keywordSearches.push(keywordSearch);
   });
 
   if (!Array.isArray(filterSearch.$and)) {
@@ -77,7 +82,7 @@ export function applyKeywordToSearch(
   }
 
   return {
-    $and: [...filterSearch.$and, keywordSearch]
+    $and: [...filterSearch.$and, ...keywordSearches]
   }
 }
 
