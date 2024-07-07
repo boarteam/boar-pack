@@ -26,7 +26,7 @@ export class EventLogsModule {
           provide: EventLogsService,
           inject: [getDataSourceToken(config.dataSourceName)],
           useFactory: (dataSource: DataSource) => {
-            return new EventLogsService(dataSource.getRepository(EventLog));
+            return new EventLogsService(dataSource.getRepository(EventLog), dataSource);
           }
         },
       ],
@@ -54,7 +54,7 @@ export class EventLogsModule {
           provide: EventLogsService,
           inject: [getDataSourceToken(config.dataSourceName)],
           useFactory: (dataSource: DataSource) => {
-            return new EventLogsService(dataSource.getRepository(EventLog));
+            return new EventLogsService(dataSource.getRepository(EventLog), dataSource);
           }
         },
         {

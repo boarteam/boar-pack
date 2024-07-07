@@ -1,5 +1,5 @@
-import { Controller } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ApiExtraModels, ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { Crud, CrudController } from '@nestjsx/crud';
 import { EventLogsService } from './event-logs.service';
 import { EventLog } from './entities/event-log.entity';
@@ -8,6 +8,8 @@ import { EventLogUpdateDto } from "./dto/event-log-update.dto";
 import { ManageEventLogsPolicy } from "./policies/manage-event-logs.policy";
 import { ViewEventLogsPolicy } from "./policies/view-event-logs.policy";
 import { CheckPolicies } from "../casl";
+import { EventLogTimelineDto } from "./dto/event-log-timeline.dto";
+import { EventLogTimelineQueryDto } from "./dto/event-log-timeline-query.dto";
 
 @Crud({
   model: {
@@ -43,9 +45,23 @@ import { CheckPolicies } from "../casl";
 })
 @CheckPolicies(new ManageEventLogsPolicy())
 @ApiTags('EventLogs')
+@ApiExtraModels(EventLogTimelineDto, EventLogTimelineQueryDto)
 @Controller('event-logs')
 export class EventLogsController implements CrudController<EventLog>{
   constructor(
     readonly service: EventLogsService,
   ) {}
+
+  @Get('timeline')
+  @ApiOkResponse({
+    type: EventLogTimelineDto,
+    isArray: true,
+  })
+  async getTimeline(
+    @Query() query: EventLogTimelineQueryDto,
+  ): Promise<EventLogTimelineDto[]> {
+    const start = query.startTime ? new Date(query.startTime) : undefined;
+    const end = query.endTime ? new Date(query.endTime) : undefined;
+    return this.service.getTimeline(start, end);
+  }
 }
