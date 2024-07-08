@@ -7,4 +7,7 @@ export class EventLogTimelineQueryDto {
 
   @JoiSchema(Joi.string().isoDate().optional())
   endTime?: string;
+
+  @JoiSchema(Joi.string().optional())
+  timezone?: string;
 }
