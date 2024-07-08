@@ -4,4 +4,6 @@ export class EventLogTimelineDto {
   time: string;
   records: number;
   logLevel: LogLevel;
+  startTime: string;
+  endTime: string;
 }``
