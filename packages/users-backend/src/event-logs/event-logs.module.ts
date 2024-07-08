@@ -70,7 +70,31 @@ export class EventLogsModule {
           useClass: EventLogsExceptionFilter,
         }
       ],
-      exports: [],
+      exports: [
+        EventLogsService,
+      ],
+    }
+  }
+
+  static forFeature(config: { dataSourceName: string }) {
+    return {
+      module: EventLogsModule,
+      imports: [
+        CaslModule,
+        TypeOrmModule.forFeature([EventLog], config.dataSourceName),
+      ],
+      providers: [
+        {
+          provide: EventLogsService,
+          inject: [getDataSourceToken(config.dataSourceName)],
+          useFactory: (dataSource: DataSource) => {
+            return new EventLogsService(dataSource.getRepository(EventLog), dataSource);
+          }
+        },
+      ],
+      exports: [
+        EventLogsService,
+      ],
     }
   }
 
