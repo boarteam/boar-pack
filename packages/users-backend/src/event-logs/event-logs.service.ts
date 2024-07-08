@@ -58,6 +58,15 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     });
   }
 
+  async operationalLog(eventLog: Partial<EventLog>): Promise<void> {
+    await this.repo.save({
+      logLevel: LogLevel.INFO,
+      userRole: UserRole.SYSTEM,
+      ...eventLog,
+      logType: LogType.OPERATIONAL,
+    });
+  }
+
   async getTimeline(startTime?: Date, endTime?: Date, timezone?: string): Promise<EventLogTimelineDto[]> {
     if (!startTime) {
       startTime = await this.getOldestLogDate();
