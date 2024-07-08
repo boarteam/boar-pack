@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { Roles } from "../users";
 import { EventLogTimelineDto } from "./dto/event-log-timeline.dto";
 import moment from "moment";
+import 'moment-timezone';
 
 @Injectable()
 export class EventLogsService extends TypeOrmCrudService<EventLog> {
@@ -57,7 +58,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     });
   }
 
-  async getTimeline(startTime?: Date, endTime?: Date): Promise<EventLogTimelineDto[]> {
+  async getTimeline(startTime?: Date, endTime?: Date, timezone?: string): Promise<EventLogTimelineDto[]> {
     if (!startTime) {
       startTime = await this.getOldestLogDate();
     }
@@ -66,16 +67,20 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       endTime = new Date();
     }
 
+    if (timezone) {
+      startTime = moment(startTime).tz(timezone).toDate();
+      endTime = moment(endTime).tz(timezone).toDate();
+    }
 
     const interval = this.determineInterval(startTime, endTime);
     const dateTruncFunction = this.getDateTruncFunction(interval);
 
-    const startTimeIntervalBegin = moment(startTime).utc().startOf(interval as moment.unitOfTime.StartOf);
-    const endTimeIntervalBegin = moment(endTime).utc().startOf(interval as moment.unitOfTime.StartOf);
+    const startTimeIntervalBegin = moment(startTime).startOf(interval as moment.unitOfTime.StartOf);
+    const endTimeIntervalBegin = moment(endTime).startOf(interval as moment.unitOfTime.StartOf);
 
     return this.dataSource.query(`
       with 
-        time_series as (select generate_series($1, $2, '1 ${interval}'::interval) as time),
+        time_series as (select generate_series($1 at time zone $5, $2 at time zone $5, '1 ${interval}'::interval) as time),
         log_levels as (select unnest(enum_range(null::event_logs_log_level_enum)) as loglevel)
       select
         ${dateTruncFunction} as time,
@@ -85,14 +90,20 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
         ts.time + interval '1 ${interval}' as "endTime"
       from time_series ts
         cross join log_levels ll
-        left join event_logs el on date_trunc('${interval}', el.created_at) = ts.time
+        left join event_logs el on date_trunc('${interval}', el.created_at at time zone $5) = ts.time
         and el.log_level = ll.loglevel
-        and el.created_at between $3 and $4
+        and el.created_at at time zone $5 between $3 and $4
       group by ts.time,
         ll.loglevel
       order by ts.time,
         ll.loglevel;
-    `, [startTimeIntervalBegin.toISOString(), endTimeIntervalBegin.toISOString(), startTime, endTime]);
+    `, [
+      startTimeIntervalBegin.toISOString(),
+      endTimeIntervalBegin.toISOString(),
+      startTime,
+      endTime,
+      timezone
+    ]);
   }
 
   private async getOldestLogDate(): Promise<Date> {
@@ -129,20 +140,20 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     }
   }
 
-  private getDateTruncFunction(interval: 'second' | 'minute' | 'hour' | 'day' | 'week'): string {
+  private getDateTruncFunction(interval: 'second' | 'minute' | 'hour' | 'day' | 'week', timezone: string = 'UTC'): string {
     switch (interval) {
       case 'second':
-        return "to_char(ts.time, 'HH24:MI:SS')";
+        return `to_char(ts.time, 'HH24:MI:SS')`;
       case 'minute':
-        return "to_char(ts.time, 'HH24:MI')";
+        return `to_char(ts.time, 'HH24:MI')`;
       case 'hour':
-        return "to_char(ts.time, 'HH24:MI')";
+        return `to_char(ts.time, 'HH24:MI')`;
       case 'day':
-        return "to_char(ts.time, 'MM-DD')";
+        return `to_char(ts.time, 'YYYY-MM-DD')`;
       case 'week':
-        return "to_char(date_trunc('week', ts.time), 'MM-DD')";
+        return `to_char(date_trunc('week', ts.time), 'YYYY-MM-DD')`;
       default:
-        throw new Error('Invalid interval');
+        return `to_char(date_trunc('week', ts.time), 'YYYY-MM-DD')`;
     }
   }
 }
