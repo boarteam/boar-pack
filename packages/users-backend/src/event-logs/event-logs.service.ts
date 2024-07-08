@@ -80,7 +80,9 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       select
         ${dateTruncFunction} as time,
         ll.loglevel as "logLevel",
-        coalesce(count(el.*)::int, 0) as records
+        coalesce(count(el.*)::int, 0) as records,
+        ts.time as "startTime",
+        ts.time + interval '1 ${interval}' as "endTime"
       from time_series ts
         cross join log_levels ll
         left join event_logs el on date_trunc('${interval}', el.created_at) = ts.time
