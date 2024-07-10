@@ -4,13 +4,17 @@ import { mtPlatformsIds, MTVersions } from "../amts-dc/amts-dc.constants";
 import { MessagesStream } from "./dto/quotes.dto";
 import { MTLoginResult, MTQuoteWSMessage, MTWSMessage } from "../amts-dc/dto/amts-dc.dto";
 import { Subject } from "rxjs";
+import WebSocket from "ws";
+
+type TConnectorConfig = {
+  instruments: string[];
+  socket?: WebSocket;
+}
 
 @Injectable()
 export class QuotesAmtsConnector {
   private readonly logger = new Logger(QuotesAmtsConnector.name);
-  private readonly subjectsToConfigs = new Map<MessagesStream, {
-    instruments: string[],
-  }>();
+  private readonly subjectsToConfigs = new Map<MessagesStream, TConnectorConfig>();
 
   constructor(
     private readonly amtsDcService: AmtsDcService,
@@ -57,20 +61,35 @@ export class QuotesAmtsConnector {
 
   public async getMessagesStream(instruments: string[]): Promise<MessagesStream> {
     const messagesStream: MessagesStream = new Subject();
-    this.subjectsToConfigs.set(messagesStream, {
+    const config: TConnectorConfig = {
       instruments,
+    };
+    this.subjectsToConfigs.set(messagesStream, config);
+
+    this.logger.log(`Connecting AMTS socket to new messages stream...`);
+    this.connectWebsocketToStream(messagesStream).catch(e => {
+      this.logger.error(`Error while connecting to AMTS websocket`);
+      this.logger.error(e, e.stack);
+      this.stopMessagesStream(messagesStream);
     });
 
-    await this.connectWebsocketToStream(messagesStream);
     return messagesStream;
   }
 
   public stopMessagesStream(messagesStream: MessagesStream): void {
-    messagesStream.unsubscribe();
+    const config = this.subjectsToConfigs.get(messagesStream);
+    messagesStream.complete();
+    messagesStream.closed = true;
     this.subjectsToConfigs.delete(messagesStream);
+    if (config?.socket) {
+      this.amtsDcService.closeQuotesWebsocket(config.socket).catch(e => {
+        this.logger.error(`Error while closing AMTS websocket`);
+        this.logger.error(e, e.stack);
+      });
+    }
   }
 
-  private async connectWebsocketToStream(messagesStream: MessagesStream): Promise<void> {
+  private async connectWebsocketToStream(messagesStream: MessagesStream, reconnectTries: number = 5): Promise<WebSocket> {
     this.logger.log(`Connecting to AMTS websocket...`);
     try {
       const config = this.subjectsToConfigs.get(messagesStream);
@@ -78,79 +97,95 @@ export class QuotesAmtsConnector {
         throw new Error(`Config not found for stream, can't connect`);
       }
 
-      await this.createWebsocketAndConnect(messagesStream, config.instruments);
+      config.socket = await this.createWebsocketAndConnect(messagesStream, config.instruments);
+      return config.socket;
     } catch (e) {
+      if (reconnectTries <= 0) {
+        this.logger.error(`Error while reconnecting to AMTS websocket, no more tries left`);
+        this.logger.error(e, e.stack);
+        throw e;
+      }
+
       this.logger.error(`Error while reconnecting to AMTS websocket, reconnect in 5s..`);
       this.logger.error(e, e.stack);
-      setTimeout(() => this.connectWebsocketToStream(messagesStream), 5000);
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      return this.connectWebsocketToStream(messagesStream, reconnectTries - 1);
     }
   }
 
-  private async createWebsocketAndConnect(messagesStream: MessagesStream, instruments: string[]) {
-    const socket = this.amtsDcService.getQuotesWebsocket({
+  private async createWebsocketAndConnect(messagesStream: MessagesStream, instruments: string[]): Promise<WebSocket> {
+    return this.amtsDcService.createQuotesWebsocketAndAttachStream({
       url: this.getWsUrl(),
       auth: await this.auth(),
       instruments,
       options: {
         platform_id: mtPlatformsIds[MTVersions.MT5],
-      }
-    });
+      },
+      onMessage: (event) => {
+        this.processWSMessage(messagesStream, event);
+      },
+      onClose: () => {
+        if (messagesStream.closed) {
+          this.logger.log(`AMTS websocket closed, but stream is already closed, no need to reconnect`);
+          return;
+        }
 
-    socket.on('message', async (data: string) => {
-      this.logger.verbose(data);
-      await this.processWSMessage(messagesStream, data);
-    });
-
-    socket.on('close', async () => {
-      this.logger.log(`Reconnecting to AMTS websocket in 1 second...`);
-      setTimeout(() => this.connectWebsocketToStream(messagesStream), 1000);
+        this.logger.log(`Reconnecting to AMTS websocket in 1 second...`);
+        setTimeout(() => this.connectWebsocketToStream(messagesStream), 1000);
+      },
     });
   }
-  /**
-   * volumes array contains negative and positive values, negative values are for ask prices, positive for bid prices.
-   * Every volume value corresponds to price value with the same index. Last negative value is for the lowest ask price,
-   * last positive value is for the highest bid price. So, to find bid and ask prices we need to find the last negative
-   * value and the first positive value.
-   */
-  private findBidAskPrices(prices: number[], volumes: number[]): { bid: number, ask: number } {
-    let bid = 0;
-    let ask = 0;
-    for (let i = 0; i < volumes.length; i++) {
-      const volume = volumes[i];
-      if (volume < 0 || Object.is(volume, -0)) {
-        ask = prices[i];
-      } else {
-        bid = prices[i];
-        break;
-      }
+
+  public async updateMessagesStream(messagesStream: MessagesStream, instruments: string[]) {
+    const config = this.subjectsToConfigs.get(messagesStream);
+    if (!config) {
+      throw new Error(`Config not found for stream, can't update`);
     }
-    return { bid, ask };
+
+    if (!config.socket) {
+      config.instruments = instruments;
+      this.logger.warn(`Socket is not connected, updating instruments and connecting socket to existing stream...`);
+      await this.connectWebsocketToStream(messagesStream);
+      return;
+    }
+
+    const params = {
+      ws: config.socket,
+      auth: await this.auth(),
+    } as const;
+
+    this.logger.log(`Detaching quotes stream from existing socket...`);
+    await this.amtsDcService.detachStream({
+      ...params,
+      instruments: config.instruments,
+    })
+
+    config.instruments = instruments;
+    this.logger.log(`Attaching quotes stream to existing socket...`);
+    await this.amtsDcService.attachStream({
+      ...params,
+      instruments,
+      options: {
+        platform_id: mtPlatformsIds[MTVersions.MT5],
+      },
+    });
   }
 
-  private async processWSMessage(messagesStream: MessagesStream, data: string): Promise<void> {
-    try {
-      const msg: MTWSMessage = JSON.parse(data);
-      if ('quote' in msg) {
-        this.processQuoteMessage(messagesStream, msg);
-      } else {
-        this.logger.warn(`Unknown WS message type for message: ${data}`);
-      }
-    } catch (e) {
-      this.logger.error(`Error while processing WS message`);
-      this.logger.error(data);
-      this.logger.error(e, e.stack);
+  private processWSMessage(messagesStream: MessagesStream, event: MTWSMessage) {
+    if ('quote' in event) {
+      this.processQuoteMessage(messagesStream, event);
+    } else {
+      this.logger.warn(`Unknown WS message type for message: ${JSON.stringify(event)}`);
     }
   }
 
   private processQuoteMessage(messagesStream: MessagesStream, msg: MTQuoteWSMessage): void {
-    const { bid, ask } = this.findBidAskPrices(msg.quote.bands.prices, msg.quote.bands.volumes);
-
     messagesStream.next({
       event: 'quote',
       data: {
         symbol: msg.quote.instrument,
-        bid,
-        ask,
+        bid: msg.quote.bid,
+        ask: msg.quote.ask,
         timestamp: msg.quote.ts_msc,
       },
     });

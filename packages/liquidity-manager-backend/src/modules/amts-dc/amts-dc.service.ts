@@ -8,17 +8,31 @@ import {
   MTInstrumentListResult,
   MTLoginRequest,
   MTLoginResult,
-  MTResponse
+  MTResponse, MTWSMessage
 } from "./dto/amts-dc.dto";
 import WebSocket from "ws";
+import {
+  TBaseConfig,
+  WebsocketsClients
+} from "@jifeon/boar-pack-common-backend/src/modules/websockets/websockets.clients";
+
+type TAmtsSocketsConfig = TBaseConfig<MTWSMessage> & {
+  // instruments: string[];
+}
 
 @Injectable()
 export class AmtsDcService {
   private readonly logger = new Logger(AmtsDcService.name);
   private readonly VERSION = 10;
 
+
   constructor(
     private httpService: HttpService,
+    private readonly websocketsClients: WebsocketsClients<
+      MTWSMessage,
+      MTAttachStreamRequest,
+      TAmtsSocketsConfig
+    >,
   ) {
   }
 
@@ -82,39 +96,72 @@ export class AmtsDcService {
     });
   }
 
-  public checkStreamConnection(url: string): Promise<void> {
-    this.logger.log(`Checking WS connection to ${url}`);
+  public checkStreamConnection({
+    url,
+    // instruments,
+  }: Pick<TAmtsSocketsConfig, 'url'>): Promise<void> {
     return new Promise((resolve, reject) => {
-      const ws = new WebSocket(url);
-      ws.on('open', () => {
-        resolve();
-        ws.close();
-      });
-
-      ws.on('error', (e) => {
-        this.logger.error(`Error on WS connection to ${url}`);
-        this.logger.error(e);
-        reject(e);
-        ws.close();
-      });
-
-      ws.on('close', () => {
-        reject(new Error('Connection closed'));
+      const ws = this.websocketsClients.connect({
+        url,
+        // instruments,
+        onOpen: () => {
+          this.websocketsClients.close(ws).then(resolve).catch(reject);
+        },
+        onClose: () => {
+          reject(new Error('Connection closed'));
+        }
       });
     });
   }
 
-  public getQuotesWebsocket({
+  public createQuotesWebsocketAndAttachStream({
     url,
     auth,
     instruments,
     options,
+    onMessage,
+    onClose,
   }: {
     url: string,
     auth: MTLoginResult,
     instruments: string[],
     options?: Partial<MTAttachStreamRequest>
+    onMessage?: (event: MTWSMessage) => void;
+    onClose?: () => void;
   }): WebSocket {
+    const ws = this.websocketsClients.connect({
+      url,
+      ignoreInvalidJson: true,
+      onOpen: () => {
+        return this.attachStream({
+          ws,
+          auth,
+          instruments,
+          options,
+        });
+      },
+      onMessage,
+      onClose,
+    });
+
+    return ws;
+  }
+
+  public closeQuotesWebsocket(ws: WebSocket): Promise<void> {
+    return this.websocketsClients.close(ws);
+  }
+
+  public async attachStream({
+    ws,
+    auth,
+    instruments,
+    options,
+  }: {
+    ws: WebSocket,
+    auth: MTLoginResult,
+    instruments: string[],
+    options?: Partial<MTAttachStreamRequest>
+  }): Promise<void> {
     const params: MTAttachStreamRequest = {
       method: 'attach_stream',
       version: this.VERSION,
@@ -130,28 +177,33 @@ export class AmtsDcService {
       secret: this.calculateSecret(params, auth.session_id, auth.pin),
     };
 
-    this.logger.log(`Attaching stream to ${url}`);
     this.logger.verbose(data);
-    const ws = new WebSocket(url);
+    this.logger.log(`Sending attach_stream request`);
 
-    ws.on('error', (e) => {
-      this.logger.error(`Error on WS connection to ${url}`);
-      this.logger.error(e);
-      ws.close();
-    });
+    await this.websocketsClients.send(ws, data)
+  }
 
-    ws.on('open', () => {
-      this.logger.log(`Sending attach_stream request to ${url}`);
-      ws.send(JSON.stringify(data), (err) => {
-        if (err) {
-          this.logger.error(`Error sending attach_stream request to ${url}`);
-          this.logger.error(err);
-          ws.close();
-        }
-      });
-    });
+  public detachStream({
+    ws,
+    auth,
+    instruments,
+  }: {ws: WebSocket, auth: MTLoginResult, instruments: string[]}): Promise<void> {
+    const params = {
+      method: 'detach_stream',
+      version: this.VERSION,
+      session_id: Number(auth.session_id),
+      req_id: 1,
+      unsubscribe_quotes: instruments,
+    };
 
-    return ws;
+    const data = {
+      ...params,
+      secret: this.calculateSecret(params, auth.session_id, auth.pin),
+    };
+
+    this.logger.verbose(data);
+    this.logger.log(`Sending detach_stream request`);
+    return this.websocketsClients.send(ws, data);
   }
 }
 

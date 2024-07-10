@@ -89,12 +89,10 @@ export type MTWSMessage =
 
 export type MTQuoteWSMessage = {
   quote: {
-    bands: {
-      prices: number[];
-      volumes: number[];
-    }
     instrument: string;
     ts_msc: number;
+    ask: number;
+    bid: number
   }
 }
 

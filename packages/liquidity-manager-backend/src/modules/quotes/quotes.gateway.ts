@@ -81,9 +81,7 @@ export class QuotesGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private handleSubscribe(
     @ConnectedSocket() client: WebSocket,
     @MessageBody() subscribeEventDto: SubscribeEventDto['data'],
-  ): Promise<MessagesStream> {
-    this.addClient(client);
-
+  ): Promise<MessagesStream | void> | void {
     const { symbols } = subscribeEventDto;
     if (!Array.isArray(symbols) || !symbols.length || !symbols.every((symbol) => typeof symbol === 'string')) {
       // TODO: add validation pipe, also check there are corresponding instruments, number of symbols and length
@@ -91,6 +89,12 @@ export class QuotesGateway implements OnGatewayConnection, OnGatewayDisconnect {
       throw new WsException('Symbols should be a non-empty array of strings');
     }
 
+    if (this.clients.has(client)) {
+      return this.proxy.updateMessagesStream(client, symbols);
+    }
+
+
+    this.addClient(client);
     return this.proxy.getMessagesStream(client, symbols.filter((symbol) => symbol.length > 0));
   }
 }
