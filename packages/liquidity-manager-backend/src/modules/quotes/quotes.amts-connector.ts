@@ -114,12 +114,20 @@ export class QuotesAmtsConnector {
   }
 
   private async createWebsocketAndConnect(messagesStream: MessagesStream, instruments: string[]): Promise<WebSocket> {
-    return this.amtsDcService.createQuotesWebsocketAndAttachStream({
+    const ws = this.amtsDcService.createQuotesWebsocketAndAttachStream({
       url: this.getWsUrl(),
       auth: await this.auth(),
       instruments,
       options: {
         platform_id: mtPlatformsIds[MTVersions.MT5],
+      },
+      onOpen: () => {
+        messagesStream.next({
+          event: 'status',
+          data: {
+            status: ws.readyState,
+          },
+        });
       },
       onMessage: (event) => {
         this.processWSMessage(messagesStream, event);
@@ -134,6 +142,8 @@ export class QuotesAmtsConnector {
         setTimeout(() => this.connectWebsocketToStream(messagesStream), 1000);
       },
     });
+
+    return ws;
   }
 
   public async updateMessagesStream(messagesStream: MessagesStream, instruments: string[]) {

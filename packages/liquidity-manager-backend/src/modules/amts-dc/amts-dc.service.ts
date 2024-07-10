@@ -119,13 +119,15 @@ export class AmtsDcService {
     auth,
     instruments,
     options,
+    onOpen,
     onMessage,
     onClose,
   }: {
     url: string,
     auth: MTLoginResult,
     instruments: string[],
-    options?: Partial<MTAttachStreamRequest>
+    options?: Partial<MTAttachStreamRequest>,
+    onOpen?: () => void;
     onMessage?: (event: MTWSMessage) => void;
     onClose?: () => void;
   }): WebSocket {
@@ -133,6 +135,7 @@ export class AmtsDcService {
       url,
       ignoreInvalidJson: true,
       onOpen: () => {
+        onOpen?.();
         return this.attachStream({
           ws,
           auth,

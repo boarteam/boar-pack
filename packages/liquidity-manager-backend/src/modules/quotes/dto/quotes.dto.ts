@@ -15,10 +15,17 @@ export class SubscribeEventDto implements WebsocketsEventDto {
   }
 }
 
-export type MessageEventDto = QuoteEventDto;
+export type MessageEventDto = QuoteEventDto | StatusEventDto;
 export type MessagesStream = Subject<MessageEventDto>;
 
 export class QuoteEventDto implements WebsocketsEventDto {
   event: 'quote';
   data: QuoteDto;
+}
+
+export class StatusEventDto implements WebsocketsEventDto {
+  event: 'status';
+  data: {
+    status: WebSocket['readyState'],
+  };
 }

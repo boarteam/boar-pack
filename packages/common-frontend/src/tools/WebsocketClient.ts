@@ -10,6 +10,7 @@ export class WebsocketClient {
   private socket: WebSocket | null;
   private reconnectTimeout: number | undefined;
   private readonly worker: null | string;
+  private serverSocketStatus: WebSocket['readyState'] = WebSocket.CLOSED;
 
   private readonly closeHandler: (event: CloseEvent) => void;
   private readonly openHandler: () => void;
@@ -34,10 +35,15 @@ export class WebsocketClient {
     this.connect();
   }
 
+  get status() {
+    return this.serverSocketStatus === WebSocket.OPEN ? this.socket?.readyState : this.serverSocketStatus;
+  }
+
   private connect() {
     const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
     const url = `${wsProtocol}//${location.host}/ws/${this.worker || 'primary'}/quotes`;
     console.log(`QuotesDataSocket: connecting to ${url}...`);
+    this.serverSocketStatus = WebSocket.CONNECTING;
     this.socket = new WebSocket(url);
     this.socket.addEventListener("open", this.onOpen);
     this.socket.addEventListener("message", this.onMessage);
@@ -84,6 +90,9 @@ export class WebsocketClient {
       return;
     }
 
+    if (msg.event === "status") {
+      this.serverSocketStatus = msg.data?.status ?? this.serverSocketStatus;
+    }
 
     this.messageHandler(msg);
   }
