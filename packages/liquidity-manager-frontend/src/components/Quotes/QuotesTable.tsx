@@ -56,7 +56,7 @@ const QuotesTable = () => {
   const getAll = async (params: TGetAllParams & TQuotesPathParams) => {
     params.fields = ['name'];
     params.join = ['instrumentGroup||name'];
-    params.sort = params.sort.map(sort => sort.replace('symbol', 'name'));
+    params.sort = params.sort.map(sort => sort.replace('symbol', 'name').replace('group', 'instrumentGroup.name'));
 
     const response = await apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params);
     const symbols = response.data.map(instrument => instrument.name);
@@ -84,7 +84,16 @@ const QuotesTable = () => {
       searchableColumns={[
         {
           field: 'symbol',
+          searchField: 'name',
+          filterField: 'name',
           operator: Operators.containsLow,
+        },
+        {
+          field: 'group',
+          searchField: 'instrumentGroup.name',
+          filterField: 'instrumentGroup.id',
+          operator: Operators.containsLow,
+          filterOperator: Operators.in,
         },
       ]}
       viewOnly={true}

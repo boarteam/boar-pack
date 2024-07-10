@@ -1,8 +1,10 @@
 import { ProColumns } from "@ant-design/pro-components";
 import { useQuotes } from "./QuotesDataSource";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { QuoteDto } from "../../tools/api-client";
 import dayjs from "dayjs";
+import apiClient from "../../tools/api-client/apiClient";
+import { useLiquidityManagerContext } from "../../tools";
 
 export interface Quote {
   symbol: string;
@@ -36,11 +38,26 @@ const Ticker: React.FC<{
 }
 
 export const useQuotesColumns = (): ProColumns<Quote>[] => {
+  const [instrumentGroups, setInstrumentGroups] = useState<{ text: string, value: number }[]>([]);
+  const { worker } = useLiquidityManagerContext();
+
+  useEffect(() => {
+    if (worker) {
+      apiClient.ecnInstrumentsGroups.getManyBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup({
+        worker,
+        sort: ['name,ASC'],
+      }).then((groups) => {
+        setInstrumentGroups(groups.data.map((item) => ({ text: item.name, value: item.id })));
+      });
+    }
+  }, [worker]);
+
   return [
     {
       title: 'Symbol',
       dataIndex: 'symbol',
       width: '20%',
+      sorter: true,
     },
     {
       title: 'Bid',
@@ -70,6 +87,9 @@ export const useQuotesColumns = (): ProColumns<Quote>[] => {
       title: 'Group',
       dataIndex: 'group',
       width: '20%',
+      filters: instrumentGroups,
+      filterSearch: true,
+      sorter: true,
     }
   ];
 };

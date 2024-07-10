@@ -1,5 +1,6 @@
 import { Injectable, Logger, Scope } from "@nestjs/common";
 import WebSocket from "ws";
+// import { LosslessNumber, parse } from "lossless-json";
 
 export type TBaseConfig<EventType> = {
   url: string;
@@ -55,14 +56,15 @@ export class WebsocketsClients<IncomeEventType,
       this.onClose(ws, config, code, reason);
     });
 
-    ws.on('message', (msg: string) => {
+    ws.on('message', (msg: Buffer) => {
       let event: IncomeEventType;
       try {
         this.logger.verbose(msg);
-        event = JSON.parse(msg);
+        event = JSON.parse(String(msg));
+        // event = parse(String(msg)) as IncomeEventType;
       } catch (e) {
         this.logger.error(`Error, while parsing message from WS server ${msg}`);
-        this.logger.error(e);
+        this.logger.error(e, e.stack);
         if (!config.ignoreInvalidJson) {
           ws?.close(WsErrorCodes.InvalidJson, "Invalid JSON");
         }
