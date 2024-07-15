@@ -23,6 +23,7 @@ export enum Permissions {
 export class CaslPermissionsModule {
   constructor() {
     const Liquidity = 'Liquidity' as const;
+    const Quotes = 'Quotes' as const;
 
     const permissions = [
       {
@@ -41,6 +42,7 @@ export class CaslPermissionsModule {
           UsersInst,
           UsersSubAccountInst,
           Liquidity,
+          Quotes,
         ],
       },
       {
@@ -59,6 +61,7 @@ export class CaslPermissionsModule {
           UsersInst,
           UsersSubAccountInst,
           Liquidity,
+          Quotes,
         ],
       },
     ];

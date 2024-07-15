@@ -18,7 +18,7 @@ export class EventLogsModule {
     return {
       module: EventLogsModule,
       imports: [
-        CaslModule,
+        CaslModule.forFeature(),
         TypeOrmModule.forFeature([EventLog], config.dataSourceName),
       ],
       providers: [
@@ -46,7 +46,7 @@ export class EventLogsModule {
     return {
       module: EventLogsModule,
       imports: [
-        CaslModule,
+        CaslModule.forFeature(),
         TypeOrmModule.forFeature([EventLog], config.dataSourceName),
       ],
       providers: [

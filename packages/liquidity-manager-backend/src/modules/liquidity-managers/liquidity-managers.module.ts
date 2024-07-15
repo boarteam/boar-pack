@@ -37,6 +37,31 @@ export class LiquidityManagersModule {
     };
   }
 
+  static forManagerPanel(config: {
+    dataSourceName: string;
+  }): DynamicModule {
+    return {
+      module: LiquidityManagersModule,
+      imports: [
+        TypeOrmModule.forFeature([LiquidityManager], config.dataSourceName),
+        ScryptModule,
+      ],
+      providers: [
+        {
+          provide: LiquidityManagersService,
+          inject: [getDataSourceToken(config.dataSourceName), ScryptService],
+          useFactory: (dataSource, scryptService) => {
+            return new LiquidityManagersService(dataSource.getRepository(LiquidityManager), scryptService);
+          }
+        },
+      ],
+      exports: [
+        LiquidityManagersService,
+      ],
+      controllers: [LiquidityManagersController],
+    };
+  }
+
   static forConfig(config: {
     dataSourceName: string;
   }): DynamicModule {

@@ -21,6 +21,7 @@ import { AuthModule, CaslModule } from "@jifeon/boar-pack-users-backend";
 import { ClusterModule } from "@jifeon/boar-pack-common-backend";
 import { CaslPermissionsModule } from "../casl-permissions";
 import { AuthModule as LMAuthModule } from "../auth";
+import { QuotesModule } from "../quotes/quotes.module";
 
 export const restModules = [
   EcnModulesModule,
@@ -57,11 +58,11 @@ export class LiquidityAppModule {
         AuthModule.forRoot({
           googleAuth: false,
           msAuth: false,
-          localAuth: true,
+          localAuth: false,
           withControllers: false,
           dataSourceName: config.dataSourceName,
         }),
-        CaslModule,
+        CaslModule.forRoot(),
         CaslPermissionsModule,
         JoiPipeModule,
         ...restModules,
@@ -88,12 +89,13 @@ export class LiquidityAppModule {
           useClass: LiquidityAppConfig,
         }),
         LMAuthModule,
-        CaslModule,
+        CaslModule.forRoot(),
         CaslPermissionsModule,
         JoiPipeModule,
-        LiquidityManagersModule.register({
+        LiquidityManagersModule.forManagerPanel({
           dataSourceName: config.dataSourceName,
         }),
+        QuotesModule.forMaster(),
         ...restModules,
       ],
       providers: [],

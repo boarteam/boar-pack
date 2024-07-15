@@ -14,7 +14,7 @@ export class WsAuthGuard implements CanActivate {
     const user = await this.wsAuthService.finishInitialization(client);
 
     if (!user) {
-      this.logger.warn(`Client not authorized`);
+      this.logger.warn(`Unauthorized connection by websocket`);
     }
 
     return !!user;

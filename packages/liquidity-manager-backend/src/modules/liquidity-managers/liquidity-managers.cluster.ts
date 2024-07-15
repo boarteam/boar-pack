@@ -1,12 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { LiquidityManagersService } from "./liquidity-managers.service";
 import { LiquidityManagerWorkers } from "./entities/liquidity-manager.entity";
-import { ClusterInterface, ClusterService, ClusterSettings, WorkerSettings } from "@jifeon/boar-pack-common-backend";
+import { ClusterInterface, ClusterSettings, WorkerSettings } from "@jifeon/boar-pack-common-backend";
 
 @Injectable()
 export class LiquidityManagersCluster implements ClusterInterface {
   constructor(
-    private readonly cluster: ClusterService,
     private readonly liquidityManagersService: LiquidityManagersService,
   ) {
   }
