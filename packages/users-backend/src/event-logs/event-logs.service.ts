@@ -6,7 +6,8 @@ import { Request } from 'express';
 import { Roles } from "../users";
 import { EventLogTimelineDto } from "./dto/event-log-timeline.dto";
 import moment from "moment";
-import 'moment-timezone';
+
+type TInterval = 'second' | 'minute' | 'hour' | 'day' | 'week';
 
 @Injectable()
 export class EventLogsService extends TypeOrmCrudService<EventLog> {
@@ -76,30 +77,28 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       endTime = new Date();
     }
 
-    if (timezone) {
-      startTime = moment(startTime).tz(timezone).toDate();
-      endTime = moment(endTime).tz(timezone).toDate();
-    }
+    let startMoment = moment(startTime);
+    let endMoment = moment(endTime);
 
-    const interval = this.determineInterval(startTime, endTime);
-    const dateTruncFunction = this.getDateTruncFunction(interval);
+    const interval = this.determineInterval(startMoment, endMoment);
+    const formatTimeFunction = this.getFormatTimeFunction(interval, timezone);
 
-    const startTimeIntervalBegin = moment(startTime).startOf(interval as moment.unitOfTime.StartOf);
-    const endTimeIntervalBegin = moment(endTime).startOf(interval as moment.unitOfTime.StartOf);
+    const startTimeIntervalBegin = startMoment.startOf(interval as moment.unitOfTime.StartOf);
+    const endTimeIntervalBegin = endMoment.startOf(interval as moment.unitOfTime.StartOf);
 
     return this.dataSource.query(`
       with 
-        time_series as (select generate_series($1 at time zone $5, $2 at time zone $5, '1 ${interval}'::interval) as time),
+        time_series as (select generate_series($1, $2, '1 ${interval}'::interval) as time),
         log_levels as (select unnest(enum_range(null::event_logs_log_level_enum)) as loglevel)
       select
-        ${dateTruncFunction} as time,
+        ${formatTimeFunction} as time,
         ll.loglevel as "logLevel",
         coalesce(count(el.*)::int, 0) as records,
         ts.time as "startTime",
         ts.time + interval '1 ${interval}' as "endTime"
       from time_series ts
         cross join log_levels ll
-        left join event_logs el on date_trunc('${interval}', el.created_at at time zone $5) = ts.time
+        left join event_logs el on date_trunc('${interval}', el.created_at, $5) = ts.time
         and el.log_level = ll.loglevel
         and el.created_at at time zone $5 between $3 and $4
       group by ts.time,
@@ -107,10 +106,10 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       order by ts.time,
         ll.loglevel;
     `, [
-      startTimeIntervalBegin.toISOString(),
-      endTimeIntervalBegin.toISOString(),
-      startTime,
-      endTime,
+      startTimeIntervalBegin.toDate(),
+      endTimeIntervalBegin.toDate(),
+      startMoment.toDate(),
+      endMoment.toDate(),
       timezone
     ]);
   }
@@ -122,8 +121,8 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     return new Date(oldestLog.min);
   }
 
-  private determineInterval(startTime: Date, endTime: Date): 'second' | 'minute' | 'hour' | 'day' | 'week' {
-    const duration = moment.duration(moment(endTime).diff(moment(startTime)));
+  private determineInterval(startTime: moment.Moment, endTime: moment.Moment): TInterval {
+    const duration = moment.duration(endTime.diff(startTime));
 
     const totalSeconds = duration.asSeconds();
     const totalMinutes = duration.asMinutes();
@@ -149,20 +148,20 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     }
   }
 
-  private getDateTruncFunction(interval: 'second' | 'minute' | 'hour' | 'day' | 'week', timezone: string = 'UTC'): string {
+  private getFormatTimeFunction(interval: TInterval, timezone: string = 'UTC'): string {
     switch (interval) {
       case 'second':
-        return `to_char(ts.time, 'HH24:MI:SS')`;
+        return `to_char(ts.time at time zone '${timezone}', 'HH24:MI:SS')`;
       case 'minute':
-        return `to_char(ts.time, 'HH24:MI')`;
+        return `to_char(ts.time at time zone '${timezone}', 'HH24:MI')`;
       case 'hour':
-        return `to_char(ts.time, 'HH24:MI')`;
+        return `to_char(ts.time at time zone '${timezone}', 'HH24:MI')`;
       case 'day':
-        return `to_char(ts.time, 'YYYY-MM-DD')`;
+        return `to_char(ts.time at time zone '${timezone}', 'YYYY-MM-DD')`;
       case 'week':
-        return `to_char(date_trunc('week', ts.time), 'YYYY-MM-DD')`;
+        return `to_char(date_trunc('week', ts.time at time zone '${timezone}'), 'YYYY-MM-DD')`;
       default:
-        return `to_char(date_trunc('week', ts.time), 'YYYY-MM-DD')`;
+        return `to_char(date_trunc('week', ts.time at time zone '${timezone}'), 'YYYY-MM-DD')`;
     }
   }
 }
