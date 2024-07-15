@@ -83,8 +83,8 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     const interval = this.determineInterval(startMoment, endMoment);
     const formatTimeFunction = this.getFormatTimeFunction(interval, timezone);
 
-    const startTimeIntervalBegin = startMoment.startOf(interval as moment.unitOfTime.StartOf);
-    const endTimeIntervalBegin = endMoment.startOf(interval as moment.unitOfTime.StartOf);
+    const startTimeIntervalBegin = startMoment.clone().startOf(interval as moment.unitOfTime.StartOf);
+    const endTimeIntervalBegin = endMoment.clone().startOf(interval as moment.unitOfTime.StartOf);
 
     return this.dataSource.query(`
       with 
