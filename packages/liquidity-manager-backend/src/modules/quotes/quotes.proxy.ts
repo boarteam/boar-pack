@@ -22,7 +22,6 @@ export class QuotesProxy {
     const messagesStream = await this.amtsConnector.getMessagesStream(symbols);
     this.messagesStreamsByClients.set(client, messagesStream);
 
-    // this.pricesSubscriptionsByClients.set(client, subscription);
     client.on('close', () => {
       this.logger.log(`Stopping messages stream since client is closed`);
       this.amtsConnector.stopMessagesStream(messagesStream);
