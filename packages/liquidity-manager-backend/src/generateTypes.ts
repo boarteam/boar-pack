@@ -8,6 +8,8 @@ import { resolve } from "path";
 import { ConfigModule } from "@nestjs/config";
 // @ts-ignore-next-line - Ignore the error because the package on project level
 import { generate } from "openapi-typescript-codegen";
+import { QuoteDto, QuoteEventDto, SubscribeEventDto } from "./modules/quotes/dto/quotes.dto";
+import { WebsocketsErrorEventDto } from "@jifeon/boar-pack-common-backend";
 
 @Module({
   imports: [
@@ -38,8 +40,13 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(Swagger);
     const options: SwaggerDocumentOptions = {
-      operationIdFactory: (controllerKey: string, methodKey: string) =>
-        methodKey,
+      operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
+      extraModels: [
+        WebsocketsErrorEventDto,
+        QuoteDto,
+        QuoteEventDto,
+        SubscribeEventDto,
+      ],
     };
 
     const swaggerConfig = new DocumentBuilder()

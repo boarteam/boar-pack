@@ -1,6 +1,8 @@
 export interface WorkerSettings {
   workerId: string;
-  portIncrement: number;
+  workerName?: string;
+  portIncrement: number | null;
+  extraEnv?: Record<string, string>;
 }
 
 export interface ClusterSettings {

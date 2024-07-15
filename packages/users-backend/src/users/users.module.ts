@@ -23,7 +23,7 @@ export class UsersModule implements OnModuleInit {
       imports: [
         ConfigModule,
         TypeOrmModule.forFeature([User], config.dataSourceName),
-        CaslModule
+        CaslModule.forFeature(),
       ],
       providers: [
         {
