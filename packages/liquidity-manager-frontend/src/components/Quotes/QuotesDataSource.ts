@@ -116,7 +116,7 @@ export class QuotesDataSource {
   }
 }
 
-export function useQuotes() {
+export function useQuotes(moduleId: number) {
   const quotesDataSource = useMemo(() => {
     return QuotesDataSource.create();
   }, []);
