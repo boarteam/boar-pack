@@ -4,7 +4,7 @@ import apiClient from "@@api/apiClient";
 import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
 import { useQuotes } from "./QuotesDataSource";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { Tag } from "antd";
 
@@ -39,10 +39,16 @@ const connectionStatuses = {
   },
 };
 
-const QuotesTable = () => {
+type TQuotesTableProps = {
+  moduleId: number,
+}
+
+const QuotesTable: React.FC<TQuotesTableProps> = ({
+  moduleId,
+}) => {
   const columns = useQuotesColumns();
   const { worker } = useLiquidityManagerContext();
-  const { quotesDataSource } = useQuotes();
+  const { quotesDataSource } = useQuotes(moduleId);
   const [connectionStatus, setConnectionStatus] = useState<WebSocket['readyState']>(WebSocket.CLOSED);
 
   useEffect(() => {

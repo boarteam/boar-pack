@@ -10,11 +10,6 @@ const routes = () => ({
       path: '/liquidity',
       redirect: '/liquidity/ecn-modules',
     },
-    // {
-    //   path: '/liquidity/quotes',
-    //   name: 'quotes',
-    //   component: '@/../node_modules/@jifeon/boar-pack-liquidity-manager-frontend/src/pages/Quotes',
-    // },
     {
       path: '/liquidity/ecn-modules',
       name: 'ecn-modules',
