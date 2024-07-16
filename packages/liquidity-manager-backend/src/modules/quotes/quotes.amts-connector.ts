@@ -24,10 +24,11 @@ export class QuotesAmtsConnector {
 
   public getUrl(): string {
     // noinspection HttpUrlsUsage
-    return `http://amts-tst-srv-01:3000/stream?server_id=server_1`;
+    return `http://amts-tst-srv-01:54011/?server_id=server_1`;
   }
 
   public getWsUrl(): string {
+    // return `ws://amts-tst-srv-01:54011/stream?server_id=1060`;
     return `ws://amts-tst-srv-01:54011/stream?server_id=server_1`;
   }
 
@@ -97,6 +98,8 @@ export class QuotesAmtsConnector {
         throw new Error(`Config not found for stream, can't connect`);
       }
 
+
+
       config.socket = await this.createWebsocketAndConnect(messagesStream, config.instruments);
       return config.socket;
     } catch (e) {
@@ -138,8 +141,22 @@ export class QuotesAmtsConnector {
           return;
         }
 
+        messagesStream.next({
+          event: 'status',
+          data: {
+            status: ws.readyState,
+          },
+        });
+
         this.logger.log(`Reconnecting to AMTS websocket in 1 second...`);
         setTimeout(() => this.connectWebsocketToStream(messagesStream), 1000);
+      },
+    });
+
+    messagesStream.next({
+      event: 'status',
+      data: {
+        status: ws.readyState,
       },
     });
 
