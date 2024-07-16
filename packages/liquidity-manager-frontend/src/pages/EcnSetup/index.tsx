@@ -18,6 +18,16 @@ const EcnSetupPage: React.FC = () => {
   const [activeTab, setActiveTab] = useTabs<Tabs>(Tabs.graph);
   const intl = useIntl();
 
+  if (!id) {
+    return (
+      <Result
+        status="404"
+        title="404"
+        subTitle="Sorry, the page you visited does not exist."
+      />
+    )
+  }
+
   const tabList = [
     {
       key: Tabs.graph,
@@ -28,16 +38,6 @@ const EcnSetupPage: React.FC = () => {
       tab: intl.formatMessage({ id: 'menu.liquidity-pool-management.instruments' }),
     },
   ];
-
-  if (!id) {
-    return (
-      <Result
-        status="404"
-        title="404"
-        subTitle="Sorry, the page you visited does not exist."
-      />
-    )
-  }
 
   const setupId = Number(id) as EcnConnectSchemaSetupLabel['id'];
 

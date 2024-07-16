@@ -24,10 +24,11 @@ export class QuotesTpConnector {
 
   public getUrl(): string {
     // noinspection HttpUrlsUsage
-    return `http://tp-tst-srv-01:3000/stream?server_id=server_1`;
+    return `http://tp-tst-srv-01:54011/?server_id=server_1`;
   }
 
   public getWsUrl(): string {
+    // return `ws://tp-tst-srv-01:54011/stream?server_id=1060`;
     return `ws://tp-tst-srv-01:54011/stream?server_id=server_1`;
   }
 
@@ -97,6 +98,8 @@ export class QuotesTpConnector {
         throw new Error(`Config not found for stream, can't connect`);
       }
 
+
+
       config.socket = await this.createWebsocketAndConnect(messagesStream, config.instruments);
       return config.socket;
     } catch (e) {
@@ -138,8 +141,22 @@ export class QuotesTpConnector {
           return;
         }
 
+        messagesStream.next({
+          event: 'status',
+          data: {
+            status: ws.readyState,
+          },
+        });
+
         this.logger.log(`Reconnecting to TP websocket in 1 second...`);
         setTimeout(() => this.connectWebsocketToStream(messagesStream), 1000);
+      },
+    });
+
+    messagesStream.next({
+      event: 'status',
+      data: {
+        status: ws.readyState,
       },
     });
 
