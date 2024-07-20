@@ -5,6 +5,7 @@ import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
 import { LiquidityManager, WORKER_UNIQUE_CONSTRAINT } from './entities/liquidity-manager.entity';
 import { LiquidityManagersCluster } from "./liquidity-managers.cluster";
 import { ClusterModule, ClusterService, ScryptModule, ScryptService, Tools } from "@jifeon/boar-pack-common-backend";
+import { EventLogsModule } from "@jifeon/boar-pack-users-backend";
 
 @Module({})
 export class LiquidityManagersModule {
@@ -19,6 +20,9 @@ export class LiquidityManagersModule {
         TypeOrmModule.forFeature([LiquidityManager], config.dataSourceName),
         ScryptModule,
         ClusterModule,
+        EventLogsModule.forFeature({
+          dataSourceName: config.dataSourceName,
+        }),
       ],
       providers: [
         {
