@@ -68,6 +68,19 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     });
   }
 
+  public applicationLog(eventLog: Partial<EventLog>): void {
+    this.repo.save({
+      logLevel: LogLevel.INFO,
+      userRole: UserRole.SYSTEM,
+      ...eventLog,
+      logType: LogType.APPLICATION,
+    }).catch(e => {
+      // DO NOT USE LOGGER HERE - it will cause infinite loop
+      console.error('Error while saving application log');
+      console.error(e);
+    });
+  }
+
   async getTimeline(startTime?: Date, endTime?: Date, timezone?: string): Promise<EventLogTimelineDto[]> {
     if (!startTime) {
       startTime = await this.getOldestLogDate();

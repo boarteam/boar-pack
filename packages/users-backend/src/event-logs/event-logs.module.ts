@@ -11,6 +11,7 @@ import { EventLogInterceptor } from "./event-logs.interceptor";
 import { EventLogsExceptionFilter } from "./event-logs.filter";
 import { SERVICE_CONFIG_TOKEN } from "./evnet-logs.constants";
 import { TEventLogServiceConfig } from "./evnet-logs.types";
+import { EventLogsLogger } from "./event-logs.logger";
 
 @Module({})
 export class EventLogsModule {
@@ -61,6 +62,7 @@ export class EventLogsModule {
           provide: SERVICE_CONFIG_TOKEN,
           useValue: config.service,
         },
+        EventLogsLogger,
         {
           provide: APP_INTERCEPTOR,
           useClass: EventLogInterceptor,
@@ -72,6 +74,7 @@ export class EventLogsModule {
       ],
       exports: [
         EventLogsService,
+        EventLogsLogger,
       ],
     }
   }
