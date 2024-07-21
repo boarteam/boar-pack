@@ -29,7 +29,7 @@ export class ClusterService {
     const clusterSettings = await runningCluster.getSettings();
     const workersSettings = await runningCluster.getWorkersSettings();
     workersSettings.forEach(settings => this.runWorker({
-      runningCluster: runningCluster,
+      runningCluster,
       clusterSettings,
       settings
     }));
