@@ -51,6 +51,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     columnsSetSelect: managedColumnsSetSelect,
     popupCreation = false,
     toolBarRender,
+    params,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -67,7 +68,7 @@ const Table = <Entity extends Record<string | symbol, any>,
 
   useEffect(() => {
     actionRef?.current?.reload();
-  }, [JSON.stringify(pathParams)]);
+  }, [JSON.stringify(pathParams), JSON.stringify(params)]);
 
   const {
     columnsSetSelect: localColumnsSetSelect,
@@ -248,6 +249,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       columns={columns}
       defaultSize='small'
       columnsState={columnsState}
+      params={params}
       {...rest}
     />
     <DescriptionsCreateModal<Entity>

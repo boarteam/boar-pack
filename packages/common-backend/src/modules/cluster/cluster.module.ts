@@ -30,7 +30,7 @@ export class ClusterModule implements OnApplicationBootstrap {
 
   async onApplicationBootstrap() {
     if (this.config.disableCluster) {
-      this.logger.log('Cluster is disabled');
+      this.logger.debug('Cluster is disabled');
       return;
     }
 

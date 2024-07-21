@@ -14,4 +14,7 @@ export interface ClusterSettings {
 export interface ClusterInterface {
   getSettings(): Promise<ClusterSettings>;
   getWorkersSettings(): Promise<WorkerSettings[]>;
+  onWorkerRun?(worker: WorkerSettings, vars: Record<string, string>): void;
+  onWorkerExit?(worker: WorkerSettings, code: number, signal: string): void;
+  onWorkerListening?(worker: WorkerSettings): void;
 }

@@ -27,7 +27,7 @@
     "watch:users-backend": "chokidar 'packages/users-backend/src/**/*' -c 'npm run yalc:push --prefix packages/users-backend'",
     "watch:liquidity-manager-backend": "chokidar 'packages/liquidity-manager-backend/src/**/*' -c 'npm run yalc:push --prefix packages/liquidity-manager-backend'",
     "watch:liquidity-manager-frontend": "chokidar 'packages/liquidity-manager-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/liquidity-manager-frontend'",
-    "watch": "npm-run-all --parallel watch:*",
+    "watch": "npm run push && npm-run-all --parallel watch:*",
     "gen:module": "ts-node scripts/new-module.ts",
     "gen:page": "ts-node scripts/new-table-page.ts"
   }
