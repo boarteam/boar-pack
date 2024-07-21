@@ -25,20 +25,23 @@ export class ClusterService {
     await Promise.allSettled(this.clusters.map(cluster => this.runCluster(cluster)));
   }
 
-  private async runCluster(cluster: ClusterInterface) {
-    const clusterSettings = await cluster.getSettings();
-    const workersSettings = await cluster.getWorkersSettings();
+  private async runCluster(runningCluster: ClusterInterface) {
+    const clusterSettings = await runningCluster.getSettings();
+    const workersSettings = await runningCluster.getWorkersSettings();
     workersSettings.forEach(settings => this.runWorker({
+      runningCluster,
       clusterSettings,
       settings
     }));
   }
 
   private runWorker({
+    runningCluster,
     clusterSettings,
     settings,
     callback,
   }: {
+    runningCluster: ClusterInterface,
     clusterSettings: ClusterSettings,
     settings: WorkerSettings,
     callback?: () => void,
@@ -57,9 +60,12 @@ export class ClusterService {
       vars.PORT = String(this.config.port + settings.portIncrement);
     }
 
+    runningCluster.onWorkerRun?.(settings, vars);
     const workerProcess = cluster.fork(vars);
 
     workerProcess.on('exit', (code, signal) => {
+      runningCluster.onWorkerExit?.(settings, code, signal);
+
       this.logger.error(`Worker ${workerName} died with code ${code} and signal ${signal}`);
 
       if (signal === this.STOP_WORKER) {
@@ -67,11 +73,19 @@ export class ClusterService {
       }
 
       if (typeof clusterSettings.restartDelay === 'undefined') {
-        this.runWorker({ clusterSettings, settings });
+        this.runWorker({
+          runningCluster,
+          clusterSettings,
+          settings
+        });
       } else {
         setTimeout(() => {
           this.logger.log(`Restarting worker ${workerName}...`);
-          this.runWorker({ clusterSettings, settings });
+          this.runWorker({
+            runningCluster,
+            clusterSettings,
+            settings
+          });
         }, clusterSettings.restartDelay);
       }
     });
@@ -79,6 +93,7 @@ export class ClusterService {
     workerProcess.once('listening', () => {
       this.logger.log(`Worker ${workerName} started`);
       callback?.();
+      runningCluster.onWorkerListening?.(settings);
     });
   }
 }

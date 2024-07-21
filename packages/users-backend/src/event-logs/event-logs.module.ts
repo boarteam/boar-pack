@@ -11,6 +11,7 @@ import { EventLogInterceptor } from "./event-logs.interceptor";
 import { EventLogsExceptionFilter } from "./event-logs.filter";
 import { SERVICE_CONFIG_TOKEN } from "./evnet-logs.constants";
 import { TEventLogServiceConfig } from "./evnet-logs.types";
+import { EventLogsLogger } from "./event-logs.logger";
 
 @Module({})
 export class EventLogsModule {
@@ -26,7 +27,7 @@ export class EventLogsModule {
           provide: EventLogsService,
           inject: [getDataSourceToken(config.dataSourceName)],
           useFactory: (dataSource: DataSource) => {
-            return new EventLogsService(dataSource.getRepository(EventLog));
+            return new EventLogsService(dataSource.getRepository(EventLog), dataSource);
           }
         },
       ],
@@ -54,13 +55,14 @@ export class EventLogsModule {
           provide: EventLogsService,
           inject: [getDataSourceToken(config.dataSourceName)],
           useFactory: (dataSource: DataSource) => {
-            return new EventLogsService(dataSource.getRepository(EventLog));
+            return new EventLogsService(dataSource.getRepository(EventLog), dataSource);
           }
         },
         {
           provide: SERVICE_CONFIG_TOKEN,
           useValue: config.service,
         },
+        EventLogsLogger,
         {
           provide: APP_INTERCEPTOR,
           useClass: EventLogInterceptor,
@@ -70,7 +72,32 @@ export class EventLogsModule {
           useClass: EventLogsExceptionFilter,
         }
       ],
-      exports: [],
+      exports: [
+        EventLogsService,
+        EventLogsLogger,
+      ],
+    }
+  }
+
+  static forFeature(config: { dataSourceName: string }) {
+    return {
+      module: EventLogsModule,
+      imports: [
+        CaslModule,
+        TypeOrmModule.forFeature([EventLog], config.dataSourceName),
+      ],
+      providers: [
+        {
+          provide: EventLogsService,
+          inject: [getDataSourceToken(config.dataSourceName)],
+          useFactory: (dataSource: DataSource) => {
+            return new EventLogsService(dataSource.getRepository(EventLog), dataSource);
+          }
+        },
+      ],
+      exports: [
+        EventLogsService,
+      ],
     }
   }
 
