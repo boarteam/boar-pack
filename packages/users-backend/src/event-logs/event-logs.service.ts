@@ -113,7 +113,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
         cross join log_levels ll
         left join event_logs el on date_trunc('${interval}', el.created_at, $5) = ts.time
         and el.log_level = ll.loglevel
-        and el.created_at at time zone $5 between $3 and $4
+        and el.created_at between $3 and $4
       group by ts.time,
         ll.loglevel
       order by ts.time,
