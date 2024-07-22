@@ -63,7 +63,7 @@ const Table = <Entity extends Record<string | symbol, any>,
   const actionRef = actionRefProp || actionRefComponent;
   const [createPopupData, setCreatePopupData] = useState<Partial<Entity> | undefined>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [editableData, setEditableData] = useState<(Entity)[]>([]);
+  // const [selectedRecords, setSelectedRecords] = useState<Entity[]>([]);
   const intl = useIntl();
 
   useEffect(() => {
@@ -147,12 +147,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       if (popupCreation) {
         setCreatePopupData(createNewDefaultParams);
       } else {
-        const newId = getNewId();
-        actionRef?.current?.addEditRecord({
-          [idColumnName]: newId,
-          [KEY_SYMBOL]: newId,
-          ...createNewDefaultParams,
-        }, {
+        actionRef?.current?.addEditRecord(createNewDefaultParams, {
           position: 'top',
         });
       }
@@ -165,7 +160,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     <ProTable<Entity, TEntityParams & TFilterParams>
       actionRef={actionRef}
       request={request}
-      rowKey={record => record[KEY_SYMBOL] ?? record[idColumnName]}
+      rowKey={record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]}
       options={{
         fullScreen: true,
         reload: true,
@@ -186,34 +181,30 @@ const Table = <Entity extends Record<string | symbol, any>,
         type: 'multiple',
         editableKeys,
         onChange: setEditableRowKeys,
-        onValuesChange(entity, data) {
-          setEditableData(data);
-        },
         async onSave(
           id,
           record,
           origin,
           newLine,
         ) {
-          const data = editableData.find(entity => entity[idColumnName] === id) || record;
           if (newLine) {
             await onCreate?.({
               ...pathParams,
-              requestBody: entityToCreateDto(data)
+              requestBody: entityToCreateDto(record),
             });
           } else {
             await onUpdate({
               ...pathParams,
-              ...{ [idColumnName]: String(id) } as Record<keyof Entity, string>,
+              ...record,
               requestBody: entityToUpdateDto({
                 ...pathParams,
-                ...data,
+                ...record,
               }),
             })
           }
 
           if (typeof afterSave === 'function') {
-            await afterSave(data);
+            await afterSave(record);
           }
 
           flushSync(() => {
@@ -225,14 +216,10 @@ const Table = <Entity extends Record<string | symbol, any>,
           record,
           origin,
         ) {
-          editableData.forEach(entity => {
-            if (entity[idColumnName] === id) {
-              Object.assign(entity, origin);
-            }
-          })
+          Object.assign(record, origin);
         },
-        async onDelete(id) {
-          await onDelete({ ...{ [idColumnName]: String(id) } as Record<keyof Entity, string>, ...pathParams });
+        async onDelete(id, row) {
+          await onDelete({ ...row, ...pathParams });
         },
         deletePopconfirmMessage: intl.formatMessage({ id: 'table.deletePopconfirmMessage' }),
         onlyAddOneLineAlertMessage: intl.formatMessage({ id: 'table.onlyAddOneLineAlertMessage' }),
@@ -244,12 +231,25 @@ const Table = <Entity extends Record<string | symbol, any>,
       toolBarRender={(...args) => [
         ...toolBarRender && toolBarRender(...args) || [],
         columnsSetSelect?.() || null,
+        // <Dropdown.Button
+        //   onClick={() => setOpenBulkEdit(true)}
+        //   menu={{
+        //     items: [{ label: 'Edit ALL', key: '1' }],
+        //     onClick: () => console.log('all'),
+        //   }}
+        // >
+        //   Bulk Edit
+        // </Dropdown.Button>,
         !viewOnly && createButton || null,
       ]}
       columns={columns}
       defaultSize='small'
       columnsState={columnsState}
       params={params}
+      // rowSelection={{
+      //   selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.reduce((acc, colName) => record[colName] + '-' + acc, '') : record[idColumnName]),
+      //   onChange: (rowKeys, records) => setSelectedRecords(records),
+      // }}
       {...rest}
     />
     <DescriptionsCreateModal<Entity>

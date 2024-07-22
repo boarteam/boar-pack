@@ -2,7 +2,6 @@ import { TTableProps, Table, useFullscreen } from "@jifeon/boar-pack-common-fron
 import apiClient from '@@api/apiClient';
 import { EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto } from "@@api/generated";
 import pick from "lodash/pick";
-import React from "react";
 import { ecnSubscrSchemaJoinFields } from "./ecnSubscrSchemaJoinFields";
 import { useEcnSubscrSchemaColumns } from "./useEcnSubscrSchemaColumns";
 import { ecnSubscrSchemaSearchableColumns } from "./ecnSubscrSchemaSearchableColumns";
@@ -27,7 +26,7 @@ export function ecnSubscriptionSchemaToDto<T extends Partial<EcnSubscrSchema>,
     ]),
     instrumentHash: entity.instrument?.instrumentHash,
     executionMode: entity.executionMode?.id,
-    connectSchemaId: entity.connectSchemaId,
+    connectSchemaId: entity.connectSchema?.id,
   } as R;
 }
 
@@ -44,15 +43,20 @@ function EcnSubscrSchemasTable<T = {}>(params: TEcnSubscrSchemasTableProps<T>) {
     <Table<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, {}, { worker: string }>
       getAll={params => apiClient.ecnSubscrSchemas.getManyBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
       onCreate={params => apiClient.ecnSubscrSchemas.createOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
-      // @ts-ignore-next-line
-      onUpdate={params => apiClient.ecnSubscrSchemas.updateOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
-      // @ts-ignore-next-line
-      onDelete={params => apiClient.ecnSubscrSchemas.deleteOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
+      onUpdate={params => apiClient.ecnSubscrSchemas.updateOneBaseEcnSubscrSchemaControllerEcnSubscrSchema({
+        ...params,
+        instrumentHash: params.requestBody.instrumentHash,
+        connectSchemaId: params.requestBody.connectSchemaId,
+      })}
+      onDelete={params => apiClient.ecnSubscrSchemas.deleteOneBaseEcnSubscrSchemaControllerEcnSubscrSchema({
+        ...params,
+        instrumentHash: params.instrumentHash,
+        connectSchemaId: Number(params.connectSchemaId),
+      })}
       entityToCreateDto={ecnSubscriptionSchemaToDto}
       entityToUpdateDto={ecnSubscriptionSchemaToDto}
       columns={columns}
-      // idColumnName="instrumentHash"
-      rowKey={(record) => `${record.instrumentHash}-${record.connectSchemaId}`}
+      idColumnName={["instrumentHash", 'connectSchemaId']}
       scroll={{
         x: 'max-content',
       }}

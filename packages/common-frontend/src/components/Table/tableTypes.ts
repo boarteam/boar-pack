@@ -86,7 +86,7 @@ interface BaseProps<Entity,
   TPathParams = {}> extends ProTableProps<Entity, TEntityParams & TFilterParams> {
   getAll: ({}: TGetAllParams & TPathParams) => Promise<{ data: Entity[] }>;
   pathParams: TPathParams;
-  idColumnName?: string & keyof Entity;
+  idColumnName?: string & keyof Entity | (string & keyof Entity)[];
   createNewDefaultParams?: Partial<Entity>;
   afterSave?: (record: Entity) => Promise<void>;
   actionRef?: MutableRefObject<ActionType | undefined>;
