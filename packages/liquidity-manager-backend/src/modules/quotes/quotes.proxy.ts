@@ -13,13 +13,21 @@ export class QuotesProxy {
     private readonly amtsConnector: QuotesAmtsConnector,
   ) {}
 
-  public async getMessagesStream(client: WebSocket, symbols: string[]): Promise<Subject<MessageEventDto>> {
+  public async getMessagesStream({
+    client,
+    symbols,
+    moduleId,
+  }: {
+    client: WebSocket,
+    symbols: string[],
+    moduleId: number,
+  }): Promise<Subject<MessageEventDto>> {
     const existingStream = this.messagesStreamsByClients.get(client);
     if (existingStream) {
       this.amtsConnector.stopMessagesStream(existingStream);
     }
 
-    const messagesStream = await this.amtsConnector.getMessagesStream(symbols);
+    const messagesStream = await this.amtsConnector.getMessagesStream(symbols, moduleId);
     this.messagesStreamsByClients.set(client, messagesStream);
 
     client.on('close', () => {
@@ -31,11 +39,23 @@ export class QuotesProxy {
     return messagesStream;
   }
 
-  public async updateMessagesStream(client: WebSocket, symbols: string[]) {
+  public async updateMessagesStream({
+    client,
+    symbols,
+    moduleId
+  }: {
+    client: WebSocket,
+    symbols: string[],
+    moduleId: number,
+  }) {
     const messagesStream = this.messagesStreamsByClients.get(client);
     if (!messagesStream) {
       throw new Error('Messages stream is not found while trying to update it');
     }
-    await this.amtsConnector.updateMessagesStream(messagesStream, symbols);
+    await this.amtsConnector.updateMessagesStream({
+      messagesStream,
+      instruments: symbols,
+      moduleId,
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { QuoteDto, QuoteEventDto, SubscribeEventDto, WebsocketsErrorEventDto, } from "@@api/generated";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { WebsocketClient } from "@jifeon/boar-pack-common-frontend";
 
 export type TIncomeEvent =
@@ -15,31 +15,23 @@ export class QuotesDataSource {
   private primarySocket: WebsocketClient | null = null;
   private active: boolean = false;
   private symbols: string[] = [];
+  private moduleId: number = null;
   public readonly quotesEvents: EventTarget = new EventTarget();
   public readonly socketStatusEvents: EventTarget = new EventTarget();
-
-  private static quotesDataSource: QuotesDataSource;
 
   get status() {
     return this.primarySocket?.status ?? WebSocket.CLOSED;
   }
 
-  static create() {
-    if (!QuotesDataSource.quotesDataSource) {
-      QuotesDataSource.quotesDataSource = new QuotesDataSource();
-    }
-
-    return QuotesDataSource.quotesDataSource;
-  }
-
-  public subscribe(symbols: string[]) {
+  public subscribe(symbols: string[], moduleId: number) {
     if (this.active) {
-      this.updateConnection(symbols);
+      this.updateConnection(symbols, moduleId);
       return;
     }
 
     this.active = true;
     this.symbols = symbols;
+    this.moduleId = moduleId;
 
     this.primarySocket = new WebsocketClient({
       worker: null,
@@ -73,8 +65,9 @@ export class QuotesDataSource {
     await this.primarySocket?.close();
   }
 
-  public updateConnection(symbols: string[]) {
+  public updateConnection(symbols: string[], moduleId: number) {
     this.symbols = symbols;
+    this.moduleId = moduleId;
     if (!this.active) {
       return;
     }
@@ -100,6 +93,7 @@ export class QuotesDataSource {
       event: 'subscribe',
       data: {
         symbols: this.symbols,
+        moduleId: this.moduleId,
       },
     });
   }
@@ -116,9 +110,16 @@ export class QuotesDataSource {
   }
 }
 
-export function useQuotes(moduleId: number) {
-  const quotesDataSource = useMemo(() => {
-    return QuotesDataSource.create();
+export function useQuotes(): { quotesDataSource: QuotesDataSource | null } {
+  const [quotesDataSource, setQuotesDataSource] = useState<QuotesDataSource | null>(null);
+
+  useEffect(() => {
+    const quotesDataSource = new QuotesDataSource();
+    setQuotesDataSource(quotesDataSource);
+
+    return () => {
+      quotesDataSource.closeSocketConnections().catch(console.error);
+    };
   }, []);
 
   return {

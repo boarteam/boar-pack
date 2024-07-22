@@ -12,6 +12,7 @@ export class SubscribeEventDto implements WebsocketsEventDto {
   event: 'subscribe';
   data: {
     symbols: QuoteDto['symbol'][];
+    moduleId: number;
   }
 }
 
