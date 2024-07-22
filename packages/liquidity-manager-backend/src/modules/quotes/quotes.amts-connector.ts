@@ -8,6 +8,7 @@ import WebSocket from "ws";
 
 type TConnectorConfig = {
   instruments: string[];
+  moduleId: number;
   socket?: WebSocket;
 }
 
@@ -24,12 +25,12 @@ export class QuotesAmtsConnector {
 
   public getUrl(): string {
     // noinspection HttpUrlsUsage
-    return `http://amts-tst-srv-01:54011/?server_id=server_1`;
+    return `http://amts-tst-srv-01:3000/?server_id=server_1`;
   }
 
-  public getWsUrl(): string {
+  private getWsUrl(moduleId: number): string {
     // return `ws://amts-tst-srv-01:54011/stream?server_id=1060`;
-    return `ws://amts-tst-srv-01:54011/stream?server_id=server_1`;
+    return `ws://amts-tst-srv-01:3000/stream?server_id=${moduleId}`;
   }
 
   public async auth(): Promise<MTLoginResult> {
@@ -60,10 +61,11 @@ export class QuotesAmtsConnector {
     } as any;
   }
 
-  public async getMessagesStream(instruments: string[]): Promise<MessagesStream> {
+  public async getMessagesStream(instruments: string[], moduleId: number): Promise<MessagesStream> {
     const messagesStream: MessagesStream = new Subject();
     const config: TConnectorConfig = {
       instruments,
+      moduleId,
     };
     this.subjectsToConfigs.set(messagesStream, config);
 
@@ -90,7 +92,7 @@ export class QuotesAmtsConnector {
     }
   }
 
-  private async connectWebsocketToStream(messagesStream: MessagesStream, reconnectTries: number = 5): Promise<WebSocket> {
+  private async connectWebsocketToStream(messagesStream: MessagesStream, reconnectTries: number = 5): Promise<void> {
     this.logger.log(`Connecting to AMTS websocket...`);
     try {
       const config = this.subjectsToConfigs.get(messagesStream);
@@ -98,15 +100,14 @@ export class QuotesAmtsConnector {
         throw new Error(`Config not found for stream, can't connect`);
       }
 
-
-
-      config.socket = await this.createWebsocketAndConnect(messagesStream, config.instruments);
-      return config.socket;
+      config.socket = await this.createWebsocketAndConnect(messagesStream, config);
+      return;
     } catch (e) {
       if (reconnectTries <= 0) {
         this.logger.error(`Error while reconnecting to AMTS websocket, no more tries left`);
         this.logger.error(e, e.stack);
-        throw e;
+        this.stopMessagesStream(messagesStream);
+        return;
       }
 
       this.logger.error(`Error while reconnecting to AMTS websocket, reconnect in 5s..`);
@@ -116,11 +117,11 @@ export class QuotesAmtsConnector {
     }
   }
 
-  private async createWebsocketAndConnect(messagesStream: MessagesStream, instruments: string[]): Promise<WebSocket> {
+  private async createWebsocketAndConnect(messagesStream: MessagesStream, config: TConnectorConfig): Promise<WebSocket> {
     const ws = this.amtsDcService.createQuotesWebsocketAndAttachStream({
-      url: this.getWsUrl(),
+      url: this.getWsUrl(config.moduleId),
       auth: await this.auth(),
-      instruments,
+      instruments: config.instruments,
       options: {
         platform_id: mtPlatformsIds[MTVersions.MT5],
       },
@@ -136,20 +137,7 @@ export class QuotesAmtsConnector {
         this.processWSMessage(messagesStream, event);
       },
       onClose: () => {
-        if (messagesStream.closed) {
-          this.logger.log(`AMTS websocket closed, but stream is already closed, no need to reconnect`);
-          return;
-        }
-
-        messagesStream.next({
-          event: 'status',
-          data: {
-            status: ws.readyState,
-          },
-        });
-
-        this.logger.log(`Reconnecting to AMTS websocket in 1 second...`);
-        setTimeout(() => this.connectWebsocketToStream(messagesStream), 1000);
+        this.recreateSocketForMessageStream(messagesStream);
       },
     });
 
@@ -163,7 +151,45 @@ export class QuotesAmtsConnector {
     return ws;
   }
 
-  public async updateMessagesStream(messagesStream: MessagesStream, instruments: string[]) {
+  private recreateSocketForMessageStream(messagesStream: MessagesStream, timeout: number = 1000) {
+    const config = this.subjectsToConfigs.get(messagesStream);
+
+    if (messagesStream.closed) {
+      this.logger.log(`AMTS websocket closed, but stream is already closed, no need to reconnect`);
+      return;
+    }
+
+    if (!config) {
+      this.logger.error(`Config not found for stream, can't reconnect`);
+      this.stopMessagesStream(messagesStream);
+      return;
+    }
+
+    messagesStream.next({
+      event: 'status',
+      data: {
+        status: config.socket?.readyState || WebSocket.CLOSED,
+      },
+    });
+
+    this.logger.log(`Reconnecting to AMTS websocket in 1 second...`);
+
+    setTimeout(() => this.connectWebsocketToStream(messagesStream).catch(e => {
+      this.logger.error(`Error while reconnecting to AMTS websocket`);
+      this.logger.error(e, e.stack);
+      this.stopMessagesStream(messagesStream);
+    }), timeout);
+  }
+
+  public async updateMessagesStream({
+    messagesStream,
+    instruments,
+    moduleId,
+  }: {
+    messagesStream: MessagesStream,
+    instruments: string[],
+    moduleId: number,
+  }) {
     const config = this.subjectsToConfigs.get(messagesStream);
     if (!config) {
       throw new Error(`Config not found for stream, can't update`);
@@ -171,6 +197,7 @@ export class QuotesAmtsConnector {
 
     if (!config.socket) {
       config.instruments = instruments;
+      config.moduleId = moduleId;
       this.logger.warn(`Socket is not connected, updating instruments and connecting socket to existing stream...`);
       await this.connectWebsocketToStream(messagesStream);
       return;
@@ -188,14 +215,21 @@ export class QuotesAmtsConnector {
     })
 
     config.instruments = instruments;
-    this.logger.log(`Attaching quotes stream to existing socket...`);
-    await this.amtsDcService.attachStream({
-      ...params,
-      instruments,
-      options: {
-        platform_id: mtPlatformsIds[MTVersions.MT5],
-      },
-    });
+
+    if (moduleId === config.moduleId) {
+      this.logger.log(`Attaching quotes stream to existing socket...`);
+      await this.amtsDcService.attachStream({
+        ...params,
+        instruments,
+        options: {
+          platform_id: mtPlatformsIds[MTVersions.MT5],
+        },
+      });
+    } else {
+      config.moduleId = moduleId;
+      this.logger.log(`Reconnecting to AMTS websocket with new module id...`);
+      this.recreateSocketForMessageStream(messagesStream, 0);
+    }
   }
 
   private processWSMessage(messagesStream: MessagesStream, event: MTWSMessage) {
