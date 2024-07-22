@@ -26,9 +26,17 @@ const Ticker: React.FC<{
   const { quotesDataSource } = useQuotes();
   const [ quote, setQuote ] = useState<QuoteDto | null>(null);
 
-  quotesDataSource.quotesEvents.addEventListener(`quote:${symbol}`, (event: CustomEvent<QuoteDto>) => {
-    setQuote(event.detail);
-  });
+  useEffect(() => {
+    const handler = (event: CustomEvent<QuoteDto>) => {
+      setQuote(event.detail);
+    }
+
+    quotesDataSource?.quotesEvents.addEventListener(`quote:${symbol}`, handler);
+
+    return () => {
+      quotesDataSource?.quotesEvents.removeEventListener(`quote:${symbol}`, handler);
+    };
+  }, [quotesDataSource, symbol]);
 
   const value = quote
     ? (format?.(quote[quoteParam]) || quote[quoteParam])
