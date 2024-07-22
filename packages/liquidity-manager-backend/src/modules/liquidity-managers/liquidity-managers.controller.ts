@@ -28,7 +28,12 @@ import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/too
     exclude: ['pass'],
   },
   routes: {
-    only: ['getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    only: ['getOneBase', 'getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    getOneBase: {
+      decorators: [
+        CheckPolicies(new ViewLiquidityManagersPolicy()),
+      ],
+    },
     getManyBase: {
       decorators: [
         CheckPolicies(new ViewLiquidityManagersPolicy()),

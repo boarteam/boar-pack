@@ -1,7 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule, } from '@nestjs/swagger';
 import { Module } from "@nestjs/common";
-import { AuthModule as LMAuthModule, LiquidityManagersModule, restModules } from "./index";
+import {
+  AuthModule as LMAuthModule,
+  LiquidityManagersModule,
+  LiquidityManagersUsersModule,
+  restModules
+} from "./index";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AMTS_DB_NAME } from "./modules/liquidity-app/liquidity-app.config";
 import { resolve } from "path";
@@ -10,6 +15,8 @@ import { ConfigModule } from "@nestjs/config";
 import { generate } from "openapi-typescript-codegen";
 import { QuoteDto, QuoteEventDto, SubscribeEventDto } from "./modules/quotes/dto/quotes.dto";
 import { WebsocketsErrorEventDto } from "@jifeon/boar-pack-common-backend";
+import { entities } from "./modules/liquidity-app/liquidity-app.constants";
+import { UsersModule } from "@jifeon/boar-pack-users-backend";
 import { EcnSubscrSchemaController } from './modules/ecn-subscr-schema/ecn-subscr-schema.controller';
 
 @Module({
@@ -25,11 +32,27 @@ import { EcnSubscrSchemaController } from './modules/ecn-subscr-schema/ecn-subsc
       username: 'app',
       password: 'password',
       database: 'datacollector_d',
+      entities,
+    }),
+    TypeOrmModule.forRoot({
+      name: 'tid_db',
+      type: 'postgres',
+      host: 'localhost',
+      port: 5470,
+      username: 'app',
+      password: 'password',
+      database: 'admirals',
       entities: [
-        resolve(__dirname, '../src/**/entities/*.entity.{ts,js}')
+        resolve(__dirname, '../node_modules/@jifeon/boar-pack-users-backend/src/*/entities/*.entity.{ts,js}'),
+        resolve(__dirname, '../src/modules/liquidity-managers*/entities/*.entity.{ts,js}'),
       ],
     }),
-    LiquidityManagersModule.register({ dataSourceName: AMTS_DB_NAME }),
+    UsersModule.register({
+      dataSourceName: 'tid_db',
+      withControllers: true,
+    }),
+    LiquidityManagersModule.register({ dataSourceName: 'tid_db' }),
+    LiquidityManagersUsersModule.forTID({ dataSourceName: 'tid_db' }),
     LMAuthModule,
     ...restModules,
   ],
@@ -41,7 +64,7 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(Swagger);
     app.get(EcnSubscrSchemaController).initSwagger();
-    
+
     const options: SwaggerDocumentOptions = {
       operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
       extraModels: [

@@ -2,43 +2,24 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { GetManyLiquidityManagerResponseDto } from '../models/GetManyLiquidityManagerResponseDto';
-import type { LiquidityManager } from '../models/LiquidityManager';
-import type { LiquidityManagerCheckDto } from '../models/LiquidityManagerCheckDto';
-import type { LiquidityManagerCheckResponseDto } from '../models/LiquidityManagerCheckResponseDto';
-import type { LiquidityManagerCreateDto } from '../models/LiquidityManagerCreateDto';
-import type { LiquidityManagerUpdateDto } from '../models/LiquidityManagerUpdateDto';
+import type { GetManyUserResponseDto } from '../models/GetManyUserResponseDto';
+import type { User } from '../models/User';
+import type { UserCreateDto } from '../models/UserCreateDto';
+import type { UserUpdateDto } from '../models/UserUpdateDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
-export class LiquidityManagersService {
+export class UsersService {
 
     constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
-     * @returns LiquidityManagerCheckResponseDto
+     * Retrieve a single User
+     * @returns User Get one base response
      * @throws ApiError
      */
-    public checkConnection({
-        requestBody,
-    }: {
-        requestBody: LiquidityManagerCheckDto,
-    }): CancelablePromise<LiquidityManagerCheckResponseDto> {
-        return this.httpRequest.request({
-            method: 'POST',
-            url: '/liquidityManagers/check',
-            body: requestBody,
-            mediaType: 'application/json',
-        });
-    }
-
-    /**
-     * Retrieve a single LiquidityManager
-     * @returns LiquidityManager Get one base response
-     * @throws ApiError
-     */
-    public getOneBaseLiquidityManagersControllerLiquidityManager({
+    public getOneBaseUsersControllerUser({
         id,
         fields,
         join,
@@ -57,10 +38,10 @@ export class LiquidityManagersService {
          * Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache" target="_blank">Docs</a>
          */
         cache?: number,
-    }): CancelablePromise<LiquidityManager> {
+    }): CancelablePromise<User> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidityManagers/{id}',
+            url: '/users/{id}',
             path: {
                 'id': id,
             },
@@ -73,20 +54,20 @@ export class LiquidityManagersService {
     }
 
     /**
-     * Update a single LiquidityManager
-     * @returns LiquidityManager Response
+     * Update a single User
+     * @returns User Response
      * @throws ApiError
      */
-    public updateOneBaseLiquidityManagersControllerLiquidityManager({
+    public updateOneBaseUsersControllerUser({
         id,
         requestBody,
     }: {
         id: string,
-        requestBody: LiquidityManagerUpdateDto,
-    }): CancelablePromise<LiquidityManager> {
+        requestBody: UserUpdateDto,
+    }): CancelablePromise<User> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/liquidityManagers/{id}',
+            url: '/users/{id}',
             path: {
                 'id': id,
             },
@@ -96,18 +77,18 @@ export class LiquidityManagersService {
     }
 
     /**
-     * Delete a single LiquidityManager
+     * Delete a single User
      * @returns any Delete one base response
      * @throws ApiError
      */
-    public deleteOneBaseLiquidityManagersControllerLiquidityManager({
+    public deleteOneBaseUsersControllerUser({
         id,
     }: {
         id: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/liquidityManagers/{id}',
+            url: '/users/{id}',
             path: {
                 'id': id,
             },
@@ -115,11 +96,11 @@ export class LiquidityManagersService {
     }
 
     /**
-     * Retrieve multiple LiquidityManagers
-     * @returns GetManyLiquidityManagerResponseDto Get paginated response
+     * Retrieve multiple Users
+     * @returns GetManyUserResponseDto Get paginated response
      * @throws ApiError
      */
-    public getManyBaseLiquidityManagersControllerLiquidityManager({
+    public getManyBaseUsersControllerUser({
         fields,
         s,
         filter,
@@ -171,10 +152,10 @@ export class LiquidityManagersService {
          * Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache" target="_blank">Docs</a>
          */
         cache?: number,
-    }): CancelablePromise<GetManyLiquidityManagerResponseDto> {
+    }): CancelablePromise<GetManyUserResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/liquidityManagers',
+            url: '/users',
             query: {
                 'fields': fields,
                 's': s,
@@ -191,20 +172,54 @@ export class LiquidityManagersService {
     }
 
     /**
-     * Create a single LiquidityManager
-     * @returns LiquidityManager Get create one base response
+     * Create a single User
+     * @returns User Get create one base response
      * @throws ApiError
      */
-    public createOneBaseLiquidityManagersControllerLiquidityManager({
+    public createOneBaseUsersControllerUser({
         requestBody,
     }: {
-        requestBody: LiquidityManagerCreateDto,
-    }): CancelablePromise<LiquidityManager> {
+        requestBody: UserCreateDto,
+    }): CancelablePromise<User> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/liquidityManagers',
+            url: '/users',
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+
+    /**
+     * Retrieve a single User
+     * @returns any
+     * @throws ApiError
+     */
+    public getOneBaseMeControllerUser({
+        fields,
+        join,
+        cache,
+    }: {
+        /**
+         * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
+         */
+        fields?: Array<string>,
+        /**
+         * Adds relational resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#join" target="_blank">Docs</a>
+         */
+        join?: Array<string>,
+        /**
+         * Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache" target="_blank">Docs</a>
+         */
+        cache?: number,
+    }): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/me',
+            query: {
+                'fields': fields,
+                'join': join,
+                'cache': cache,
+            },
         });
     }
 

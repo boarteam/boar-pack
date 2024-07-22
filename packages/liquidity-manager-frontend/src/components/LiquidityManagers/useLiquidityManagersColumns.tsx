@@ -1,4 +1,4 @@
-import { useIntl } from "@umijs/max";
+import { useIntl, Link } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import { LiquidityManager } from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
@@ -51,6 +51,9 @@ export const useLiquidityManagersColumns = (): ProColumns<LiquidityManager>[] =>
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+      render: (text, record) => {
+        return <Link to={`/admin/liquidity_managers/${record.id}`}>{text}</Link>;
+      }
     },
     {
       title: intl.formatMessage({ id: 'pages.liquidityManagers.host' }),

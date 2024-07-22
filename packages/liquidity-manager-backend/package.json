@@ -15,6 +15,7 @@
     "@jifeon/boar-pack-common-backend": "^1.8.0",
     "@jifeon/boar-pack-users-backend": "^2.2.1",
     "@nestjs/axios": "^3.0.2",
+    "@nestjs/common": "^9.0.0",
     "@nestjs/schedule": "^4.0.2",
     "@nestjs/swagger": "^7.3.0",
     "@nestjs/typeorm": "^10.0.2",
@@ -22,9 +23,12 @@
     "@nestjsx/crud": "^5.0.0-alpha.3",
     "axios": "^1.7.2",
     "crc64-ecma": "^1.0.0",
+    "fast-glob": "^3.3.2",
     "lossless-json": "^4.0.1",
     "mysql2": "^3.9.7",
     "node-fetch": "^3.3.2",
+    "pg": "^8.12.0",
+    "rxjs": "^7",
     "typeorm-naming-strategies": "^4.1.0"
   },
   "devDependencies": {

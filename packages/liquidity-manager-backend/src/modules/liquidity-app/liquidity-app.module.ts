@@ -51,7 +51,7 @@ export class LiquidityAppModule {
           imports: [
             ConfigModule,
             ClusterModule,
-            LiquidityManagersModule.register({ dataSourceName: config.dataSourceName }),
+            LiquidityManagersModule.forConfig({ dataSourceName: config.dataSourceName }),
           ],
           useClass: LiquidityAppConfig,
         }),
