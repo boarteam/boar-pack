@@ -34,6 +34,7 @@ export class SubscSchemasCountResponse {
     join: {
       connectSchema: {},
       instrument: {},
+      'instrument.instrumentGroup': {},
       executionMode: {},
     }
   },
