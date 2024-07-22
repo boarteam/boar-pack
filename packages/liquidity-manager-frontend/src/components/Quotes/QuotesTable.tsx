@@ -48,13 +48,19 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
 }) => {
   const columns = useQuotesColumns();
   const { worker } = useLiquidityManagerContext();
-  const { quotesDataSource } = useQuotes(moduleId);
+  const { quotesDataSource } = useQuotes();
   const [connectionStatus, setConnectionStatus] = useState<WebSocket['readyState']>(WebSocket.CLOSED);
 
   useEffect(() => {
-    quotesDataSource.socketStatusEvents.addEventListener('status', (evt: CustomEvent<WebSocket['readyState'] | undefined>) => {
+    const handler = (evt: CustomEvent<WebSocket['readyState'] | undefined>) => {
       setConnectionStatus(evt.detail ?? WebSocket.CLOSED);
-    });
+    };
+
+    quotesDataSource?.socketStatusEvents.addEventListener('status', handler);
+
+    return () => {
+      quotesDataSource?.socketStatusEvents.removeEventListener('status', handler);
+    }
   }, [quotesDataSource]);
 
   if (!worker) return <PageLoading />;
@@ -67,7 +73,7 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
     const response = await apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params);
     const symbols = response.data.map(instrument => instrument.name);
 
-    quotesDataSource.subscribe(symbols);
+    quotesDataSource.subscribe(symbols, moduleId);
 
     return {
       ...response,

@@ -7,6 +7,7 @@ export type SubscribeEventDto = {
     event: string;
     data: {
         symbols?: Array<string>;
+        moduleId?: number;
     };
 };
 
