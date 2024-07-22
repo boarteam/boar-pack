@@ -41,7 +41,6 @@ const routes = () => ({
     {
       path: '/liquidity/ecn-subscr-schemas',
       name: 'ecn-subscription-schemas',
-      hideInMenu: true,
       component: '@/../node_modules/@jifeon/boar-pack-liquidity-manager-frontend/src/pages/EcnSubscrSchemas',
     },
     {
