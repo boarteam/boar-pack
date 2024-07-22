@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { Roles } from "../users";
 import { EventLogTimelineDto } from "./dto/event-log-timeline.dto";
 import moment from "moment";
+import 'moment-timezone';
 
 type TInterval = 'second' | 'minute' | 'hour' | 'day' | 'week';
 
@@ -81,7 +82,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     });
   }
 
-  async getTimeline(startTime?: Date, endTime?: Date, timezone?: string): Promise<EventLogTimelineDto[]> {
+  async getTimeline(startTime?: Date, endTime?: Date, timezone: string = 'UTC'): Promise<EventLogTimelineDto[]> {
     if (!startTime) {
       startTime = await this.getOldestLogDate();
     }
@@ -96,8 +97,8 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     const interval = this.determineInterval(startMoment, endMoment);
     const formatTimeFunction = this.getFormatTimeFunction(interval, timezone);
 
-    const startTimeIntervalBegin = startMoment.clone().startOf(interval as moment.unitOfTime.StartOf);
-    const endTimeIntervalBegin = endMoment.clone().startOf(interval as moment.unitOfTime.StartOf);
+    const startTimeIntervalBegin = startMoment.clone().tz(timezone).startOf(interval as moment.unitOfTime.StartOf);
+    const endTimeIntervalBegin = endMoment.clone().tz(timezone).startOf(interval as moment.unitOfTime.StartOf);
 
     return this.dataSource.query(`
       with 
@@ -161,7 +162,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     }
   }
 
-  private getFormatTimeFunction(interval: TInterval, timezone: string = 'UTC'): string {
+  private getFormatTimeFunction(interval: TInterval, timezone: string): string {
     switch (interval) {
       case 'second':
         return `to_char(ts.time at time zone '${timezone}', 'HH24:MI:SS')`;

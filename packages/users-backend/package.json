@@ -35,6 +35,7 @@
     "joi": "^17.12.2",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
     "nestjs-joi": "^1.10.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
