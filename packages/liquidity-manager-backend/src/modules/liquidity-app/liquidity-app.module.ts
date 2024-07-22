@@ -27,6 +27,7 @@ import {
   LiquidityManagersUsersModule,
   LiquidityManagersUsersService
 } from "../liquidity-managers-users";
+import { PositionsModule } from "../positions/positions.module";
 
 export const restModules = [
   EcnModulesModule,
@@ -76,6 +77,7 @@ export class LiquidityAppModule {
         LiquidityManagersUsersModule.forFeature({
           dataSourceName: config.dataSourceName,
         }),
+        PositionsModule,
         ...restModules,
       ],
       providers: [],

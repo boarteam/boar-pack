@@ -3,7 +3,7 @@ import { HttpService } from "@nestjs/axios";
 import crypto from 'crypto';
 import { LosslessNumber, parse } from "lossless-json";
 import {
-  MTAttachStreamRequest,
+  MTAttachStreamRequest, MTGetPositionsRequest, MTGetPositionsResult,
   MTInstrumentListRequest,
   MTInstrumentListResult,
   MTLoginRequest,
@@ -36,6 +36,11 @@ export class AmtsDcService {
   ) {
   }
 
+  public getUrl(): string {
+    // noinspection HttpUrlsUsage
+    return `http://amts-tst-srv-01:3000/?server_id=4001`;
+  }
+
   public async request<TReq extends { method: string }, TRes>(url: string, params: TReq): Promise<MTResponse<TRes>['result']> {
     this.logger.log(`Request to ${url}, method: ${params.method}`);
     const response = await this.httpService.axiosRef.post<MTResponse<TRes>>(url, params, {
@@ -54,12 +59,26 @@ export class AmtsDcService {
     return response.data.result;
   }
 
-  public async auth(url: string, params: Omit<MTLoginRequest, 'method'>) {
-    return this.request<MTLoginRequest, MTLoginResult>(url, {
-      method: 'req_login',
-      version: this.VERSION,
-      ...params,
-    });
+  public async auth(params: Omit<MTLoginRequest, 'method'>) {
+    return {
+      daylight: true,
+      pin: 123,
+      session_id: 123,
+      timezone: 123,
+      timeserver: 'string',
+      volume_div: 123,
+      td: 0,
+      aes_key_b64: 'string',
+      aes_iv_b64: 'string',
+      token: 'string',
+      token_lifetime: 123,
+    } as any;
+
+    // return this.request<MTLoginRequest, MTLoginResult>(this.getUrl(), {
+    //   method: 'req_login',
+    //   version: this.VERSION,
+    //   ...params,
+    // });
   }
 
 
@@ -93,6 +112,21 @@ export class AmtsDcService {
     return this.request<MTInstrumentListRequest, MTInstrumentListResult>(url, {
       ...params,
       secret: this.calculateSecret(params, auth.session_id, auth.pin),
+    });
+  }
+
+  public async getPositions(auth: MTLoginResult, userId: number) {
+    const params = {
+      method: 'get_positions',
+      version: this.VERSION,
+      session_id: Number(auth.session_id),
+      req_id: 1,
+      user_id: userId,
+    } as const;
+
+    return this.request<MTGetPositionsRequest, MTGetPositionsResult>(this.getUrl(), {
+      ...params,
+      // secret: this.calculateSecret(params, auth.session_id, auth.pin),
     });
   }
 
