@@ -22,43 +22,17 @@ export class QuotesTpConnector {
   ) {
   }
 
-
-  public getUrl(): string {
-    // noinspection HttpUrlsUsage
-    return `http://tp-tst-srv-01:3000/?server_id=server_1`;
-  }
-
   private getWsUrl(moduleId: number): string {
     // return `ws://tp-tst-srv-01:54011/stream?server_id=1060`;
     return `ws://tp-tst-srv-01:3000/stream?server_id=${moduleId}`;
   }
 
   public async auth(): Promise<MTLoginResult> {
-    // todo: fix credentials
-    const password = 'password';
-    if (!password) {
-      throw new Error('Password is required');
-    }
-
-    // return this.tpDcService.auth(this.getUrl(), {
-    //   login: 123,
-    //   password,
-    //   platform_id: mtPlatformsIds[MTVersions.MT5],
-    // });
-
-    return {
-      daylight: true,
-      pin: 123,
-      session_id: 123,
-      timezone: 123,
-      timeserver: 'string',
-      volume_div: 123,
-      td: 0,
-      aes_key_b64: 'string',
-      aes_iv_b64: 'string',
-      token: 'string',
-      token_lifetime: 123,
-    } as any;
+    return this.tpDcService.auth({
+      login: 123,
+      password: 'password',
+      platform_id: mtPlatformsIds[MTVersions.MT5],
+    });
   }
 
   public async getMessagesStream(instruments: string[], moduleId: number): Promise<MessagesStream> {

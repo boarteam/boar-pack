@@ -29,5 +29,6 @@ declare module '@jifeon/boar-pack-users-backend' {
     LiquidityManager: typeof LiquidityManager;
     Quotes: 'Quotes';
     Liquidity: 'Liquidity';
+    Position: 'Position';
   }
 }

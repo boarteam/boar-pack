@@ -63,6 +63,31 @@ export type MTInstrumentListResult = LosslessJsonResult<{
   instruments: MTInstrument[];
 }>;
 
+export type MTGetPositionsRequest = {
+  method: 'get_positions';
+  req_id: number;
+  user_id: number;
+}
+
+export type MTPosition = {
+  user_id: number;
+  id: number;
+  instrument: string;
+  side: 'buy' | 'sell';
+  amount: number;
+  open_price: number;
+  margin: number;
+  profit: number;
+  ts_create: number;
+  ts_update: number;
+}
+
+export type MTGetPositionsResult = LosslessJsonResult<{
+  req_id: number;
+  user_id: number;
+  positions: MTPosition[];
+}>;
+
 export type MTAttachStreamRequest = {
   method: 'attach_stream';
   req_id: number;

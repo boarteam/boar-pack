@@ -20,6 +20,7 @@ export enum Permissions {
 
 export const Liquidity = 'Liquidity' as const;
 export const Quotes = 'Quotes' as const;
+export const Position = 'Position' as const;
 
 export const subjects = [
   EcnModule,
@@ -34,6 +35,7 @@ export const subjects = [
   UsersSubAccountInst,
   Liquidity,
   Quotes,
+  Position,
 ];
 
 @Module({})
