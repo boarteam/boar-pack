@@ -43,6 +43,7 @@ export class AmtsDcService {
 
   public async request<TReq extends { method: string }, TRes>(url: string, params: TReq): Promise<MTResponse<TRes>['result']> {
     this.logger.log(`Request to ${url}, method: ${params.method}`);
+    this.logger.verbose(params);
     const response = await this.httpService.axiosRef.post<MTResponse<TRes>>(url, params, {
       transformResponse: (data: any) => {
         return parse(data);
@@ -60,25 +61,25 @@ export class AmtsDcService {
   }
 
   public async auth(params: Omit<MTLoginRequest, 'method'>) {
-    return {
-      daylight: true,
-      pin: 123,
-      session_id: 123,
-      timezone: 123,
-      timeserver: 'string',
-      volume_div: 123,
-      td: 0,
-      aes_key_b64: 'string',
-      aes_iv_b64: 'string',
-      token: 'string',
-      token_lifetime: 123,
-    } as any;
+    // return {
+    //   daylight: true,
+    //   pin: 123,
+    //   session_id: 123,
+    //   timezone: 123,
+    //   timeserver: 'string',
+    //   volume_div: 123,
+    //   td: 0,
+    //   aes_key_b64: 'string',
+    //   aes_iv_b64: 'string',
+    //   token: 'string',
+    //   token_lifetime: 123,
+    // } as any;
 
-    // return this.request<MTLoginRequest, MTLoginResult>(this.getUrl(), {
-    //   method: 'req_login',
-    //   version: this.VERSION,
-    //   ...params,
-    // });
+    return this.request<MTLoginRequest, MTLoginResult>(this.getUrl(), {
+      method: 'req_login',
+      version: this.VERSION,
+      ...params,
+    });
   }
 
 
