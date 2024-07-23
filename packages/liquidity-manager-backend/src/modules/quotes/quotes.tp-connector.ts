@@ -30,7 +30,7 @@ export class QuotesTpConnector {
   public async auth(): Promise<MTLoginResult> {
     return this.tpDcService.auth({
       login: 123,
-      password: 'password',
+      password: 'REDACTED',
       platform_id: mtPlatformsIds[MTVersions.MT5],
     });
   }
