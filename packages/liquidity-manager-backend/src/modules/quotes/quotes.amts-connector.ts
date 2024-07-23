@@ -30,7 +30,7 @@ export class QuotesAmtsConnector {
   public async auth(): Promise<MTLoginResult> {
     return this.amtsDcService.auth({
       login: 123,
-      password: 'password',
+      password: 'QWERTY12345asdfg',
       platform_id: mtPlatformsIds[MTVersions.MT5],
     });
   }
