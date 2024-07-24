@@ -25,13 +25,7 @@ export const ecnSubscrSchemaSearchableColumns = [
     operator: Operators.containsLow,
     filterOperator: Operators.in,
   },
-  {
-    field: 'connectSchema.descr',
-    searchField: 'connectSchema.descr',
-    filterField: 'connectSchema.descr',
-    operator: Operators.containsLow,
-    filterOperator: Operators.containsLow,
-  },
+  { field: 'connectSchema.descr', operator: Operators.containsLow },
   {
     field: 'executionMode',
     searchField: 'executionMode.name',

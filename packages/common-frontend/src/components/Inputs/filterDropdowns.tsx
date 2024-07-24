@@ -11,9 +11,10 @@ export function NumberFilterDropdown({ setSelectedKeys, selectedKeys, confirm, c
   return (
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <InputNumber
-        value={selectedKeys}
-        onChange={(e) => setSelectedKeys(e.target.value)}
+        value={selectedKeys.length ? Number(selectedKeys[0]) : undefined}
+        onChange={(value) => setSelectedKeys(value === undefined ? [] : [value])}
         onPressEnter={() => confirm()}
+        step={1}
         style={{ margin: 4, width: 250 }}
         placeholder="Please Enter"
       />
@@ -25,8 +26,8 @@ export function StringFilterDropdown({ setSelectedKeys, selectedKeys, confirm, c
   return (
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <Input
-        value={selectedKeys}
-        onChange={(e) => setSelectedKeys(e.target.value)}
+        value={selectedKeys.length ? String(selectedKeys[0]) : undefined}
+        onChange={(event) => setSelectedKeys(event.target.value === undefined ? [] : [event.target.value])}
         onPressEnter={() => confirm()}
         style={{ margin: 4, width: 250 }}
         placeholder="Please Enter"
