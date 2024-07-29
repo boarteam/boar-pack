@@ -4,13 +4,12 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { LiquidityManagersService } from "../liquidity-managers/liquidity-managers.service";
-import { LiquidityManagerWorkers } from "../liquidity-managers/entities/liquidity-manager.entity";
 import { ClusterConfigService, TClusterConfig } from "@jifeon/boar-pack-common-backend";
 
 export const TP_DB_NAME = 'tp_db';
 
 @Injectable()
-export class QuotesAppConfig implements TypeOrmOptionsFactory {
+export class RealTimeDataAppConfig implements TypeOrmOptionsFactory {
   private readonly config: TClusterConfig;
 
   constructor(
