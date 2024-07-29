@@ -3,8 +3,8 @@ import { EventLog, LogLevel } from './entities/event-log.entity';
 import { Request } from 'express';
 import { EventLogsService } from "./event-logs.service";
 import { BaseExceptionFilter } from '@nestjs/core';
-import { SERVICE_CONFIG_TOKEN } from "./evnet-logs.constants";
-import { TEventLogServiceConfig } from "./evnet-logs.types";
+import { SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
+import { TEventLogServiceConfig } from "./event-logs.types";
 
 @Injectable()
 @Catch()

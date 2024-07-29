@@ -9,8 +9,8 @@ import { DataSource } from "typeorm";
 import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
 import { EventLogInterceptor } from "./event-logs.interceptor";
 import { EventLogsExceptionFilter } from "./event-logs.filter";
-import { SERVICE_CONFIG_TOKEN } from "./evnet-logs.constants";
-import { TEventLogServiceConfig } from "./evnet-logs.types";
+import { SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
+import { TEventLogServiceConfig } from "./event-logs.types";
 import { EventLogsLogger } from "./event-logs.logger";
 
 @Module({})

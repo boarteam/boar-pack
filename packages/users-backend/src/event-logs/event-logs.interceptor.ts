@@ -1,18 +1,31 @@
-import { CallHandler, ExecutionContext, Inject, Injectable, Logger, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Inject,
+  Injectable,
+  Logger,
+  NestInterceptor,
+  SetMetadata
+} from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { EventLog, LogLevel } from './entities/event-log.entity';
 import { EventLogsService } from "./event-logs.service";
 import { Request, Response } from 'express';
 import { HttpException } from "@nestjs/common/exceptions/http.exception";
-import { SERVICE_CONFIG_TOKEN } from "./evnet-logs.constants";
-import { TEventLogServiceConfig } from "./evnet-logs.types";
+import { SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
+import { TEventLogServiceConfig } from "./event-logs.types";
+import { Reflector } from "@nestjs/core";
+
+export const SKIP_EVENTS_LOG = 'SKIP_EVENTS_LOG';
+export const SkipEventsLog = () => SetMetadata(SKIP_EVENTS_LOG, true);
 
 @Injectable()
 export class EventLogInterceptor implements NestInterceptor {
   private readonly logger = new Logger(EventLogInterceptor.name);
 
   constructor(
+    private readonly reflector: Reflector,
     private readonly eventLogService: EventLogsService,
     @Inject(SERVICE_CONFIG_TOKEN) private readonly serviceConfig?: TEventLogServiceConfig,
   ) {
@@ -23,6 +36,11 @@ export class EventLogInterceptor implements NestInterceptor {
     const response = context.switchToHttp().getResponse() as Response;
     const handler = context.getHandler();
     const controller = context.getClass();
+
+    const skipLog = this.reflector.getAllAndOverride<boolean>(SKIP_EVENTS_LOG, [handler, controller]);
+    if (skipLog) {
+      return next.handle();
+    }
 
     const logEntry = new EventLog();
     logEntry.action = handler.name;

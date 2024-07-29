@@ -7,3 +7,4 @@ export * from './policies/view-event-logs.policy';
 export * from './event-logs.controller';
 export * from './event-logs.module';
 export * from './event-logs.service';
+export * from './event-logs.interceptor';
