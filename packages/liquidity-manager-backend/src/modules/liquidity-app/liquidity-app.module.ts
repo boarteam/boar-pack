@@ -21,7 +21,7 @@ import { Action, AuthModule, CaslAbilityFactory, CaslModule } from "@jifeon/boar
 import { ClusterConfigService, ClusterModule, TClusterConfig } from "@jifeon/boar-pack-common-backend";
 import { CaslPermissionsModule, subjects } from "../casl-permissions";
 import { AuthModule as LMAuthModule } from "../auth";
-import { QuotesModule } from "../quotes/quotes.module";
+import { RealTimeDataAppModule } from "../real-time-data-app/real-time-data-app.module";
 import {
   LiquidityManagersUserRoles,
   LiquidityManagersUsersModule,
@@ -108,7 +108,7 @@ export class LiquidityAppModule {
         LiquidityManagersModule.forManagerPanel({
           dataSourceName: config.dataSourceName,
         }),
-        QuotesModule.forMaster(),
+        RealTimeDataAppModule.forClusterMaster(),
         ...restModules,
       ],
       providers: [],
