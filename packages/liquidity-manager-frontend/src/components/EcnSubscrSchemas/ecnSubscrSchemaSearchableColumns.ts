@@ -9,8 +9,16 @@ export const ecnSubscrSchemaSearchableColumns = [
     operator: Operators.containsLow,
     filterOperator: Operators.in,
   },
-  { field: 'enabled', operator: Operators.equals },
-  { field: 'tradeEnabled', operator: Operators.equals },
+  { 
+    field: 'enabled', 
+    operator: Operators.equals,
+    filterOperator: Operators.in,
+  },
+  { 
+    field: 'tradeEnabled', 
+    operator: Operators.equals,
+    filterOperator: Operators.in,
+  },
   {
     field: 'instrument',
     searchField: 'instrument.name',
