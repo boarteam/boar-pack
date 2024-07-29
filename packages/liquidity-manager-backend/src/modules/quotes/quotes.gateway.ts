@@ -1,110 +1,60 @@
-import {
-  ConnectedSocket,
-  MessageBody,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  SubscribeMessage,
-  WebSocketGateway,
-  WsException
-} from "@nestjs/websockets";
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WsException } from "@nestjs/websockets";
 import { WebSocket } from "ws";
-import { Interval } from "@nestjs/schedule";
 import { Logger, UseFilters, UseGuards } from "@nestjs/common";
-import { CheckPolicies, PoliciesGuard, WsAuthGuard, WsAuthService } from "@jifeon/boar-pack-users-backend";
-import { IncomingMessage } from "http";
-import { WebsocketsEventDto, WebsocketsExceptionFilter } from "@jifeon/boar-pack-common-backend";
+import { CheckPolicies, PoliciesGuard, WsAuthGuard } from "@jifeon/boar-pack-users-backend";
+import { WebsocketsExceptionFilter } from "@jifeon/boar-pack-common-backend";
 import { ViewQuotesPolicy } from "./policies/view-quotes.policy";
-import { MessagesStream, SubscribeEventDto } from "./dto/quotes.dto";
-import { QuotesProxy } from "./quotes.proxy";
+import { MessageEventDto, MessagesStream, SubscribeEventDto } from "./dto/quotes.dto";
+import { Subject } from "rxjs";
+import { QuotesAmtsConnector } from "./quotes.amts-connector";
 
 @WebSocketGateway({
   path: '/quotes',
 })
 @UseGuards(WsAuthGuard, PoliciesGuard)
 @UseFilters(WebsocketsExceptionFilter)
-export class QuotesGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class QuotesGateway {
+  private readonly messagesStreamsByClients = new Map<WebSocket, Subject<MessageEventDto>>();
   private readonly logger = new Logger(QuotesGateway.name);
-  private clients: Set<WebSocket> = new Set();
-  private clientsToTerminate: Set<WebSocket> = new Set();
 
   constructor(
-    private readonly wsAuthService: WsAuthService,
-    private readonly proxy: QuotesProxy,
-  ) {
-  }
-
-  public handleConnection(client: WebSocket, req: IncomingMessage) {
-    this.wsAuthService.onClientConnect(client, req);
-  }
-
-  public handleDisconnect(client: WebSocket) {
-    this.clients.delete(client);
-  }
-
-  private addClient(client: WebSocket) {
-    if (this.clients.has(client)) {
-      return;
-    }
-
-    this.clients.add(client);
-    client.on('pong', () => {
-      this.clientsToTerminate.delete(client);
-    });
-  }
-
-  @Interval(5000)
-  private checkClients() {
-    this.clients.forEach((client) => {
-      if (this.clientsToTerminate.has(client)) {
-        client.terminate();
-        this.clients.delete(client);
-      } else {
-        this.clientsToTerminate.add(client);
-        client.ping();
-      }
-    });
-  }
-
-  public broadcast(event: WebsocketsEventDto) {
-    const eventStr = JSON.stringify(event);
-    for (const client of this.clients) {
-      client.send(eventStr, (err) => {
-        if (err) {
-          this.logger.error(`Error sending event to client: ${err.message}`);
-        }
-      });
-    }
-  }
+    private readonly amtsConnector: QuotesAmtsConnector,
+  ) {}
 
   @SubscribeMessage('subscribe')
   @CheckPolicies(new ViewQuotesPolicy())
-  private handleSubscribe(
+  private async handleSubscribe(
     @ConnectedSocket() client: WebSocket,
     @MessageBody() subscribeEventDto: SubscribeEventDto['data'],
-  ): Promise<MessagesStream | void> | void {
-    const { symbols, moduleId } = subscribeEventDto;
+  ): Promise<MessagesStream | void> {
+    let { symbols, moduleId } = subscribeEventDto;
     if (!Array.isArray(symbols) || !symbols.length || !symbols.every((symbol) => typeof symbol === 'string')) {
       // TODO: add validation pipe, also check there are corresponding instruments, number of symbols and length
       // of every symbol
       throw new WsException('Symbols should be a non-empty array of strings');
     }
 
-    const nonEmptySymbols = symbols.filter((symbol) => symbol.length > 0);
+    symbols = symbols.filter((symbol) => symbol.length > 0);
 
-    if (this.clients.has(client)) {
-      return this.proxy.updateMessagesStream({
-        client,
-        symbols: nonEmptySymbols,
+    const existingStream = this.messagesStreamsByClients.get(client);
+    if (existingStream) {
+      await this.amtsConnector.updateMessagesStream({
+        messagesStream: existingStream,
+        instruments: symbols,
         moduleId,
       });
+      return;
     }
 
+    const messagesStream = await this.amtsConnector.getMessagesStream(symbols, moduleId);
+    this.messagesStreamsByClients.set(client, messagesStream);
 
-    this.addClient(client);
-    return this.proxy.getMessagesStream({
-      client,
-      symbols: nonEmptySymbols,
-      moduleId,
+    client.on('close', () => {
+      this.logger.log(`Stopping messages stream since client is closed`);
+      this.amtsConnector.stopMessagesStream(messagesStream);
+      this.messagesStreamsByClients.delete(client);
     });
+
+    return messagesStream;
   }
 }
