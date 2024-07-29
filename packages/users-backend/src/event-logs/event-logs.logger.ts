@@ -1,8 +1,8 @@
 import { NamedLogger } from "@jifeon/boar-pack-common-backend/src/tools";
 import { EventLogsService } from "./event-logs.service";
 import { Inject } from "@nestjs/common";
-import { SERVICE_CONFIG_TOKEN } from "./evnet-logs.constants";
-import { TEventLogServiceConfig } from "./evnet-logs.types";
+import { SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
+import { TEventLogServiceConfig } from "./event-logs.types";
 import { LogLevel } from "./entities/event-log.entity";
 
 export class EventLogsLogger extends NamedLogger {
