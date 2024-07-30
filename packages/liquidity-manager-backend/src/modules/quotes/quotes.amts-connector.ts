@@ -1,8 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { AmtsDcService } from "../amts-dc/amts-dc.service";
 import { mtPlatformsIds, MTVersions } from "../amts-dc/amts-dc.constants";
-import { MessagesStream } from "./dto/quotes.dto";
-import { MTLoginResult, MTQuoteWSMessage, MTWSMessage } from "../amts-dc/dto/amts-dc.dto";
+import { CLOSED_OBSERVABLE, MessagesStream } from "./dto/quotes.dto";
+import { MTQuoteWSMessage, MTWSMessage } from "../amts-dc/dto/amts-dc.dto";
 import { Subject } from "rxjs";
 import WebSocket from "ws";
 
@@ -22,17 +22,23 @@ export class QuotesAmtsConnector {
   ) {
   }
 
-  private getWsUrl(moduleId: number): string {
-    // return `ws://amts-tst-srv-01:54011/stream?server_id=1060`;
-    return `ws://amts-tst-srv-01:3000/stream?server_id=${moduleId}`;
-  }
-
-  public async auth(): Promise<MTLoginResult> {
-    return this.amtsDcService.auth({
-      login: 123,
-      password: 'QWERTY12345asdfg',
-      platform_id: mtPlatformsIds[MTVersions.MT5],
+  private getWsUrl({
+    moduleId,
+    login,
+    pass,
+  }: {
+    moduleId: number,
+    login: string,
+    pass: string,
+  }): string {
+    // return `ws://localhost:4300`;
+    const baseUri = `ws://amts-tst-srv-01:3000/stream`;
+    const searchParams = new URLSearchParams({
+      web_api_login: login,
+      web_api_pass: pass,
+      server_id: moduleId.toString(),
     });
+    return `${baseUri}?${searchParams.toString()}`;
   }
 
   public async getMessagesStream(instruments: string[], moduleId: number): Promise<MessagesStream> {
@@ -47,23 +53,26 @@ export class QuotesAmtsConnector {
     this.connectWebsocketToStream(messagesStream).catch(e => {
       this.logger.error(`Error while connecting to AMTS websocket`);
       this.logger.error(e, e.stack);
-      this.stopMessagesStream(messagesStream);
+      this.stopMessagesStream(messagesStream).catch(e => {
+        this.logger.error(`Error while stopping messages stream`);
+        this.logger.error(e, e.stack);
+      });
     });
 
     return messagesStream;
   }
 
-  public stopMessagesStream(messagesStream: MessagesStream): void {
+  public async stopMessagesStream(messagesStream: MessagesStream): Promise<void> {
     const config = this.subjectsToConfigs.get(messagesStream);
-    messagesStream.complete();
-    messagesStream.closed = true;
+    messagesStream[CLOSED_OBSERVABLE] = true;
     this.subjectsToConfigs.delete(messagesStream);
     if (config?.socket) {
-      this.amtsDcService.closeQuotesWebsocket(config.socket).catch(e => {
+      await this.amtsDcService.closeQuotesWebsocket(config.socket).catch(e => {
         this.logger.error(`Error while closing AMTS websocket`);
         this.logger.error(e, e.stack);
       });
     }
+    messagesStream.complete();
   }
 
   private async connectWebsocketToStream(messagesStream: MessagesStream, reconnectTries: number = 5): Promise<void> {
@@ -80,7 +89,7 @@ export class QuotesAmtsConnector {
       if (reconnectTries <= 0) {
         this.logger.error(`Error while reconnecting to AMTS websocket, no more tries left`);
         this.logger.error(e, e.stack);
-        this.stopMessagesStream(messagesStream);
+        await this.stopMessagesStream(messagesStream);
         return;
       }
 
@@ -93,8 +102,11 @@ export class QuotesAmtsConnector {
 
   private async createWebsocketAndConnect(messagesStream: MessagesStream, config: TConnectorConfig): Promise<WebSocket> {
     const ws = this.amtsDcService.createQuotesWebsocketAndAttachStream({
-      url: this.getWsUrl(config.moduleId),
-      auth: await this.auth(),
+      url: this.getWsUrl({
+        moduleId: config.moduleId,
+        login: '123',
+        pass: 'QWERTY12345asdfg',
+      }),
       instruments: config.instruments,
       options: {
         platform_id: mtPlatformsIds[MTVersions.MT5],
@@ -128,14 +140,17 @@ export class QuotesAmtsConnector {
   private recreateSocketForMessageStream(messagesStream: MessagesStream, timeout: number = 1000) {
     const config = this.subjectsToConfigs.get(messagesStream);
 
-    if (messagesStream.closed) {
+    if (messagesStream[CLOSED_OBSERVABLE]) {
       this.logger.log(`AMTS websocket closed, but stream is already closed, no need to reconnect`);
       return;
     }
 
     if (!config) {
       this.logger.error(`Config not found for stream, can't reconnect`);
-      this.stopMessagesStream(messagesStream);
+      this.stopMessagesStream(messagesStream).catch(e => {
+        this.logger.error(`Error while stopping messages stream`);
+        this.logger.error(e, e.stack);
+      });
       return;
     }
 
@@ -151,7 +166,10 @@ export class QuotesAmtsConnector {
     setTimeout(() => this.connectWebsocketToStream(messagesStream).catch(e => {
       this.logger.error(`Error while reconnecting to AMTS websocket`);
       this.logger.error(e, e.stack);
-      this.stopMessagesStream(messagesStream);
+      this.stopMessagesStream(messagesStream).catch(e => {
+        this.logger.error(`Error while stopping messages stream`);
+        this.logger.error(e, e.stack);
+      });
     }), timeout);
   }
 
@@ -179,7 +197,6 @@ export class QuotesAmtsConnector {
 
     const params = {
       ws: config.socket,
-      auth: await this.auth(),
     } as const;
 
     this.logger.log(`Detaching quotes stream from existing socket...`);

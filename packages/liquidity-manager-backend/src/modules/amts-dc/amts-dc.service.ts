@@ -1,14 +1,14 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import crypto from 'crypto';
-import { LosslessNumber, parse } from "lossless-json";
+import { parse } from "lossless-json";
 import {
-  MTAttachStreamRequest, MTGetPositionsRequest, MTGetPositionsResult,
+  MTAttachStreamRequest,
+  MTGetPositionsRequest,
+  MTGetPositionsResult,
   MTInstrumentListRequest,
   MTInstrumentListResult,
-  MTLoginRequest,
-  MTLoginResult,
-  MTResponse, MTWSMessage
+  MTResponse,
+  MTWSMessage
 } from "./dto/amts-dc.dto";
 import WebSocket from "ws";
 import {
@@ -39,6 +39,7 @@ export class AmtsDcService {
   public getUrl(): string {
     // noinspection HttpUrlsUsage
     return `http://amts-tst-srv-01:3000/?server_id=4001`;
+    // return `http://localhost:4300/`;
   }
 
   public async request<TReq extends { method: string }, TRes>(url: string, params: TReq): Promise<MTResponse<TRes>['result']> {
@@ -60,75 +61,24 @@ export class AmtsDcService {
     return response.data.result;
   }
 
-  public async auth(params: Omit<MTLoginRequest, 'method'>) {
-    // return {
-    //   daylight: true,
-    //   pin: 123,
-    //   session_id: 123,
-    //   timezone: 123,
-    //   timeserver: 'string',
-    //   volume_div: 123,
-    //   td: 0,
-    //   aes_key_b64: 'string',
-    //   aes_iv_b64: 'string',
-    //   token: 'string',
-    //   token_lifetime: 123,
-    // } as any;
-
-    return this.request<MTLoginRequest, MTLoginResult>(this.getUrl(), {
-      method: 'req_login',
-      version: this.VERSION,
-      ...params,
-    });
-  }
-
-
-  private calculateSecret(data: Record<string, string | number | string[]>, sessionId: LosslessNumber, pin: LosslessNumber): string {
-    const sortedKeys = Object.keys(data).sort();
-    const keyValueString = sortedKeys.map(key => {
-      let value = data[key];
-      if (Array.isArray(value)) {
-        value = value.join('');
-      }
-      return `${key}=${value}`;
-    }).join('');
-
-    const hashingString = keyValueString
-      + sessionId.toString()
-      + pin.toString();
-
-    return crypto
-      .createHash('sha1')
-      .update(hashingString)
-      .digest('hex');
-  }
-
-  public async getInstruments(url: string, auth: MTLoginResult) {
+  public async getInstruments(url: string) {
     const params = {
       method: 'req_instrument_list',
       version: this.VERSION,
-      session_id: Number(auth.session_id),
     } as const;
 
-    return this.request<MTInstrumentListRequest, MTInstrumentListResult>(url, {
-      ...params,
-      secret: this.calculateSecret(params, auth.session_id, auth.pin),
-    });
+    return this.request<MTInstrumentListRequest, MTInstrumentListResult>(url, params);
   }
 
-  public async getPositions(auth: MTLoginResult, userId: number) {
+  public async getPositions(userId: number) {
     const params = {
       method: 'get_positions',
       version: this.VERSION,
-      session_id: Number(auth.session_id),
       req_id: 1,
       user_id: userId,
     } as const;
 
-    return this.request<MTGetPositionsRequest, MTGetPositionsResult>(this.getUrl(), {
-      ...params,
-      // secret: this.calculateSecret(params, auth.session_id, auth.pin),
-    });
+    return this.request<MTGetPositionsRequest, MTGetPositionsResult>(this.getUrl(), params);
   }
 
   public checkStreamConnection({
@@ -151,7 +101,6 @@ export class AmtsDcService {
 
   public createQuotesWebsocketAndAttachStream({
     url,
-    auth,
     instruments,
     options,
     onOpen,
@@ -159,7 +108,6 @@ export class AmtsDcService {
     onClose,
   }: {
     url: string,
-    auth: MTLoginResult,
     instruments: string[],
     options?: Partial<MTAttachStreamRequest>,
     onOpen?: () => void;
@@ -173,7 +121,6 @@ export class AmtsDcService {
         onOpen?.();
         return this.attachStream({
           ws,
-          auth,
           instruments,
           options,
         });
@@ -191,57 +138,45 @@ export class AmtsDcService {
 
   public async attachStream({
     ws,
-    auth,
     instruments,
     options,
   }: {
     ws: WebSocket,
-    auth: MTLoginResult,
     instruments: string[],
     options?: Partial<MTAttachStreamRequest>
   }): Promise<void> {
     const params: MTAttachStreamRequest = {
       method: 'attach_stream',
       version: this.VERSION,
-      session_id: Number(auth.session_id),
       req_id: 1,
       subscribe_quotes: instruments,
       quotes_timeout: 1000,
       ...options,
     };
 
-    const data = {
-      ...params,
-      secret: this.calculateSecret(params, auth.session_id, auth.pin),
-    };
-
-    this.logger.verbose(data);
+    this.logger.verbose(params);
     this.logger.log(`Sending attach_stream request`);
 
-    await this.websocketsClients.send(ws, data)
+    await this.websocketsClients.send(ws, params)
   }
 
   public detachStream({
     ws,
-    auth,
     instruments,
-  }: {ws: WebSocket, auth: MTLoginResult, instruments: string[]}): Promise<void> {
+  }: {
+    ws: WebSocket,
+    instruments: string[],
+  }): Promise<void> {
     const params = {
       method: 'detach_stream',
       version: this.VERSION,
-      session_id: Number(auth.session_id),
       req_id: 1,
       unsubscribe_quotes: instruments,
     };
 
-    const data = {
-      ...params,
-      secret: this.calculateSecret(params, auth.session_id, auth.pin),
-    };
-
-    this.logger.verbose(data);
+    this.logger.verbose(params);
     this.logger.log(`Sending detach_stream request`);
-    return this.websocketsClients.send(ws, data);
+    return this.websocketsClients.send(ws, params);
   }
 }
 

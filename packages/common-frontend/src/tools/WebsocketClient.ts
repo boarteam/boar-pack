@@ -41,7 +41,7 @@ export class WebsocketClient {
 
   private connect() {
     const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const url = `${wsProtocol}//${location.host}/ws/${this.worker || 'primary'}/quotes`;
+    const url = `${wsProtocol}//${location.host}/ws/${this.worker || 'primary'}/ws`;
     console.log(`QuotesDataSocket: connecting to ${url}...`);
     this.serverSocketStatus = WebSocket.CONNECTING;
     this.socket = new WebSocket(url);
