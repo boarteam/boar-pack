@@ -1,10 +1,9 @@
 import { Body, Controller, Delete, Logger, NotImplementedException, Param, Patch, Post, Put } from "@nestjs/common";
 import { MtEmulatorService } from "./mt-emulator.service";
-import { CreateInstrumentDto, EmulatorDto, UpdateInstrumentDto, Instrument } from "./dto/mt-emulator.dto";
-import { MTInstrumentListRequest, MTInstrumentListShortRequest, MTLoginRequest } from "../tp-dc/dto/tp-dc.dto";
+import { CreateInstrumentDto, EmulatorDto, Instrument, UpdateInstrumentDto } from "./dto/mt-emulator.dto";
+import { MTInstrumentListRequest, MTInstrumentListShortRequest } from "../tp-dc/dto/tp-dc.dto";
 
 type TRequest =
-  | MTLoginRequest
   | MTInstrumentListRequest
   | MTInstrumentListShortRequest;
 
@@ -20,16 +19,6 @@ export class MtEmulatorController {
   async handle(@Body() request: TRequest) {
     this.logger.log(`Request to ${request.method}`);
     switch (request.method) {
-      case 'req_login':
-        return {
-          result: {
-            status: true,
-            pin: 123,
-            session_id: 123,
-            timezone: 2,
-          },
-        };
-
       case 'req_instrument_list':
         return {
           result: {

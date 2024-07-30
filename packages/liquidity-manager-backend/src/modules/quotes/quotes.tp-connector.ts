@@ -1,8 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { TpDcService } from "../tp-dc/tp-dc.service";
 import { mtPlatformsIds, MTVersions } from "../tp-dc/tp-dc.constants";
-import { MessagesStream } from "./dto/quotes.dto";
-import { MTLoginResult, MTQuoteWSMessage, MTWSMessage } from "../tp-dc/dto/tp-dc.dto";
+import { CLOSED_OBSERVABLE, MessagesStream } from "./dto/quotes.dto";
+import { MTQuoteWSMessage, MTWSMessage } from "../tp-dc/dto/tp-dc.dto";
 import { Subject } from "rxjs";
 import WebSocket from "ws";
 
@@ -22,17 +22,23 @@ export class QuotesTpConnector {
   ) {
   }
 
-  private getWsUrl(moduleId: number): string {
-    // return `ws://tp-tst-srv-01:54011/stream?server_id=1060`;
-    return `ws://tp-tst-srv-01:3000/stream?server_id=${moduleId}`;
-  }
-
-  public async auth(): Promise<MTLoginResult> {
-    return this.tpDcService.auth({
-      login: 123,
-      password: 'REDACTED',
-      platform_id: mtPlatformsIds[MTVersions.MT5],
+  private getWsUrl({
+    moduleId,
+    login,
+    pass,
+  }: {
+    moduleId: number,
+    login: string,
+    pass: string,
+  }): string {
+    // return `ws://localhost:4300`;
+    const baseUri = `ws://tp-tst-srv-01:3000/stream`;
+    const searchParams = new URLSearchParams({
+      web_api_login: login,
+      web_api_pass: pass,
+      server_id: moduleId.toString(),
     });
+    return `${baseUri}?${searchParams.toString()}`;
   }
 
   public async getMessagesStream(instruments: string[], moduleId: number): Promise<MessagesStream> {
@@ -47,23 +53,26 @@ export class QuotesTpConnector {
     this.connectWebsocketToStream(messagesStream).catch(e => {
       this.logger.error(`Error while connecting to TP websocket`);
       this.logger.error(e, e.stack);
-      this.stopMessagesStream(messagesStream);
+      this.stopMessagesStream(messagesStream).catch(e => {
+        this.logger.error(`Error while stopping messages stream`);
+        this.logger.error(e, e.stack);
+      });
     });
 
     return messagesStream;
   }
 
-  public stopMessagesStream(messagesStream: MessagesStream): void {
+  public async stopMessagesStream(messagesStream: MessagesStream): Promise<void> {
     const config = this.subjectsToConfigs.get(messagesStream);
-    messagesStream.complete();
-    messagesStream.closed = true;
+    messagesStream[CLOSED_OBSERVABLE] = true;
     this.subjectsToConfigs.delete(messagesStream);
     if (config?.socket) {
-      this.tpDcService.closeQuotesWebsocket(config.socket).catch(e => {
+      await this.tpDcService.closeQuotesWebsocket(config.socket).catch(e => {
         this.logger.error(`Error while closing TP websocket`);
         this.logger.error(e, e.stack);
       });
     }
+    messagesStream.complete();
   }
 
   private async connectWebsocketToStream(messagesStream: MessagesStream, reconnectTries: number = 5): Promise<void> {
@@ -80,7 +89,7 @@ export class QuotesTpConnector {
       if (reconnectTries <= 0) {
         this.logger.error(`Error while reconnecting to TP websocket, no more tries left`);
         this.logger.error(e, e.stack);
-        this.stopMessagesStream(messagesStream);
+        await this.stopMessagesStream(messagesStream);
         return;
       }
 
@@ -93,8 +102,11 @@ export class QuotesTpConnector {
 
   private async createWebsocketAndConnect(messagesStream: MessagesStream, config: TConnectorConfig): Promise<WebSocket> {
     const ws = this.tpDcService.createQuotesWebsocketAndAttachStream({
-      url: this.getWsUrl(config.moduleId),
-      auth: await this.auth(),
+      url: this.getWsUrl({
+        moduleId: config.moduleId,
+        login: '123',
+        pass: 'REDACTED',
+      }),
       instruments: config.instruments,
       options: {
         platform_id: mtPlatformsIds[MTVersions.MT5],
@@ -128,14 +140,17 @@ export class QuotesTpConnector {
   private recreateSocketForMessageStream(messagesStream: MessagesStream, timeout: number = 1000) {
     const config = this.subjectsToConfigs.get(messagesStream);
 
-    if (messagesStream.closed) {
+    if (messagesStream[CLOSED_OBSERVABLE]) {
       this.logger.log(`TP websocket closed, but stream is already closed, no need to reconnect`);
       return;
     }
 
     if (!config) {
       this.logger.error(`Config not found for stream, can't reconnect`);
-      this.stopMessagesStream(messagesStream);
+      this.stopMessagesStream(messagesStream).catch(e => {
+        this.logger.error(`Error while stopping messages stream`);
+        this.logger.error(e, e.stack);
+      });
       return;
     }
 
@@ -151,7 +166,10 @@ export class QuotesTpConnector {
     setTimeout(() => this.connectWebsocketToStream(messagesStream).catch(e => {
       this.logger.error(`Error while reconnecting to TP websocket`);
       this.logger.error(e, e.stack);
-      this.stopMessagesStream(messagesStream);
+      this.stopMessagesStream(messagesStream).catch(e => {
+        this.logger.error(`Error while stopping messages stream`);
+        this.logger.error(e, e.stack);
+      });
     }), timeout);
   }
 
@@ -179,7 +197,6 @@ export class QuotesTpConnector {
 
     const params = {
       ws: config.socket,
-      auth: await this.auth(),
     } as const;
 
     this.logger.log(`Detaching quotes stream from existing socket...`);

@@ -16,8 +16,12 @@ export class SubscribeEventDto implements WebsocketsEventDto {
   }
 }
 
+export const CLOSED_OBSERVABLE = Symbol('CLOSED_OBSERVABLE');
+
 export type MessageEventDto = QuoteEventDto | StatusEventDto;
-export type MessagesStream = Subject<MessageEventDto>;
+export type MessagesStream = Subject<MessageEventDto> & {
+  [CLOSED_OBSERVABLE]?: true | undefined;
+};
 
 export class QuoteEventDto implements WebsocketsEventDto {
   event: 'quote';

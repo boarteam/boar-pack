@@ -71,6 +71,25 @@ export class MtEmulatorService {
       }),
       share()
     );
+
+    this.addedInstruments.next(new Map([[
+      '#AA',
+      {
+        n: '#AA',
+        d: 4,
+        p: 'Test\\Group\\#AA',
+        tm: 0,
+        sh: Array.from({ length: 7 }, () => {
+          const intervals = [];
+          for (let i = 0; i < 24 * 60; ++i) {
+            if (Math.random() < 0.3) {
+              intervals.push([i, i + 1])
+            }
+          }
+          return intervals;
+        }),
+      }
+    ]]));
   }
 
   public start(): void {

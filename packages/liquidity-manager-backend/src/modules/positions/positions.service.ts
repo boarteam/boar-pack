@@ -10,10 +10,7 @@ export class PositionsService {
   }
 
   async getPositions(userId: number): Promise<PositionDto[]> {
-    const auth = await this.tpDcService.auth({
-      login: 123,
-    });
-    const response = await this.tpDcService.getPositions(auth, userId);
+    const response = await this.tpDcService.getPositions(userId);
     return response.positions.map(position => ({
       id: position.id,
       userId: position.user_id,
