@@ -1,20 +1,22 @@
-import { QuoteDto, QuoteEventDto, SubscribeEventDto, WebsocketsErrorEventDto, } from "@@api/generated";
+import { QuoteDto, QuoteEventDto, SubscribeEventDto, WebsocketsErrorEventDto, } from "../../tools/api-client/generated";
 import { WebsocketClient } from "@jifeon/boar-pack-common-frontend";
 
 export type TIncomeEvent =
   | { event: 'error' } & WebsocketsErrorEventDto
   | { event: 'quote' } & QuoteEventDto
+  // | { event: 'position' } & PositionEventDto
   | { event: 'status', status: WebSocket['readyState'] };
 
 export type TOutputEvent =
   | { event: 'subscribe' } & SubscribeEventDto;
 
-export class QuotesDataSource {
+export class RealTimeDataSource {
   private primarySocket: WebsocketClient | null = null;
   private active: boolean = false;
   private symbols: string[] = [];
   private moduleId: number = null;
   public readonly quotesEvents: EventTarget = new EventTarget();
+  public readonly positionsEvents: EventTarget = new EventTarget();
   public readonly socketStatusEvents: EventTarget = new EventTarget();
 
   get status() {
@@ -50,14 +52,14 @@ export class QuotesDataSource {
 
   private onSocketClose = () => {
     this.emitStatusEvent();
-    console.log('QuotesDataSource: onSocketClose: reconnecting in 1s...');
+    console.log('RealTimeDataSource: onSocketClose: reconnecting in 1s...');
     if (this.active) {
       this.primarySocket?.reconnect(1000);
     }
   }
 
   public async closeSocketConnections() {
-    console.log('QuotesDataSource: closeSocketConnections');
+    console.log('RealTimeDataSource: closeSocketConnections');
     this.active = false;
     await this.primarySocket?.close();
   }
@@ -77,6 +79,10 @@ export class QuotesDataSource {
       case 'quote':
         this.emitQuoteEvent(msg.data);
         break;
+
+      // case 'position':
+      //   // this.emitPositionEvent(msg.data);
+      //   break;
 
       case 'status':
         this.emitStatusEvent();
@@ -107,10 +113,10 @@ export class QuotesDataSource {
   }
 }
 
-const quotesDataSource = new QuotesDataSource();
+const realTimeDataSource = new RealTimeDataSource();
 
-export function useQuotes(): { quotesDataSource: QuotesDataSource | null } {
+export function useRealTimeData(): { realTimeDataSource: RealTimeDataSource } {
   return {
-    quotesDataSource,
+    realTimeDataSource,
   };
 }
