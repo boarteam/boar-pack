@@ -5,7 +5,7 @@ import { OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway } from "@nes
 import { AuthSocket, WsAuthService } from "./ws-auth.service";
 
 @WebSocketGateway({
-  path: '/quotes',
+  path: '/ws',
 })
 export class WsAuthGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private logger = new Logger(WsAuthGateway.name);

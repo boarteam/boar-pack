@@ -20,29 +20,6 @@ export class MTResponse<T> {
   version: number = 1;
 }
 
-export type MTLoginRequest = {
-  method: 'req_login';
-  login: number;
-  platform_id?: number;
-  password?: string;
-  token?: string;
-  version?: number;
-}
-
-export type MTLoginResult = LosslessJsonResult<{
-  daylight: boolean;
-  pin: number;
-  session_id: number;
-  timezone: number;
-  timeserver: string;
-  volume_div: number;
-  td: 0 | 1;
-  aes_key_b64: string;
-  aes_iv_b64: string;
-  token?: string;
-  token_lifetime?: number;
-}>;
-
 export type MTInstrumentListRequest = {
   method: 'req_instrument_list';
   session_id?: number;

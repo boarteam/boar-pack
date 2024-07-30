@@ -60,6 +60,7 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
 
     return () => {
       quotesDataSource?.socketStatusEvents.removeEventListener('status', handler);
+      quotesDataSource?.closeSocketConnections().catch(console.error);
     }
   }, [quotesDataSource]);
 
