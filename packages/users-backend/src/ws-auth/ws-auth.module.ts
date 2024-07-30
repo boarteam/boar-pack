@@ -1,13 +1,18 @@
 import { Module } from '@nestjs/common';
 import { WsAuthGateway } from "./ws-auth.gateway";
 import { WsAuthGuard } from "./ws-auth.guard";
+import { WsAuthService } from "./ws-auth.service";
 
 @Module({
   imports: [],
   providers: [
-    WsAuthGuard,
     WsAuthGateway,
+    WsAuthGuard,
+    WsAuthService,
   ],
-  exports: [],
+  exports: [
+    WsAuthService,
+    WsAuthGuard,
+  ],
 })
 export class WsAuthModule {}
