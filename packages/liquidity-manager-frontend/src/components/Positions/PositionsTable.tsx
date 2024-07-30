@@ -1,18 +1,17 @@
-import { Quote, useQuotesColumns } from "./useQuotesColumns";
+import { Position, usePositionsColumns } from "./usePositionsColumns";
 import { Operators, Table, TGetAllParams } from "@jifeon/boar-pack-common-frontend";
 import apiClient from "@@api/apiClient";
 import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
-import { useRealTimeData } from "../RealTimeData/RealTimeDataSource";
 import React, { useEffect, useState } from "react";
 import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { Tag } from "antd";
 
-type TQuoteFilterParams = {
+type TPositionFilterParams = {
   symbol?: string,
 }
 
-type TQuotesPathParams = {
+type TPositionsPathParams = {
   worker: string,
 }
 
@@ -39,16 +38,16 @@ const connectionStatuses = {
   },
 };
 
-type TQuotesTableProps = {
+type TPositionsTableProps = {
   moduleId: number,
 }
 
-const QuotesTable: React.FC<TQuotesTableProps> = ({
+const PositionsTable: React.FC<TPositionsTableProps> = ({
   moduleId,
 }) => {
-  const columns = useQuotesColumns();
+  const columns = usePositionsColumns();
   const { worker } = useLiquidityManagerContext();
-  const { realTimeDataSource } = useRealTimeData();
+  const { positionsDataSource } = usePositions();
   const [connectionStatus, setConnectionStatus] = useState<WebSocket['readyState']>(WebSocket.CLOSED);
 
   useEffect(() => {
@@ -56,17 +55,16 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
       setConnectionStatus(evt.detail ?? WebSocket.CLOSED);
     };
 
-    realTimeDataSource.socketStatusEvents.addEventListener('status', handler);
+    positionsDataSource?.socketStatusEvents.addEventListener('status', handler);
 
     return () => {
-      realTimeDataSource.socketStatusEvents.removeEventListener('status', handler);
-      realTimeDataSource.closeSocketConnections().catch(console.error);
+      positionsDataSource?.socketStatusEvents.removeEventListener('status', handler);
     }
-  }, [realTimeDataSource]);
+  }, [positionsDataSource]);
 
   if (!worker) return <PageLoading />;
 
-  const getAll = async (params: TGetAllParams & TQuotesPathParams) => {
+  const getAll = async (params: TGetAllParams & TPositionsPathParams) => {
     params.fields = ['name'];
     params.join = ['instrumentGroup||name'];
     params.sort = params.sort.map(sort => sort.replace('symbol', 'name').replace('group', 'instrumentGroup.name'));
@@ -74,7 +72,7 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
     const response = await apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params);
     const symbols = response.data.map(instrument => instrument.name);
 
-    realTimeDataSource.subscribe(symbols, moduleId);
+    positionsDataSource.subscribe(symbols, moduleId);
 
     return {
       ...response,
@@ -86,7 +84,7 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
   }
 
   return (
-    <Table<Quote, {}, {}, TQuoteFilterParams, TQuotesPathParams>
+    <Table<Position, {}, {}, TPositionFilterParams, TPositionsPathParams>
       getAll={getAll}
       columns={columns}
       idColumnName='symbol'
@@ -118,4 +116,4 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
   );
 }
 
-export default QuotesTable;
+export default PositionsTable;

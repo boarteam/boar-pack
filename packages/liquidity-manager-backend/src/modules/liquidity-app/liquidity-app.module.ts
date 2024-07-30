@@ -21,7 +21,6 @@ import { Action, AuthModule, CaslAbilityFactory, CaslModule } from "@jifeon/boar
 import { ClusterConfigService, ClusterModule, TClusterConfig } from "@jifeon/boar-pack-common-backend";
 import { CaslPermissionsModule, subjects } from "../casl-permissions";
 import { AuthModule as LMAuthModule } from "../auth";
-import { RealTimeDataAppModule } from "../real-time-data-app/real-time-data-app.module";
 import {
   LiquidityManagersUserRoles,
   LiquidityManagersUsersModule,
@@ -41,6 +40,7 @@ export const restModules = [
   EcnConnectSchemaModule,
   EcnConnectSchemaSetupLabelsModule,
   EcnSubscrSchemaModule,
+  PositionsModule.forRestApi(),
 ] as const;
 
 @Module({})
@@ -77,7 +77,6 @@ export class LiquidityAppModule {
         LiquidityManagersUsersModule.forFeature({
           dataSourceName: config.dataSourceName,
         }),
-        PositionsModule,
         ...restModules,
       ],
       providers: [],
@@ -108,7 +107,7 @@ export class LiquidityAppModule {
         LiquidityManagersModule.forManagerPanel({
           dataSourceName: config.dataSourceName,
         }),
-        RealTimeDataAppModule.forClusterMaster(),
+        // RealTimeDataAppModule.forClusterMaster(),
         ...restModules,
       ],
       providers: [],

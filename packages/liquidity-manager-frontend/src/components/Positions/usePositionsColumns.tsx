@@ -1,12 +1,12 @@
 import { ProColumns } from "@ant-design/pro-components";
-import { useRealTimeData } from "../RealTimeData/RealTimeDataSource";
+import { usePositions } from "./PositionsDataSource";
 import React, { useEffect, useState } from "react";
-import { QuoteDto } from "../../tools/api-client";
+import { PositionDto } from "../../tools/api-client";
 import dayjs from "dayjs";
 import apiClient from "../../tools/api-client/apiClient";
 import { useLiquidityManagerContext } from "../../tools";
 
-export interface Quote {
+export interface Position {
   symbol: string;
   bid?: number;
   ask?: number;
@@ -16,36 +16,36 @@ export interface Quote {
 
 const Ticker: React.FC<{
   symbol: string,
-  quoteParam: 'bid' | 'ask' | 'timestamp',
+  positionParam: 'bid' | 'ask' | 'timestamp',
   format?: (value: any) => string,
 }> = ({
   symbol,
-  quoteParam,
+  positionParam,
   format
 }) => {
-  const { realTimeDataSource } = useRealTimeData();
-  const [ quote, setQuote ] = useState<QuoteDto | null>(null);
+  const { positionsDataSource } = usePositions();
+  const [ position, setPosition ] = useState<PositionDto | null>(null);
 
   useEffect(() => {
-    const handler = (event: CustomEvent<QuoteDto>) => {
-      setQuote(event.detail);
+    const handler = (event: CustomEvent<PositionDto>) => {
+      setPosition(event.detail);
     }
 
-    realTimeDataSource.quotesEvents.addEventListener(`quote:${symbol}`, handler);
+    positionsDataSource?.positionsEvents.addEventListener(`position:${symbol}`, handler);
 
     return () => {
-      realTimeDataSource.quotesEvents.removeEventListener(`quote:${symbol}`, handler);
+      positionsDataSource?.positionsEvents.removeEventListener(`position:${symbol}`, handler);
     };
-  }, [realTimeDataSource, symbol]);
+  }, [positionsDataSource, symbol]);
 
-  const value = quote
-    ? (format?.(quote[quoteParam]) || quote[quoteParam])
+  const value = position
+    ? (format?.(position[positionParam]) || position[positionParam])
     : 'N/A';
 
   return <span>{value}</span>;
 }
 
-export const useQuotesColumns = (): ProColumns<Quote>[] => {
+export const usePositionsColumns = (): ProColumns<Position>[] => {
   const [instrumentGroups, setInstrumentGroups] = useState<{ text: string, value: number }[]>([]);
   const { worker } = useLiquidityManagerContext();
 
@@ -71,13 +71,13 @@ export const useQuotesColumns = (): ProColumns<Quote>[] => {
       title: 'Bid',
       dataIndex: 'bid',
       width: '20%',
-      render: (_, record) => <Ticker symbol={record.symbol} quoteParam='bid' />,
+      render: (_, record) => <Ticker symbol={record.symbol} positionParam='bid' />,
     },
     {
       title: 'Ask',
       dataIndex: 'ask',
       width: '20%',
-      render: (_, record) => <Ticker symbol={record.symbol} quoteParam='ask' />,
+      render: (_, record) => <Ticker symbol={record.symbol} positionParam='ask' />,
     },
     {
       title: 'Timestamp',
@@ -86,7 +86,7 @@ export const useQuotesColumns = (): ProColumns<Quote>[] => {
       width: '20%',
       render: (_, record) => <Ticker
         symbol={record.symbol}
-        quoteParam='timestamp'
+        positionParam='timestamp'
         // DD/MM/YYYY, HH:mm:ss.SSS
         format={(value) => dayjs(value).format('DD/MM/YYYY, HH:mm:ss.SSS')}
       />,

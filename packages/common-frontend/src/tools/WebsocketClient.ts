@@ -1,4 +1,4 @@
-import { TIncomeEvent } from "../../../liquidity-manager-frontend/src/components/Quotes/QuotesDataSource";
+import { TIncomeEvent } from "../../../liquidity-manager-frontend/src/components/RealTimeData/RealTimeDataSource";
 import { message } from "antd";
 
 enum WsErrorCodes {

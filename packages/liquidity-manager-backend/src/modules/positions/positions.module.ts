@@ -3,19 +3,23 @@ import { PositionsService } from './positions.service';
 import { PositionsController } from './positions.controller';
 import { TpDcModule } from "../tp-dc/tp-dc.module";
 
-@Module({
-  imports: [
-    TpDcModule,
-  ],
-  providers: [
-    PositionsService,
-  ],
-  exports: [
-    PositionsService,
-  ],
-  controllers: [
-    PositionsController,
-  ]
-})
+@Module({})
 export class PositionsModule {
+  static forRestApi() {
+    return {
+      module: PositionsModule,
+      imports: [
+        TpDcModule,
+      ],
+      providers: [
+        PositionsService,
+      ],
+      exports: [
+        PositionsService,
+      ],
+      controllers: [
+        PositionsController,
+      ]
+    };
+  }
 }
