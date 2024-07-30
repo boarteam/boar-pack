@@ -9,7 +9,7 @@ import { Subject } from "rxjs";
 import { QuotesAmtsConnector } from "./quotes.amts-connector";
 
 @WebSocketGateway({
-  path: '/quotes',
+  path: '/ws',
 })
 @UseGuards(WsAuthGuard, PoliciesGuard)
 @UseFilters(WebsocketsExceptionFilter)
@@ -51,7 +51,10 @@ export class QuotesGateway {
 
     client.on('close', () => {
       this.logger.log(`Stopping messages stream since client is closed`);
-      this.amtsConnector.stopMessagesStream(messagesStream);
+      this.amtsConnector.stopMessagesStream(messagesStream).catch((e) => {
+        this.logger.error(`Error stopping messages stream`);
+        this.logger.error(e, e.stack);
+      });
       this.messagesStreamsByClients.delete(client);
     });
 

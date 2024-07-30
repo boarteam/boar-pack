@@ -10,10 +10,7 @@ export class PositionsService {
   }
 
   async getPositions(userId: number): Promise<PositionDto[]> {
-    const auth = await this.amtsDcService.auth({
-      login: 123,
-    });
-    const response = await this.amtsDcService.getPositions(auth, userId);
+    const response = await this.amtsDcService.getPositions(userId);
     return response.positions.map(position => ({
       id: position.id,
       userId: position.user_id,

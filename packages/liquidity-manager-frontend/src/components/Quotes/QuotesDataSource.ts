@@ -1,5 +1,4 @@
 import { QuoteDto, QuoteEventDto, SubscribeEventDto, WebsocketsErrorEventDto, } from "@@api/generated";
-import { useEffect, useState } from "react";
 import { WebsocketClient } from "@jifeon/boar-pack-common-frontend";
 
 export type TIncomeEvent =
@@ -9,7 +8,6 @@ export type TIncomeEvent =
 
 export type TOutputEvent =
   | { event: 'subscribe' } & SubscribeEventDto;
-
 
 export class QuotesDataSource {
   private primarySocket: WebsocketClient | null = null;
@@ -43,7 +41,6 @@ export class QuotesDataSource {
   }
 
   private emitStatusEvent() {
-    console.log(`QuotesDataSource: emitStatusEvent: ${this.primarySocket?.status}`);
     this.socketStatusEvents.dispatchEvent(new CustomEvent('status', {
       detail: this.primarySocket?.status,
       bubbles: false,
@@ -110,18 +107,9 @@ export class QuotesDataSource {
   }
 }
 
+const quotesDataSource = new QuotesDataSource();
+
 export function useQuotes(): { quotesDataSource: QuotesDataSource | null } {
-  const [quotesDataSource, setQuotesDataSource] = useState<QuotesDataSource | null>(null);
-
-  useEffect(() => {
-    const quotesDataSource = new QuotesDataSource();
-    setQuotesDataSource(quotesDataSource);
-
-    return () => {
-      quotesDataSource.closeSocketConnections().catch(console.error);
-    };
-  }, []);
-
   return {
     quotesDataSource,
   };
