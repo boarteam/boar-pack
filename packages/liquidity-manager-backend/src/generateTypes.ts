@@ -64,7 +64,6 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(Swagger);
     app.get(EcnSubscrSchemaController).initSwagger();
-
     const options: SwaggerDocumentOptions = {
       operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
       extraModels: [
