@@ -102,7 +102,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         rules: [{ required: true }]
       },
       editable: (value) => value === undefined,
-      render: (value, record) => record.connectSchemaId,
+      render: (value, record) => record.connectSchemaId ?? '-',
       renderFormItem(schema, config) {
         return worker && <RelationSelect<EcnConnectSchema>
           selectedItem={config.record?.connectSchema}
@@ -160,7 +160,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         return <NumberSwitch />;
       },
       render(text, record) {
-        return <Tag color={record.enabled ? 'green' : 'red'}>{record.enabled ? 'Enabled' : 'Disabled'}</Tag>;
+        return record.enabled === undefined ? '-' :  <Tag color={record.enabled ? 'green' : 'red'}>{record.enabled ? 'Enabled' : 'Disabled'}</Tag>;
       },
       filters: booleanFilters,
     },
@@ -175,7 +175,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         return <NumberSwitch />;
       },
       render(text, record) {
-        return <Tag color={record.tradeEnabled ? 'green' : 'red'}>{record.tradeEnabled ? 'Enabled' : 'Disabled'}</Tag>;
+        return record.tradeEnabled === undefined ? '-' : <Tag color={record.tradeEnabled ? 'green' : 'red'}>{record.tradeEnabled ? 'Enabled' : 'Disabled'}</Tag>;
       },
       filters: booleanFilters,
     },

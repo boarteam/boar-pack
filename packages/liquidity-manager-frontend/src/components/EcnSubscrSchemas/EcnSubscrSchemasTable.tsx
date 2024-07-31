@@ -48,6 +48,8 @@ function EcnSubscrSchemasTable<T = {}>(params: TEcnSubscrSchemasTableProps<T>) {
         instrumentHash: params.requestBody.instrumentHash,
         connectSchemaId: params.requestBody.connectSchemaId,
       })}
+      // @ts-ignore
+      onUpdateMany={params => apiClient.ecnSubscrSchemas.updateMany(params)}
       onDelete={params => apiClient.ecnSubscrSchemas.deleteOneBaseEcnSubscrSchemaControllerEcnSubscrSchema({
         ...params,
         instrumentHash: params.instrumentHash,

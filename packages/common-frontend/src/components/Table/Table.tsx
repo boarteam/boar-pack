@@ -8,6 +8,8 @@ import { applyKeywordToSearch, buildJoinFields, collectFieldsFromColumns, getFil
 import { TFilterParams, TFilters, TGetAllParams, TSort, TTableProps } from "./tableTypes";
 import useColumnsSets from "./useColumnsSets";
 import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
+import BulkEditButton from "./BulkEditButton";
+import _ from "lodash";
 
 let creatingRecordsCount = 0;
 
@@ -33,6 +35,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     getAll,
     onCreate,
     onUpdate,
+    onUpdateMany,
     onDelete,
     pathParams,
     idColumnName = 'id',
@@ -63,7 +66,9 @@ const Table = <Entity extends Record<string | symbol, any>,
   const actionRef = actionRefProp || actionRefComponent;
   const [createPopupData, setCreatePopupData] = useState<Partial<Entity> | undefined>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  // const [selectedRecords, setSelectedRecords] = useState<Entity[]>([]);
+  const [selectedRecords, setSelectedRecords] = useState<Entity[]>([]);
+  const [lastQueryParamsAndCount, setLastQueryParamsAndCount] = useState<[TGetAllParams & TPathParams, number] | []>([]);
+
   const intl = useIntl();
 
   useEffect(() => {
@@ -136,7 +141,15 @@ const Table = <Entity extends Record<string | symbol, any>,
       joinFields,
     ) || [];
 
-    return getAll(queryParams);
+    const result = await getAll(queryParams);
+
+    setSelectedRecords([]);
+    setLastQueryParamsAndCount([
+      queryParams,
+      // @ts-ignore
+      result.total,
+    ]);
+    return result;
   }
 
   const createButton = <Button
@@ -231,25 +244,50 @@ const Table = <Entity extends Record<string | symbol, any>,
       toolBarRender={(...args) => [
         ...toolBarRender && toolBarRender(...args) || [],
         columnsSetSelect?.() || null,
-        // <Dropdown.Button
-        //   onClick={() => setOpenBulkEdit(true)}
-        //   menu={{
-        //     items: [{ label: 'Edit ALL', key: '1' }],
-        //     onClick: () => console.log('all'),
-        //   }}
-        // >
-        //   Bulk Edit
-        // </Dropdown.Button>,
+        onUpdateMany
+          ? (
+            <BulkEditButton
+              selectedRecords={selectedRecords} 
+              lastQueryParamsAndCount={lastQueryParamsAndCount}
+              columns={columns}
+              idColumnName={idColumnName}
+              // @ts-ignore
+              onSubmit={values => onUpdateMany({
+                ...pathParams,
+                ...lastQueryParamsAndCount[0],
+                requestBody: {
+                  values: _.pickBy(
+                    // @ts-ignore
+                    entityToUpdateDto({
+                      ...pathParams,
+                      ...values,
+                    }), 
+                    (value, key) =>  _.has(values, key),
+                  ),
+                  fields: selectedRecords,
+                },
+              }).then(() => actionRef?.current?.reload())}
+            />
+          )
+          : <></>,
         !viewOnly && createButton || null,
       ]}
       columns={columns}
       defaultSize='small'
       columnsState={columnsState}
       params={params}
-      // rowSelection={{
-      //   selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.reduce((acc, colName) => record[colName] + '-' + acc, '') : record[idColumnName]),
-      //   onChange: (rowKeys, records) => setSelectedRecords(records),
-      // }}
+      {
+        ...(
+          onUpdateMany
+            ? { 
+              rowSelection: {
+                selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]),
+                onChange: (rowKeys, records) => setSelectedRecords(records),
+              }
+            }
+            : {}
+        )
+      }
       {...rest}
     />
     <DescriptionsCreateModal<Entity>
