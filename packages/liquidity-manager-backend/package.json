@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@jifeon/boar-pack-common-backend": "^1.7.0",
-    "@jifeon/boar-pack-users-backend": "^2.1.2",
+    "@jifeon/boar-pack-users-backend": "^2.1.3",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/schedule": "^4.0.2",
     "@nestjs/swagger": "^7.3.0",
