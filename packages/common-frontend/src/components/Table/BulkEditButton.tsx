@@ -16,7 +16,7 @@ const BulkEditDialog =  <Entity extends Record<string | symbol, any>>(
     config,
     onClose,
     onSubmit,
-  }: { 
+  }: {
     idColumnName: string & keyof Entity | (string & keyof Entity)[],
     columns: ProColumns<Entity>[],
     config: TBulkEditConfig<Entity>,
@@ -24,7 +24,7 @@ const BulkEditDialog =  <Entity extends Record<string | symbol, any>>(
     onSubmit: (value: Partial<Entity>) => Promise<void>
   }) => {
   const sections = columnsToDescriptionItemProps(columns, 'General');
-    
+
   const [editableKeys, setEditableKeys] = useState<Set<string>>(new Set);
 
   const [form] = useForm();
@@ -54,7 +54,7 @@ const BulkEditDialog =  <Entity extends Record<string | symbol, any>>(
       onCancel={onClose}
       width='80%'
       footer={[
-        <Button key='submit' type="primary" onClick={handleUpdate}>Update {config?.count} entites</Button>
+        <Button key='submit' type="primary" onClick={handleUpdate}>Update {config?.count} entities</Button>
       ]}
     >
       {sections.map((section) => {
@@ -94,8 +94,8 @@ const BulkEditDialog =  <Entity extends Record<string | symbol, any>>(
 }
 
 const BulkEditButton = <Entity extends Record<string | symbol, any>>(
-  { 
-    selectedRecords, 
+  {
+    selectedRecords,
     lastQueryParamsAndCount,
     columns,
     idColumnName,
@@ -112,14 +112,14 @@ const BulkEditButton = <Entity extends Record<string | symbol, any>>(
   return (<>
     <Button
       onClick={() => setBulkEditConfig(
-        selectedRecords.length 
+        selectedRecords.length
           ? { type: 'records', value: selectedRecords, count: selectedRecords.length }
           : { type: 'query', value: lastQueryParamsAndCount[0], count: lastQueryParamsAndCount[1] }
       )}
     >
     {
-      selectedRecords.length 
-        ? `Bulk Edit ${selectedRecords.length}` 
+      selectedRecords.length
+        ? `Bulk Edit ${selectedRecords.length}`
         : (
           <Space>
             Bulk Edit
@@ -140,7 +140,7 @@ const BulkEditButton = <Entity extends Record<string | symbol, any>>(
         )
       }
     </Button>
-    <BulkEditDialog<Entity> 
+    <BulkEditDialog<Entity>
       config={bulkEditConfig}
       onClose={() => setBulkEditConfig(null)}
       columns={columns}
