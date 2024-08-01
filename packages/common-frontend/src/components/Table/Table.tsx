@@ -160,7 +160,10 @@ const Table = <Entity extends Record<string | symbol, any>,
       if (popupCreation) {
         setCreatePopupData(createNewDefaultParams);
       } else {
-        actionRef?.current?.addEditRecord(createNewDefaultParams, {
+        actionRef?.current?.addEditRecord({
+          [KEY_SYMBOL]: getNewId(),
+          ...createNewDefaultParams,
+        }, {
           position: 'top',
         });
       }
@@ -173,7 +176,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     <ProTable<Entity, TEntityParams & TFilterParams>
       actionRef={actionRef}
       request={request}
-      rowKey={record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]}
+      rowKey={record => record[KEY_SYMBOL] ?? (Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName])}
       options={{
         fullScreen: true,
         reload: true,
@@ -244,50 +247,50 @@ const Table = <Entity extends Record<string | symbol, any>,
       toolBarRender={(...args) => [
         ...toolBarRender && toolBarRender(...args) || [],
         columnsSetSelect?.() || null,
-        onUpdateMany
-          ? (
-            <BulkEditButton
-              selectedRecords={selectedRecords} 
-              lastQueryParamsAndCount={lastQueryParamsAndCount}
-              columns={columns}
-              idColumnName={idColumnName}
-              // @ts-ignore
-              onSubmit={values => onUpdateMany({
-                ...pathParams,
-                ...lastQueryParamsAndCount[0],
-                requestBody: {
-                  values: _.pickBy(
-                    // @ts-ignore
-                    entityToUpdateDto({
-                      ...pathParams,
-                      ...values,
-                    }), 
-                    (value, key) =>  _.has(values, key),
-                  ),
-                  fields: selectedRecords,
-                },
-              }).then(() => actionRef?.current?.reload())}
-            />
-          )
-          : <></>,
+        // onUpdateMany
+        //   ? (
+        //     <BulkEditButton
+        //       selectedRecords={selectedRecords} 
+        //       lastQueryParamsAndCount={lastQueryParamsAndCount}
+        //       columns={columns}
+        //       idColumnName={idColumnName}
+        //       // @ts-ignore
+        //       onSubmit={values => onUpdateMany({
+        //         ...pathParams,
+        //         ...lastQueryParamsAndCount[0],
+        //         requestBody: {
+        //           values: _.pickBy(
+        //             // @ts-ignore
+        //             entityToUpdateDto({
+        //               ...pathParams,
+        //               ...values,
+        //             }), 
+        //             (value, key) =>  _.has(values, key),
+        //           ),
+        //           fields: selectedRecords,
+        //         },
+        //       }).then(() => actionRef?.current?.reload())}
+        //     />
+        //   )
+        //   : <></>,
         !viewOnly && createButton || null,
       ]}
       columns={columns}
       defaultSize='small'
       columnsState={columnsState}
       params={params}
-      {
-        ...(
-          onUpdateMany
-            ? { 
-              rowSelection: {
-                selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]),
-                onChange: (rowKeys, records) => setSelectedRecords(records),
-              }
-            }
-            : {}
-        )
-      }
+      // {
+      //   ...(
+      //     onUpdateMany
+      //       ? { 
+      //         rowSelection: {
+      //           selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]),
+      //           onChange: (rowKeys, records) => setSelectedRecords(records),
+      //         }
+      //       }
+      //       : {}
+      //   )
+      // }
       {...rest}
     />
     <DescriptionsCreateModal<Entity>
