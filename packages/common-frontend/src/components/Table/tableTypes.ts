@@ -86,7 +86,7 @@ interface BaseProps<Entity,
   TPathParams = {}> extends ProTableProps<Entity, TEntityParams & TFilterParams> {
   getAll: ({}: TGetAllParams & TPathParams) => Promise<{ data: Entity[] }>;
   pathParams: TPathParams;
-  idColumnName?: string & keyof Entity;
+  idColumnName?: string & keyof Entity | (string & keyof Entity)[];
   createNewDefaultParams?: Partial<Entity>;
   afterSave?: (record: Entity) => Promise<void>;
   actionRef?: MutableRefObject<ActionType | undefined>;
@@ -106,6 +106,8 @@ interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {
   onDelete: ({}: Record<keyof Entity, string> & TPathParams) => Promise<void>;
   entityToCreateDto: (entity: Entity) => CreateDto;
   entityToUpdateDto: (entity: Entity) => UpdateDto;
+  onUpdateMany: ({}: Record<keyof Entity, string> & { requestBody: { updateValues: Partial<UpdateDto>[], records: Entity[] } } & TPathParams) => Promise<void>,
+  onDeleteMany: ({}: Record<keyof Entity, string> & { requestBody: { records: Entity[] } } & TPathParams) => Promise<void>,
 }
 
 // Conditional type to merge base and editable props conditionally

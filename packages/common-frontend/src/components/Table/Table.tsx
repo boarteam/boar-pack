@@ -8,6 +8,9 @@ import { applyKeywordToSearch, buildJoinFields, collectFieldsFromColumns, getFil
 import { TFilterParams, TFilters, TGetAllParams, TSort, TTableProps } from "./tableTypes";
 import useColumnsSets from "./useColumnsSets";
 import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
+import BulkEditButton from "./BulkEditButton";
+import _ from "lodash";
+import BulkDeleteButton from "./BulkDeleteButton";
 
 let creatingRecordsCount = 0;
 
@@ -33,7 +36,9 @@ const Table = <Entity extends Record<string | symbol, any>,
     getAll,
     onCreate,
     onUpdate,
+    onUpdateMany,
     onDelete,
+    onDeleteMany,
     pathParams,
     idColumnName = 'id',
     entityToCreateDto,
@@ -63,7 +68,9 @@ const Table = <Entity extends Record<string | symbol, any>,
   const actionRef = actionRefProp || actionRefComponent;
   const [createPopupData, setCreatePopupData] = useState<Partial<Entity> | undefined>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [editableData, setEditableData] = useState<(Entity)[]>([]);
+  const [selectedRecords, setSelectedRecords] = useState<Entity[]>([]);
+  const [lastQueryParamsAndCount, setLastQueryParamsAndCount] = useState<[TGetAllParams & TPathParams, number] | []>([]);
+
   const intl = useIntl();
 
   useEffect(() => {
@@ -136,7 +143,15 @@ const Table = <Entity extends Record<string | symbol, any>,
       joinFields,
     ) || [];
 
-    return getAll(queryParams);
+    const result = await getAll(queryParams);
+
+    setSelectedRecords([]);
+    setLastQueryParamsAndCount([
+      queryParams,
+      // @ts-ignore
+      result.total,
+    ]);
+    return result;
   }
 
   const createButton = <Button
@@ -147,10 +162,8 @@ const Table = <Entity extends Record<string | symbol, any>,
       if (popupCreation) {
         setCreatePopupData(createNewDefaultParams);
       } else {
-        const newId = getNewId();
         actionRef?.current?.addEditRecord({
-          [idColumnName]: newId,
-          [KEY_SYMBOL]: newId,
+          [KEY_SYMBOL]: getNewId(),
           ...createNewDefaultParams,
         }, {
           position: 'top',
@@ -165,7 +178,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     <ProTable<Entity, TEntityParams & TFilterParams>
       actionRef={actionRef}
       request={request}
-      rowKey={record => record[KEY_SYMBOL] ?? record[idColumnName]}
+      rowKey={record => record[KEY_SYMBOL] ?? (Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName])}
       options={{
         fullScreen: true,
         reload: true,
@@ -186,34 +199,30 @@ const Table = <Entity extends Record<string | symbol, any>,
         type: 'multiple',
         editableKeys,
         onChange: setEditableRowKeys,
-        onValuesChange(entity, data) {
-          setEditableData(data);
-        },
         async onSave(
           id,
           record,
           origin,
           newLine,
         ) {
-          const data = editableData.find(entity => entity[idColumnName] === id) || record;
           if (newLine) {
             await onCreate?.({
               ...pathParams,
-              requestBody: entityToCreateDto(data)
+              requestBody: entityToCreateDto(record),
             });
           } else {
             await onUpdate({
               ...pathParams,
-              ...{ [idColumnName]: String(id) } as Record<keyof Entity, string>,
+              ...record,
               requestBody: entityToUpdateDto({
                 ...pathParams,
-                ...data,
+                ...record,
               }),
             })
           }
 
           if (typeof afterSave === 'function') {
-            await afterSave(data);
+            await afterSave(record);
           }
 
           flushSync(() => {
@@ -225,14 +234,10 @@ const Table = <Entity extends Record<string | symbol, any>,
           record,
           origin,
         ) {
-          editableData.forEach(entity => {
-            if (entity[idColumnName] === id) {
-              Object.assign(entity, origin);
-            }
-          })
+          Object.assign(record, origin);
         },
-        async onDelete(id) {
-          await onDelete({ ...{ [idColumnName]: String(id) } as Record<keyof Entity, string>, ...pathParams });
+        async onDelete(id, row) {
+          await onDelete({ ...row, ...pathParams });
         },
         deletePopconfirmMessage: intl.formatMessage({ id: 'table.deletePopconfirmMessage' }),
         onlyAddOneLineAlertMessage: intl.formatMessage({ id: 'table.onlyAddOneLineAlertMessage' }),
@@ -244,12 +249,66 @@ const Table = <Entity extends Record<string | symbol, any>,
       toolBarRender={(...args) => [
         ...toolBarRender && toolBarRender(...args) || [],
         columnsSetSelect?.() || null,
+        onUpdateMany
+          ? (
+            <BulkEditButton
+              selectedRecords={selectedRecords} 
+              lastQueryParamsAndCount={lastQueryParamsAndCount}
+              columns={columns}
+              idColumnName={idColumnName}
+              // @ts-ignore
+              onSubmit={values => onUpdateMany({
+                ...pathParams,
+                ...lastQueryParamsAndCount[0],
+                requestBody: {
+                  updateValues: _.pickBy(
+                    // @ts-ignore
+                    entityToUpdateDto({
+                      ...pathParams,
+                      ...values,
+                    }), 
+                    (value, key) =>  _.has(values, key),
+                  ),
+                  records: selectedRecords,
+                },
+              }).then(() => actionRef?.current?.reload())}
+            />
+          )
+          : <></>,
+        onDeleteMany
+          ? (
+            <BulkDeleteButton
+              selectedRecords={selectedRecords} 
+              lastQueryParamsAndCount={lastQueryParamsAndCount}
+              // @ts-ignore
+              onDelete={() => onDeleteMany({
+                ...pathParams,
+                ...lastQueryParamsAndCount[0],
+                requestBody: {
+                  records: selectedRecords,
+                },
+              }).then(() => actionRef?.current?.reload())}
+            />
+          )
+          : <></>,
         !viewOnly && createButton || null,
       ]}
       columns={columns}
       defaultSize='small'
       columnsState={columnsState}
       params={params}
+      {
+        ...(
+          onUpdateMany || onDeleteMany
+            ? { 
+              rowSelection: {
+                selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]),
+                onChange: (rowKeys, records) => setSelectedRecords(records),
+              }
+            }
+            : {}
+        )
+      }
       {...rest}
     />
     <DescriptionsCreateModal<Entity>

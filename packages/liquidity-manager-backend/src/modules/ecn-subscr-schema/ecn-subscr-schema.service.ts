@@ -13,4 +13,13 @@ export class EcnSubscrSchemaService extends TypeOrmCrudService<EcnSubscrSchema> 
   ) {
     super(repo);
   }
+
+  async updateMany(entitiesToUpdate: Partial<EcnSubscrSchema>[], values: Partial<EcnSubscrSchema>) {
+    return this.repo.save(entitiesToUpdate.map(entity => ({ ...entity, ...values })));
+  }
+
+  async deleteMany(entitiesToDelete: Partial<EcnSubscrSchema>[]) {
+    // @ts-ignore
+    return this.repo.remove(entitiesToDelete);
+  }
 }

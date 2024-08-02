@@ -2,7 +2,6 @@ import { TTableProps, Table, useFullscreen } from "@jifeon/boar-pack-common-fron
 import apiClient from '@@api/apiClient';
 import { EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto } from "@@api/generated";
 import pick from "lodash/pick";
-import React from "react";
 import { ecnSubscrSchemaJoinFields } from "./ecnSubscrSchemaJoinFields";
 import { useEcnSubscrSchemaColumns } from "./useEcnSubscrSchemaColumns";
 import { ecnSubscrSchemaSearchableColumns } from "./ecnSubscrSchemaSearchableColumns";
@@ -13,21 +12,21 @@ export function ecnSubscriptionSchemaToDto<T extends Partial<EcnSubscrSchema>,
   R extends (EcnSubscrSchemaCreateDto | EcnSubscrSchemaUpdateDto)>(entity: T): R {
   return {
     ...pick(entity, [
-      'enabled',
       'markupBid',
       'markupAsk',
       'defaultMarkupBid',
       'defaultMarkupAsk',
-      'tradeEnabled',
       'minVolume',
       'maxVolume',
       'volumeStep',
       'instrumentWeight',
       'descr',
     ]),
+    enabled: entity.enabled ?? false,
+    tradeEnabled: entity.tradeEnabled ?? false,
     instrumentHash: entity.instrument?.instrumentHash,
     executionMode: entity.executionMode?.id,
-    connectSchemaId: entity.connectSchemaId,
+    connectSchemaId: entity.connectSchema?.id,
   } as R;
 }
 
@@ -44,15 +43,24 @@ function EcnSubscrSchemasTable<T = {}>(params: TEcnSubscrSchemasTableProps<T>) {
     <Table<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, {}, { worker: string }>
       getAll={params => apiClient.ecnSubscrSchemas.getManyBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
       onCreate={params => apiClient.ecnSubscrSchemas.createOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
-      // @ts-ignore-next-line
-      onUpdate={params => apiClient.ecnSubscrSchemas.updateOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
-      // @ts-ignore-next-line
-      onDelete={params => apiClient.ecnSubscrSchemas.deleteOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
+      onUpdate={params => apiClient.ecnSubscrSchemas.updateOneBaseEcnSubscrSchemaControllerEcnSubscrSchema({
+        ...params,
+        instrumentHash: params.requestBody.instrumentHash,
+        connectSchemaId: params.requestBody.connectSchemaId,
+      })}
+      // @ts-ignore
+      onUpdateMany={params => apiClient.ecnSubscrSchemas.updateMany(params)}
+      // @ts-ignore
+      onDeleteMany={params => apiClient.ecnSubscrSchemas.deleteMany(params)}
+      onDelete={params => apiClient.ecnSubscrSchemas.deleteOneBaseEcnSubscrSchemaControllerEcnSubscrSchema({
+        ...params,
+        instrumentHash: params.instrumentHash,
+        connectSchemaId: Number(params.connectSchemaId),
+      })}
       entityToCreateDto={ecnSubscriptionSchemaToDto}
       entityToUpdateDto={ecnSubscriptionSchemaToDto}
       columns={columns}
-      // idColumnName="instrumentHash"
-      rowKey={(record) => `${record.instrumentHash}-${record.connectSchemaId}`}
+      idColumnName={["instrumentHash", 'connectSchemaId']}
       scroll={{
         x: 'max-content',
       }}
@@ -61,6 +69,7 @@ function EcnSubscrSchemasTable<T = {}>(params: TEcnSubscrSchemasTableProps<T>) {
       }}
       params={{
         join: ecnSubscrSchemaJoinFields,
+        sortMap: { executionMode: 'executionMode.name' },
       }}
       createNewDefaultParams={{
         enabled: 1,
