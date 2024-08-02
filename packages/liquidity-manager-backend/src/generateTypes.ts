@@ -10,6 +10,7 @@ import { ConfigModule } from "@nestjs/config";
 import { generate } from "openapi-typescript-codegen";
 import { QuoteDto, QuoteEventDto, SubscribeEventDto } from "./modules/quotes/dto/quotes.dto";
 import { WebsocketsErrorEventDto } from "@jifeon/boar-pack-common-backend";
+import { EcnSubscrSchemaController } from './modules/ecn-subscr-schema/ecn-subscr-schema.controller';
 
 @Module({
   imports: [
@@ -39,6 +40,8 @@ class Swagger {
 async function bootstrap() {
   try {
     const app = await NestFactory.create(Swagger);
+    app.get(EcnSubscrSchemaController).initSwagger();
+    
     const options: SwaggerDocumentOptions = {
       operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
       extraModels: [

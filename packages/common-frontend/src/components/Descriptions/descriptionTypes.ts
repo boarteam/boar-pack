@@ -41,7 +41,7 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
 }
 
 export type TDescriptionsCreateModalProps<Entity> = Omit<ProDescriptionsProps<Entity>, 'columns'> & {
-  idColumnName: string & keyof Entity,
+  idColumnName: string & keyof Entity | (string & keyof Entity)[],
   columns: ProColumns<Entity>[],
   data: Partial<Entity> | undefined,
   onSubmit: (data: Entity) => Promise<void>,

@@ -93,7 +93,7 @@ export type TIndexableRecord = {
 
 export function collectFieldsFromColumns<T>(
   columns: TIndexableRecord[] | undefined,
-  idColumnName: string,
+  idColumnName: string | string[],
   joinFields: Set<string> = new Set,
   fields: Set<string> = new Set
 ): string[] {
@@ -102,7 +102,7 @@ export function collectFieldsFromColumns<T>(
 
 export function buildFieldsFromColumns<T>(
   columns: TIndexableRecord[] | undefined,
-  idColumnName: string,
+  idColumnName: string | string[],
   joinFields: Set<string> = new Set,
   fields: Set<string> = new Set
 ): Set<string> {
@@ -113,7 +113,8 @@ export function buildFieldsFromColumns<T>(
 
     // skip id column because it is always included by backend
     // and join fields because they are included by join
-    if (!col.dataIndex || col.dataIndex === idColumnName || joinFields.has(col.dataIndex as string)) {
+
+    if (!col.dataIndex || (Array.isArray(idColumnName) ? idColumnName.includes(col.dataIndex) : col.dataIndex === idColumnName) || joinFields.has(col.dataIndex as string)) {
       return;
     }
 

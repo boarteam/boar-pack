@@ -4,3 +4,4 @@ export * from './NumberSwitcher';
 export * from './Password';
 export * from './RelationSelect';
 export * from './useCheckConnection';
+export * from './filterDropdowns';

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Button, Modal } from "antd";
 import { TDescriptionsCreateModalProps } from "./descriptionTypes";
 import { ProDescriptions } from "@ant-design/pro-components";
@@ -41,7 +41,7 @@ const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
     >
       {sections.map((section, index) => (
         <ProDescriptions<Entity>
-          key={index + idColumnName}
+          key={index + (Array.isArray(idColumnName) ? idColumnName.join('-') : idColumnName)}
           title={section.title as React.ReactNode}
           size={"small"}
           bordered

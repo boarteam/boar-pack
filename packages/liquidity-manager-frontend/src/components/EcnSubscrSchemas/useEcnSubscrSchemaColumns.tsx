@@ -1,11 +1,11 @@
 import { Tag } from "antd";
 import { ProColumns } from "@ant-design/pro-components";
 import { useAccess, useIntl, Link } from "@umijs/max";
-import { EcnConnectSchema, EcnConnectSchemaSetupLabel, EcnExecutionMode, EcnInstrument, EcnSubscrSchema } from "@@api/generated";
+import { EcnConnectSchema, EcnExecutionMode, EcnInstrument, EcnInstrumentsGroup, EcnSubscrSchema } from "@@api/generated";
 import apiClient from '@@api/apiClient';
 import { EditOutlined } from "@ant-design/icons";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
-import { NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend";
+import { DynamicOptionsFilterDropdown, NumberFilterDropdown, NumberSwitch, RelationSelect, RelationsSelect, StringFilterDropdown, booleanFilters } from "@jifeon/boar-pack-common-frontend";
 
 export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
   const intl = useIntl();
@@ -22,6 +22,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       formItemProps: {
         rules: [{ required: true }]
       },
+      editable: (value) => value === undefined,
       render(text, record) {
         // link to subscr schema page
         return <Link to={`/liquidity/ecn-connect-schemas/${record.connectSchemaId}/subscription-schemas/${record.instrumentHash}`}>{record.instrument?.name ?? '-'}</Link>;
@@ -34,7 +35,63 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
             worker,
           })}
         /> || null;
-      }
+      },
+      filterDropdown: ({
+        confirm, 
+        clearFilters,
+        selectedKeys,
+        setSelectedKeys,
+      }) => (
+        <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
+          <RelationsSelect<EcnInstrument>
+            selectedItems={selectedKeys ?? []}
+            onChange={items => setSelectedKeys(items.map(item => item.instrumentHash))}
+            fetchItems={filter => apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument({
+              filter,
+              worker,
+              fields: ['name'],
+            })}
+            fieldNames={{
+              value: 'instrumentHash',
+              label: 'name',
+            }}
+            mode='multiple'
+            style={{ padding: 4, width: 250 }}
+          />
+        </DynamicOptionsFilterDropdown>
+      ),
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.instrumentGroup' }),
+      dataIndex: 'instrument.instrumentGroup.name',
+      sorter: true,
+      width: 130,
+      render: (value, record) => record.instrument?.instrumentGroup?.name,
+      editable: false,
+      filterDropdown: ({
+        confirm, 
+        clearFilters,
+        selectedKeys,
+        setSelectedKeys,
+      }) => (
+        <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
+          <RelationsSelect<EcnInstrumentsGroup>
+            selectedItems={selectedKeys ?? []}
+            onChange={items => setSelectedKeys(items.map(item => item.id))}
+            fetchItems={filter => apiClient.ecnInstrumentsGroups.getManyBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup({
+              filter,
+              worker,
+              fields: ['name'],
+            })}
+            fieldNames={{
+              value: 'id',
+              label: 'name',
+            }}
+            mode='multiple'
+            style={{ padding: 4, width: 250 }}
+          />
+        </DynamicOptionsFilterDropdown>
+      ),
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.connectSchemaId' }),
@@ -44,7 +101,8 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       formItemProps: {
         rules: [{ required: true }]
       },
-      render: (value, record) => record.connectSchemaId,
+      editable: (value) => value === undefined,
+      render: (value, record) => record.connectSchemaId ?? '-',
       renderFormItem(schema, config) {
         return worker && <RelationSelect<EcnConnectSchema>
           selectedItem={config.record?.connectSchema}
@@ -57,35 +115,63 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
             worker,
           })}
         /> || null;
-      }
+      },
+      filterDropdown: ({
+        confirm, 
+        clearFilters,
+        selectedKeys,
+        setSelectedKeys,
+      }) => (
+        <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
+          <RelationsSelect<EcnConnectSchema>
+            selectedItems={selectedKeys ?? []}
+            onChange={items => setSelectedKeys(items.map(item => item.id))}
+            fetchItems={filter => apiClient.ecnConnectSchemas.getManyBaseEcnConnectSchemaControllerEcnConnectSchema({
+              filter,
+              worker,
+            })}
+            fieldNames={{
+              value: 'id',
+              label: 'id',
+            }}
+            mode='multiple'
+            style={{ padding: 4, width: 250 }}
+          />
+        </DynamicOptionsFilterDropdown>
+      ),
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.connectSchemaDescr' }),
+      dataIndex: 'connectSchema.descr',
+      sorter: true,
+      width: 230,
+      render: (value, record) => record.connectSchema?.descr,
+      editable: false,
+      filterDropdown: (props) => <StringFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.enabled' }),
       dataIndex: 'enabled',
       sorter: true,
-      formItemProps: {
-        rules: [{ required: true }]
-      },
       renderFormItem() {
         return <NumberSwitch />;
       },
       render(text, record) {
-        return <Tag color={record.enabled ? 'green' : 'red'}>{record.enabled ? 'Enabled' : 'Disabled'}</Tag>;
+        return record.enabled === undefined ? '-' :  <Tag color={record.enabled ? 'green' : 'red'}>{record.enabled ? 'Enabled' : 'Disabled'}</Tag>;
       },
+      filters: booleanFilters,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.tradeEnabled' }),
       dataIndex: 'tradeEnabled',
       sorter: true,
-      formItemProps: {
-        rules: [{ required: true }]
-      },
       renderFormItem() {
         return <NumberSwitch />;
       },
       render(text, record) {
-        return <Tag color={record.tradeEnabled ? 'green' : 'red'}>{record.tradeEnabled ? 'Enabled' : 'Disabled'}</Tag>;
+        return record.tradeEnabled === undefined ? '-' : <Tag color={record.tradeEnabled ? 'green' : 'red'}>{record.tradeEnabled ? 'Enabled' : 'Disabled'}</Tag>;
       },
+      filters: booleanFilters,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.markupBid' }),
@@ -99,6 +185,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
+      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.defaultMarkupBid' }),
@@ -112,6 +199,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
+      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.markupAsk' }),
@@ -125,6 +213,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
+      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.defaultMarkupAsk' }),
@@ -138,6 +227,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
+      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.minVolume' }),
@@ -149,6 +239,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       fieldProps: {
         stringMode: true,
       },
+      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.maxVolume' }),
@@ -160,6 +251,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       fieldProps: {
         stringMode: true,
       },
+      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.volumeStep' }),
@@ -171,6 +263,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       fieldProps: {
         stringMode: true,
       },
+      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.instrumentWeight' }),
@@ -184,6 +277,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
+      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.executionMode' }),
@@ -204,6 +298,29 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       render(text, record) {
         return record.executionMode?.name ?? '-';
       },
+      filterDropdown: ({
+        confirm, 
+        clearFilters,
+        selectedKeys,
+        setSelectedKeys,
+      }) => (
+        <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
+          <RelationsSelect<EcnExecutionMode>
+            selectedItems={selectedKeys ?? []}
+            onChange={items => setSelectedKeys(items.map(item => item.id))}
+            fetchItems={filter => apiClient.ecnExecutionModes.getManyBaseGenericLiquidityControllerEcnExecutionMode({
+              filter,
+              worker,
+            })}
+            fieldNames={{
+              value: 'id',
+              label: 'name',
+            }}
+            mode='multiple'
+            style={{ padding: 4, width: 250 }}
+          />
+        </DynamicOptionsFilterDropdown>
+      ),
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.descr' }),
