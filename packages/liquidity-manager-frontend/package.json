@@ -1,6 +1,6 @@
 {
   "name": "@jifeon/boar-pack-liquidity-manager-frontend",
-  "version": "1.14.0-adm-119.3",
+  "version": "1.14.0-adm-119.4",
   "description": "Liquidity Manager Frontend",
   "repository": "git@github.com:jifeon/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@antv/xflow": "^1.0.55",
-    "@jifeon/boar-pack-common-frontend": "^1.12.0-adm-119.2",
+    "@jifeon/boar-pack-common-frontend": "^1.12.0-adm-119.3",
     "@umijs/max": "^4.1.10",
     "@umijs/plugins": "^4.1.10",
     "@umijs/route-utils": "^4.0.1",
