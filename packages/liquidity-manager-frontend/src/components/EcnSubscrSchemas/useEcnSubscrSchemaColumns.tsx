@@ -153,9 +153,6 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.enabled' }),
       dataIndex: 'enabled',
       sorter: true,
-      formItemProps: {
-        rules: [{ required: true }]
-      },
       renderFormItem() {
         return <NumberSwitch />;
       },
@@ -168,9 +165,6 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.tradeEnabled' }),
       dataIndex: 'tradeEnabled',
       sorter: true,
-      formItemProps: {
-        rules: [{ required: true }]
-      },
       renderFormItem() {
         return <NumberSwitch />;
       },

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req, Body, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Body, UseInterceptors, Delete } from '@nestjs/common';
 import {
   Crud,
   CrudController,
@@ -22,8 +22,12 @@ export class SubscSchemasCountResponse {
 }
 
 class UpdateManyDto {
-  values: Partial<EcnSubscrSchema>;
-  fields: { connectSchemaId: EcnSubscrSchema['connectSchemaId'], instrumentHash: EcnSubscrSchema['instrumentHash'] }[];
+  updateValues: Partial<EcnSubscrSchema>;
+  records: { connectSchemaId: EcnSubscrSchema['connectSchemaId'], instrumentHash: EcnSubscrSchema['instrumentHash'] }[];
+}
+
+class DeleteManyDto {
+  records: { connectSchemaId: EcnSubscrSchema['connectSchemaId'], instrumentHash: EcnSubscrSchema['instrumentHash'] }[];
 }
 
 @Crud({
@@ -114,13 +118,27 @@ export class EcnSubscrSchemaController {
     @UseInterceptors(CrudRequestInterceptor)
     @CheckPolicies(new ManageEcnSubscrSchemaPolicy())
     async updateMany(@Req() originReq: Request, @ParsedRequest() req: CrudRequest, @Body() body: UpdateManyDto) {
-      let entitiesToUpdate = body.fields;
+      let entitiesToUpdate = body.records;
       if (entitiesToUpdate.length === 0) {
         req.parsed.limit = 0;
         const response = await this.base.getManyBase?.(req) as GetManyDefaultResponse<EcnSubscrSchema>;
         entitiesToUpdate = response?.data;
       }
 
-      return this.service.updateMany(entitiesToUpdate, body.values);
+      return this.service.updateMany(entitiesToUpdate, body.updateValues);
+    }
+
+    @Delete('deleteMany')
+    @UseInterceptors(CrudRequestInterceptor)
+    @CheckPolicies(new ManageEcnSubscrSchemaPolicy())
+    async deleteMany(@Req() originReq: Request, @ParsedRequest() req: CrudRequest, @Body() body: DeleteManyDto) {
+      let entitiesToDelete = body.records;
+      if (entitiesToDelete.length === 0) {
+        req.parsed.limit = 0;
+        const response = await this.base.getManyBase?.(req) as GetManyDefaultResponse<EcnSubscrSchema>;
+        entitiesToDelete = response?.data;
+      }
+
+      return this.service.deleteMany(entitiesToDelete);
     }
 }

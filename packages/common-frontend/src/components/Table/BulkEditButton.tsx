@@ -83,11 +83,12 @@ const BulkEditDialog =  <Entity extends Record<string | symbol, any>>(
       {sections.map((section) => {
         return (
           <ProDescriptions<Entity>
+            extra={'Click on the field first and then type a new desired value.'}
             key={Array.isArray(idColumnName) ? idColumnName.join('-') : idColumnName}
             title={section.title as React.ReactNode}
             size={"small"}
             bordered
-            column={2}
+            column={3}
             style={{ marginBottom: 20 }}
             labelStyle={{ width: '15%' }}
             contentStyle={{ width: '25%' }}

@@ -281,20 +281,13 @@ const Table = <Entity extends Record<string | symbol, any>,
               selectedRecords={selectedRecords} 
               lastQueryParamsAndCount={lastQueryParamsAndCount}
               // @ts-ignore
-              onDelete={() => console.log({
+              onDelete={() => onDeleteMany({
                 ...pathParams,
                 ...lastQueryParamsAndCount[0],
                 requestBody: {
                   records: selectedRecords,
                 },
-              })}
-              // onDelete={() => onDeleteMany({
-              //   ...pathParams,
-              //   ...lastQueryParamsAndCount[0],
-              //   requestBody: {
-              //     records: selectedRecords,
-              //   },
-              // }).then(() => actionRef?.current?.reload())}
+              }).then(() => actionRef?.current?.reload())}
             />
           )
           : <></>,

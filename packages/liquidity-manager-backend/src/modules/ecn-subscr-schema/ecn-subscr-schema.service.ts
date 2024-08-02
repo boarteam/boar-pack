@@ -15,6 +15,11 @@ export class EcnSubscrSchemaService extends TypeOrmCrudService<EcnSubscrSchema> 
   }
 
   async updateMany(entitiesToUpdate: Partial<EcnSubscrSchema>[], values: Partial<EcnSubscrSchema>) {
-    return this.repo.save(entitiesToUpdate.map(entity => this.repo.create({ ...entity, ...values })));
+    return this.repo.save(entitiesToUpdate.map(entity => ({ ...entity, ...values })));
+  }
+
+  async deleteMany(entitiesToDelete: Partial<EcnSubscrSchema>[]) {
+    // @ts-ignore
+    return this.repo.remove(entitiesToDelete);
   }
 }
