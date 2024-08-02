@@ -106,7 +106,8 @@ interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {
   onDelete: ({}: Record<keyof Entity, string> & TPathParams) => Promise<void>;
   entityToCreateDto: (entity: Entity) => CreateDto;
   entityToUpdateDto: (entity: Entity) => UpdateDto;
-  onUpdateMany: ({}: Record<keyof Entity, string> & { requestBody: { values: Partial<UpdateDto>[], fields: Entity[] } } & TPathParams) => Promise<void>,
+  onUpdateMany: ({}: Record<keyof Entity, string> & { requestBody: { updateValues: Partial<UpdateDto>[], records: Entity[] } } & TPathParams) => Promise<void>,
+  onDeleteMany: ({}: Record<keyof Entity, string> & { requestBody: { records: Entity[] } } & TPathParams) => Promise<void>,
 }
 
 // Conditional type to merge base and editable props conditionally

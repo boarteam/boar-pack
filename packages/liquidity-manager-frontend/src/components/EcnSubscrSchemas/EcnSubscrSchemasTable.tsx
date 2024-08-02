@@ -50,6 +50,8 @@ function EcnSubscrSchemasTable<T = {}>(params: TEcnSubscrSchemasTableProps<T>) {
       })}
       // @ts-ignore
       onUpdateMany={params => apiClient.ecnSubscrSchemas.updateMany(params)}
+      // @ts-ignore
+      onDeleteMany={params => apiClient.ecnSubscrSchemas.deleteMany(params)}
       onDelete={params => apiClient.ecnSubscrSchemas.deleteOneBaseEcnSubscrSchemaControllerEcnSubscrSchema({
         ...params,
         instrumentHash: params.instrumentHash,
@@ -67,6 +69,7 @@ function EcnSubscrSchemasTable<T = {}>(params: TEcnSubscrSchemasTableProps<T>) {
       }}
       params={{
         join: ecnSubscrSchemaJoinFields,
+        sortMap: { executionMode: 'executionMode.name' },
       }}
       createNewDefaultParams={{
         enabled: 1,

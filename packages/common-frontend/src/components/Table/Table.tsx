@@ -10,6 +10,7 @@ import useColumnsSets from "./useColumnsSets";
 import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
 import BulkEditButton from "./BulkEditButton";
 import _ from "lodash";
+import BulkDeleteButton from "./BulkDeleteButton";
 
 let creatingRecordsCount = 0;
 
@@ -37,6 +38,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     onUpdate,
     onUpdateMany,
     onDelete,
+    onDeleteMany,
     pathParams,
     idColumnName = 'id',
     entityToCreateDto,
@@ -247,50 +249,73 @@ const Table = <Entity extends Record<string | symbol, any>,
       toolBarRender={(...args) => [
         ...toolBarRender && toolBarRender(...args) || [],
         columnsSetSelect?.() || null,
-        // onUpdateMany
-        //   ? (
-        //     <BulkEditButton
-        //       selectedRecords={selectedRecords} 
-        //       lastQueryParamsAndCount={lastQueryParamsAndCount}
-        //       columns={columns}
-        //       idColumnName={idColumnName}
-        //       // @ts-ignore
-        //       onSubmit={values => onUpdateMany({
-        //         ...pathParams,
-        //         ...lastQueryParamsAndCount[0],
-        //         requestBody: {
-        //           values: _.pickBy(
-        //             // @ts-ignore
-        //             entityToUpdateDto({
-        //               ...pathParams,
-        //               ...values,
-        //             }), 
-        //             (value, key) =>  _.has(values, key),
-        //           ),
-        //           fields: selectedRecords,
-        //         },
-        //       }).then(() => actionRef?.current?.reload())}
-        //     />
-        //   )
-        //   : <></>,
+        onUpdateMany
+          ? (
+            <BulkEditButton
+              selectedRecords={selectedRecords} 
+              lastQueryParamsAndCount={lastQueryParamsAndCount}
+              columns={columns}
+              idColumnName={idColumnName}
+              // @ts-ignore
+              onSubmit={values => onUpdateMany({
+                ...pathParams,
+                ...lastQueryParamsAndCount[0],
+                requestBody: {
+                  updateValues: _.pickBy(
+                    // @ts-ignore
+                    entityToUpdateDto({
+                      ...pathParams,
+                      ...values,
+                    }), 
+                    (value, key) =>  _.has(values, key),
+                  ),
+                  records: selectedRecords,
+                },
+              }).then(() => actionRef?.current?.reload())}
+            />
+          )
+          : <></>,
+        onDeleteMany
+          ? (
+            <BulkDeleteButton
+              selectedRecords={selectedRecords} 
+              lastQueryParamsAndCount={lastQueryParamsAndCount}
+              // @ts-ignore
+              onDelete={() => console.log({
+                ...pathParams,
+                ...lastQueryParamsAndCount[0],
+                requestBody: {
+                  records: selectedRecords,
+                },
+              })}
+              // onDelete={() => onDeleteMany({
+              //   ...pathParams,
+              //   ...lastQueryParamsAndCount[0],
+              //   requestBody: {
+              //     records: selectedRecords,
+              //   },
+              // }).then(() => actionRef?.current?.reload())}
+            />
+          )
+          : <></>,
         !viewOnly && createButton || null,
       ]}
       columns={columns}
       defaultSize='small'
       columnsState={columnsState}
       params={params}
-      // {
-      //   ...(
-      //     onUpdateMany
-      //       ? { 
-      //         rowSelection: {
-      //           selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]),
-      //           onChange: (rowKeys, records) => setSelectedRecords(records),
-      //         }
-      //       }
-      //       : {}
-      //   )
-      // }
+      {
+        ...(
+          onUpdateMany || onDeleteMany
+            ? { 
+              rowSelection: {
+                selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]),
+                onChange: (rowKeys, records) => setSelectedRecords(records),
+              }
+            }
+            : {}
+        )
+      }
       {...rest}
     />
     <DescriptionsCreateModal<Entity>
