@@ -12,6 +12,7 @@ import { MSAuthConfigService } from "./ms-auth.config";
 import { JwtAuthModule } from "../jwt-auth/jwt-auth.module";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtAuthGuard } from "../jwt-auth/jwt-auth.guard";
+import AuthManageController from "./auth-manage.controller";
 
 @Module({})
 export class AuthModule {
@@ -59,7 +60,10 @@ export class AuthModule {
     }
 
     if (config.withControllers) {
-      dynamicModule.controllers = [AuthController];
+      dynamicModule.controllers = [
+        AuthController,
+        AuthManageController,
+      ];
     }
 
     return dynamicModule;
