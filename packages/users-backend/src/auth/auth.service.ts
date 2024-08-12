@@ -46,7 +46,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: TUser): Promise<LocalAuthTokenDto> {
+  async login(user: Pick<TUser, 'email' | 'id'>): Promise<LocalAuthTokenDto> {
     const payload: TJWTPayload = { email: user.email, sub: user.id };
     return {
       accessToken: this.jwtAuthService.sign(payload),
