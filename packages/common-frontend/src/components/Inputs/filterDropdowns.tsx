@@ -1,6 +1,6 @@
 import { Tag, Input, InputNumber, Space, Button } from "antd";
 import { ColumnFilterItem, FilterDropdownProps } from "antd/es/table/interface";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 export const booleanFilters: ColumnFilterItem[] = [
   { text: <Tag color='red'>Disabled</Tag>, value: 0 },
@@ -17,6 +17,39 @@ export function NumberFilterDropdown({ setSelectedKeys, selectedKeys, confirm, c
         step={1}
         style={{ margin: 4, width: 250 }}
         placeholder="Please Enter"
+      />
+    </DynamicOptionsFilterDropdown>
+  )
+}
+
+export function NumberRangeFilterDropdown({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: FilterDropdownProps) {
+  const [range, updateRange] = useState<[number, number] | undefined>(selectedKeys);
+  
+  useEffect(() => {
+    updateRange(selectedKeys);
+  }, [selectedKeys]);
+
+  useEffect(() => {
+    setSelectedKeys(range);
+  }, [range]);
+
+  return (
+    <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
+      <InputNumber
+        value={range?.[0]}
+        onChange={value => updateRange(prev => ([value, prev[1]]))}
+        onPressEnter={() => confirm()}
+        step={1}
+        style={{ margin: 4, width: 250 }}
+        placeholder="From"
+      />
+      <InputNumber
+        value={range?.[1]}
+        onChange={value => updateRange(prev => ([prev[0], value]))}
+        onPressEnter={() => confirm()}
+        step={1}
+        style={{ margin: 4, width: 250 }}
+        placeholder="To"
       />
     </DynamicOptionsFilterDropdown>
   )

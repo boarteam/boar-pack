@@ -5,7 +5,7 @@ import { EcnConnectSchema, EcnExecutionMode, EcnInstrument, EcnInstrumentsGroup,
 import apiClient from '@@api/apiClient';
 import { EditOutlined } from "@ant-design/icons";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
-import { DynamicOptionsFilterDropdown, NumberFilterDropdown, NumberSwitch, RelationSelect, RelationsSelect, StringFilterDropdown, booleanFilters } from "@jifeon/boar-pack-common-frontend";
+import { DynamicOptionsFilterDropdown, NumberFilterDropdown, NumberRangeFilterDropdown, NumberSwitch, RelationSelect, RelationsSelect, StringFilterDropdown, booleanFilters } from "@jifeon/boar-pack-common-frontend";
 
 export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
   const intl = useIntl();
@@ -186,7 +186,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.defaultMarkupBid' }),
@@ -200,7 +200,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.markupAsk' }),
@@ -214,7 +214,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.defaultMarkupAsk' }),
@@ -228,7 +228,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.minVolume' }),
@@ -240,7 +240,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       fieldProps: {
         stringMode: true,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.maxVolume' }),
@@ -252,7 +252,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       fieldProps: {
         stringMode: true,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.volumeStep' }),
@@ -264,7 +264,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       fieldProps: {
         stringMode: true,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.instrumentWeight' }),

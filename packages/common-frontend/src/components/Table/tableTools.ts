@@ -17,11 +17,22 @@ export function getFiltersSearch({
   searchableColumns.forEach((col) => {
     const colDataIndex = Array.isArray(col.field) ? col.field.join('.') : col.field;
     const field = col.filterField || colDataIndex;
-    const operator = col.filterOperator || col.operator;
-    const value = filters[colDataIndex] || baseFilters[colDataIndex];
+    let operator = col.filterOperator || col.operator;
+    let value = filters[colDataIndex] || baseFilters[colDataIndex];
     filterKeys.delete(colDataIndex);
     if (!value || col.numeric && !Number.isFinite(Number(value))) {
       return;
+    }
+
+    if (operator === Operators.between) {
+      if (value?.[0] === undefined) {
+        operator = Operators.lowerOrEquals;
+        value = value?.[1];
+      }
+      else if (value?.[1] === undefined) {
+        operator = Operators.greaterOrEquals;
+        value = value?.[0];
+      }
     }
 
     search.$and?.push({ [field]: { [operator]: value } });
@@ -41,6 +52,8 @@ export const Operators = {
   in: CondOperator.IN,
   inLow: CondOperator.IN_LOW,
   between: CondOperator.BETWEEN,
+  greaterOrEquals: CondOperator.GREATER_THAN_EQUALS,
+  lowerOrEquals: CondOperator.LOWER_THAN_EQUALS,
 } as const;
 
 export function applyKeywordToSearch(
