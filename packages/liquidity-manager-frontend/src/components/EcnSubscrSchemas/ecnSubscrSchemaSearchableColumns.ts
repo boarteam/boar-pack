@@ -41,13 +41,41 @@ export const ecnSubscrSchemaSearchableColumns = [
     operator: Operators.containsLow,
     filterOperator: Operators.in,
   },
-  { field: 'markupBid', operator: Operators.containsLow },
-  { field: 'defaultMarkupBid', operator: Operators.containsLow },
-  { field: 'markupAsk', operator: Operators.containsLow },
-  { field: 'defaultMarkupAsk', operator: Operators.containsLow },
-  { field: 'minVolume', operator: Operators.containsLow },
-  { field: 'maxVolume', operator: Operators.containsLow },
-  { field: 'volumeStep', operator: Operators.containsLow },
+  { 
+    field: 'markupBid', 
+    filterOperator: Operators.between,
+    operator: Operators.containsLow,
+  },
+  { 
+    field: 'defaultMarkupBid', 
+    filterOperator: Operators.between,
+    operator: Operators.containsLow,
+  },
+  { 
+    field: 'markupAsk', 
+    filterOperator: Operators.between,
+    operator: Operators.containsLow,
+  },
+  { 
+    field: 'defaultMarkupAsk', 
+    filterOperator: Operators.between,
+    operator: Operators.containsLow,
+  },
+  { 
+    field: 'minVolume', 
+    filterOperator: Operators.between,
+    operator: Operators.containsLow,
+  },
+  { 
+    field: 'maxVolume', 
+    filterOperator: Operators.between,
+    operator: Operators.containsLow,
+  },
+  { 
+    field: 'volumeStep', 
+    filterOperator: Operators.between,
+    operator: Operators.containsLow,
+  },
   { field: 'instrumentWeight', operator: Operators.containsLow },
   { field: 'descr', operator: Operators.containsLow },
 ];
