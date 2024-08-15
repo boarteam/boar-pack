@@ -3,6 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { LiquidityManagersUser } from './LiquidityManagersUser';
+
 export type LiquidityManager = {
     id: string;
     name: string;
@@ -14,6 +16,7 @@ export type LiquidityManager = {
     worker: LiquidityManager.worker;
     color: LiquidityManager.color;
     enabled: boolean;
+    lmUsers: Array<LiquidityManagersUser>;
     createdAt: string;
     updatedAt: string;
 };

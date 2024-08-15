@@ -34,6 +34,17 @@ export class LiquidityManagersService {
     }
 
     /**
+     * @returns LiquidityManager
+     * @throws ApiError
+     */
+    public getEnabledForUser(): CancelablePromise<Array<LiquidityManager>> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/liquidityManagers/enabled',
+        });
+    }
+
+    /**
      * Retrieve a single LiquidityManager
      * @returns LiquidityManager Get one base response
      * @throws ApiError

@@ -13,7 +13,7 @@ const Users: React.FC = () => {
         {searchParams.get('error') === 'no_liquidity_managers' && (
           <Alert
             message="No liquidity managers found"
-            description="Please add connection configurations for databases before start working with liquidity managers."
+            description="Please add connection configurations for databases before start working with liquidity managers. Make sure you list necessary users in every liquidity manager."
             type="warning"
             showIcon
           />

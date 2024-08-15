@@ -17,11 +17,14 @@ import { UsersSubAccountsInstModule } from "../users-sub-accounts-inst/users-sub
 import { SubloginsSettingsModule } from "../sublogin-settings/sublogins-settings.module";
 import { JoiPipeModule } from "nestjs-joi";
 import { LiquidityManagersModule } from "../liquidity-managers";
-import { AuthModule, CaslModule } from "@jifeon/boar-pack-users-backend";
+import { AuthModule, CaslModule, JwtAuthGuard } from "@jifeon/boar-pack-users-backend";
 import { ClusterModule } from "@jifeon/boar-pack-common-backend";
 import { CaslPermissionsModule } from "../casl-permissions";
 import { AuthModule as LMAuthModule } from "../auth";
 import { QuotesModule } from "../quotes/quotes.module";
+import { LiquidityManagersUsersModule } from "../liquidity-managers-users";
+import { APP_GUARD } from "@nestjs/core";
+import { LiquidityAppGuard } from "./liquidity-app.guard";
 
 export const restModules = [
   EcnModulesModule,
@@ -46,6 +49,7 @@ export class LiquidityAppModule {
       module: LiquidityAppModule,
       imports: [
         ConfigModule,
+        ClusterModule, // for LiquidityAppGuard
         TypeOrmModule.forRootAsync({
           name: AMTS_DB_NAME,
           imports: [
@@ -65,9 +69,21 @@ export class LiquidityAppModule {
         CaslModule.forRoot(),
         CaslPermissionsModule,
         JoiPipeModule,
+        LiquidityManagersUsersModule.forFeature({
+          dataSourceName: config.dataSourceName,
+        }),
         ...restModules,
       ],
-      providers: [],
+      providers: [
+        {
+          provide: APP_GUARD,
+          useClass: JwtAuthGuard,
+        },
+        {
+          provide: APP_GUARD,
+          useClass: LiquidityAppGuard,
+        },
+      ],
       exports: [],
     }
   }

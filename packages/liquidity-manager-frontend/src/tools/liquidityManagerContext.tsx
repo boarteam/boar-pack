@@ -19,12 +19,8 @@ export type LiquidityManagersHookResult = {
 const LIQUIDITY_MANAGER_SEARCH_KEY = 'liquidityManager';
 const LIQUIDITY_MANAGER_LOCAL_STORAGE_KEY = 'liquidityManager';
 
-export const getLiquidityManagers: () => Promise<LiquidityManager[]> = once(async () => {
-  const response = await apiClient.liquidityManagers
-    .getManyBaseLiquidityManagersControllerLiquidityManager({
-      sort: ['name,ASC']
-    });
-  return response.data;
+export const getLiquidityManagers: () => Promise<LiquidityManager[]> = once(() => {
+  return apiClient.liquidityManagers.getEnabledForUser();
 });
 
 export function useChosenLiquidityManagerId(): string | null {

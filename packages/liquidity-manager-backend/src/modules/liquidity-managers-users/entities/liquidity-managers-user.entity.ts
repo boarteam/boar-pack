@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+  UpdateDateColumn,
+} from 'typeorm';
 import { LiquidityManager } from "../../liquidity-managers";
 import { User } from "@jifeon/boar-pack-users-backend";
 import type { User as UserType } from "@jifeon/boar-pack-users-backend";
@@ -8,7 +16,10 @@ export enum LiquidityManagersUserRoles {
   VIEWER = 'viewer',
 }
 
+export const LIQUIDITY_MANAGER_USER_UNIQUE_CONSTRAINT = 'UQ_liquidity_managers_users_user_id';
+
 @Entity('liquidity_managers_users')
+@Unique(LIQUIDITY_MANAGER_USER_UNIQUE_CONSTRAINT, ['userId', 'liquidityManagerId'])
 export class LiquidityManagersUser {
   @PrimaryGeneratedColumn('uuid')
   id: string;
