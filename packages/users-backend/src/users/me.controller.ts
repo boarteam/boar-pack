@@ -49,7 +49,7 @@ export class MeController implements CrudController<User> {
     @Req() originReq: Request,
   ): Promise<User> {
     const user = await this.base.getOneBase!(req);
-    const ability = this.caslAbilityFactory.createForUser(user);
+    const ability = await this.caslAbilityFactory.createForUser(user);
     user.policies = this.caslAbilityFactory.packAbility(ability);
 
     return user;

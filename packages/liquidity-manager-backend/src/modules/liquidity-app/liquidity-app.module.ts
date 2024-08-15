@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from "@nestjs/common";
+import { DynamicModule, Module, Optional } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AMTS_DB_NAME, LiquidityAppConfig } from "./liquidity-app.config";
@@ -16,15 +16,17 @@ import {
 import { UsersSubAccountsInstModule } from "../users-sub-accounts-inst/users-sub-accounts-inst.module";
 import { SubloginsSettingsModule } from "../sublogin-settings/sublogins-settings.module";
 import { JoiPipeModule } from "nestjs-joi";
-import { LiquidityManagersModule } from "../liquidity-managers";
-import { AuthModule, CaslModule, JwtAuthGuard } from "@jifeon/boar-pack-users-backend";
-import { ClusterModule } from "@jifeon/boar-pack-common-backend";
-import { CaslPermissionsModule } from "../casl-permissions";
+import { LiquidityManagersModule, LiquidityManagerWorkers } from "../liquidity-managers";
+import { Action, AuthModule, CaslAbilityFactory, CaslModule } from "@jifeon/boar-pack-users-backend";
+import { ClusterConfigService, ClusterModule, TClusterConfig } from "@jifeon/boar-pack-common-backend";
+import { CaslPermissionsModule, subjects } from "../casl-permissions";
 import { AuthModule as LMAuthModule } from "../auth";
 import { QuotesModule } from "../quotes/quotes.module";
-import { LiquidityManagersUsersModule } from "../liquidity-managers-users";
-import { APP_GUARD } from "@nestjs/core";
-import { LiquidityAppGuard } from "./liquidity-app.guard";
+import {
+  LiquidityManagersUserRoles,
+  LiquidityManagersUsersModule,
+  LiquidityManagersUsersService
+} from "../liquidity-managers-users";
 
 export const restModules = [
   EcnModulesModule,
@@ -42,6 +44,8 @@ export const restModules = [
 
 @Module({})
 export class LiquidityAppModule {
+  private readonly config: TClusterConfig;
+
   static forRoot(config: {
     dataSourceName: string;
   }): DynamicModule {
@@ -49,7 +53,7 @@ export class LiquidityAppModule {
       module: LiquidityAppModule,
       imports: [
         ConfigModule,
-        ClusterModule, // for LiquidityAppGuard
+        ClusterModule,
         TypeOrmModule.forRootAsync({
           name: AMTS_DB_NAME,
           imports: [
@@ -74,16 +78,7 @@ export class LiquidityAppModule {
         }),
         ...restModules,
       ],
-      providers: [
-        {
-          provide: APP_GUARD,
-          useClass: JwtAuthGuard,
-        },
-        {
-          provide: APP_GUARD,
-          useClass: LiquidityAppGuard,
-        },
-      ],
+      providers: [],
       exports: [],
     }
   }
@@ -117,5 +112,41 @@ export class LiquidityAppModule {
       providers: [],
       exports: [],
     }
+  }
+
+  constructor(
+    @Optional() private readonly clusterConfigService: ClusterConfigService,
+    @Optional() private readonly liquidityManagersUsers: LiquidityManagersUsersService,
+  ) {
+    if (!this.clusterConfigService || !this.liquidityManagersUsers) {
+      return;
+    }
+
+    this.config = this.clusterConfigService.config;
+
+    CaslAbilityFactory.addAbilitiesDefiner(async (user, can, cannot) => {
+      const lmUser = await this.liquidityManagersUsers.findOne({
+        select: ['id', 'role'],
+        where: {
+          userId: user.id,
+          liquidityManager: {
+            worker: this.config.worker as LiquidityManagerWorkers,
+          }
+        },
+        join: {
+          alias: 'lmUser',
+          innerJoin: {
+            liquidityManager: 'lmUser.liquidityManager',
+          }
+        }
+      });
+
+      if (!lmUser) {
+        return;
+      }
+
+      const action = lmUser.role === LiquidityManagersUserRoles.MANAGER ? Action.Manage : Action.Read;
+      can(action, subjects);
+    });
   }
 }

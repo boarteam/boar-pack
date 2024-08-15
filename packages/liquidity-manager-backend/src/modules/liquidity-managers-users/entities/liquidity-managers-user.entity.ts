@@ -7,7 +7,7 @@ import {
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
-import { LiquidityManager } from "../../liquidity-managers";
+import { LiquidityManager } from "../../liquidity-managers/entities/liquidity-manager.entity";
 import { User } from "@jifeon/boar-pack-users-backend";
 import type { User as UserType } from "@jifeon/boar-pack-users-backend";
 

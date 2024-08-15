@@ -6,7 +6,8 @@ import { LiquidityManagersUsersService } from './liquidity-managers-users.servic
 import { LiquidityManagersUser } from './entities/liquidity-managers-user.entity';
 import { LiquidityManagersUserCreateDto } from './dto/liquidity-managers-user-create.dto';
 import { LiquidityManagersUserUpdateDto } from "./dto/liquidity-managers-user-update.dto";
-import { ManageLiquidityManagersPolicy, ViewLiquidityManagersPolicy } from "../liquidity-managers";
+import { ManageLiquidityManagersPolicy } from "../liquidity-managers/policies/manage-liquidity-managers.policy";
+import { ViewLiquidityManagersPolicy } from "../liquidity-managers/policies/view-liquidity-managers.policy";
 import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/tools";
 
 @Crud({

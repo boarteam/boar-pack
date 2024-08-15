@@ -44,7 +44,7 @@ export default class AuthController {
       throw new UnauthorizedException(`User is not authorized`);
     }
 
-    const ability = this.caslAbilityFactory.createForUser(req.user);
+    const ability = await this.caslAbilityFactory.createForUser(req.user);
 
     return {
       id: user.id,
