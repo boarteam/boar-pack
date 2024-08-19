@@ -16,8 +16,9 @@ function entityToDto(entity: EcnInstrumentsGroup) {
 
 const EcnInstrumentsGroupsTable = () => {
   const columns = useEcnInstrumentsGroupsColumns();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   if (!worker) return <PageLoading />;
 
@@ -45,7 +46,7 @@ const EcnInstrumentsGroupsTable = () => {
           operator: Operators.containsLow,
         },
       ]}
-      viewOnly={!canManageLiquidity}
+      viewOnly={!canEdit}
     ></Table>
   );
 }

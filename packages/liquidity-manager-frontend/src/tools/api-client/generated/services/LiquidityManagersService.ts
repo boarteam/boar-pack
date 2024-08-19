@@ -34,6 +34,98 @@ export class LiquidityManagersService {
     }
 
     /**
+     * @returns LiquidityManager
+     * @throws ApiError
+     */
+    public getEnabledForUser(): CancelablePromise<Array<LiquidityManager>> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/liquidityManagers/enabled',
+        });
+    }
+
+    /**
+     * Retrieve a single LiquidityManager
+     * @returns LiquidityManager Get one base response
+     * @throws ApiError
+     */
+    public getOneBaseLiquidityManagersControllerLiquidityManager({
+        id,
+        fields,
+        join,
+        cache,
+    }: {
+        id: string,
+        /**
+         * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
+         */
+        fields?: Array<string>,
+        /**
+         * Adds relational resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#join" target="_blank">Docs</a>
+         */
+        join?: Array<string>,
+        /**
+         * Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache" target="_blank">Docs</a>
+         */
+        cache?: number,
+    }): CancelablePromise<LiquidityManager> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/liquidityManagers/{id}',
+            path: {
+                'id': id,
+            },
+            query: {
+                'fields': fields,
+                'join': join,
+                'cache': cache,
+            },
+        });
+    }
+
+    /**
+     * Update a single LiquidityManager
+     * @returns LiquidityManager Response
+     * @throws ApiError
+     */
+    public updateOneBaseLiquidityManagersControllerLiquidityManager({
+        id,
+        requestBody,
+    }: {
+        id: string,
+        requestBody: LiquidityManagerUpdateDto,
+    }): CancelablePromise<LiquidityManager> {
+        return this.httpRequest.request({
+            method: 'PATCH',
+            url: '/liquidityManagers/{id}',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+
+    /**
+     * Delete a single LiquidityManager
+     * @returns any Delete one base response
+     * @throws ApiError
+     */
+    public deleteOneBaseLiquidityManagersControllerLiquidityManager({
+        id,
+    }: {
+        id: string,
+    }): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'DELETE',
+            url: '/liquidityManagers/{id}',
+            path: {
+                'id': id,
+            },
+        });
+    }
+
+    /**
      * Retrieve multiple LiquidityManagers
      * @returns GetManyLiquidityManagerResponseDto Get paginated response
      * @throws ApiError
@@ -124,48 +216,6 @@ export class LiquidityManagersService {
             url: '/liquidityManagers',
             body: requestBody,
             mediaType: 'application/json',
-        });
-    }
-
-    /**
-     * Update a single LiquidityManager
-     * @returns LiquidityManager Response
-     * @throws ApiError
-     */
-    public updateOneBaseLiquidityManagersControllerLiquidityManager({
-        id,
-        requestBody,
-    }: {
-        id: string,
-        requestBody: LiquidityManagerUpdateDto,
-    }): CancelablePromise<LiquidityManager> {
-        return this.httpRequest.request({
-            method: 'PATCH',
-            url: '/liquidityManagers/{id}',
-            path: {
-                'id': id,
-            },
-            body: requestBody,
-            mediaType: 'application/json',
-        });
-    }
-
-    /**
-     * Delete a single LiquidityManager
-     * @returns any Delete one base response
-     * @throws ApiError
-     */
-    public deleteOneBaseLiquidityManagersControllerLiquidityManager({
-        id,
-    }: {
-        id: string,
-    }): CancelablePromise<any> {
-        return this.httpRequest.request({
-            method: 'DELETE',
-            url: '/liquidityManagers/{id}',
-            path: {
-                'id': id,
-            },
         });
     }
 

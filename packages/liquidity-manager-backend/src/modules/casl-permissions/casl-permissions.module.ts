@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { Action, CaslAbilityFactory } from '@jifeon/boar-pack-users-backend';
-import { LiquidityManager } from "../liquidity-managers";
 import { EcnModule } from "../ecn-modules/entities/ecn-module.entity";
 import { EcnModuleType } from "../ecn-module-types/entities/ecn-module-type.entity";
 import { EcnConnectSchema } from "../ecn-connect-schema/entities/ecn-connect-schema.entity";
@@ -19,50 +18,37 @@ export enum Permissions {
   MANAGE_LIQUIDITY = 'manage_liquidity',
 }
 
+export const Liquidity = 'Liquidity' as const;
+export const Quotes = 'Quotes' as const;
+
+export const subjects = [
+  EcnModule,
+  EcnModuleType,
+  EcnConnectSchema,
+  EcnConnectSchemaSetupLabel,
+  EcnSubscrSchema,
+  EcnInstrument,
+  EcnInstrumentsGroup,
+  UsersGroupsInst,
+  UsersInst,
+  UsersSubAccountInst,
+  Liquidity,
+  Quotes,
+];
+
 @Module({})
 export class CaslPermissionsModule {
   constructor() {
-    const Liquidity = 'Liquidity' as const;
-    const Quotes = 'Quotes' as const;
-
     const permissions = [
       {
         permission: Permissions.VIEW_LIQUIDITY,
         action: Action.Read,
-        subject: [
-          LiquidityManager,
-          EcnModule,
-          EcnModuleType,
-          EcnConnectSchema,
-          EcnConnectSchemaSetupLabel,
-          EcnSubscrSchema,
-          EcnInstrument,
-          EcnInstrumentsGroup,
-          UsersGroupsInst,
-          UsersInst,
-          UsersSubAccountInst,
-          Liquidity,
-          Quotes,
-        ],
+        subject: subjects,
       },
       {
         permission: Permissions.MANAGE_LIQUIDITY,
         action: Action.Manage,
-        subject: [
-          LiquidityManager,
-          EcnModule,
-          EcnModuleType,
-          EcnConnectSchema,
-          EcnConnectSchemaSetupLabel,
-          EcnSubscrSchema,
-          EcnInstrument,
-          EcnInstrumentsGroup,
-          UsersGroupsInst,
-          UsersInst,
-          UsersSubAccountInst,
-          Liquidity,
-          Quotes,
-        ],
+        subject: subjects,
       },
     ];
 

@@ -21,8 +21,9 @@ const AddSubscrSchemaDrawer: React.FC<{
   onCreate: () => Promise<void>,
   onClose: () => void;
 }> = ({ instrumentHash, connectSchemaId, onCreate, onClose }) => {
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
   const subscrColumns = useEcnSubscrSchemaColumns();
   subscrColumns.forEach(column => {
     if (column.dataIndex === 'instrument') {
@@ -54,7 +55,7 @@ const AddSubscrSchemaDrawer: React.FC<{
     })
   }, [selectedSubscrSchema, instrument, connectSchemaId]);
 
-  if (!worker || !canManageLiquidity) {
+  if (!worker || !canEdit) {
     return <></>;
   }
 
@@ -108,7 +109,7 @@ const AddSubscrSchemaDrawer: React.FC<{
           column={2}
           idColumnName="instrumentHash"
           columns={subscrColumns}
-          canEdit={canManageLiquidity}
+          canEdit={canEdit}
           params={{
             join: ecnSubscrSchemaJoinFields,
           }}
@@ -142,11 +143,12 @@ export const AddSubscrSchemaButton: React.FC<{
   onCreate: () => Promise<void>;
   className?: string;
 }> = ({ instrumentHash, connectSchemaId, onCreate, ...restProps }) => {
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
   const [opened, setOpened] = useState(false);
 
-  if (!worker || !canManageLiquidity || !instrumentHash || !connectSchemaId) {
+  if (!worker || !canEdit || !instrumentHash || !connectSchemaId) {
     return <></>;
   }
 

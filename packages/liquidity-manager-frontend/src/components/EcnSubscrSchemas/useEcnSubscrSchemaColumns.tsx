@@ -9,8 +9,9 @@ import { DynamicOptionsFilterDropdown, NumberFilterDropdown, NumberSwitch, Relat
 
 export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
   const intl = useIntl();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   const columns: ProColumns<EcnSubscrSchema>[] = [
     {
@@ -333,7 +334,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
   ];
 
 
-  if (canManageLiquidity) {
+  if (canEdit) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',

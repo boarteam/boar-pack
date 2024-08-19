@@ -7,10 +7,11 @@ import { useLiquidityManagerContext } from "../../tools";
 import { EcnSetupsListBase } from "./EcnSetupsListBase";
 
 const GenerateButton = ({ onClick }: { onClick: () => void }) => {
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
-  if (!canManageLiquidity || !worker) {
+  if (!canEdit || !worker) {
     return <></>;
   }
 

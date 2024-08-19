@@ -38,8 +38,9 @@ export const EcnConnectSchemaDrawer: React.FC<{
   onDelete: (id: EcnConnectSchema['id']) => Promise<void>;
 }> = ({ id, onClose, onUpdate, onDelete }) => {
   const { canManageLiquidity } = useAccess() || {};
-  const columns = useEcnConnectSchemasColumns(canManageLiquidity ?? false);
-  const { worker } = useLiquidityManagerContext();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager) || false;
+  const columns = useEcnConnectSchemasColumns(canEdit);
 
   const [connectSchemaName, setConnectSchemaName] = useState('Connection');
 
@@ -54,7 +55,7 @@ export const EcnConnectSchemaDrawer: React.FC<{
       onClose={onClose}
       width='33%'
       extra={
-        canManageLiquidity && (
+        canEdit && (
           <Button
             onClick={async () => {
               await deleteEdgeConfirm(
@@ -92,7 +93,7 @@ export const EcnConnectSchemaDrawer: React.FC<{
         entityToUpdateDto={ecnConnectSchemaToDto}
         columns={columns}
         column={1}
-        canEdit={canManageLiquidity}
+        canEdit={canEdit}
         params={{
           join: ecnConnectSchemaJoinFields,
         }}

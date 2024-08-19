@@ -10,8 +10,9 @@ import { NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend"
 
 export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
   const intl = useIntl();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   const columns: ProColumns<UsersGroupsInst>[] = [
     {
@@ -239,7 +240,7 @@ export const useUsersGroupsInstColumns = (): ProColumns<UsersGroupsInst>[] => {
     },
   ];
 
-  if (canManageLiquidity) {
+  if (canEdit) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',

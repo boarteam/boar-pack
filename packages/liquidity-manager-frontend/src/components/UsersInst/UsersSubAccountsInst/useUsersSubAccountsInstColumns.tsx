@@ -3,10 +3,13 @@ import { useIntl } from "@umijs/max";
 import { EditOutlined } from "@ant-design/icons";
 import { UsersSubAccountInst } from "@@api/generated";
 import { useAccess } from "umi";
+import { useLiquidityManagerContext } from "../../../tools";
 
 export const useUsersSubAccountsInstColumns = (): ProColumns<UsersSubAccountInst>[] => {
   const intl = useIntl();
+  const { liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
+  const canEdit = canManageLiquidity(liquidityManager);
 
   const columns: ProColumns<UsersSubAccountInst>[] = [
     {
@@ -34,7 +37,7 @@ export const useUsersSubAccountsInstColumns = (): ProColumns<UsersSubAccountInst
     },
   ];
 
-  if (canManageLiquidity) {
+  if (canEdit) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',
