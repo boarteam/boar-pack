@@ -1,6 +1,6 @@
 {
   "name": "@jifeon/boar-pack-users-backend",
-  "version": "2.2.1",
+  "version": "3.0.0",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
   "main": "src/index",
   "files": [
