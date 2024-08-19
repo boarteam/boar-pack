@@ -74,6 +74,9 @@ export class LiquidityManagersService extends TypeOrmCrudService<LiquidityManage
       where: {
         enabled: true,
       },
+      order: {
+        name: 'ASC',
+      }
     });
   }
 

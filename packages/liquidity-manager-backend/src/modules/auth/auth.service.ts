@@ -3,7 +3,7 @@ import { JWTAuthService, TJWTPayload } from '../jwt-auth';
 import { UsersInstService } from '../users-inst/users-inst.service';
 import { LocalAuthTokenDto } from "./dto/local-auth.dto";
 import { UsersInst } from "../users-inst/entities/users-inst.entity";
-import { Roles, User } from "@jifeon/boar-pack-users-backend";
+import { AppAbility, Roles, User } from "@jifeon/boar-pack-users-backend";
 import { Permissions } from "../casl-permissions";
 import { EcnPasswordHashType } from "../users-inst/users-inst.constants";
 
@@ -13,6 +13,7 @@ export class AMTSUser {
   role: User['role'];
   permissions: User['permissions'];
   policies?: User['policies'];
+  ability?: AppAbility;
 }
 
 declare global {
