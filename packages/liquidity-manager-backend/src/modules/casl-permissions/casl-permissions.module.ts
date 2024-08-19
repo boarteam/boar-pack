@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { Action, CaslAbilityFactory } from '@jifeon/boar-pack-users-backend';
-import { LiquidityManager } from "../liquidity-managers";
 import { EcnModule } from "../ecn-modules/entities/ecn-module.entity";
 import { EcnModuleType } from "../ecn-module-types/entities/ecn-module-type.entity";
 import { EcnConnectSchema } from "../ecn-connect-schema/entities/ecn-connect-schema.entity";
