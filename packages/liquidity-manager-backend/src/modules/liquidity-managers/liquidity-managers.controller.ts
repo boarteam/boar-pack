@@ -89,6 +89,10 @@ export class LiquidityManagersController {
       throw new Error('User is not authorized');
     }
 
+    if (new ManageLiquidityManagersPolicy().handle(user.ability)) {
+      return this.service.getEnabled();
+    }
+
     return this.service.getEnabledForUser(user.id);
   }
 }

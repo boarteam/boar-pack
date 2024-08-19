@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn, } from 'typeorm';
 import { SubjectRawRule } from '@casl/ability';
 import { PackRule } from '@casl/ability/extra';
-import { Action, TSubjectsNames } from '../../casl';
+import { Action, AppAbility, TSubjectsNames } from '../../casl';
 import { Permission } from './permissions';
 
 export enum Roles {
@@ -11,7 +11,9 @@ export enum Roles {
 
 export const EMAIL_UNIQUE_CONSTRAINT = 'UQ_users_email';
 
-export type TUser = Omit<User, 'pass'>;
+export type TUser = Omit<User, 'pass'> & {
+  ability?: AppAbility;
+};
 
 @Entity('users')
 @Unique(EMAIL_UNIQUE_CONSTRAINT, ['email'])
