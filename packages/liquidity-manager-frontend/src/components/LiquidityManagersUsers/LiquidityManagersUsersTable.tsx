@@ -28,7 +28,7 @@ const LiquidityManagersUsersTable: React.FC<TLiquidityManagersUsersTableProps> =
   liquidityManagerId,
 }) => {
   const columns = useLiquidityManagersUsersColumns();
-  const { canManageLiquidity } = useAccess() || {};
+  const { canManageLiquidityManagersSettings } = useAccess() || {};
 
   return (
     <Table<LiquidityManagersUser, LiquidityManagersUserCreateDto, LiquidityManagersUserUpdateDto, TLiquidityManagersUserFilterParams>
@@ -60,7 +60,7 @@ const LiquidityManagersUsersTable: React.FC<TLiquidityManagersUsersTableProps> =
           operator: Operators.equals,
         },
       ]}
-      viewOnly={!canManageLiquidity}
+      viewOnly={!canManageLiquidityManagersSettings}
     ></Table>
   );
 }

@@ -127,8 +127,9 @@ const columnsSets: TColumnsSet<EcnInstrument>[] = [
 
 const EcnInstrumentsTable = () => {
   const columns = useEcnInstrumentsColumns();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   if (!worker) return <PageLoading />;
 
@@ -202,7 +203,7 @@ const EcnInstrumentsTable = () => {
       }}
       defaultSort={['name', 'ASC']}
       searchableColumns={ecnInstrumentSearchableColumns}
-      viewOnly={!canManageLiquidity}
+      viewOnly={!canEdit}
       popupCreation
     />
   );

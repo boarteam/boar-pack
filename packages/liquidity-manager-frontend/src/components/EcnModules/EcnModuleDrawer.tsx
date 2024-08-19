@@ -18,11 +18,12 @@ export const EcnModuleDrawer: React.FC<{
   onClose: () => void,
 }> = ({ id, onUpdate, onClose, onDelete }) => {
   const columns = useEcnModulesColumns(false);
-  const { worker } = useLiquidityManagerContext();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
 
   const idColumnIndex = columns.findIndex(column => column.dataIndex === 'id');
   columns[idColumnIndex] = { ...columns[idColumnIndex], editable: false };
   const { canManageLiquidity } = useAccess() || {};
+  const canEdit = canManageLiquidity(liquidityManager);
 
   const [moduleName, setModuleName] = useState('Module');
 
@@ -37,7 +38,7 @@ export const EcnModuleDrawer: React.FC<{
       onClose={onClose}
       width='33%'
       extra={
-        canManageLiquidity && (
+        canEdit && (
           <Button
             onClick={() => {
               deleteNodeConfirm(async () => {
@@ -69,7 +70,7 @@ export const EcnModuleDrawer: React.FC<{
         onDelete={params => apiClient.ecnModules.deleteOneBaseEcnModulesControllerEcnModule(params)}
         entityToUpdateDto={ecnModuleToDto}
         columns={columns}
-        canEdit={canManageLiquidity}
+        canEdit={canEdit}
         column={1}
         params={{
           join: ecnModuleJoinFields,

@@ -39,8 +39,9 @@ const SubloginsSettingsTable: React.FC<TSubloginSettingsTableProps> = ({
   columnsSetSelect,
 }) => {
   const { isFullscreen } = useFullscreen();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   if (!worker) {
     return <PageLoading />;
@@ -98,7 +99,7 @@ const SubloginsSettingsTable: React.FC<TSubloginSettingsTableProps> = ({
         hedgeStep: '0',
         hedgeCurrency: null,
       }}
-      viewOnly={!canManageLiquidity}
+      viewOnly={!canEdit}
       ghost={!isFullscreen}
       popupCreation
     />

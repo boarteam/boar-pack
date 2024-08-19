@@ -6,7 +6,11 @@ import { LiquidityManager, WORKER_UNIQUE_CONSTRAINT } from './entities/liquidity
 import { LiquidityManagersCluster } from "./liquidity-managers.cluster";
 import { ClusterModule, ClusterService, ScryptModule, ScryptService, Tools } from "@jifeon/boar-pack-common-backend";
 import { Action, CaslAbilityFactory, EventLogsModule } from "@jifeon/boar-pack-users-backend";
-import { LiquidityManagersUsersModule, LiquidityManagersUsersService } from "../liquidity-managers-users";
+import {
+  LiquidityManagersUserRoles,
+  LiquidityManagersUsersModule,
+  LiquidityManagersUsersService
+} from "../liquidity-managers-users";
 
 @Module({})
 export class LiquidityManagersModule {
@@ -109,17 +113,20 @@ export class LiquidityManagersModule {
 
     if (this.liquidityManagersUsers) {
       CaslAbilityFactory.addAbilitiesDefiner(async (user, can, cannot) => {
-        const lmUsersCount = await this.liquidityManagersUsers.count({
+        const lmUsers = await this.liquidityManagersUsers.find({
+          select: ['id', 'role', 'liquidityManagerId'],
           where: {
             userId: user.id,
           },
+          join: {
+            alias: 'lmUser',
+          }
         });
 
-        if (!lmUsersCount) {
-          return;
-        }
-
-        can(Action.Read, LiquidityManager);
+        lmUsers.forEach(lmUser => {
+          const action = lmUser.role === LiquidityManagersUserRoles.MANAGER ? Action.Manage : Action.Read;
+          can(action, LiquidityManager, { id: lmUser.liquidityManagerId });
+        });
       });
     }
   }

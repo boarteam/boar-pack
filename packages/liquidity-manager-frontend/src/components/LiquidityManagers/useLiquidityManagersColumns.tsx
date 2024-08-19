@@ -1,4 +1,4 @@
-import { useIntl, Link } from "@umijs/max";
+import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import { LiquidityManager } from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
@@ -34,7 +34,7 @@ Object.values(LiquidityManager.color).forEach((color) => {
 
 export const useLiquidityManagersColumns = (): ProColumns<LiquidityManager>[] => {
   const intl = useIntl();
-  const { canManageLiquidity } = useAccess() || {};
+  const { canManageLiquidityManagersSettings } = useAccess() || {};
 
   const columns: ProColumns<LiquidityManager>[] = [
     {
@@ -173,7 +173,7 @@ export const useLiquidityManagersColumns = (): ProColumns<LiquidityManager>[] =>
     },
   ];
 
-  if (canManageLiquidity) {
+  if (canManageLiquidityManagersSettings) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',

@@ -2,7 +2,7 @@ const routes = () => ({
   path: '/liquidity',
   name: 'liquidity-pool-management',
   icon: 'DollarCircleOutlined',
-  access: 'canViewLiquidity',
+  access: 'canViewSomeLiquidityManager',
   layout: 'top',
   component: '@/../node_modules/@jifeon/boar-pack-liquidity-manager-frontend/src/pages/LiquidityManagerWrapper',
   routes: [

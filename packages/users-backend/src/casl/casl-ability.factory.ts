@@ -103,6 +103,7 @@ export class CaslAbilityFactory {
         action: rule.action,
         subject: rule.subject,
         inverted: rule.inverted,
+        conditions: rule.conditions,
       })),
       (item) => {
         if (typeof item === 'string') {

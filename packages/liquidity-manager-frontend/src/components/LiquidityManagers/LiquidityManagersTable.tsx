@@ -1,10 +1,9 @@
-import { Table } from "@jifeon/boar-pack-common-frontend";
+import { Operators, Table } from "@jifeon/boar-pack-common-frontend";
 import apiClient from '@@api/apiClient';
 import { LiquidityManager, LiquidityManagerCreateDto, LiquidityManagerUpdateDto } from "@@api/generated";
 import { useLiquidityManagersColumns } from "./useLiquidityManagersColumns";
 import pick from "lodash/pick";
 import { useAccess } from "umi";
-import { Operators } from "@jifeon/boar-pack-common-frontend";
 
 function entityToDto(entity: LiquidityManager) {
   return pick(entity, [
@@ -22,7 +21,7 @@ function entityToDto(entity: LiquidityManager) {
 
 const LiquidityManagersTable = () => {
   const columns = useLiquidityManagersColumns();
-  const { canManageLiquidity } = useAccess() || {};
+  const { canManageLiquidityManagersSettings } = useAccess() || {};
 
   return (
     <Table<LiquidityManager, LiquidityManagerCreateDto, LiquidityManagerUpdateDto>
@@ -72,7 +71,7 @@ const LiquidityManagersTable = () => {
         //   operator: Operators.equals,
         // }
       ]}
-      viewOnly={!canManageLiquidity}
+      viewOnly={!canManageLiquidityManagersSettings}
     ></Table>
   );
 }

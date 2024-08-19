@@ -21,8 +21,9 @@ import { dropTrailZeroes, NumberSwitch, RelationSelect } from "@jifeon/boar-pack
 
 export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
   const intl = useIntl();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
   const [instrumentGroups, setInstrumentGroups] = useState<{ text: string, value: number }[]>([]);
 
   useEffect(() => {
@@ -849,7 +850,7 @@ export const useEcnInstrumentsColumns = (): (ProColumns<EcnInstrument>)[] => {
     },
   ];
 
-  if (canManageLiquidity) {
+  if (canEdit) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',

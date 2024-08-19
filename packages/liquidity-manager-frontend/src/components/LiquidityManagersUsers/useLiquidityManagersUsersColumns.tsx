@@ -7,7 +7,7 @@ import apiClient from "../../tools/api-client/apiClient";
 import { RelationSelect } from "@jifeon/boar-pack-common-frontend";
 
 export const useLiquidityManagersUsersColumns = (): ProColumns<LiquidityManagersUser>[] => {
-  const { canManageLiquidity } = useAccess() || {};
+  const { canManageLiquidityManagersSettings } = useAccess() || {};
 
   const columns: ProColumns<LiquidityManagersUser>[] = [
     {
@@ -56,7 +56,7 @@ export const useLiquidityManagersUsersColumns = (): ProColumns<LiquidityManagers
     }
   ];
 
-  if (canManageLiquidity) {
+  if (canManageLiquidityManagersSettings) {
     columns.push({
       title: 'Actions',
       valueType: 'option',

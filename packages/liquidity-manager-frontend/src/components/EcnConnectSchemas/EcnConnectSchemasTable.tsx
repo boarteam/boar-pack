@@ -9,12 +9,10 @@ import { PageLoading } from "@ant-design/pro-layout";
 import apiClient from '@@api/apiClient';
 
 const EcnConnectSchemaTable = (props: Partial<TTableProps<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, {}, {worker: string}>>) => {
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   let { canManageLiquidity } = useAccess() || {};
-  if (props.viewOnly !== undefined) {
-    canManageLiquidity = !props.viewOnly;
-  }
-  const columns = useEcnConnectSchemasColumns(canManageLiquidity ?? false);
-  const { worker } = useLiquidityManagerContext();
+  const viewOnly = props.viewOnly ?? !canManageLiquidity(liquidityManager);
+  const columns = useEcnConnectSchemasColumns(!viewOnly);
 
   if (!worker) return <PageLoading />;
 
@@ -34,7 +32,7 @@ const EcnConnectSchemaTable = (props: Partial<TTableProps<EcnConnectSchema, EcnC
       }}
       defaultSort={['id', 'DESC']}
       searchableColumns={ecnConnectSchemaSearchableColumns}
-      viewOnly={!canManageLiquidity}
+      viewOnly={viewOnly}
       {...props}
     ></Table>
   );
