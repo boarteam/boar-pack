@@ -49,10 +49,11 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
   onUpdate: (entity: Partial<TEcnConnectionSchemaWihSubscrEnabled> & { id: EcnConnectSchema['id'] }) => void,
   onDelete: (id: EcnConnectSchema['id']) => Promise<void>;
 }> = ({ id, instrumentHash, onClose, onUpdate, onDelete }) => {
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const columns = useEcnConnectSchemasColumns(canManageLiquidity ?? false);
+  const canEdit = canManageLiquidity(liquidityManager);
+  const columns = useEcnConnectSchemasColumns(canEdit);
   const subscrSchemaColumns = useEcnSubscrSchemaColumns();
-  const { worker } = useLiquidityManagerContext();
 
   const [connectSchemaName, setConnectSchemaName] = useState('Connection');
 
@@ -67,7 +68,7 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
       onClose={onClose}
       width='33%'
       extra={
-        canManageLiquidity && (
+        canEdit && (
           <Button
             onClick={async () => {
               await deleteEdgeConfirm(
@@ -108,7 +109,7 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
         entityToUpdateDto={ecnConnectSchemaToDto}
         columns={columns}
         column={1}
-        canEdit={canManageLiquidity}
+        canEdit={canEdit}
         params={{
           join: ecnConnectSchemaJoinFields,
         }}
@@ -133,7 +134,7 @@ export const EcnInstrumentConnectSchemaDrawer: React.FC<{
         }}
         entityToUpdateDto={ecnSubscriptionSchemaToDto}
         columns={subscrSchemaColumns}
-        canEdit={canManageLiquidity}
+        canEdit={canEdit}
         params={{
           join: ecnSubscrSchemaJoinFields,
         }}

@@ -9,8 +9,9 @@ import { dropTrailZeroes, NumberSwitch, RelationSelect } from "@jifeon/boar-pack
 
 export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] => {
   const intl = useIntl();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   const columns: ProColumns<SubloginSettings>[] = [
     {
@@ -224,7 +225,7 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
   ];
 
 
-  if (canManageLiquidity) {
+  if (canEdit) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',

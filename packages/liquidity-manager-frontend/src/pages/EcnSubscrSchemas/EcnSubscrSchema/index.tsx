@@ -21,8 +21,9 @@ const EcnSubscrSchemaPage: React.FC = () => {
     connectSchemaId: connectSchemaIdParam,
   } = useParams();
   const columns = useEcnSubscrSchemaColumns();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   if (!worker) return <PageLoading />;
 
@@ -63,7 +64,7 @@ const EcnSubscrSchemaPage: React.FC = () => {
             onDelete={params => apiClient.ecnSubscrSchemas.deleteOneBaseEcnSubscrSchemaControllerEcnSubscrSchema(params)}
             entityToUpdateDto={ecnSubscriptionSchemaToDto}
             columns={columns}
-            canEdit={canManageLiquidity}
+            canEdit={canEdit}
             params={{
               join: ecnSubscrSchemaJoinFields,
             }}

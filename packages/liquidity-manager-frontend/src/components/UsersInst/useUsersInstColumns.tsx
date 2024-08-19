@@ -23,8 +23,10 @@ type TOptions = { text: string, value: number | string }[];
 
 export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
   const intl = useIntl();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity, canGenerateResetPasswordLink } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
+
   const [userGroups, setUserGroups] = useState<TOptions>([]);
   const [modules, setModules] = useState<TOptions>([]);
   const [marginModules, setMarginModules] = useState<TOptions>([]);
@@ -875,7 +877,7 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
     },
   ];
 
-  if (canManageLiquidity) {
+  if (canEdit) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',

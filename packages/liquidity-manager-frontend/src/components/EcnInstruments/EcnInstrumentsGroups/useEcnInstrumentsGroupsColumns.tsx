@@ -3,10 +3,13 @@ import { ProColumns } from "@ant-design/pro-components";
 import { EcnInstrumentsGroup } from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import { useAccess } from "umi";
+import { useLiquidityManagerContext } from "../../../tools";
 
 export const useEcnInstrumentsGroupsColumns = (): ProColumns<EcnInstrumentsGroup>[] => {
   const intl = useIntl();
+  const { liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
+  const canEdit = canManageLiquidity(liquidityManager);
 
   const columns: ProColumns<EcnInstrumentsGroup>[] = [
     {
@@ -41,7 +44,7 @@ export const useEcnInstrumentsGroupsColumns = (): ProColumns<EcnInstrumentsGroup
     },
   ];
 
-  if (canManageLiquidity) {
+  if (canEdit) {
     columns.push({
       title: intl.formatMessage({ id: 'table.actions' }),
       valueType: 'option',

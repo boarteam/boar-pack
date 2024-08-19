@@ -30,12 +30,9 @@ export function entityToDto(entity: EcnConnectSchemaSetupLabel) {
 }
 
 export const EcnSetupsListBase = (props: Partial<TTableProps<EcnConnectSchemaSetupLabel, EcnConnectSchemaSetupLabelCreateDto, EcnConnectSchemaSetupLabelUpdateDto, {}, {worker: string}>>) => {
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   let { canManageLiquidity } = useAccess() || {};
-  if (props.viewOnly !== undefined) {
-    canManageLiquidity = !props.viewOnly;
-  }
-  const { worker } = useLiquidityManagerContext();
-  if (!worker) return <PageLoading />;
+  const viewOnly = props.viewOnly ?? !canManageLiquidity(liquidityManager);
 
   const [presetModulesTypes, setPresetModulesTypes] = useState<EcnModuleType[]>([]);
   useEffect(() => {
@@ -48,8 +45,9 @@ export const EcnSetupsListBase = (props: Partial<TTableProps<EcnConnectSchemaSet
       setPresetModulesTypes(types.data);
     });
   }, []);
-  const metas = useEcnSetupsMetas(canManageLiquidity ?? false, presetModulesTypes);
+  const metas = useEcnSetupsMetas(!viewOnly, presetModulesTypes);
 
+  if (!worker) return <PageLoading />;
   return (
     // todo: fix ts
     // @ts-ignore
@@ -81,7 +79,7 @@ export const EcnSetupsListBase = (props: Partial<TTableProps<EcnConnectSchemaSet
       createNewDefaultParams={createNewDefaultParams}
       defaultSort={['label', 'ASC']}
       searchableColumns={ecnSetupsSearchableColumns}
-      viewOnly={!canManageLiquidity}
+      viewOnly={viewOnly}
       {...props}
     ></List>
   );

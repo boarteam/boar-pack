@@ -30,8 +30,9 @@ function entityToDto(entity: UsersGroupsInst) {
 
 const UsersGroupsInstTable = () => {
   const columns = useUsersGroupsInstColumns();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   if (!worker) return <PageLoading />;
 
@@ -77,7 +78,7 @@ const UsersGroupsInstTable = () => {
       }}
       defaultSort={['name', 'ASC']}
       searchableColumns={usersGroupsSearchableColumns}
-      viewOnly={!canManageLiquidity}
+      viewOnly={!canEdit}
     ></Table>
   );
 }

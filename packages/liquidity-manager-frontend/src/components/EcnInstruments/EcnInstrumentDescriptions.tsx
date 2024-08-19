@@ -21,8 +21,9 @@ const EcnInstrumentDescriptions: React.FC<TEcnInstrumentProps> = ({
   instrumentHash,
 }) => {
   const columns = useEcnInstrumentsColumns();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   // prevent Description to send unnecessary requests
   const pathParams = useMemo(() => ({
@@ -44,7 +45,7 @@ const EcnInstrumentDescriptions: React.FC<TEcnInstrumentProps> = ({
     onDelete={params => apiClient.ecnInstruments.deleteOneBaseEcnInstrumentsControllerEcnInstrument(params)}
     entityToUpdateDto={ecnInstrumentToDto}
     columns={columns}
-    canEdit={canManageLiquidity}
+    canEdit={canEdit}
     params={params}
   />);
 }

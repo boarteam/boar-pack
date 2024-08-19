@@ -39,10 +39,11 @@ const DeleteSubscrSchemaButton: React.FC<{
   connectSchemaId: EcnSubscrSchema['connectSchemaId'];
   onDelete: () => Promise<void>;
 }> = ({ instrumentHash, connectSchemaId, onDelete }) => {
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
-  if (!worker || !canManageLiquidity) {
+  if (!worker || !canEdit) {
     return <></>;
   }
 
@@ -74,13 +75,14 @@ const SubscrSchemaDrawer: React.FC<{
   onDelete: () => Promise<void>;
   onClose: () => void;
 }> = ({ instrumentHash, connectSchemaId, onUpdate, onDelete, onClose }) => {
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
   const subscrColumns = useEcnSubscrSchemaColumns();
-  const connectSchemaColumns = useEcnConnectSchemasColumns(canManageLiquidity ?? false);
+  const canEdit = canManageLiquidity(liquidityManager);
+  const connectSchemaColumns = useEcnConnectSchemasColumns(canEdit);
   const instrumentColumns = useEcnInstrumentsColumns();
 
-  if (!worker || !canManageLiquidity) {
+  if (!worker || !canEdit) {
     return <></>;
   }
 
@@ -91,7 +93,7 @@ const SubscrSchemaDrawer: React.FC<{
       onClose={onClose}
       width='33%'
       extra={
-        canManageLiquidity && (
+        canEdit && (
           <DeleteSubscrSchemaButton
             instrumentHash={instrumentHash}
             connectSchemaId={connectSchemaId}
@@ -128,7 +130,7 @@ const SubscrSchemaDrawer: React.FC<{
             }}
             entityToUpdateDto={ecnSubscriptionSchemaToDto}
             columns={subscrColumns}
-            canEdit={canManageLiquidity}
+            canEdit={canEdit}
             params={{
               join: ecnSubscrSchemaJoinFields,
             }}
@@ -161,7 +163,7 @@ const SubscrSchemaDrawer: React.FC<{
             params={{
               join: ecnConnectSchemaJoinFields,
             }}
-            canEdit={canManageLiquidity}
+            canEdit={canEdit}
           />
         </Card>
         <Card>
@@ -189,7 +191,7 @@ const SubscrSchemaDrawer: React.FC<{
             }}
             entityToUpdateDto={ecnInstrumentToDto}
             columns={instrumentColumns}
-            canEdit={canManageLiquidity}
+            canEdit={canEdit}
             params={{
               join: ecnInstrumentJoinFields,
             }}
@@ -207,11 +209,12 @@ export const EditSubscrSchemaButton: React.FC<{
   onUpdate: () => Promise<void>;
   className?: string;
 }> = ({ instrumentHash, connectSchemaId, onDelete, onUpdate, ...restProps }) => {
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
   const [opened, setOpened] = useState(false);
 
-  if (!worker || !canManageLiquidity || !instrumentHash || !connectSchemaId) {
+  if (!worker || !canEdit || !instrumentHash || !connectSchemaId) {
     return <></>;
   }
 

@@ -1,7 +1,7 @@
 {
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
-  "entryFile": "generateTypes",
+  "entryFile": "src/generateTypes",
   "compilerOptions": {
     "plugins": [
       "@nestjs/swagger"

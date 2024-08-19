@@ -131,8 +131,9 @@ const columnsSets: TColumnsSet<UsersInst>[] = [
 
 const UsersInstTable = () => {
   const columns = useUsersInstColumns();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   if (!worker) return <PageLoading />;
 
@@ -207,7 +208,7 @@ const UsersInstTable = () => {
       }}
       defaultSort={['name', 'ASC']}
       searchableColumns={usersInstSearchableColumns}
-      viewOnly={!canManageLiquidity}
+      viewOnly={!canEdit}
       popupCreation
     />
   );

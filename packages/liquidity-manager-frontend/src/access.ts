@@ -1,6 +1,11 @@
+import { LiquidityManager } from "./tools/api-client";
+
 export default function () {
   return {
-    canManageLiquidity: true,
+    canViewSomeLiquidityManager: true,
+    canManageLiquidity: (lm?: LiquidityManager | null) => true,
+    canManageLiquidityManagersSettings: true,
+    canViewLiquidityManagersSettings: true,
     canGenerateResetPasswordLink: true,
   };
 }

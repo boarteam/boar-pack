@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseFilters } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseFilters } from '@nestjs/common';
 import { LiquidityManagersService } from './liquidity-managers.service';
 import { Crud } from '@nestjsx/crud';
 import { LiquidityManager } from './entities/liquidity-manager.entity';
@@ -11,6 +11,7 @@ import { LiquidityManagersInterceptor } from './liquidity-managers.interceptor';
 import { LiquidityManagerCheckDto, LiquidityManagerCheckResponseDto } from "./dto/liquidity-manager-check.dto";
 import { CheckPolicies } from "@jifeon/boar-pack-users-backend";
 import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/tools";
+import { Request } from 'express';
 
 @Crud({
   model: {
@@ -28,7 +29,12 @@ import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/too
     exclude: ['pass'],
   },
   routes: {
-    only: ['getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    only: ['getOneBase', 'getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    getOneBase: {
+      decorators: [
+        CheckPolicies(new ViewLiquidityManagersPolicy()),
+      ],
+    },
     getManyBase: {
       decorators: [
         CheckPolicies(new ViewLiquidityManagersPolicy()),
@@ -71,5 +77,18 @@ export class LiquidityManagersController {
     @Body() checkDto: LiquidityManagerCheckDto,
   ): Promise<LiquidityManagerCheckResponseDto> {
     return this.service.checkConnection(checkDto);
+  }
+
+  @Get('enabled')
+  @CheckPolicies(new ViewLiquidityManagersPolicy())
+  getEnabledForUser(
+    @Req() req: Request,
+  ): Promise<LiquidityManager[]> {
+    const user = req.user;
+    if (!user) {
+      throw new Error('User is not authorized');
+    }
+
+    return this.service.getEnabledForUser(user.id);
   }
 }

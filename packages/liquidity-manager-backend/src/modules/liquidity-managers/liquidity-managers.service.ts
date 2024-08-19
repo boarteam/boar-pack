@@ -6,6 +6,7 @@ import { LiquidityManagerCheckDto, LiquidityManagerConnectionStatus } from "./dt
 import mysql from 'mysql2/promise';
 import { MysqlConnectionOptions } from "typeorm/driver/mysql/MysqlConnectionOptions";
 import { ScryptService } from "@jifeon/boar-pack-common-backend";
+import { TUser } from "@jifeon/boar-pack-users-backend";
 
 @Injectable()
 export class LiquidityManagersService extends TypeOrmCrudService<LiquidityManager> {
@@ -92,5 +93,20 @@ export class LiquidityManagersService extends TypeOrmCrudService<LiquidityManage
       password: await this.scryptService.decrypt(liquidityManager.pass),
       database: liquidityManager.database,
     };
+  }
+
+  getEnabledForUser(id: TUser['id']) {
+    return this.repo.find({
+      relations: ['lmUsers'],
+      where: {
+        enabled: true,
+        lmUsers: {
+          userId: id,
+        },
+      },
+      order: {
+        name: 'ASC',
+      }
+    });
   }
 }

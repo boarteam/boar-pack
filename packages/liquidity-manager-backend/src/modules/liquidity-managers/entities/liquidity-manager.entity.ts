@@ -1,4 +1,14 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn, } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Unique,
+  UpdateDateColumn,
+} from 'typeorm';
+// noinspection ES6PreferShortImport
+import { LiquidityManagersUser } from "../../liquidity-managers-users/entities/liquidity-managers-user.entity";
 
 export enum LiquidityManagerWorkers {
   LM_WORKER_1 = 'lm_worker_1',
@@ -67,6 +77,9 @@ export class LiquidityManager {
 
   @Column({ default: true })
   enabled: boolean;
+
+  @OneToMany(() => LiquidityManagersUser, (lmUser) => lmUser.liquidityManager)
+  lmUsers: LiquidityManagersUser[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

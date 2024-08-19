@@ -182,8 +182,9 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
   const commandServiceRef = useRef<IGraphCommandService>(null);
   const { token } = useToken();
   const color = token.colorPrimary;
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
   const { styles } = useStyles();
   const [showDisabled, setShowDisabled] = useState(true);
 
@@ -230,7 +231,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
       });
     }
 
-    const defaultGraphNodeProps = getDefaultGraphNodeProps(canManageLiquidity);
+    const defaultGraphNodeProps = getDefaultGraphNodeProps(canEdit);
     const nodes: NsGraph.IGraphData['nodes'] = [];
     for (const nodeId of visibleElementsIds.nodes) {
       const nodeData = data.nodesMap.get(nodeId);
@@ -269,7 +270,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
     }
 
     return { nodes, edges };
-  }, [data, visibleElementsIds, canManageLiquidity, showDisabled]);
+  }, [data, visibleElementsIds, canEdit, showDisabled]);
 
   const onLoad: IAppLoad = async (app) => {
     if (!worker) {
@@ -285,7 +286,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
       setSelectedEdge(getRealIdFromEdgeId(edge.data.id));
     });
 
-    if (canManageLiquidity) {
+    if (canEdit) {
       graph.on('edge:connected', async ({ edge }) => {
         graph.removeEdge(edge);
         try {
@@ -325,7 +326,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
       },
     };
 
-    if (canManageLiquidity) {
+    if (canEdit) {
       options = {
         ...options,
         highlighting: {
@@ -396,7 +397,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
 
   const menuConfig = createCtxMenuConfig(config => {
     config.setMenuModelService(async (target, model) => {
-      if (!canManageLiquidity) {
+      if (!canEdit) {
         model.setValue({
           id: 'root',
           type: MenuItemType.Root,

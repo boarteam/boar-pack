@@ -23,6 +23,12 @@ type Subjects =
 
 export type AppAbility = PureAbility<[Action, Subjects], AnyObject>;
 
+type TAbilityDefiner = (
+  user: Pick<User, 'id' | 'role' | 'permissions'>,
+  can: AbilityBuilder<AppAbility>['can'],
+  cannot: AbilityBuilder<AppAbility>['cannot'],
+) => Promise<void>;
+
 @Injectable()
 export class CaslAbilityFactory {
   private static permissionsToActionsMap: {
@@ -31,6 +37,8 @@ export class CaslAbilityFactory {
       subject: Subjects | Subjects[];
     }
   } = {};
+
+  private static abilitiesDefiners: Set<TAbilityDefiner> = new Set();
 
   public static addPermissionToAction({
     permission, action, subject,
@@ -45,7 +53,11 @@ export class CaslAbilityFactory {
     };
   }
 
-  createForUser(user: Pick<User, 'id' | 'role' | 'permissions'>) {
+  public static addAbilitiesDefiner(definer: TAbilityDefiner) {
+    CaslAbilityFactory.abilitiesDefiners.add(definer);
+  }
+
+  public async createForUser(user: Pick<User, 'id' | 'role' | 'permissions'>) {
     const { can, cannot, build } = new AbilityBuilder<AppAbility>(PureAbility as AbilityClass<AppAbility>);
 
     switch (user.role) {
@@ -67,6 +79,10 @@ export class CaslAbilityFactory {
         break;
     }
 
+    await Promise.all(
+      Array.from(CaslAbilityFactory.abilitiesDefiners).map((definer) => definer(user, can, cannot)),
+    );
+
     return build({
       // Read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details
       detectSubjectType: (item) =>
@@ -87,6 +103,7 @@ export class CaslAbilityFactory {
         action: rule.action,
         subject: rule.subject,
         inverted: rule.inverted,
+        conditions: rule.conditions,
       })),
       (item) => {
         if (typeof item === 'string') {

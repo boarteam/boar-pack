@@ -27,11 +27,9 @@ export function ecnModuleToDto<
 
 const EcnModulesTable = (props: Partial<TTableProps<EcnModule, EcnModuleCreateDto, EcnModuleUpdateDto, {}, {worker: string}>>) => {
   let { canManageLiquidity } = useAccess() || {};
-  if (props.viewOnly !== undefined) {
-    canManageLiquidity = !props.viewOnly;
-  }
-  const columns = useEcnModulesColumns(canManageLiquidity ?? false);
-  const { worker } = useLiquidityManagerContext();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
+  const viewOnly = props.viewOnly ?? !canManageLiquidity(liquidityManager);
+  const columns = useEcnModulesColumns(!viewOnly);
 
   if (!worker) return <PageLoading />;
 
@@ -59,7 +57,7 @@ const EcnModulesTable = (props: Partial<TTableProps<EcnModule, EcnModuleCreateDt
       }}
       defaultSort={['name', 'ASC']}
       searchableColumns={ecnModuleSearchableColumns}
-      viewOnly={!canManageLiquidity}
+      viewOnly={viewOnly}
       {...props}
     ></Table>
   );

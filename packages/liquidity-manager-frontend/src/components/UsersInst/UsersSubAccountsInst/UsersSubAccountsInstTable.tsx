@@ -113,8 +113,9 @@ const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
 }) => {
   const columns = useUsersSubAccountsInstColumns();
   const settingsColumns = useSubloginsSettingsColumns();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   const {
     columnsSetSelect,
@@ -163,7 +164,7 @@ const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
           operator: Operators.equals,
         }
       ]}
-      viewOnly={!canManageLiquidity}
+      viewOnly={!canEdit}
       expandable={{
         expandedRowRender: (record) => {
           return <SubloginsSettingsTable

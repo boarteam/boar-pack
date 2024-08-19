@@ -17,8 +17,9 @@ const UserInstDescriptions: React.FC<TUserInstProps> = ({
   id,
 }) => {
   const columns = useUsersInstColumns();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const { worker } = useLiquidityManagerContext();
+  const canEdit = canManageLiquidity(liquidityManager);
 
   if (!worker) return <PageLoading />;
 
@@ -35,7 +36,7 @@ const UserInstDescriptions: React.FC<TUserInstProps> = ({
     onUpdate={params => apiClient.usersInst.updateOneBaseUsersInstControllerUsersInst(params)}
     onDelete={params => apiClient.usersInst.deleteOneBaseUsersInstControllerUsersInst(params)}
     entityToUpdateDto={usersInstToDto}
-    canEdit={canManageLiquidity}
+    canEdit={canEdit}
     columns={columns}
     params={{
       join: usersInstJoinFields,
