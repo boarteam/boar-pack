@@ -28,6 +28,7 @@ import { EcnWeekDaysService } from './services/EcnWeekDaysService';
 import { EcnWorkingModesService } from './services/EcnWorkingModesService';
 import { LiquidityManagersService } from './services/LiquidityManagersService';
 import { LiquidityManagersUsersService } from './services/LiquidityManagersUsersService';
+import { PositionsService } from './services/PositionsService';
 import { SubloginSettingsService } from './services/SubloginSettingsService';
 import { UsersService } from './services/UsersService';
 import { UsersGroupsInstService } from './services/UsersGroupsInstService';
@@ -61,6 +62,7 @@ export class ApiClient {
     public readonly ecnWorkingModes: EcnWorkingModesService;
     public readonly liquidityManagers: LiquidityManagersService;
     public readonly liquidityManagersUsers: LiquidityManagersUsersService;
+    public readonly positions: PositionsService;
     public readonly subloginSettings: SubloginSettingsService;
     public readonly users: UsersService;
     public readonly usersGroupsInst: UsersGroupsInstService;
@@ -105,6 +107,7 @@ export class ApiClient {
         this.ecnWorkingModes = new EcnWorkingModesService(this.request);
         this.liquidityManagers = new LiquidityManagersService(this.request);
         this.liquidityManagersUsers = new LiquidityManagersUsersService(this.request);
+        this.positions = new PositionsService(this.request);
         this.subloginSettings = new SubloginSettingsService(this.request);
         this.users = new UsersService(this.request);
         this.usersGroupsInst = new UsersGroupsInstService(this.request);

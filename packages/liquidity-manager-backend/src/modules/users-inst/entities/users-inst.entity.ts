@@ -118,12 +118,14 @@ export class UsersInst {
   @Column('decimal', { precision: 18, scale: 8, default: 0, comment: 'turnover commission value' })
   commissionTurnover: string;
 
+  @Column('int', { default: 0, comment: 'margin module id', name: 'margin_module_id' })
+  marginModuleId: string;
+
   @ManyToOne<EcnModule>(() => EcnModule, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'margin_module_id' })
-  @Column('int', { default: 0, comment: 'margin module id', name: 'margin_module_id' })
   marginModule: EcnModule;
 
   @ManyToOne(() => UsersInstCompany, company => company.id, { onUpdate: 'CASCADE' })
@@ -151,7 +153,6 @@ export class UsersInst {
 
   @Column('int', { default: 0, comment: 'password hash type', name: 'pwd_hash_type' })
   pwdHashTypeId: number;
-
   @ManyToOne<EcnPasswordHashType>(() => EcnPasswordHashType, type => type.id, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'

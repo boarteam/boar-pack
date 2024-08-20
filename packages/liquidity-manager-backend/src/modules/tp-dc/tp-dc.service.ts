@@ -15,6 +15,7 @@ import {
   TBaseConfig,
   WebsocketsClients
 } from "@jifeon/boar-pack-common-backend/src/modules/websockets/websockets.clients";
+import { TpDcConfigService } from "./tp-dc.config";
 
 type TTpSocketsConfig = TBaseConfig<MTWSMessage> & {
   // instruments: string[];
@@ -24,10 +25,11 @@ type TTpSocketsConfig = TBaseConfig<MTWSMessage> & {
 export class TpDcService {
   private readonly logger = new Logger(TpDcService.name);
   private readonly VERSION = 10;
-
+  private readonly config = this.configService.config;
 
   constructor(
     private httpService: HttpService,
+    private readonly configService: TpDcConfigService,
     private readonly websocketsClients: WebsocketsClients<
       MTWSMessage,
       MTAttachStreamRequest,
@@ -36,29 +38,27 @@ export class TpDcService {
   ) {
   }
 
-  public getUrl(): string {
+  public getUrl(serverId: string): string {
     // noinspection HttpUrlsUsage
-    return `http://tp-tst-srv-01:3000/?server_id=4001`;
+    const params = new URLSearchParams({
+      server_id: serverId,
+      web_api_login: this.config.webApiLogin,
+      web_api_pass: this.config.webApiPass,
+    });
+    return `http://tp-tst-srv-01:3000/?${params.toString()}`;
     // return `http://localhost:4300/`;
   }
 
-  public async request<TReq extends { method: string }, TRes>(url: string, params: TReq): Promise<MTResponse<TRes>['result']> {
+  public async request<TReq extends { method: string }, TRes>(url: string, params: TReq): Promise<TRes> {
     this.logger.log(`Request to ${url}, method: ${params.method}`);
     this.logger.verbose(params);
-    const response = await this.httpService.axiosRef.post<MTResponse<TRes>>(url, params, {
-      transformResponse: (data: any) => {
-        return parse(data);
-      }
+    const response = await this.httpService.axiosRef.post<TRes>(url, params, {
+      // transformResponse: (data: any) => {
+      //   return parse(data);
+      // }
     });
 
-    const result = response.data.result;
-    if (result.status === false) {
-      this.logger.error(`Error while requesting ${url}, method: ${params.method}`);
-      this.logger.error(result);
-      throw new Error(result.description);
-    }
-
-    return response.data.result;
+    return response.data;
   }
 
   public async getInstruments(url: string) {
@@ -70,7 +70,13 @@ export class TpDcService {
     return this.request<MTInstrumentListRequest, MTInstrumentListResult>(url, params);
   }
 
-  public async getPositions(userId: number) {
+  public async getPositions({
+    userId,
+    serverId,
+  }:{
+    userId: number,
+    serverId: string,
+  }) {
     const params = {
       method: 'get_positions',
       version: this.VERSION,
@@ -78,7 +84,7 @@ export class TpDcService {
       user_id: userId,
     } as const;
 
-    return this.request<MTGetPositionsRequest, MTGetPositionsResult>(this.getUrl(), params);
+    return this.request<MTGetPositionsRequest, MTGetPositionsResult>(this.getUrl(serverId), params);
   }
 
   public checkStreamConnection({

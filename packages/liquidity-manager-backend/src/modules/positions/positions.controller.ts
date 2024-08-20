@@ -22,6 +22,6 @@ export class PositionsController {
   getPositions(
     @Query() query: PositionsQueryDto,
   ): Promise<PositionDto[]> {
-    return this.service.getPositions(query.userId);
+    return this.service.getPositions(Number(query.userId));
   }
 }

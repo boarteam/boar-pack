@@ -1,11 +1,13 @@
-import { Position, usePositionsColumns } from "./usePositionsColumns";
-import { Operators, Table, TGetAllParams } from "@jifeon/boar-pack-common-frontend";
+import { usePositionsColumns } from "./usePositionsColumns";
+import { Table, TGetAllParams } from "@jifeon/boar-pack-common-frontend";
 import apiClient from "@@api/apiClient";
 import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
 import React, { useEffect, useState } from "react";
 import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { Tag } from "antd";
+import { useRealTimeData } from "../RealTimeData/RealTimeDataSource";
+import { PositionDto } from "../../tools/api-client";
 
 type TPositionFilterParams = {
   symbol?: string,
@@ -39,15 +41,16 @@ const connectionStatuses = {
 };
 
 type TPositionsTableProps = {
-  moduleId: number,
+  userId: number,
 }
 
 const PositionsTable: React.FC<TPositionsTableProps> = ({
-  moduleId,
+  userId,
 }) => {
   const columns = usePositionsColumns();
   const { worker } = useLiquidityManagerContext();
-  const { positionsDataSource } = usePositions();
+  const { realTimeDataSource } = useRealTimeData();
+
   const [connectionStatus, setConnectionStatus] = useState<WebSocket['readyState']>(WebSocket.CLOSED);
 
   useEffect(() => {
@@ -55,58 +58,34 @@ const PositionsTable: React.FC<TPositionsTableProps> = ({
       setConnectionStatus(evt.detail ?? WebSocket.CLOSED);
     };
 
-    positionsDataSource?.socketStatusEvents.addEventListener('status', handler);
+    realTimeDataSource?.socketStatusEvents.addEventListener('status', handler);
 
     return () => {
-      positionsDataSource?.socketStatusEvents.removeEventListener('status', handler);
+      realTimeDataSource?.socketStatusEvents.removeEventListener('status', handler);
     }
-  }, [positionsDataSource]);
+  }, [realTimeDataSource]);
 
   if (!worker) return <PageLoading />;
 
   const getAll = async (params: TGetAllParams & TPositionsPathParams) => {
-    params.fields = ['name'];
-    params.join = ['instrumentGroup||name'];
-    params.sort = params.sort.map(sort => sort.replace('symbol', 'name').replace('group', 'instrumentGroup.name'));
-
-    const response = await apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params);
-    const symbols = response.data.map(instrument => instrument.name);
-
-    positionsDataSource.subscribe(symbols, moduleId);
-
+    const positions = await apiClient.positions.getPositions({
+      worker,
+      userId,
+    })
     return {
-      ...response,
-      data: response.data.map(instrument => ({
-        symbol: instrument.name,
-        group: instrument.instrumentGroup?.name,
-      })),
+      data: positions,
     }
   }
 
   return (
-    <Table<Position, {}, {}, TPositionFilterParams, TPositionsPathParams>
+    <Table<PositionDto, {}, {}, TPositionFilterParams, TPositionsPathParams>
       getAll={getAll}
       columns={columns}
-      idColumnName='symbol'
+      idColumnName='id'
       pathParams={{
         worker,
       }}
       defaultSort={['symbol', 'ASC']}
-      searchableColumns={[
-        {
-          field: 'symbol',
-          searchField: 'name',
-          filterField: 'name',
-          operator: Operators.containsLow,
-        },
-        {
-          field: 'group',
-          searchField: 'instrumentGroup.name',
-          filterField: 'instrumentGroup.id',
-          operator: Operators.containsLow,
-          filterOperator: Operators.in,
-        },
-      ]}
       viewOnly={true}
       toolBarRender={() => {
         const status = connectionStatuses[connectionStatus];
