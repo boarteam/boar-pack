@@ -85,6 +85,7 @@ export type MTAttachStreamResult = LosslessJsonResult<{
 
 export type MTWSMessage =
   | MTQuoteWSMessage
+  | MTPositionsWSMessage
   | MTInstrumentAddMessage
   | MTInstrumentUpdateMessage
   | MTInstrumentDeleteMessage;
@@ -96,6 +97,10 @@ export type MTQuoteWSMessage = {
     ask: number;
     bid: number
   }
+}
+
+export type MTPositionsWSMessage = {
+  position: MTPosition;
 }
 
 export type MTInstrumentAddMessage = {
