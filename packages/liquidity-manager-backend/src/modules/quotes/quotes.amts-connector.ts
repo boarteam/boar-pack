@@ -2,9 +2,10 @@ import { Injectable, Logger } from "@nestjs/common";
 import { AmtsDcService } from "../amts-dc/amts-dc.service";
 import { mtPlatformsIds, MTVersions } from "../amts-dc/amts-dc.constants";
 import { CLOSED_OBSERVABLE, MessagesStream } from "./dto/quotes.dto";
-import { MTQuoteWSMessage, MTWSMessage } from "../amts-dc/dto/amts-dc.dto";
+import { MTPositionsWSMessage, MTQuoteWSMessage, MTWSMessage } from "../amts-dc/dto/amts-dc.dto";
 import { Subject } from "rxjs";
 import WebSocket from "ws";
+import { PositionSide } from "../positions/dto/positions.dto";
 
 type TConnectorConfig = {
   instruments: string[];
@@ -226,6 +227,8 @@ export class QuotesAmtsConnector {
   private processWSMessage(messagesStream: MessagesStream, event: MTWSMessage) {
     if ('quote' in event) {
       this.processQuoteMessage(messagesStream, event);
+    } else if ('position' in event) {
+      this.processPositionMessage(messagesStream, event);
     } else {
       this.logger.warn(`Unknown WS message type for message: ${JSON.stringify(event)}`);
     }
@@ -240,6 +243,24 @@ export class QuotesAmtsConnector {
         ask: msg.quote.ask,
         timestamp: msg.quote.ts_msc,
       },
+    });
+  }
+
+  private processPositionMessage(messagesStream: MessagesStream, msg: MTPositionsWSMessage): void {
+    messagesStream.next({
+      event: 'position',
+      data: {
+        id: msg.position.id,
+        userId: msg.position.user_id,
+        instrument: msg.position.instrument,
+        side: msg.position.side as PositionSide,
+        amount: msg.position.amount,
+        openPrice: msg.position.open_price,
+        margin: msg.position.margin,
+        profit: msg.position.profit,
+        createdAt: new Date(msg.position.ts_create),
+        updatedAt: new Date(msg.position.ts_update),
+      }
     });
   }
 }

@@ -87,6 +87,7 @@ export type { LocalAuthLoginDto } from './models/LocalAuthLoginDto';
 export type { LocalAuthTokenDto } from './models/LocalAuthTokenDto';
 export type { PermissionDto } from './models/PermissionDto';
 export { PositionDto } from './models/PositionDto';
+export type { PositionEventDto } from './models/PositionEventDto';
 export type { QuoteDto } from './models/QuoteDto';
 export type { QuoteEventDto } from './models/QuoteEventDto';
 export type { ResetPasswordDto } from './models/ResetPasswordDto';
