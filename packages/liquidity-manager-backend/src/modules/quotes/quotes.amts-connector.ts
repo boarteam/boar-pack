@@ -23,25 +23,6 @@ export class QuotesAmtsConnector {
   ) {
   }
 
-  private getWsUrl({
-    moduleId,
-    login,
-    pass,
-  }: {
-    moduleId: number,
-    login: string,
-    pass: string,
-  }): string {
-    // return `ws://localhost:4300`;
-    const baseUri = `ws://amts-tst-srv-01:3000/stream`;
-    const searchParams = new URLSearchParams({
-      web_api_login: login,
-      web_api_pass: pass,
-      server_id: moduleId.toString(),
-    });
-    return `${baseUri}?${searchParams.toString()}`;
-  }
-
   public async getMessagesStream(instruments: string[], moduleId: number): Promise<MessagesStream> {
     const messagesStream: MessagesStream = new Subject();
     const config: TConnectorConfig = {
@@ -103,11 +84,7 @@ export class QuotesAmtsConnector {
 
   private async createWebsocketAndConnect(messagesStream: MessagesStream, config: TConnectorConfig): Promise<WebSocket> {
     const ws = this.amtsDcService.createQuotesWebsocketAndAttachStream({
-      url: this.getWsUrl({
-        moduleId: config.moduleId,
-        login: '123',
-        pass: 'QWERTY12345asdfg',
-      }),
+      url: this.amtsDcService.getWsUrl(config.moduleId),
       instruments: config.instruments,
       options: {
         platform_id: mtPlatformsIds[MTVersions.MT5],
