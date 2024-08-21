@@ -23,25 +23,6 @@ export class QuotesTpConnector {
   ) {
   }
 
-  private getWsUrl({
-    moduleId,
-    login,
-    pass,
-  }: {
-    moduleId: number,
-    login: string,
-    pass: string,
-  }): string {
-    // return `ws://localhost:4300`;
-    const baseUri = `ws://tp-tst-srv-01:3000/stream`;
-    const searchParams = new URLSearchParams({
-      web_api_login: login,
-      web_api_pass: pass,
-      server_id: moduleId.toString(),
-    });
-    return `${baseUri}?${searchParams.toString()}`;
-  }
-
   public async getMessagesStream(instruments: string[], moduleId: number): Promise<MessagesStream> {
     const messagesStream: MessagesStream = new Subject();
     const config: TConnectorConfig = {
@@ -103,11 +84,7 @@ export class QuotesTpConnector {
 
   private async createWebsocketAndConnect(messagesStream: MessagesStream, config: TConnectorConfig): Promise<WebSocket> {
     const ws = this.tpDcService.createQuotesWebsocketAndAttachStream({
-      url: this.getWsUrl({
-        moduleId: config.moduleId,
-        login: '123',
-        pass: 'REDACTED',
-      }),
+      url: this.tpDcService.getWsUrl(config.moduleId),
       instruments: config.instruments,
       options: {
         platform_id: mtPlatformsIds[MTVersions.MT5],
