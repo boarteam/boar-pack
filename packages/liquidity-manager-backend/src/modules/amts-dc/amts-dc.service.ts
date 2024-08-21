@@ -38,8 +38,7 @@ export class AmtsDcService {
   ) {
   }
 
-  public getUrl(serverId: string): string {
-    // noinspection HttpUrlsUsage
+  public getHttpUrl(serverId: string): string {
     const params = new URLSearchParams({
       server_id: serverId,
       web_api_login: this.config.webApiLogin,
@@ -47,6 +46,15 @@ export class AmtsDcService {
     });
     return `http://amts-tst-srv-01:3000/?${params.toString()}`;
     // return `http://localhost:4300/`;
+  }
+
+  public getWsUrl(serverId: string | number): string {
+    const params = new URLSearchParams({
+      server_id: String(serverId),
+      web_api_login: this.config.webApiLogin,
+      web_api_pass: this.config.webApiPass,
+    });
+    return `ws://amts-tst-srv-01:3000/stream?${params.toString()}`;
   }
 
   public async request<TReq extends { method: string }, TRes>(url: string, params: TReq): Promise<TRes> {
@@ -84,7 +92,7 @@ export class AmtsDcService {
       user_id: userId,
     } as const;
 
-    return this.request<MTGetPositionsRequest, MTGetPositionsResult>(this.getUrl(serverId), params);
+    return this.request<MTGetPositionsRequest, MTGetPositionsResult>(this.getHttpUrl(serverId), params);
   }
 
   public checkStreamConnection({
