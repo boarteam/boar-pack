@@ -1,10 +1,19 @@
-import { QuoteDto, QuoteEventDto, SubscribeEventDto, WebsocketsErrorEventDto, } from "../../tools/api-client/generated";
+import {
+  PositionDto,
+  PositionEventDto,
+  QuoteDto,
+  QuoteEventDto,
+  SubscribeEventDto,
+  WebsocketsErrorEventDto,
+} from "../../tools/api-client/generated";
 import { WebsocketClient } from "@jifeon/boar-pack-common-frontend";
+import { useEffect, useState } from "react";
+import { TConnectionStatus } from "./realTimeDataStatuses";
 
 export type TIncomeEvent =
   | { event: 'error' } & WebsocketsErrorEventDto
   | { event: 'quote' } & QuoteEventDto
-  // | { event: 'position' } & PositionEventDto
+  | { event: 'position' } & PositionEventDto
   | { event: 'status', status: WebSocket['readyState'] };
 
 export type TOutputEvent =
@@ -23,7 +32,7 @@ export class RealTimeDataSource {
     return this.primarySocket?.status ?? WebSocket.CLOSED;
   }
 
-  public subscribe(symbols: string[], moduleId: number) {
+  public subscribeToQuotes(symbols: string[], moduleId: number) {
     if (this.active) {
       this.updateConnection(symbols, moduleId);
       return;
@@ -35,7 +44,23 @@ export class RealTimeDataSource {
 
     this.primarySocket = new WebsocketClient({
       worker: null,
-      onOpen: this.onSocketOpen,
+      onOpen: this.onQuotesSocketOpen,
+      onMessage: this.onSocketMessage,
+      onClose: this.onSocketClose,
+    });
+    this.emitStatusEvent();
+  }
+
+  // todo: probably not needed?
+  public subscribeToPositions() {
+    if (this.active) {
+      return;
+    }
+
+    this.active = true;
+    this.primarySocket = new WebsocketClient({
+      worker: null,
+      onOpen: this.onPositionsSocketOpen,
       onMessage: this.onSocketMessage,
       onClose: this.onSocketClose,
     });
@@ -71,7 +96,7 @@ export class RealTimeDataSource {
       return;
     }
 
-    this.onSocketOpen();
+    this.onQuotesSocketOpen();
   }
 
   private onSocketMessage = async (msg: TIncomeEvent) => {
@@ -80,9 +105,9 @@ export class RealTimeDataSource {
         this.emitQuoteEvent(msg.data);
         break;
 
-      // case 'position':
-      //   // this.emitPositionEvent(msg.data);
-      //   break;
+      case 'position':
+        this.emitPositionEvent(msg.data);
+        break;
 
       case 'status':
         this.emitStatusEvent();
@@ -90,13 +115,24 @@ export class RealTimeDataSource {
     }
   }
 
-  private onSocketOpen = () => {
+  private onQuotesSocketOpen = () => {
     this.emitStatusEvent();
     this.primarySocket?.send<SubscribeEventDto>({
       event: 'subscribe',
       data: {
         symbols: this.symbols,
         moduleId: this.moduleId,
+      },
+    });
+  }
+
+  private onPositionsSocketOpen = () => {
+    this.emitStatusEvent();
+    this.primarySocket?.send<SubscribeEventDto>({
+      event: 'subscribe',
+      data: {
+        symbols: [],
+        moduleId: 4001,
       },
     });
   }
@@ -111,12 +147,41 @@ export class RealTimeDataSource {
       }
     ));
   }
+
+  private emitPositionEvent(position: PositionDto) {
+    this.positionsEvents.dispatchEvent(new CustomEvent<PositionDto>(
+      `position:${position.id}`,
+      {
+        detail: position,
+        bubbles: false,
+        cancelable: true,
+      }
+    ));
+  }
 }
 
 const realTimeDataSource = new RealTimeDataSource();
 
-export function useRealTimeData(): { realTimeDataSource: RealTimeDataSource } {
+export function useRealTimeData(): {
+  realTimeDataSource: RealTimeDataSource,
+  connectionStatus: TConnectionStatus,
+} {
+  const [connectionStatus, setConnectionStatus] = useState<TConnectionStatus>(WebSocket.CLOSED);
+
+  useEffect(() => {
+    const handler = (evt: CustomEvent<TConnectionStatus | undefined>) => {
+      setConnectionStatus(evt.detail ?? WebSocket.CLOSED);
+    };
+
+    realTimeDataSource.socketStatusEvents.addEventListener('status', handler);
+
+    return () => {
+      realTimeDataSource.socketStatusEvents.removeEventListener('status', handler);
+    }
+  }, []);
+
   return {
+    connectionStatus,
     realTimeDataSource,
   };
 }
