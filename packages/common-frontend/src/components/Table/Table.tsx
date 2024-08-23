@@ -1,6 +1,6 @@
 import ProTable, { ActionType } from "@ant-design/pro-table";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Popover, Space, Tooltip } from "antd";
+import { Button, Popover, Space, Tooltip, message } from "antd";
 import { DeleteOutlined, PlusOutlined, QuestionCircleTwoTone, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { flushSync } from "react-dom";
@@ -83,6 +83,7 @@ const Table = <Entity extends Record<string | symbol, any>,
   const [lastRequest, setLastRequest] = useState<[TGetAllParams & TPathParams, any] | []>([]);
   const [allSelected, setAllSelected] = useState(false);
   const { styles } = useStyles();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const intl = useIntl();
 
@@ -285,7 +286,13 @@ const Table = <Entity extends Record<string | symbol, any>,
                   ),
                   records: allSelected ? [] : selectedRecords,
                 },
-              }).then(() => actionRef?.current?.reload())}
+              }).then(() => {
+                messageApi.open({
+                  type: 'success',
+                  content: 'Operation Successful',
+                });
+                actionRef?.current?.reload();
+              })}
             />
           )
           : <></>,
@@ -302,7 +309,13 @@ const Table = <Entity extends Record<string | symbol, any>,
                 requestBody: {
                   records: allSelected ? [] : selectedRecords,
                 },
-              }).then(() => actionRef?.current?.reload())}
+              }).then(() => {
+                messageApi.open({
+                  type: 'success',
+                  content: 'Operation Successful',
+                });
+                actionRef?.current?.reload();
+              })}
             />
           )
           : <></>,
@@ -377,6 +390,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       idColumnName={idColumnName}
       columns={columns ?? []}
     />
+    {contextHolder}
   </>);
 };
 
