@@ -10,58 +10,57 @@ import type { GetManyEcnInstrumentResponseDto } from '../models/GetManyEcnInstru
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-import { EcnInstrumentsGroup } from "../models/EcnInstrumentsGroup";
 
 export class EcnInstrumentsService {
 
     constructor(public readonly httpRequest: BaseHttpRequest) {}
 
-  /**
-   * @returns GetEcnInstrumentsInConnectionsResponse
-   * @throws ApiError
-   */
-  public getInConnections({
-    id,
-    worker,
-    filterInstrument,
-    filterInstrumentsGroup,
-    compareConnectSchemaId,
-    search,
-    limit,
-    offset,
-    sortDirection,
-    showOnlyChanged,
-  }: {
-    id: number | number[],
-    worker: string,
-    filterInstrument?: EcnInstrument['instrumentHash'][],
-    filterInstrumentsGroup?: EcnInstrumentsGroup["id"][],
-    compareConnectSchemaId?: number,
-    search?: string,
-    limit?: number,
-    offset?: number,
-    sortDirection?: 'ASC' | 'DESC',
-    showOnlyChanged?: boolean,
-  }): CancelablePromise<GetEcnInstrumentsInConnectionsResponse> {
-    return this.httpRequest.request({
-      method: 'GET',
-      url: '/{worker}/liquidity/ecn-instruments/in-connections',
-      path: {
-        'worker': worker,
-      },
-      query: {
-        'id': id,
-        'compareConnectSchemaId': compareConnectSchemaId,
-        'filterInstrument': filterInstrument,
-        'filterInstrumentsGroup': filterInstrumentsGroup,
-        'search': search,
-        'limit': limit,
-        'offset': offset,
-        'sortDirection': sortDirection,
-        'showOnlyChanged': showOnlyChanged,
-      },
-    });
-  }
+    /**
+     * @returns GetEcnInstrumentsInConnectionsResponse
+     * @throws ApiError
+     */
+    public getInConnections({
+        worker,
+        id,
+        filterInstrument,
+        filterInstrumentsGroup,
+        compareConnectSchemaId,
+        search,
+        limit,
+        offset,
+        sortDirection,
+        showOnlyChanged,
+    }: {
+        worker: string,
+        id?: Array<number>,
+        filterInstrument?: Array<string>,
+        filterInstrumentsGroup?: Array<number>,
+        compareConnectSchemaId?: number,
+        search?: string,
+        limit?: number,
+        offset?: number,
+        sortDirection?: 'ASC' | 'DESC',
+        showOnlyChanged?: boolean,
+    }): CancelablePromise<GetEcnInstrumentsInConnectionsResponse> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/{worker}/liquidity/ecn-instruments/in-connections',
+            path: {
+                'worker': worker,
+            },
+            query: {
+                'id': id,
+                'filterInstrument': filterInstrument,
+                'filterInstrumentsGroup': filterInstrumentsGroup,
+                'compareConnectSchemaId': compareConnectSchemaId,
+                'search': search,
+                'limit': limit,
+                'offset': offset,
+                'sortDirection': sortDirection,
+                'showOnlyChanged': showOnlyChanged,
+            },
+        });
+    }
 
     /**
      * Retrieve a single EcnInstrument
@@ -105,31 +104,31 @@ export class EcnInstrumentsService {
         });
     }
 
-  /**
-   * Update a single EcnInstrument
-   * @returns EcnInstrument Response
-   * @throws ApiError
-   */
-  public updateOneBaseEcnInstrumentsControllerEcnInstrument({
-    instrumentHash,
-    worker,
-    requestBody,
-  }: {
-    instrumentHash: string,
-    worker: string,
-    requestBody: EcnInstrumentUpdateDto,
-  }): CancelablePromise<EcnInstrument> {
-    return this.httpRequest.request({
-      method: 'PATCH',
-      url: '/{worker}/liquidity/ecn-instruments/{instrumentHash}',
-      path: {
-        'instrumentHash': instrumentHash,
-        'worker': worker,
-      },
-      body: requestBody,
-      mediaType: 'application/json',
-    });
-  }
+    /**
+     * Update a single EcnInstrument
+     * @returns EcnInstrument Response
+     * @throws ApiError
+     */
+    public updateOneBaseEcnInstrumentsControllerEcnInstrument({
+        instrumentHash,
+        worker,
+        requestBody,
+    }: {
+        instrumentHash: string,
+        worker: string,
+        requestBody: EcnInstrumentUpdateDto,
+    }): CancelablePromise<EcnInstrument> {
+        return this.httpRequest.request({
+            method: 'PATCH',
+            url: '/{worker}/liquidity/ecn-instruments/{instrumentHash}',
+            path: {
+                'instrumentHash': instrumentHash,
+                'worker': worker,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
 
     /**
      * Delete a single EcnInstrument

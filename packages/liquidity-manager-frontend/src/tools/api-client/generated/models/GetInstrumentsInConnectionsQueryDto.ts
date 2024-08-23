@@ -4,14 +4,24 @@
 /* eslint-disable */
 
 export type GetInstrumentsInConnectionsQueryDto = {
-    id?: Record<string, any>;
-    filterInstrument?: Record<string, any>;
-    filterInstrumentsGroup?: Record<string, any>;
+    id?: Array<number>;
+    filterInstrument?: Array<string>;
+    filterInstrumentsGroup?: Array<number>;
     compareConnectSchemaId?: number;
     search?: string;
     limit?: number;
     offset?: number;
-    sortDirection?: Record<string, any>;
+    sortDirection?: GetInstrumentsInConnectionsQueryDto.sortDirection;
     showOnlyChanged?: boolean;
 };
+
+export namespace GetInstrumentsInConnectionsQueryDto {
+
+    export enum sortDirection {
+        ASC = 'ASC',
+        DESC = 'DESC',
+    }
+
+
+}
 

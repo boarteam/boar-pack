@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UsePipes } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
-import { ApiExtraModels, ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
+import { ApiExtraModels, ApiOkResponse, ApiQuery, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { EcnInstrumentsService } from './ecn-instruments.service';
 import { EcnInstrument } from './entities/ecn-instrument.entity';
 import { CheckPolicies } from "@jifeon/boar-pack-users-backend";
@@ -78,7 +78,9 @@ export class EcnInstrumentsController {
       $ref: getSchemaPath(GetEcnInstrumentsInConnectionsResponse),
     }
   })
-  getInConnections(@Query() query: GetInstrumentsInConnectionsQueryDto): Promise<GetEcnInstrumentsInConnectionsResponse> {
+  getInConnections(
+    @Query() query: GetInstrumentsInConnectionsQueryDto,
+  ): Promise<GetEcnInstrumentsInConnectionsResponse> {
     return this.service.getInConnections(query);
   }
 }
