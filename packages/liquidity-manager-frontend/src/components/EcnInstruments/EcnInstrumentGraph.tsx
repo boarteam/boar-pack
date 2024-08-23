@@ -9,6 +9,8 @@ import XFlowGraph, { TData, TElements } from '../Graph';
 import { buildJoinFields } from '@jifeon/boar-pack-common-frontend';
 import { EcnInstrumentConnectSchemaDrawer } from './EcnInstrumentConnectSchemaDrawer';
 import { useLiquidityManagerContext } from "../../tools";
+import { Space, Tag } from 'antd';
+import Paragraph from "antd/es/typography/Paragraph";
 
 export interface IProps {
   instrumentHash: EcnInstrument['instrumentHash'],
@@ -87,7 +89,16 @@ const EcnInstrumentGraph: React.FC<IProps> = ({ instrumentHash }) => {
 
   return (
     <Spin spinning={isLoading}>
-      <XFlowGraph {...connectionsGraphData} />
+      <Space
+        direction={'vertical'}
+        style={{ width: '100%' }}
+      >
+        <XFlowGraph {...connectionsGraphData} />
+        <Paragraph>
+          <Tag color={'green'}>Green arrows</Tag>indicate that both connection and subscription schemas are enabled.&nbsp;
+          <Tag color={'red'}>Red arrows</Tag>indicate that either connection or subscription schema is disabled.
+        </Paragraph>
+      </Space>
       <EcnModuleDrawer id={selectedNode} onDelete={deleteNode} onUpdate={updateNode} onClose={() => setSelectedNode(undefined)} />
       <EcnInstrumentConnectSchemaDrawer id={selectedEdge} instrumentHash={instrumentHash} onDelete={deleteEdge} onUpdate={updateEdge} onClose={() => setSelectedEdge(undefined)}  />
     </Spin>

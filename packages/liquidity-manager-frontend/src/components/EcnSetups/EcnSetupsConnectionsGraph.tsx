@@ -5,6 +5,8 @@ import { EcnConnectSchemaSetupLabel, EcnModule } from '@@api/generated';
 import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
 import ConnectionsGraph from "../ConnectionsGraph";
+import { Tag } from 'antd';
+import Paragraph from "antd/es/typography/Paragraph";
 
 export const SetupConnectionsGraph = ({ id }: { id: EcnConnectSchemaSetupLabel['id'] }) => {
   const [modules, setModules] = useState<Set<EcnModule['id']>>();
@@ -26,5 +28,20 @@ export const SetupConnectionsGraph = ({ id }: { id: EcnConnectSchemaSetupLabel['
 
   if (!worker) return <PageLoading />;
 
-  return modules ? <ConnectionsGraph modules={modules} /> : <Spin />;
+  if (!modules) {
+    return <Spin />;
+  }
+
+
+  return (
+    <ConnectionsGraph 
+      modules={modules}
+      description={(
+        <Paragraph>
+          <Tag color={'green'}>Green arrows</Tag>indicate that connection is enabled.&nbsp;
+          <Tag color={'red'}>Red arrows</Tag>indicate that connection is disabled.
+        </Paragraph>
+      )} 
+    />
+  );
 }

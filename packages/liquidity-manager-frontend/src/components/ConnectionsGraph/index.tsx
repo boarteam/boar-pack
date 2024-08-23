@@ -4,16 +4,17 @@ import apiClient from '@@api/apiClient';
 import { EcnModule } from '@@api/generated';
 import { EcnModuleDrawer } from '../EcnModules/EcnModuleDrawer';
 import { EcnConnectSchemaDrawer } from '../EcnModules/EcnConnectSchemaDrawer';
-import { Spin } from 'antd';
+import { Spin, Space } from 'antd';
 import { useConnectionsGraph } from '../Graph/useConnectionsGraph';
 import { useLiquidityManagerContext } from "../../tools";
 import XFlowGraph, { TData, TElements } from "../Graph";
 
 export interface IProps {
   modules: Set<EcnModule['id']>,
+  description: React.ReactNode,
 }
 
-const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
+const ConnectionsGraph: React.FC<IProps> = ({ modules, description }) => {
   const { worker } = useLiquidityManagerContext();
 
   const connectionsGraphData = useConnectionsGraph();
@@ -71,7 +72,13 @@ const ConnectionsGraph: React.FC<IProps> = ({ modules }) => {
 
   return (
     <Spin spinning={isLoading}>
-      <XFlowGraph {...connectionsGraphData} />
+      <Space
+        direction={'vertical'}
+        style={{ width: '100%' }}
+      >
+        <XFlowGraph {...connectionsGraphData} />
+        {description}
+      </Space>
       <EcnModuleDrawer id={selectedNode} onDelete={deleteNode} onUpdate={updateNode} onClose={() => setSelectedNode(undefined)} />
       <EcnConnectSchemaDrawer id={selectedEdge} onDelete={deleteEdge} onUpdate={updateEdge} onClose={() => setSelectedEdge(undefined)} />
     </Spin>
