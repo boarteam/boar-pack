@@ -76,7 +76,9 @@ export class ClusterService {
       ...workerSettings.extraEnv,
     }
 
-    if (workerSettings.portIncrement !== null) {
+    if (workerSettings.port) {
+      vars.PORT = String(workerSettings.port);
+    } else if (workerSettings.portIncrement !== null) {
       vars.PORT = String(this.config.port + workerSettings.portIncrement);
     }
 

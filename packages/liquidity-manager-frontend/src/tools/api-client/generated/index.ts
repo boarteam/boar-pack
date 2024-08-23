@@ -12,6 +12,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { AMTSUser } from './models/AMTSUser';
 export type { DclAction } from './models/DclAction';
+export type { DeleteManyDto } from './models/DeleteManyDto';
 export type { EcnCommissionLotsMode } from './models/EcnCommissionLotsMode';
 export type { EcnCommissionType } from './models/EcnCommissionType';
 export type { EcnConnectSchema } from './models/EcnConnectSchema';
@@ -93,6 +94,7 @@ export type { SubloginSettingsCreateDto } from './models/SubloginSettingsCreateD
 export type { SubloginSettingsUpdateDto } from './models/SubloginSettingsUpdateDto';
 export type { SubscribeEventDto } from './models/SubscribeEventDto';
 export type { SubscSchemasCountResponse } from './models/SubscSchemasCountResponse';
+export type { UpdateManyDto } from './models/UpdateManyDto';
 export { User } from './models/User';
 export { UserCreateDto } from './models/UserCreateDto';
 export type { UsersGroupsInst } from './models/UsersGroupsInst';
