@@ -113,16 +113,16 @@ export class EcnInstrumentsService extends TypeOrmCrudService<EcnInstrument> {
       .groupBy('instrument.name')
       .addGroupBy('subscr.instrumentHash');
 
-    if (filterInstruments?.length || filterInstrumentsGroups?.length) {
+    if (filterInstruments.length || filterInstrumentsGroups.length) {
       dataQuery.andWhere(
         new Brackets((qb) => {
-          if (filterInstruments?.length) {
+          if (filterInstruments.length) {
             qb.orWhere('instrument.instrumentHash in (:...filterInstruments)', {
               filterInstruments,
             });
           }
 
-          if (filterInstrumentsGroups?.length) {
+          if (filterInstrumentsGroups.length) {
             qb.orWhere(
               'instrument.instrumentGroup in (:...filterInstrumentsGroups)',
               {
