@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UsePipes } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
-import { ApiExtraModels, ApiOkResponse, ApiQuery, ApiTags, getSchemaPath } from '@nestjs/swagger';
+import { ApiExtraModels, ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { EcnInstrumentsService } from './ecn-instruments.service';
 import { EcnInstrument } from './entities/ecn-instrument.entity';
 import { CheckPolicies } from "@jifeon/boar-pack-users-backend";
@@ -9,7 +9,10 @@ import { EcnInstrumentUpdateDto } from './dto/ecn-instrument-update.dto';
 import { ViewEcnInstrumentsPolicy } from './policies/view-ecn-instruments.policy';
 import { ManageEcnInstrumentsPolicy } from './policies/manage-ecn-instruments.policy';
 import { CRC64HashPipe } from '../../tools/hash_instrument.pipe';
-import { GetEcnInstrumentsInConnectionsResponse, GetInstrumentsInConnectionsQueryDto } from './dto/ecn-instruments-get-in-connections.dto';
+import {
+  GetEcnInstrumentsInConnectionsResponse,
+  GetInstrumentsInConnectionsQueryDto
+} from './dto/ecn-instruments-get-in-connections.dto';
 import { Swagger } from "@nestjsx/crud/lib/crud";
 
 @Crud({

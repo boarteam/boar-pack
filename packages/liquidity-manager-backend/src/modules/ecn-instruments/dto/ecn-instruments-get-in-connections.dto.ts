@@ -40,7 +40,7 @@ export class GetInstrumentsInConnectionsQueryDto {
   @JoiSchema(Joi.number().integer().positive().allow(0).optional())
   offset?: number;
 
-  @JoiSchema(Joi.string().valid('ASC', 'DESC').optional())
+  @JoiSchema(Joi.string().valid(...Object.values(SortDirection)).optional())
   sortDirection?: SortDirection;
 
   @JoiSchema(Joi.boolean().optional())
