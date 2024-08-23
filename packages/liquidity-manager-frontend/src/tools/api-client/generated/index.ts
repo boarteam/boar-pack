@@ -47,7 +47,7 @@ export type { EcnWeekDay } from './models/EcnWeekDay';
 export type { EcnWorkingMode } from './models/EcnWorkingMode';
 export type { GetEcnInstrumentsInConnectionsData } from './models/GetEcnInstrumentsInConnectionsData';
 export type { GetEcnInstrumentsInConnectionsResponse } from './models/GetEcnInstrumentsInConnectionsResponse';
-export type { GetInstrumentsInConnectionsQueryDto } from './models/GetInstrumentsInConnectionsQueryDto';
+export { GetInstrumentsInConnectionsQueryDto } from './models/GetInstrumentsInConnectionsQueryDto';
 export type { GetManyDclActionResponseDto } from './models/GetManyDclActionResponseDto';
 export type { GetManyEcnCommissionLotsModeResponseDto } from './models/GetManyEcnCommissionLotsModeResponseDto';
 export type { GetManyEcnCommissionTypeResponseDto } from './models/GetManyEcnCommissionTypeResponseDto';
