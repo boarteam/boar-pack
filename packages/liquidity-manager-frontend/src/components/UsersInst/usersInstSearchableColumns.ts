@@ -49,6 +49,27 @@ export const usersInstSearchableColumns = [
   { field: 'hedgeFactor', operator: Operators.containsLow, },
   {
     field: 'enabled',
+    numeric: true,
+    operator: Operators.equals,
+  },
+  {
+    field: 'fixTradingEnabled',
+    numeric: true,
+    operator: Operators.equals,
+  },
+  {
+    field: 'stopoutEnabled',
+    numeric: true,
+    operator: Operators.equals,
+  },
+  {
+    field: 'fixUserinfoRequestsEnabled',
+    numeric: true,
+    operator: Operators.equals,
+  },
+  {
+    field: 'alwaysBookA',
+    numeric: true,
     operator: Operators.equals,
   },
   { field: 'ts', operator: Operators.containsLow, },

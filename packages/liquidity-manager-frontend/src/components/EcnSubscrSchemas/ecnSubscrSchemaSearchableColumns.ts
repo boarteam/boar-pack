@@ -1,6 +1,6 @@
-import { Operators } from "@jifeon/boar-pack-common-frontend";
+import { Operators, TSearchableColumn } from "@jifeon/boar-pack-common-frontend";
 
-export const ecnSubscrSchemaSearchableColumns = [
+export const ecnSubscrSchemaSearchableColumns: TSearchableColumn[] = [
   { field: 'descr', operator: Operators.containsLow },
   {
     field: 'connectSchema',
@@ -10,12 +10,14 @@ export const ecnSubscrSchemaSearchableColumns = [
     filterOperator: Operators.in,
   },
   { 
-    field: 'enabled', 
+    field: 'enabled',
+    numeric: true,
     operator: Operators.equals,
     filterOperator: Operators.in,
   },
   { 
     field: 'tradeEnabled', 
+    numeric: true,
     operator: Operators.equals,
     filterOperator: Operators.in,
   },
