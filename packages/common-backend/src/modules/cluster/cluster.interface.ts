@@ -2,6 +2,7 @@ export interface WorkerSettings {
   workerId: string;
   workerName?: string;
   portIncrement: number | null;
+  port?: number | null;
   extraEnv?: Record<string, string>;
 }
 
