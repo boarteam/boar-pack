@@ -74,13 +74,13 @@ export class EcnInstrumentsService extends TypeOrmCrudService<EcnInstrument> {
     const filterInstruments = Array.isArray(filterInstrument)
       ? filterInstrument
       : filterInstrument
-      ? [filterInstrument]
-      : [];
+        ? [filterInstrument]
+        : [];
     const filterInstrumentsGroups = Array.isArray(filterInstrumentsGroup)
       ? filterInstrumentsGroup
       : filterInstrumentsGroup
-      ? [filterInstrumentsGroup]
-      : [];
+        ? [filterInstrumentsGroup]
+        : [];
 
     if (!ids.length) {
       return Promise.resolve({ data: [], total: 0 });

@@ -18,6 +18,7 @@ import { WebsocketsErrorEventDto } from "@jifeon/boar-pack-common-backend";
 import { entities } from "./modules/liquidity-app/liquidity-app.constants";
 import { UsersModule } from "@jifeon/boar-pack-users-backend";
 import { EcnSubscrSchemaController } from './modules/ecn-subscr-schema/ecn-subscr-schema.controller';
+import { EcnInstrumentsController } from "./modules/ecn-instruments/ecn-instruments.controller";
 
 @Module({
   imports: [
@@ -64,6 +65,8 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(Swagger);
     app.get(EcnSubscrSchemaController).initSwagger();
+    app.get(EcnInstrumentsController).initSwagger();
+
     const options: SwaggerDocumentOptions = {
       operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
       extraModels: [

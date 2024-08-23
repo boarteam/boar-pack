@@ -11,7 +11,17 @@ export type GetInstrumentsInConnectionsQueryDto = {
     search?: string;
     limit?: number;
     offset?: number;
-    sortDirection?: Record<string, any>;
+    sortDirection?: GetInstrumentsInConnectionsQueryDto.sortDirection;
     showOnlyChanged?: boolean;
 };
+
+export namespace GetInstrumentsInConnectionsQueryDto {
+
+    export enum sortDirection {
+        ASC = 'ASC',
+        DESC = 'DESC',
+    }
+
+
+}
 

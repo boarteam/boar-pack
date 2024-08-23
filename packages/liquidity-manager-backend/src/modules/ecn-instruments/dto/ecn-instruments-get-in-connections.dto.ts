@@ -4,6 +4,11 @@ import { EcnConnectSchema } from '../../ecn-connect-schema/entities/ecn-connect-
 import { JoiSchema } from 'nestjs-joi';
 import {EcnInstrumentsGroup} from "../../ecn-instruments-groups/entities/ecn-instruments-group.entity";
 
+export enum SortDirection {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 export class GetInstrumentsInConnectionsQueryDto {
   @JoiSchema(Joi.alternatives().try(
     Joi.number().integer().positive(),
@@ -35,8 +40,8 @@ export class GetInstrumentsInConnectionsQueryDto {
   @JoiSchema(Joi.number().integer().positive().allow(0).optional())
   offset?: number;
 
-  @JoiSchema(Joi.string().valid('ASC', 'DESC').optional())
-  sortDirection?: 'ASC' | 'DESC';
+  @JoiSchema(Joi.string().valid(...Object.values(SortDirection)).optional())
+  sortDirection?: SortDirection;
 
   @JoiSchema(Joi.boolean().optional())
   showOnlyChanged?: boolean;
