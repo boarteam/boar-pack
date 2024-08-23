@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { once } from "lodash";
 import { history } from "@umijs/max";
 import safetyRun from "@jifeon/boar-pack-common-frontend/src/tools/safetyRun";
-import { useLocation } from "../.umi/exports";
+import { useLocation } from "umi";
 
 export type LiquidityManagersHookResult = {
   liquidityManager: LiquidityManager | null;
