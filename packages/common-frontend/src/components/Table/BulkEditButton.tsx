@@ -1,7 +1,7 @@
 import { ProColumns } from "@ant-design/pro-table";
 import React, { useEffect, useState } from "react";
-import { Button, Checkbox, Modal, Popconfirm, Popover } from "antd";
-import { LoadingOutlined, QuestionCircleTwoTone } from "@ant-design/icons";
+import { Button, Checkbox, Modal, Popconfirm } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 import { columnsToDescriptionItemProps } from "../Descriptions";
 import { useForm } from "antd/lib/form/Form";
 import { ProDescriptions } from "@ant-design/pro-components";
@@ -120,42 +120,33 @@ const BulkEditDialog =  <Entity extends Record<string | symbol, any>>(
 const BulkEditButton = <Entity extends Record<string | symbol, any>>(
   {
     selectedRecords,
-    lastQueryParamsAndCount,
+    lastRequest,
+    allSelected,
     columns,
     idColumnName,
     onSubmit,
   } : {
     selectedRecords: Entity[],
-    lastQueryParamsAndCount: [TGetAllParams & Record<string, string | number>, number] | [],
+    lastRequest: [TGetAllParams & Record<string, string | number>, any] | [],
     idColumnName: string & keyof Entity | (string & keyof Entity)[],
+    allSelected: boolean,
     columns: ProColumns<Entity>[],
     onSubmit: (value: Partial<Entity>) => Promise<void>
   }) => {
   const [bulkEditConfig, setBulkEditConfig] = useState<TBulkEditConfig<Entity>>(null);
-  const recordsCount = selectedRecords.length ? selectedRecords.length : lastQueryParamsAndCount[1];
+  const recordsCount = allSelected ? lastRequest[1].total : selectedRecords.length;
 
   return (<>
     <Button
+      disabled={recordsCount === 0}
       onClick={() => setBulkEditConfig(
-        selectedRecords.length
+        !allSelected
           ? { type: 'records', value: selectedRecords, count: selectedRecords.length }
-          : { type: 'query', value: lastQueryParamsAndCount[0], count: lastQueryParamsAndCount[1] }
+          : { type: 'query', value: lastRequest[0], count: lastRequest[1].total }
       )}
     >
-    {`Edit ${recordsCount} ${recordsCount === 1 ? 'Record' : 'Records'}`}
+      {recordsCount > 0 ? `Edit ${recordsCount} ${recordsCount === 1 ? 'Record' : 'Records'}` : 'Bulk Edit'}
     </Button>
-    <Popover
-      content={(
-        <div style={{ width: '100%' }}>
-          This includes records from ALL pages of the table.
-        </div>
-      )}
-      title={'Edit All Records'}
-      trigger={['hover', 'click']}
-      zIndex={1080}
-    >
-      <QuestionCircleTwoTone />
-    </Popover>
     <BulkEditDialog<Entity>
       config={bulkEditConfig}
       onClose={() => setBulkEditConfig(null)}
