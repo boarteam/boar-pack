@@ -36,7 +36,7 @@ type TEcnSubscrSchemasTableProps<T> = Partial<TTableProps<EcnSubscrSchema, EcnSu
 function EcnSubscrSchemasTable<T = {}>(params: TEcnSubscrSchemasTableProps<T>) {
   const columns = useEcnSubscrSchemaColumns();
   const { isFullscreen } = useFullscreen();
-  const { worker } = useLiquidityManagerContext();
+  const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
 
   if (!worker) return <PageLoading />;
@@ -86,7 +86,7 @@ function EcnSubscrSchemasTable<T = {}>(params: TEcnSubscrSchemasTableProps<T>) {
       defaultSort={['instrument.name', 'ASC']}
       searchableColumns={ecnSubscrSchemaSearchableColumns}
       ghost={!isFullscreen}
-      viewOnly={!canManageLiquidity}
+      viewOnly={!canManageLiquidity(liquidityManager)}
       {...params}
     />
   );
