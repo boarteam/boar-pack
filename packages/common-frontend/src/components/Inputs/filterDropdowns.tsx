@@ -82,7 +82,7 @@ export const DynamicOptionsFilterDropdown = ({
           type="link"
           onClick={() => { 
             clearFilters(); 
-            confirm({ closeDropdown: false });
+            confirm();
           }}
           size="small"
         >
@@ -92,7 +92,7 @@ export const DynamicOptionsFilterDropdown = ({
           type="primary"
           size="small"
           onClick={() => {
-            confirm({ closeDropdown: false });
+            confirm();
           }}
         >
           OK

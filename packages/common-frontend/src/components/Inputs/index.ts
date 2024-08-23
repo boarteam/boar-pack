@@ -5,3 +5,4 @@ export * from './Password';
 export * from './RelationSelect';
 export * from './useCheckConnection';
 export * from './filterDropdowns';
+export * from './SearchSelect';
