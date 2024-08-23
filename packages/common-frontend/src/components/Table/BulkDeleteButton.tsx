@@ -1,5 +1,5 @@
-import { Button, Popconfirm, Popover } from "antd";
-import { LoadingOutlined, QuestionCircleTwoTone } from "@ant-design/icons";
+import { Button, Popconfirm } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 import { TGetAllParams } from "./tableTypes";
 import { createStyles } from "antd-style";
 import { useState } from "react";
@@ -17,16 +17,18 @@ const useStyles = createStyles(() => {
 const BulkDeleteButton = <Entity extends Record<string | symbol, any>>(
   {
     selectedRecords,
-    lastQueryParamsAndCount,
+    lastRequest,
+    allSelected,
     onDelete,
   } : {
     selectedRecords: Entity[],
-    lastQueryParamsAndCount: [TGetAllParams & Record<string, string | number>, number] | [],
+    allSelected: boolean,
+    lastRequest: [TGetAllParams & Record<string, string | number>, any] | [],
     onDelete: () => Promise<void>
   }) => {
   const { styles } = useStyles();
   const [loading, setLoading] = useState(false);
-  const recordsCount = selectedRecords.length ? selectedRecords.length : lastQueryParamsAndCount[1];
+  const recordsCount = allSelected ? lastRequest[1].total : selectedRecords.length;
 
   return (<>
     <Popconfirm
@@ -40,22 +42,13 @@ const BulkDeleteButton = <Entity extends Record<string | symbol, any>>(
       okText="Yes"
       cancelText="No"
     >
-      <Button>
-        {`Delete ${recordsCount} ${recordsCount === 1 ? 'Record' : 'Records'}`} {loading && <LoadingOutlined />}
+      <Button
+        disabled={recordsCount === 0}
+      >
+        {recordsCount > 0 ? `Delete ${recordsCount} ${recordsCount === 1 ? 'Record' : 'Records'}` : 'Bulk Delete'}
+        {loading && <LoadingOutlined />}
       </Button>
     </Popconfirm>
-    <Popover
-      content={(
-        <div style={{ width: '100%' }}>
-          This includes records from ALL pages of the table.
-        </div>
-      )}
-      title={'Delete All Records'}
-      trigger={['hover', 'click']}
-      zIndex={1080}
-    >
-      <QuestionCircleTwoTone />
-    </Popover>
   </>);
 };
 

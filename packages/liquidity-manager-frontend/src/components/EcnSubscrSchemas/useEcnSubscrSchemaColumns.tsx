@@ -5,7 +5,15 @@ import { EcnConnectSchema, EcnExecutionMode, EcnInstrument, EcnInstrumentsGroup,
 import apiClient from '@@api/apiClient';
 import { EditOutlined } from "@ant-design/icons";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
-import { DynamicOptionsFilterDropdown, NumberFilterDropdown, NumberSwitch, RelationSelect, RelationsSelect, StringFilterDropdown, booleanFilters } from "@jifeon/boar-pack-common-frontend";
+import { 
+  DynamicOptionsFilterDropdown,
+  NumberRangeFilterDropdown, 
+  NumberSwitch, 
+  RelationSelect, 
+  SearchSelect, 
+  StringFilterDropdown, 
+  booleanFilters,
+} from "@jifeon/boar-pack-common-frontend";
 
 export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
   const intl = useIntl();
@@ -44,11 +52,12 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         setSelectedKeys,
       }) => (
         <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
-          <RelationsSelect<EcnInstrument>
-            selectedItems={selectedKeys ?? []}
-            onChange={items => setSelectedKeys(items.map(item => item.instrumentHash))}
-            fetchItems={filter => apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument({
+          <SearchSelect<EcnInstrument>
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            fetchItems={(filter, limit) => apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument({
               filter,
+              limit,
               worker,
               fields: ['name'],
             })}
@@ -56,8 +65,6 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
               value: 'instrumentHash',
               label: 'name',
             }}
-            mode='multiple'
-            style={{ padding: 4, width: 250 }}
           />
         </DynamicOptionsFilterDropdown>
       ),
@@ -76,11 +83,12 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         setSelectedKeys,
       }) => (
         <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
-          <RelationsSelect<EcnInstrumentsGroup>
-            selectedItems={selectedKeys ?? []}
-            onChange={items => setSelectedKeys(items.map(item => item.id))}
-            fetchItems={filter => apiClient.ecnInstrumentsGroups.getManyBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup({
+          <SearchSelect<EcnInstrumentsGroup>
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            fetchItems={(filter, limit) => apiClient.ecnInstrumentsGroups.getManyBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup({
               filter,
+              limit,
               worker,
               fields: ['name'],
             })}
@@ -88,8 +96,6 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
               value: 'id',
               label: 'name',
             }}
-            mode='multiple'
-            style={{ padding: 4, width: 250 }}
           />
         </DynamicOptionsFilterDropdown>
       ),
@@ -124,19 +130,18 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         setSelectedKeys,
       }) => (
         <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
-          <RelationsSelect<EcnConnectSchema>
-            selectedItems={selectedKeys ?? []}
-            onChange={items => setSelectedKeys(items.map(item => item.id))}
-            fetchItems={filter => apiClient.ecnConnectSchemas.getManyBaseEcnConnectSchemaControllerEcnConnectSchema({
+          <SearchSelect<EcnConnectSchema>
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            fetchItems={(filter, limit) => apiClient.ecnConnectSchemas.getManyBaseEcnConnectSchemaControllerEcnConnectSchema({
               filter,
+              limit,
               worker,
             })}
             fieldNames={{
               value: 'id',
               label: 'id',
             }}
-            mode='multiple'
-            style={{ padding: 4, width: 250 }}
           />
         </DynamicOptionsFilterDropdown>
       ),
@@ -186,7 +191,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.defaultMarkupBid' }),
@@ -200,7 +205,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.markupAsk' }),
@@ -214,7 +219,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.defaultMarkupAsk' }),
@@ -228,43 +233,37 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.minVolume' }),
       dataIndex: 'minVolume',
+      valueType: 'digit',
       sorter: true,
       formItemProps: {
         rules: [{ required: true }]
       },
-      fieldProps: {
-        stringMode: true,
-      },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.maxVolume' }),
       dataIndex: 'maxVolume',
+      valueType: 'digit',
       sorter: true,
       formItemProps: {
         rules: [{ required: true }]
       },
-      fieldProps: {
-        stringMode: true,
-      },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.volumeStep' }),
       dataIndex: 'volumeStep',
+      valueType: 'digit',
       sorter: true,
       formItemProps: {
         rules: [{ required: true }]
       },
-      fieldProps: {
-        stringMode: true,
-      },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.instrumentWeight' }),
@@ -278,7 +277,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
         min: -Infinity,
       },
-      filterDropdown: (props) => <NumberFilterDropdown {...props} />,
+      filterDropdown: (props) => <NumberRangeFilterDropdown {...props} />,
     },
     {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.executionMode' }),
@@ -306,19 +305,18 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         setSelectedKeys,
       }) => (
         <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
-          <RelationsSelect<EcnExecutionMode>
-            selectedItems={selectedKeys ?? []}
-            onChange={items => setSelectedKeys(items.map(item => item.id))}
-            fetchItems={filter => apiClient.ecnExecutionModes.getManyBaseGenericLiquidityControllerEcnExecutionMode({
+          <SearchSelect<EcnExecutionMode>
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            fetchItems={(filter, limit) => apiClient.ecnExecutionModes.getManyBaseGenericLiquidityControllerEcnExecutionMode({
               filter,
+              limit,
               worker,
             })}
             fieldNames={{
               value: 'id',
               label: 'name',
             }}
-            mode='multiple'
-            style={{ padding: 4, width: 250 }}
           />
         </DynamicOptionsFilterDropdown>
       ),

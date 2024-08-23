@@ -1,7 +1,7 @@
 import ProTable, { ActionType } from "@ant-design/pro-table";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Tooltip } from "antd";
-import { DeleteOutlined, PlusOutlined, StopOutlined } from "@ant-design/icons";
+import { Button, Popover, Space, Tooltip, message } from "antd";
+import { DeleteOutlined, PlusOutlined, QuestionCircleTwoTone, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { flushSync } from "react-dom";
 import { applyKeywordToSearch, buildJoinFields, collectFieldsFromColumns, getFiltersSearch } from "./tableTools";
@@ -11,6 +11,7 @@ import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
 import BulkEditButton from "./BulkEditButton";
 import _ from "lodash";
 import BulkDeleteButton from "./BulkDeleteButton";
+import { createStyles } from "antd-style";
 
 let creatingRecordsCount = 0;
 
@@ -24,6 +25,16 @@ export function getNewId(): string {
 export function isRecordNew(record: Record<string | symbol, any>): boolean {
   return record[KEY_SYMBOL]?.startsWith?.(NEW_RECORD) || record.id?.startsWith?.(NEW_RECORD) || false;
 }
+
+const useStyles = createStyles(() => {
+  return {
+    table: {
+      '.ant-pro-table-alert': {
+        display: 'none',
+      },
+    }
+  }
+})
 
 const Table = <Entity extends Record<string | symbol, any>,
   CreateDto = Entity,
@@ -69,7 +80,10 @@ const Table = <Entity extends Record<string | symbol, any>,
   const [createPopupData, setCreatePopupData] = useState<Partial<Entity> | undefined>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [selectedRecords, setSelectedRecords] = useState<Entity[]>([]);
-  const [lastQueryParamsAndCount, setLastQueryParamsAndCount] = useState<[TGetAllParams & TPathParams, number] | []>([]);
+  const [lastRequest, setLastRequest] = useState<[TGetAllParams & TPathParams, any] | []>([]);
+  const [allSelected, setAllSelected] = useState(false);
+  const { styles } = useStyles();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const intl = useIntl();
 
@@ -146,10 +160,9 @@ const Table = <Entity extends Record<string | symbol, any>,
     const result = await getAll(queryParams);
 
     setSelectedRecords([]);
-    setLastQueryParamsAndCount([
+    setLastRequest([
       queryParams,
-      // @ts-ignore
-      result.total,
+      result,
     ]);
     return result;
   }
@@ -177,6 +190,7 @@ const Table = <Entity extends Record<string | symbol, any>,
   return (<>
     <ProTable<Entity, TEntityParams & TFilterParams>
       actionRef={actionRef}
+      className={styles.table}
       request={request}
       rowKey={record => record[KEY_SYMBOL] ?? (Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName])}
       options={{
@@ -249,17 +263,18 @@ const Table = <Entity extends Record<string | symbol, any>,
       toolBarRender={(...args) => [
         ...toolBarRender && toolBarRender(...args) || [],
         columnsSetSelect?.() || null,
-        onUpdateMany
+        !viewOnly && onUpdateMany
           ? (
             <BulkEditButton
               selectedRecords={selectedRecords} 
-              lastQueryParamsAndCount={lastQueryParamsAndCount}
+              lastRequest={lastRequest}
+              allSelected={allSelected}
               columns={columns}
               idColumnName={idColumnName}
               // @ts-ignore
               onSubmit={values => onUpdateMany({
                 ...pathParams,
-                ...lastQueryParamsAndCount[0],
+                ...lastRequest[0],
                 requestBody: {
                   updateValues: _.pickBy(
                     // @ts-ignore
@@ -269,25 +284,38 @@ const Table = <Entity extends Record<string | symbol, any>,
                     }), 
                     (value, key) =>  _.has(values, key),
                   ),
-                  records: selectedRecords,
+                  records: allSelected ? [] : selectedRecords,
                 },
-              }).then(() => actionRef?.current?.reload())}
+              }).then(() => {
+                messageApi.open({
+                  type: 'success',
+                  content: 'Operation Successful',
+                });
+                actionRef?.current?.reload();
+              })}
             />
           )
           : <></>,
-        onDeleteMany
+        !viewOnly && onDeleteMany
           ? (
             <BulkDeleteButton
               selectedRecords={selectedRecords} 
-              lastQueryParamsAndCount={lastQueryParamsAndCount}
+              lastRequest={lastRequest}
+              allSelected={allSelected}
               // @ts-ignore
               onDelete={() => onDeleteMany({
                 ...pathParams,
-                ...lastQueryParamsAndCount[0],
+                ...lastRequest[0],
                 requestBody: {
-                  records: selectedRecords,
+                  records: allSelected ? [] : selectedRecords,
                 },
-              }).then(() => actionRef?.current?.reload())}
+              }).then(() => {
+                messageApi.open({
+                  type: 'success',
+                  content: 'Operation Successful',
+                });
+                actionRef?.current?.reload();
+              })}
             />
           )
           : <></>,
@@ -299,11 +327,40 @@ const Table = <Entity extends Record<string | symbol, any>,
       params={params}
       {
         ...(
-          onUpdateMany || onDeleteMany
+          !viewOnly && (onUpdateMany || onDeleteMany)
             ? { 
               rowSelection: {
                 selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]),
-                onChange: (rowKeys, records) => setSelectedRecords(records),
+                selections: [
+                  {
+                    key: 'all',
+                    text: (
+                      <Space>
+                        Select ALL
+                        <Popover
+                          content={(
+                            <div style={{ width: '100%' }}>
+                              This includes records from ALL pages of the table.
+                            </div>
+                          )}
+                          title={'Select All'}
+                          trigger={['hover', 'click']}
+                          zIndex={1080}
+                        >
+                          <QuestionCircleTwoTone />
+                        </Popover> 
+                      </Space>
+                    ),
+                    onSelect: () => {
+                      setSelectedRecords(lastRequest[1].data);
+                      setAllSelected(true);
+                    },
+                  },
+                ],
+                onChange: (rowKeys, records) => {
+                  setSelectedRecords(records);
+                  allSelected && setAllSelected(false);
+                },
               }
             }
             : {}
@@ -333,7 +390,9 @@ const Table = <Entity extends Record<string | symbol, any>,
       idColumnName={idColumnName}
       columns={columns ?? []}
     />
+    {contextHolder}
   </>);
 };
 
 export default Table;
+

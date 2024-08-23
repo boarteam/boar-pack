@@ -22,7 +22,6 @@ import { Modal, Space, Switch, Tag } from 'antd';
 import { useToken } from '@ant-design/pro-components';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { useLiquidityManagerContext } from "../../tools";
-import Paragraph from "antd/es/typography/Paragraph";
 import { createStyles } from "antd-style";
 import { useConnectionsGraph } from "./useConnectionsGraph";
 import { CanvasScaleToolbar } from "./canvas-scale-toolbar/index";
@@ -186,7 +185,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
   const { canManageLiquidity } = useAccess() || {};
   const canEdit = canManageLiquidity(liquidityManager);
   const { styles } = useStyles();
-  const [showDisabled, setShowDisabled] = useState(true);
+  const [showDisabled, setShowDisabled] = useState(false);
 
   const graphData = useMemo(() => {
     const connectedPorts = new Set<string>();
@@ -194,9 +193,13 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
     const edges: NsGraph.IGraphData['edges'] = [];
     for (const edgeId of visibleElementsIds.edges) {
       const edgeData = data.edgesMap.get(edgeId);
-      if (!edgeData || (!showDisabled && !edgeData.enabled)) continue;
+      if (!edgeData) continue;
 
-      const { id, fromModuleId, toModuleId, enabled } = edgeData;
+      const { id, fromModuleId, toModuleId, enabled, subscrSchemaEnabled } = edgeData;
+      const isDisabled = subscrSchemaEnabled === undefined ? !enabled : (!enabled || !subscrSchemaEnabled)
+      
+      if (!showDisabled && isDisabled) continue;
+
       const sourcePortId = getPortIdFromRealId(fromModuleId, 'frnt');
       const targetPortId = getPortIdFromRealId(toModuleId, 'back');
       connectedPorts.add(sourcePortId);
@@ -224,7 +227,7 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
               height: 8,
             },
             strokeDasharray: "",
-            stroke: enabled ? '#90ee90' : '#ee9090',
+            stroke: isDisabled ? '#ee9090' : '#90ee90',
             strokeWidth: 2,
           },
         },
@@ -496,43 +499,34 @@ const XFlowGraph: React.FC<ReturnType<typeof useConnectionsGraph>> = ({
   }, [graphData]);
 
   return (
-    <Space
-      direction={'vertical'}
-      style={{ width: '100%' }}
+    // Z@ts-ignore
+    <XFlow
+      className={styles.dagClass}
+      graphData={graphData}
+      graphLayout={{
+        layoutType: 'dagre',
+        layoutOptions: {
+          type: 'dagre',
+          rankdir: 'LR',
+          nodesep: 18,
+          ranksep: 100,
+          edgeLabelSpace: true,
+          sortByCombo: false,
+        },
+      }}
+      onLoad={onLoad}
     >
-      {/* @ts-ignore */}
-      <XFlow
-        className={styles.dagClass}
-        graphData={graphData}
-        graphLayout={{
-          layoutType: 'dagre',
-          layoutOptions: {
-            type: 'dagre',
-            rankdir: 'LR',
-            nodesep: 18,
-            ranksep: 100,
-            edgeLabelSpace: true,
-            sortByCombo: false,
-          },
-        }}
-        onLoad={onLoad}
-      >
-        <Space size='small' style={{ top: 10, right: 10, position: 'absolute', zIndex: 1 }}>
-          <Switch checked={showDisabled} onChange={checked => setShowDisabled(checked)} />Show Disabled
-        </Space>
-        <CanvasContextMenu config={menuConfig} />
-        <XFlowCanvas config={graphConfig} />
-        <CanvasScaleToolbar
-          className={styles.scaleToolbar}
-          position={{ top: 12, left: 12 }}
-        />
-        <CanvasSnapline color="#1890ff" />
-      </XFlow>
-      <Paragraph>
-        <Tag color={'green'}>Green arrows</Tag>indicate that both connection and subscription schemas are enabled.&nbsp;
-        <Tag color={'red'}>Red arrows</Tag>indicate that either connection or subscription schema is disabled.
-      </Paragraph>
-    </Space>
+      <Space size='small' style={{ top: 10, right: 10, position: 'absolute', zIndex: 1 }}>
+        <Switch checked={showDisabled} onChange={checked => setShowDisabled(checked)} />Show Disabled
+      </Space>
+      <CanvasContextMenu config={menuConfig} />
+      <XFlowCanvas config={graphConfig} />
+      <CanvasScaleToolbar
+        className={styles.scaleToolbar}
+        position={{ top: 12, left: 12 }}
+      />
+      <CanvasSnapline color="#1890ff" />
+    </XFlow>
   );
 };
 
