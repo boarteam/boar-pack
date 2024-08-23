@@ -10,6 +10,7 @@ import { ViewEcnInstrumentsPolicy } from './policies/view-ecn-instruments.policy
 import { ManageEcnInstrumentsPolicy } from './policies/manage-ecn-instruments.policy';
 import { CRC64HashPipe } from '../../tools/hash_instrument.pipe';
 import { GetEcnInstrumentsInConnectionsResponse, GetInstrumentsInConnectionsQueryDto } from './dto/ecn-instruments-get-in-connections.dto';
+import { Swagger } from "@nestjsx/crud/lib/crud";
 
 @Crud({
   model: {
@@ -70,6 +71,47 @@ export class EcnInstrumentsController {
   constructor(
     private readonly service: EcnInstrumentsService,
   ) {}
+
+  initSwagger(): void {
+    Swagger.setParams([
+      {
+        name: 'id',
+        type: 'number',
+        schema: {
+          type: 'array',
+          items: {
+            type: 'number',
+          },
+        },
+        required: false,
+        in: 'query',
+      },
+      {
+        name: 'filterInstrument',
+        type: 'string',
+        schema: {
+          type: 'array',
+          items: {
+            type: 'string',
+          },
+        },
+        required: false,
+        in: 'query',
+      },
+      {
+        name: 'filterInstrumentsGroup',
+        type: 'number',
+        schema: {
+          type: 'array',
+          items: {
+            type: 'number',
+          },
+        },
+        required: false,
+        in: 'query',
+      },
+    ], this.getInConnections);
+  }
 
   @Get('in-connections')
   @CheckPolicies(new ViewEcnInstrumentsPolicy())

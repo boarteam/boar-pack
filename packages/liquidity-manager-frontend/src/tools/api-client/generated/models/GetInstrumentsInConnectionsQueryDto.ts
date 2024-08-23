@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 export type GetInstrumentsInConnectionsQueryDto = {
-    id?: Array<number>;
-    filterInstrument?: Array<string>;
-    filterInstrumentsGroup?: Array<number>;
+    id?: Record<string, any>;
+    filterInstrument?: Record<string, any>;
+    filterInstrumentsGroup?: Record<string, any>;
     compareConnectSchemaId?: number;
     search?: string;
     limit?: number;

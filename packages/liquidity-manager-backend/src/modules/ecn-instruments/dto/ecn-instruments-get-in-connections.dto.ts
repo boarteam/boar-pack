@@ -14,19 +14,19 @@ export class GetInstrumentsInConnectionsQueryDto {
     Joi.number().integer().positive(),
     Joi.array().items(Joi.number().integer().positive())
   ).optional())
-  id?: EcnConnectSchema['id'][];
+  id?: EcnConnectSchema['id'][] | EcnConnectSchema['id'];
 
   @JoiSchema(Joi.alternatives().try(
     Joi.string().alphanum(),
     Joi.array().items(Joi.string().alphanum())
   ).optional())
-  filterInstrument?: EcnInstrument['instrumentHash'][];
+  filterInstrument?: EcnInstrument['instrumentHash'] | EcnInstrument['instrumentHash'][];
 
   @JoiSchema(Joi.alternatives().try(
     Joi.number().integer().positive(),
     Joi.array().items(Joi.number().integer().positive())
   ).optional())
-  filterInstrumentsGroup?: EcnInstrumentsGroup['id'][];
+  filterInstrumentsGroup?: EcnInstrumentsGroup['id'] | EcnInstrumentsGroup['id'][];
 
   @JoiSchema(Joi.number().integer().positive().optional())
   compareConnectSchemaId?: EcnConnectSchema['id'];

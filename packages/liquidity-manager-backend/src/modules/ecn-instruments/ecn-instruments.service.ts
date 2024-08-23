@@ -70,7 +70,19 @@ export class EcnInstrumentsService extends TypeOrmCrudService<EcnInstrument> {
     filterInstrument,
     filterInstrumentsGroup,
   }: GetInstrumentsInConnectionsQueryDto): Promise<GetEcnInstrumentsInConnectionsResponse> {
-    if (!id?.length) {
+    const ids = Array.isArray(id) ? id : id ? [id] : [];
+    const filterInstruments = Array.isArray(filterInstrument)
+      ? filterInstrument
+      : filterInstrument
+        ? [filterInstrument]
+        : [];
+    const filterInstrumentsGroups = Array.isArray(filterInstrumentsGroup)
+      ? filterInstrumentsGroup
+      : filterInstrumentsGroup
+        ? [filterInstrumentsGroup]
+        : [];
+
+    if (!ids.length) {
       return Promise.resolve({ data: [], total: 0 });
     }
 
@@ -84,7 +96,7 @@ export class EcnInstrumentsService extends TypeOrmCrudService<EcnInstrument> {
       // in some connections. To detect this we count connections and compare it with the number of connections
       // from the input
       .addSelect(
-        `count(distinct subscr.enabled and connect.enabled) > 1 or count(connect.id) <> ${id.length}`,
+        `count(distinct subscr.enabled and connect.enabled) > 1 or count(connect.id) <> ${ids.length}`,
         'availability_changed',
       )
       .innerJoin(
@@ -97,24 +109,24 @@ export class EcnInstrumentsService extends TypeOrmCrudService<EcnInstrument> {
         'connect',
         'subscr.connectSchemaId = connect.id',
       )
-      .where('connect.id in (:...id)', { id })
+      .where('connect.id in (:...ids)', { ids })
       .groupBy('instrument.name')
       .addGroupBy('subscr.instrumentHash');
 
-    if (filterInstrument?.length || filterInstrumentsGroup?.length) {
+    if (filterInstruments?.length || filterInstrumentsGroups?.length) {
       dataQuery.andWhere(
         new Brackets((qb) => {
-          if (filterInstrument?.length) {
-            qb.orWhere('instrument.instrumentHash in (:...filterInstrument)', {
-              filterInstrument,
+          if (filterInstruments?.length) {
+            qb.orWhere('instrument.instrumentHash in (:...filterInstruments)', {
+              filterInstruments,
             });
           }
 
-          if (filterInstrumentsGroup?.length) {
+          if (filterInstrumentsGroups?.length) {
             qb.orWhere(
-              'instrument.instrumentGroup in (:...filterInstrumentsGroup)',
+              'instrument.instrumentGroup in (:...filterInstrumentsGroups)',
               {
-                filterInstrumentsGroup,
+                filterInstrumentsGroups,
               },
             );
           }
@@ -150,7 +162,7 @@ export class EcnInstrumentsService extends TypeOrmCrudService<EcnInstrument> {
         dataQuery.having(
           // here we check if there are connections with differences and if all connections are present
           // (in case of Missing subscriptions in some connections)
-          `(count(distinct ${EcnInstrumentsService.schemasEqual}) > 1 or count(connect.id) <> ${id.length})`,
+          `(count(distinct ${EcnInstrumentsService.schemasEqual}) > 1 or count(connect.id) <> ${ids.length})`,
         );
       }
     } else {
