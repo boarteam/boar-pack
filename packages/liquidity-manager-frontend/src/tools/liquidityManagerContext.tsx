@@ -7,6 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { once } from "lodash";
 import { history } from "@umijs/max";
 import safetyRun from "@jifeon/boar-pack-common-frontend/src/tools/safetyRun";
+import { useLocation } from "../.umi/exports";
 
 export type LiquidityManagersHookResult = {
   liquidityManager: LiquidityManager | null;
@@ -36,6 +37,7 @@ export const useLiquidityManagers = (): LiquidityManagersHookResult => {
   const [theme, setTheme] = useState<ThemeConfig>({});
   const [searchParams, setSearchParams] = useSearchParams();
   const chosenLiquidityManagerId = useChosenLiquidityManagerId();
+  const location = useLocation();
 
   useEffect(() => {
     safetyRun(
@@ -71,15 +73,16 @@ export const useLiquidityManagers = (): LiquidityManagersHookResult => {
       token: {
         colorPrimary: color.primary,
         colorLink: color.primary,
-
       },
     } : {});
     localStorage.setItem(LIQUIDITY_MANAGER_LOCAL_STORAGE_KEY, liquidityManager?.id || '');
+  }, [liquidityManager]);
 
+  useEffect(() => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set(LIQUIDITY_MANAGER_SEARCH_KEY, liquidityManager?.id || '');
     setSearchParams(newSearchParams);
-  }, [liquidityManager]);
+  }, [liquidityManager, location.pathname]);
 
   return {
     liquidityManager,
