@@ -32,11 +32,13 @@ type RequestParams = ParamsType & {
 }
 
 const Options: React.FC<{
+  showDisabledConnectSchemas: boolean;
   connectSchemas: EcnConnectSchema[];
   patchParams: (params: Partial<ParamsType>) => void;
   setShowDisabledConnectSchemas: (arg: boolean) => void;
   reload?: () => void;
 }> = ({
+  showDisabledConnectSchemas,
   connectSchemas,
   patchParams,
   setShowDisabledConnectSchemas,
@@ -77,7 +79,7 @@ const Options: React.FC<{
         <Space>
           Show disabled Connection Schemas:
           <Switch
-            defaultChecked
+            checked={showDisabledConnectSchemas}
             onChange={checked => {
               setShowDisabledConnectSchemas(checked);
               reload?.();
@@ -119,7 +121,7 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
   const actionRef = useRef<ActionType>();
   const [connectSchemas, setConnectSchemas] = useState<EcnConnectSchema[]>([]);
   const [params, setParams] = useState<ParamsType>({});
-  const [showDisabledConnectSchemas, setShowDisabledConnectSchemas] = useState(true);
+  const [showDisabledConnectSchemas, setShowDisabledConnectSchemas] = useState(false);
   const columns = useSetupInstrumentsColumns(connectSchemas, params.compareConnectSchemaId);
   const patchParams = (params: Partial<ParamsType>) => setParams(prevParams => ({ ...prevParams, ...params }));
   const { worker } = useLiquidityManagerContext();
@@ -245,6 +247,7 @@ export const SetupInstrumentsTable = ({ id }: { id: EcnConnectSchemaSetupLabel['
           actionRef={actionRef}
           tableExtraRender={() => (
             <Options
+              showDisabledConnectSchemas={showDisabledConnectSchemas}
               connectSchemas={connectSchemas}
               patchParams={patchParams}
               setShowDisabledConnectSchemas={setShowDisabledConnectSchemas}
