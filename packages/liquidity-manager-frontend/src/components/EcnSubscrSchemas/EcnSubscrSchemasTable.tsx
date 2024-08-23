@@ -7,6 +7,7 @@ import { useEcnSubscrSchemaColumns } from "./useEcnSubscrSchemaColumns";
 import { ecnSubscrSchemaSearchableColumns } from "./ecnSubscrSchemaSearchableColumns";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
+import { useAccess } from "umi";
 
 export function ecnSubscriptionSchemaToDto<T extends Partial<EcnSubscrSchema>,
   R extends (EcnSubscrSchemaCreateDto | EcnSubscrSchemaUpdateDto)>(entity: T): R {
@@ -36,6 +37,7 @@ function EcnSubscrSchemasTable<T = {}>(params: TEcnSubscrSchemasTableProps<T>) {
   const columns = useEcnSubscrSchemaColumns();
   const { isFullscreen } = useFullscreen();
   const { worker } = useLiquidityManagerContext();
+  const { canManageLiquidity } = useAccess() || {};
 
   if (!worker) return <PageLoading />;
 
@@ -84,6 +86,7 @@ function EcnSubscrSchemasTable<T = {}>(params: TEcnSubscrSchemasTableProps<T>) {
       defaultSort={['instrument.name', 'ASC']}
       searchableColumns={ecnSubscrSchemaSearchableColumns}
       ghost={!isFullscreen}
+      viewOnly={!canManageLiquidity}
       {...params}
     />
   );
