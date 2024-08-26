@@ -31,7 +31,7 @@ export function ecnSubscriptionSchemaToDto<T extends Partial<EcnSubscrSchema>,
   } as R;
 }
 
-type TEcnSubscrSchemasTableProps<T> = Partial<TTableProps<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, {}, { worker: string } & T>>
+export type TEcnSubscrSchemasTableProps<T> = Partial<TTableProps<EcnSubscrSchema, EcnSubscrSchemaCreateDto, EcnSubscrSchemaUpdateDto, {}, { worker: string } & T>>
 
 function EcnSubscrSchemasTable<T = {}>(params: TEcnSubscrSchemasTableProps<T>) {
   const columns = useEcnSubscrSchemaColumns();
