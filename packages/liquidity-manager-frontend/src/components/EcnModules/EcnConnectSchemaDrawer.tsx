@@ -10,6 +10,7 @@ import { deleteEdgeConfirm } from '../Graph';
 import { useAccess } from '@umijs/max';
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { Descriptions } from "@jifeon/boar-pack-common-frontend";
+import { createStyles } from 'antd-style';
 
 export const ecnConnectSchemaJoinFields = [
   {
@@ -31,6 +32,30 @@ export function ecnConnectSchemaToDto<T extends Partial<EcnConnectSchema>,
   ]) as R;
 }
 
+const useStyles = createStyles(() => {
+  return {
+    connectSchemaDrawer: {
+      '.ant-pro-table-list-toolbar-container': {
+        flexDirection: 'column-reverse',
+      },
+      '.ant-pro-table-list-toolbar-left': {
+        maxWidth: 'initial',
+      },
+      '.ant-pro-table-list-toolbar-search': {
+        width: '100%',
+      },
+      '.ant-input-search': {
+        width: '100% !important',
+      },
+      '.ant-pro-table-list-toolbar-right': {
+        flexDirection: 'column-reverse',
+        marginBottom: '10px',
+        alignItems: 'flex-end !important',
+      },
+    }
+  }
+})
+
 export const EcnConnectSchemaDrawer: React.FC<{
   id: EcnConnectSchema['id'] | undefined;
   onClose: () => void;
@@ -42,7 +67,8 @@ export const EcnConnectSchemaDrawer: React.FC<{
   const canEdit = canManageLiquidity(liquidityManager) || false;
   const columns = useEcnConnectSchemasColumns(canEdit);
 
-  const [connectSchemaName, setConnectSchemaName] = useState('Connection');
+  const { styles } = useStyles();
+  const [connectSchema, setConnectSchema] = useState<EcnConnectSchema | null>(null);
 
   if (!worker || id === undefined) {
     return <></>;
@@ -50,7 +76,7 @@ export const EcnConnectSchemaDrawer: React.FC<{
 
   return (
     <Drawer
-      title={connectSchemaName}
+      title={connectSchema?.descr ? `Connection ${connectSchema.descr}` : 'Connection'}
       open
       onClose={onClose}
       width='33%'
@@ -76,7 +102,7 @@ export const EcnConnectSchemaDrawer: React.FC<{
     >
       <Descriptions<EcnConnectSchema, EcnConnectSchemaCreateDto, EcnConnectSchemaUpdateDto, { id: number, worker: string }>
         onEntityChange={connectSchema => {
-          setConnectSchemaName(connectSchema?.descr ? `Connection ${connectSchema.descr}` : 'Connection');
+          setConnectSchema(connectSchema);
         }}
         pathParams={{
           id,
@@ -99,7 +125,8 @@ export const EcnConnectSchemaDrawer: React.FC<{
         }}
       />
       <EcnSubscrSchemasOnConnectionTable
-        connectSchemaId={id}
+        connectSchema={connectSchema}
+        className={styles.connectSchemaDrawer}
       />
     </Drawer>
   );

@@ -1,17 +1,21 @@
 import React from "react";
 import { ecnSubscrSchemaJoinFields } from "./ecnSubscrSchemaJoinFields";
-import EcnSubscrSchemasTable from "./EcnSubscrSchemasTable";
+import EcnSubscrSchemasTable, { TEcnSubscrSchemasTableProps } from "./EcnSubscrSchemasTable";
 import { EcnConnectSchema } from "@@api/generated";
 import { useLiquidityManagerContext } from "../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
 import { useEcnSubscrSchemaColumns } from "./useEcnSubscrSchemaColumns";
 
 type TEcnSubscrSchemasOnConnectionTableTableProps = {
-  connectSchemaId: number;
+  connectSchema: EcnConnectSchema;
 }
 
-const EcnSubscrSchemasOnConnectionTable: React.FC<TEcnSubscrSchemasOnConnectionTableTableProps> = ({
-  connectSchemaId,
+const EcnSubscrSchemasOnConnectionTable: React.FC<
+  TEcnSubscrSchemasTableProps<TEcnSubscrSchemasOnConnectionTableTableProps> 
+  & TEcnSubscrSchemasOnConnectionTableTableProps
+> = ({
+  connectSchema,
+  ...rest
 }) => {
   const { worker } = useLiquidityManagerContext();
   const columns = useEcnSubscrSchemaColumns();
@@ -19,15 +23,16 @@ const EcnSubscrSchemasOnConnectionTable: React.FC<TEcnSubscrSchemasOnConnectionT
   if (!worker) return <PageLoading />;
 
   return (
-    <EcnSubscrSchemasTable<{ connectSchemaId: EcnConnectSchema['id'] }>
+    <EcnSubscrSchemasTable<TEcnSubscrSchemasOnConnectionTableTableProps>
       params={{
         baseFilters: {
-          connectSchemaId,
+          'connectSchema': [connectSchema?.id],
         },
         join: ecnSubscrSchemaJoinFields,
+        sortMap: { executionMode: 'executionMode.name' },
       }}
       createNewDefaultParams={{
-        connectSchemaId,
+        connectSchema,
         enabled: 1,
         markupBid: 0,
         markupAsk: 0,
@@ -39,9 +44,10 @@ const EcnSubscrSchemasOnConnectionTable: React.FC<TEcnSubscrSchemasOnConnectionT
       }}
       pathParams={{
         worker,
-        connectSchemaId,
+        connectSchema,
       }}
-      columns={columns.filter(column => column.dataIndex !== 'connectSchemaId')}
+      columns={columns.filter(column => column.dataIndex !== 'connectSchema' && column.dataIndex !== 'connectSchema.descr')}
+      {...rest}
     />
   )
 }
