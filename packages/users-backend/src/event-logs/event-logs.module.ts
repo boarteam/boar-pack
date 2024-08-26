@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Inject, MiddlewareConsumer, Module, NestModule, Optional } from '@nestjs/common';
 import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
 import { EventLogsService } from './event-logs.service';
 import { EventLogsController } from './event-logs.controller';
@@ -6,15 +6,15 @@ import { EventLog } from './entities/event-log.entity';
 import { EventLogsPermissions } from "./event-logs.permissions";
 import { Action, CaslAbilityFactory, CaslModule } from "../casl";
 import { DataSource } from "typeorm";
-import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_INTERCEPTOR } from "@nestjs/core";
 import { EventLogInterceptor } from "./event-logs.interceptor";
-import { EventLogsExceptionFilter } from "./event-logs.filter";
-import { SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
+import { CONFIGURE_EVENTS_MIDDLEWARE, SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
 import { TEventLogServiceConfig } from "./event-logs.types";
 import { EventLogsLogger } from "./event-logs.logger";
+import { EventLogMiddleware } from "./event-logs.middleware";
 
 @Module({})
-export class EventLogsModule {
+export class EventLogsModule implements NestModule {
   static forRoot(config: { dataSourceName: string }) {
     return {
       module: EventLogsModule,
@@ -68,13 +68,15 @@ export class EventLogsModule {
           useClass: EventLogInterceptor,
         },
         {
-          provide: APP_FILTER,
-          useClass: EventLogsExceptionFilter,
+          provide: CONFIGURE_EVENTS_MIDDLEWARE,
+          useValue: true,
         }
       ],
       exports: [
         EventLogsService,
         EventLogsLogger,
+        CONFIGURE_EVENTS_MIDDLEWARE,
+        SERVICE_CONFIG_TOKEN,
       ],
     }
   }
@@ -101,7 +103,10 @@ export class EventLogsModule {
     }
   }
 
-  constructor() {
+  constructor(
+    @Optional()
+    @Inject(CONFIGURE_EVENTS_MIDDLEWARE) private readonly configureEventsMiddleware: boolean,
+  ) {
     CaslAbilityFactory.addPermissionToAction({
       permission: EventLogsPermissions.VIEW,
       action: Action.Read,
@@ -111,6 +116,12 @@ export class EventLogsModule {
       permission: EventLogsPermissions.MANAGE,
       action: Action.Manage,
       subject: EventLog,
-    })
+    });
+  }
+
+  configure(consumer: MiddlewareConsumer) {
+    if (this.configureEventsMiddleware) {
+      consumer.apply(EventLogMiddleware).forRoutes('*');
+    }
   }
 }
