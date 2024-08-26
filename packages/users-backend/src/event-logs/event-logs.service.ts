@@ -60,6 +60,11 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     });
   }
 
+  public requestAlreadyHandled(request: Request): boolean {
+    // @ts-ignore
+    return request?.[EventLogsService.requestHandled];
+  }
+
   async operationalLog(eventLog: Partial<EventLog>): Promise<void> {
     await this.repo.save({
       logLevel: LogLevel.INFO,
