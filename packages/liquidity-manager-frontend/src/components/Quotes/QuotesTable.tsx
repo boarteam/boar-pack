@@ -31,7 +31,9 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
   } = useRealTimeData();
 
   useEffect(() => {
-    realTimeDataSource.closeSocketConnections().catch(console.error);
+    return () => {
+      realTimeDataSource.closeSocketConnections().catch(console.error);
+    };
   }, []);
 
   if (!worker) return <PageLoading />;
