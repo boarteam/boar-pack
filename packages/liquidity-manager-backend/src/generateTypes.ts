@@ -13,7 +13,13 @@ import { resolve } from "path";
 import { ConfigModule } from "@nestjs/config";
 // @ts-ignore-next-line - Ignore the error because the package on project level
 import { generate } from "openapi-typescript-codegen";
-import { PositionEventDto, QuoteDto, QuoteEventDto, SubscribeEventDto } from "./modules/quotes/dto/quotes.dto";
+import {
+  PositionEventDto,
+  QuoteDto,
+  QuoteEventDto,
+  SubscribeEventDto,
+  SubscribeToPositionsEventDto
+} from "./modules/quotes/dto/quotes.dto";
 import { WebsocketsErrorEventDto } from "@jifeon/boar-pack-common-backend";
 import { entities } from "./modules/liquidity-app/liquidity-app.constants";
 import { UsersModule } from "@jifeon/boar-pack-users-backend";
@@ -75,6 +81,7 @@ async function bootstrap() {
         QuoteEventDto,
         PositionEventDto,
         SubscribeEventDto,
+        SubscribeToPositionsEventDto,
       ],
     };
 

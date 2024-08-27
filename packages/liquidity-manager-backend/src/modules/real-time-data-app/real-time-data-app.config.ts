@@ -1,10 +1,10 @@
-import { resolve } from "path";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { LiquidityManagersService } from "../liquidity-managers/liquidity-managers.service";
 import { ClusterConfigService, TClusterConfig } from "@jifeon/boar-pack-common-backend";
+import { entities } from "../liquidity-app/liquidity-app.constants";
 
 export const AMTS_DB_NAME = 'amts_db';
 
@@ -28,7 +28,7 @@ export class RealTimeDataAppConfig implements TypeOrmOptionsFactory {
       type: 'mysql',
       synchronize: false,
       logging: 'all',
-      entities: [resolve(__dirname, '../../**/entities/*.entity.{ts,js}')],
+      entities,
       namingStrategy: new SnakeNamingStrategy(),
       ...dbSettings,
     };
