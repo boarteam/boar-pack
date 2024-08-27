@@ -17,6 +17,13 @@ export class SubscribeEventDto implements WebsocketsEventDto {
   }
 }
 
+export class SubscribeToPositionsEventDto implements WebsocketsEventDto {
+  event: 'subscribeToPositions';
+  data: {
+    userId: number;
+  }
+}
+
 export const CLOSED_OBSERVABLE = Symbol('CLOSED_OBSERVABLE');
 
 export type MessageEventDto = QuoteEventDto | PositionEventDto | StatusEventDto;

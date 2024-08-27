@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { UsersInst } from './entities/users-inst.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -69,5 +69,16 @@ export class UsersInstService extends TypeOrmCrudService<UsersInst> {
       password: params.password,
       salt: params.salt,
     });
+  }
+
+  async getMarginModuleId(userId: number): Promise<UsersInst['marginModuleId']> {
+    const user = await this.repo.findOne({
+      select: ['marginModuleId'],
+      where: { id: String(userId) },
+    });
+    if (!user) {
+      throw new NotFoundException(`User with id ${userId} not found`);
+    }
+    return user.marginModuleId;
   }
 }

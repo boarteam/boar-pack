@@ -5,6 +5,7 @@ import {
   QuoteEventDto,
   SubscribeEventDto,
   WebsocketsErrorEventDto,
+  SubscribeToPositionsEventDto,
 } from "../../tools/api-client/generated";
 import { WebsocketClient } from "@jifeon/boar-pack-common-frontend";
 import { useEffect, useState } from "react";
@@ -17,13 +18,15 @@ export type TIncomeEvent =
   | { event: 'status', status: WebSocket['readyState'] };
 
 export type TOutputEvent =
-  | { event: 'subscribe' } & SubscribeEventDto;
+  | { event: 'subscribe' } & SubscribeEventDto
+  | { event: 'subscribeToPositions' } & SubscribeToPositionsEventDto;
 
 export class RealTimeDataSource {
   private primarySocket: WebsocketClient | null = null;
   private active: boolean = false;
   private symbols: string[] = [];
   private moduleId: number = null;
+  private userId: number = null;
   public readonly quotesEvents: EventTarget = new EventTarget();
   public readonly positionsEvents: EventTarget = new EventTarget();
   public readonly socketStatusEvents: EventTarget = new EventTarget();
@@ -51,13 +54,14 @@ export class RealTimeDataSource {
     this.emitStatusEvent();
   }
 
-  // todo: probably not needed?
-  public subscribeToPositions() {
+  public subscribeToPositions(userId: number) {
     if (this.active) {
       return;
     }
 
     this.active = true;
+    this.userId = userId;
+
     this.primarySocket = new WebsocketClient({
       worker: null,
       onOpen: this.onPositionsSocketOpen,
@@ -128,11 +132,10 @@ export class RealTimeDataSource {
 
   private onPositionsSocketOpen = () => {
     this.emitStatusEvent();
-    this.primarySocket?.send<SubscribeEventDto>({
-      event: 'subscribe',
+    this.primarySocket?.send<SubscribeToPositionsEventDto>({
+      event: 'subscribeToPositions',
       data: {
-        symbols: [],
-        moduleId: 4001,
+        userId: this.userId,
       },
     });
   }

@@ -43,7 +43,7 @@ export type UsersInst = {
     commissionLotsMode: EcnCommissionLotsMode;
     rolloverTime?: string;
     commissionTurnover: string;
-    marginModuleId: string;
+    marginModuleId: number;
     marginModule: EcnModule;
     company?: UsersInstCompany;
     trId?: number;
