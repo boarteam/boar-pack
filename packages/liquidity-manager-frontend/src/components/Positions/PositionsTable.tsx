@@ -3,7 +3,7 @@ import { Table, TGetAllParams } from "@jifeon/boar-pack-common-frontend";
 import apiClient from "@@api/apiClient";
 import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
-import React from "react";
+import React, { useEffect } from "react";
 import { Tag } from "antd";
 import { useRealTimeData } from "../RealTimeData/RealTimeDataSource";
 import { PositionDto } from "../../tools/api-client";
@@ -27,6 +27,12 @@ const PositionsTable: React.FC<TPositionsTableProps> = ({
   const columns = usePositionsColumns();
   const { worker } = useLiquidityManagerContext();
   const { connectionStatus, realTimeDataSource } = useRealTimeData();
+
+  useEffect(() => {
+    return () => {
+      realTimeDataSource.closeSocketConnections().catch(console.error);
+    };
+  }, []);
 
   if (!worker) return <PageLoading />;
 
