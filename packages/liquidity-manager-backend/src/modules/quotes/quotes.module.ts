@@ -4,6 +4,7 @@ import { HttpModule } from "@nestjs/axios";
 import { CaslModule, WsAuthModule } from "@jifeon/boar-pack-users-backend";
 import { AmtsDcModule } from "../amts-dc/amts-dc.module";
 import { QuotesAmtsConnector } from "./quotes.amts-connector";
+import { UsersInstModule } from "../users-inst/users-inst.module";
 
 @Module({})
 export class QuotesModule {
@@ -18,6 +19,7 @@ export class QuotesModule {
         WsAuthModule,
         AmtsDcModule,
         CaslModule.forFeature(),
+        UsersInstModule.forFeature(),
       ],
       providers: [
         QuotesGateway,

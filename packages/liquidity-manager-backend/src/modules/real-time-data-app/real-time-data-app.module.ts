@@ -24,15 +24,15 @@ export class RealTimeDataAppModule {
       module: RealTimeDataAppModule,
       imports: [
         ConfigModule,
-        // TypeOrmModule.forRootAsync({
-        //   name: AMTS_DB_NAME,
-        //   imports: [
-        //     ConfigModule,
-        //     ClusterModule,
-        //     LiquidityManagersModule.register({ dataSourceName: config.dataSourceName }),
-        //   ],
-        //   useClass: RealTimeDataAppConfig,
-        // }),
+        TypeOrmModule.forRootAsync({
+          name: AMTS_DB_NAME,
+          imports: [
+            ConfigModule,
+            ClusterModule,
+            LiquidityManagersModule.forConfig({ dataSourceName: config.dataSourceName }),
+          ],
+          useClass: RealTimeDataAppConfig,
+        }),
         JwtAuthModule.register({
           dataSourceName: config.dataSourceName,
         }),

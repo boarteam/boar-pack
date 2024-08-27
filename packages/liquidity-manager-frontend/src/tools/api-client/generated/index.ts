@@ -95,6 +95,7 @@ export type { SubloginSettings } from './models/SubloginSettings';
 export type { SubloginSettingsCreateDto } from './models/SubloginSettingsCreateDto';
 export type { SubloginSettingsUpdateDto } from './models/SubloginSettingsUpdateDto';
 export type { SubscribeEventDto } from './models/SubscribeEventDto';
+export type { SubscribeToPositionsEventDto } from './models/SubscribeToPositionsEventDto';
 export type { SubscSchemasCountResponse } from './models/SubscSchemasCountResponse';
 export type { UpdateManyDto } from './models/UpdateManyDto';
 export { User } from './models/User';
