@@ -48,6 +48,7 @@ const LiquidityManagersUsersTable: React.FC<TLiquidityManagersUsersTableProps> =
         baseFilters: {
           liquidityManagerId,
         },
+        sortMap: { user: 'user.name' },
       }}
       pathParams={{}}
       defaultSort={['user.name', 'ASC']}
@@ -58,6 +59,16 @@ const LiquidityManagersUsersTable: React.FC<TLiquidityManagersUsersTableProps> =
         {
           field: 'liquidityManagerId',
           operator: Operators.equals,
+        },
+        {
+          field: 'user',
+          searchField: 'user.name',
+          operator: Operators.containsLow,
+        },
+        {
+          field: 'role',
+          searchField: 'role.name',
+          operator: Operators.containsLow,
         },
       ]}
       viewOnly={!canManageLiquidityManagersSettings}
