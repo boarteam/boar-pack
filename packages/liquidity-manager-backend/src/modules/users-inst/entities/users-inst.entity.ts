@@ -119,7 +119,7 @@ export class UsersInst {
   commissionTurnover: string;
 
   @Column('int', { default: 0, comment: 'margin module id', name: 'margin_module_id' })
-  marginModuleId: string;
+  marginModuleId: number;
 
   @ManyToOne<EcnModule>(() => EcnModule, {
     onUpdate: 'CASCADE',

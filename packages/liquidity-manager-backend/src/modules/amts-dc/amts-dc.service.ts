@@ -38,9 +38,9 @@ export class AmtsDcService {
   ) {
   }
 
-  public getHttpUrl(serverId: string): string {
+  public getHttpUrl(serverId: number): string {
     const params = new URLSearchParams({
-      server_id: serverId,
+      server_id: String(serverId),
       web_api_login: this.config.webApiLogin,
       web_api_pass: this.config.webApiPass,
     });
@@ -83,7 +83,7 @@ export class AmtsDcService {
     serverId,
   }:{
     userId: number,
-    serverId: string,
+    serverId: number,
   }) {
     const params = {
       method: 'get_positions',

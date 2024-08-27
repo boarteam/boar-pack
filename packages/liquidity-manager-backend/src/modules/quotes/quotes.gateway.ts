@@ -4,9 +4,10 @@ import { Logger, UseFilters, UseGuards } from "@nestjs/common";
 import { CheckPolicies, PoliciesGuard, WsAuthGuard } from "@jifeon/boar-pack-users-backend";
 import { WebsocketsExceptionFilter } from "@jifeon/boar-pack-common-backend";
 import { ViewQuotesPolicy } from "./policies/view-quotes.policy";
-import { MessageEventDto, MessagesStream, SubscribeEventDto } from "./dto/quotes.dto";
+import { MessageEventDto, MessagesStream, SubscribeEventDto, SubscribeToPositionsEventDto } from "./dto/quotes.dto";
 import { Subject } from "rxjs";
 import { QuotesAmtsConnector } from "./quotes.amts-connector";
+import { UsersInstService } from "../users-inst/users-inst.service";
 
 @WebSocketGateway({
   path: '/ws',
@@ -19,6 +20,7 @@ export class QuotesGateway {
 
   constructor(
     private readonly amtsConnector: QuotesAmtsConnector,
+    private readonly usersInstService: UsersInstService,
   ) {}
 
   @SubscribeMessage('subscribe')
@@ -46,6 +48,25 @@ export class QuotesGateway {
       return;
     }
 
+    return this.createMessageStream(symbols, moduleId, client);
+  }
+
+  @SubscribeMessage('subscribeToPositions')
+  @CheckPolicies(new ViewQuotesPolicy())
+  private async handleSubscribeToPositions(
+    @ConnectedSocket() client: WebSocket,
+    @MessageBody() subscribeToPositionsEventDto: SubscribeToPositionsEventDto['data'],
+  ): Promise<MessagesStream | void> {
+    const existingStream = this.messagesStreamsByClients.get(client);
+    if (existingStream) {
+      return;
+    }
+
+    const marginModuleId = await this.usersInstService.getMarginModuleId(subscribeToPositionsEventDto.userId);
+    return this.createMessageStream([], marginModuleId, client);
+  }
+
+  private async createMessageStream(symbols: string[], moduleId: number, client: WebSocket): Promise<MessagesStream> {
     const messagesStream = await this.amtsConnector.getMessagesStream(symbols, moduleId);
     this.messagesStreamsByClients.set(client, messagesStream);
 

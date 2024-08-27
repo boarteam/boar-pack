@@ -36,7 +36,7 @@ const PositionsTable: React.FC<TPositionsTableProps> = ({
       userId,
     });
 
-    realTimeDataSource.subscribeToPositions();
+    realTimeDataSource.subscribeToPositions(userId);
 
     return {
       data: positions,

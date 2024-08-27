@@ -12,19 +12,10 @@ export class PositionsService {
   }
 
   async getPositions(userId: number): Promise<PositionDto[]> {
-    const user = await this.usersInstService.findOne({
-      where: {
-        id: String(userId),
-      },
-    })
-
-    if (!user) {
-      throw new NotFoundException(`User with id ${userId} not found`);
-    }
-
+    const serverId = await this.usersInstService.getMarginModuleId(userId);
     const response = await this.amtsDcService.getPositions({
       userId,
-      serverId: user.marginModuleId,
+      serverId,
     });
     return response.positions.map(position => ({
       id: position.id,
