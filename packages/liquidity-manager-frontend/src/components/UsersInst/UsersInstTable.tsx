@@ -163,6 +163,7 @@ const UsersInstTable = () => {
           commissionType: 'commissionType.name',
           commissionLotsMode: 'commissionLotsMode.name',
           group: 'group.name',
+          pwdHashType: 'pwdHashType.name',
         }
       }}
       scroll={{
