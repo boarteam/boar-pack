@@ -8,6 +8,7 @@ enum ErrorCode {
 
   // mysql
   FailedRemovingByForeignKey = 'ER_ROW_IS_REFERENCED',
+  FailedRemovingByForeignKey2 = 'ER_ROW_IS_REFERENCED_2',
 }
 
 @Catch(QueryFailedError)
@@ -39,6 +40,7 @@ export class TypeOrmExceptionFilter extends BaseExceptionFilter implements Excep
         return;
 
       case ErrorCode.FailedRemovingByForeignKey:
+      case ErrorCode.FailedRemovingByForeignKey2:
         response
           .status(400)
           .json({
