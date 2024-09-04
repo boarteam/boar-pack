@@ -109,7 +109,7 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
         rules: [{ required: true }]
       },
       editable: (value) => value === undefined,
-      render: (value, record) => record.connectSchemaId ?? '-',
+      render: (value, record) => record.connectSchemaId ?? record.connectSchema?.id ?? '-',
       renderFormItem(schema, config) {
         return worker && <RelationSelect<EcnConnectSchema>
           selectedItem={config.record?.connectSchema}
