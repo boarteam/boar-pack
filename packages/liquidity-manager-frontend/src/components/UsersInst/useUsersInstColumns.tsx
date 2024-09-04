@@ -173,7 +173,6 @@ export const useUsersInstColumns = (): ProColumns<UsersInst>[] => {
     {
       title: intl.formatMessage({ id: 'pages.usersInst.password' }),
       dataIndex: 'password',
-      sorter: true,
       valueType: 'password',
       formItemProps: {},
       fieldProps: {
