@@ -239,6 +239,9 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.minVolume' }),
       dataIndex: 'minVolume',
       valueType: 'digit',
+      fieldProps: {
+        stringMode: true,
+      },
       sorter: true,
       formItemProps: {
         rules: [{ required: true }]
@@ -249,6 +252,9 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.maxVolume' }),
       dataIndex: 'maxVolume',
       valueType: 'digit',
+      fieldProps: {
+        stringMode: true,
+      },
       sorter: true,
       formItemProps: {
         rules: [{ required: true }]
@@ -259,6 +265,9 @@ export const useEcnSubscrSchemaColumns = (): ProColumns<EcnSubscrSchema>[] => {
       title: intl.formatMessage({ id: 'pages.ecnSubscrSchema.volumeStep' }),
       dataIndex: 'volumeStep',
       valueType: 'digit',
+      fieldProps: {
+        stringMode: true,
+      },
       sorter: true,
       formItemProps: {
         rules: [{ required: true }]
