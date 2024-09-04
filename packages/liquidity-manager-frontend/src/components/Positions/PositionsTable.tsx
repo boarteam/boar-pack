@@ -6,8 +6,9 @@ import { PageLoading } from "@ant-design/pro-layout";
 import React, { useEffect } from "react";
 import { Tag } from "antd";
 import { useRealTimeData } from "../RealTimeData/RealTimeDataSource";
-import { PositionDto } from "../../tools/api-client";
+import { PositionDto, QuoteDto } from "../../tools/api-client";
 import { connectionStatuses } from "../RealTimeData/realTimeDataStatuses";
+import safetyRun from "@jifeon/boar-pack-common-frontend/src/tools/safetyRun";
 
 type TPositionFilterParams = {
   symbol?: string,
@@ -27,6 +28,7 @@ const PositionsTable: React.FC<TPositionsTableProps> = ({
   const columns = usePositionsColumns();
   const { worker } = useLiquidityManagerContext();
   const { connectionStatus, realTimeDataSource } = useRealTimeData();
+  const [positions, setPositions] = React.useState<PositionDto[]>([]);
 
   useEffect(() => {
     return () => {
@@ -34,24 +36,47 @@ const PositionsTable: React.FC<TPositionsTableProps> = ({
     };
   }, []);
 
-  if (!worker) return <PageLoading />;
+  useEffect(() => {
+    if (!worker) return;
 
-  const getAll = async (params: TGetAllParams & TPositionsPathParams) => {
-    const positions = await apiClient.positions.getPositions({
+    safetyRun(apiClient.positions.getPositions({
       worker,
       userId,
-    });
+    }).then((positions) => {
+      setPositions(positions);
+    }));
 
+
+    const handler = (event: CustomEvent<PositionDto>) => {
+      setPositions((positions) => {
+        const index = positions.findIndex((position) => position.id === event.detail.id);
+        if (index === -1) {
+          return positions;
+        }
+
+        const newPositions = [...positions];
+        newPositions[index] = event.detail;
+
+        return newPositions;
+      });
+    }
+
+    const eventName = `position:${userId}`;
+    realTimeDataSource.positionsEvents.addEventListener(eventName, handler);
     realTimeDataSource.subscribeToPositions(userId);
 
-    return {
-      data: positions,
-    }
-  }
+    return () => {
+      realTimeDataSource.positionsEvents.removeEventListener(eventName, handler);
+    };
+  }, [realTimeDataSource, userId, worker]);
+
+
+  if (!worker) return <PageLoading />;
 
   return (
     <Table<PositionDto, {}, {}, TPositionFilterParams, TPositionsPathParams>
-      getAll={getAll}
+      getAll={async () => ({data: []})}
+      dataSource={positions}
       columns={columns}
       idColumnName='id'
       pathParams={{

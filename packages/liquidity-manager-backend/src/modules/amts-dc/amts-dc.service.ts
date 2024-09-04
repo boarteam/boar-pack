@@ -1,15 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import { parse } from "lossless-json";
-import {
-  MTAttachStreamRequest,
-  MTGetPositionsRequest,
-  MTGetPositionsResult,
-  MTInstrumentListRequest,
-  MTInstrumentListResult,
-  MTResponse,
-  MTWSMessage
-} from "./dto/amts-dc.dto";
+import { isSafeNumber, parse } from "lossless-json";
+import { MTAttachStreamRequest, MTGetPositionsRequest, MTGetPositionsResult, MTWSMessage } from "./dto/amts-dc.dto";
 import WebSocket from "ws";
 import {
   TBaseConfig,
@@ -57,25 +49,20 @@ export class AmtsDcService {
     return `ws://amts-tst-srv-01:3000/stream?${params.toString()}`;
   }
 
+  private toSafeNumberOrString(value: string): number | string {
+    return isSafeNumber(value) ? parseFloat(value) : value;
+  }
+
   public async request<TReq extends { method: string }, TRes>(url: string, params: TReq): Promise<TRes> {
     this.logger.log(`Request to ${url}, method: ${params.method}`);
     this.logger.verbose(params);
     const response = await this.httpService.axiosRef.post<TRes>(url, params, {
-      // transformResponse: (data: any) => {
-      //   return parse(data);
-      // }
+      transformResponse: (data: any) => {
+        return parse(data, null, this.toSafeNumberOrString);
+      }
     });
 
     return response.data;
-  }
-
-  public async getInstruments(url: string) {
-    const params = {
-      method: 'req_instrument_list',
-      version: this.VERSION,
-    } as const;
-
-    return this.request<MTInstrumentListRequest, MTInstrumentListResult>(url, params);
   }
 
   public async getPositions({
