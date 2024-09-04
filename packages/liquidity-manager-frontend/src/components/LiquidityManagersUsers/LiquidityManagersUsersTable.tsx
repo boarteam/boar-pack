@@ -73,7 +73,7 @@ const LiquidityManagersUsersTable: React.FC<TLiquidityManagersUsersTableProps> =
           filterField: 'user.id',
           filterOperator: Operators.in,
         },
-        // todo: doesn't work lower(enum) in mysql
+        // todo: doesn't work lower(enum) in postgres
         // {
         //   field: 'role',
         //   operator: Operators.containsLow,
