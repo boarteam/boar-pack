@@ -4,14 +4,14 @@
 /* eslint-disable */
 
 export type PositionDto = {
-    userId: number;
-    id: number;
+    userId: Record<string, any>;
+    id: Record<string, any>;
     instrument: string;
     side: PositionDto.side;
-    amount: number;
-    openPrice: number;
-    margin: number;
-    profit: number;
+    amount: Record<string, any>;
+    openPrice: Record<string, any>;
+    margin: Record<string, any>;
+    profit: Record<string, any>;
     createdAt: string;
     updatedAt: string;
 };

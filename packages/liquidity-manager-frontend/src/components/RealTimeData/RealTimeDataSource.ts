@@ -153,7 +153,7 @@ export class RealTimeDataSource {
 
   private emitPositionEvent(position: PositionDto) {
     this.positionsEvents.dispatchEvent(new CustomEvent<PositionDto>(
-      `position:${position.id}`,
+      `position:${position.userId}`,
       {
         detail: position,
         bubbles: false,

@@ -62,7 +62,7 @@ export type MTPosition = {
 export type MTGetPositionsResult = LosslessJsonResult<{
   req_id: number;
   user_id: number;
-  positions: MTPosition[];
+  positions: {position: MTPosition}[];
 }>;
 
 export type MTAttachStreamRequest = {

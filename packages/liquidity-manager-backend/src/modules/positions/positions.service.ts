@@ -17,7 +17,8 @@ export class PositionsService {
       userId,
       serverId,
     });
-    return response.positions.map(position => ({
+
+    return response.positions.map(({ position }) => ({
       id: position.id,
       userId: position.user_id,
       instrument: position.instrument,

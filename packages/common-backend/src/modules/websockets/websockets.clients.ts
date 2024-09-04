@@ -1,6 +1,6 @@
 import { Injectable, Logger, Scope } from "@nestjs/common";
 import WebSocket from "ws";
-// import { LosslessNumber, parse } from "lossless-json";
+import { isSafeNumber, parse } from "lossless-json";
 
 export type TBaseConfig<EventType> = {
   url: string;
@@ -27,6 +27,10 @@ export class WebsocketsClients<IncomeEventType,
   private readonly clients = new WeakMap<WebSocket, ConfigType>();
 
   constructor() {
+  }
+
+  private toSafeNumberOrString(value: string): number | string {
+    return isSafeNumber(value) ? parseFloat(value) : value;
   }
 
   public connect(config: ConfigType): WebSocket {
@@ -60,8 +64,7 @@ export class WebsocketsClients<IncomeEventType,
       let event: IncomeEventType;
       try {
         this.logger.verbose(msg);
-        event = JSON.parse(String(msg));
-        // event = parse(String(msg)) as IncomeEventType;
+        event = parse(String(msg), null, this.toSafeNumberOrString) as IncomeEventType;
       } catch (e) {
         this.logger.error(`Error, while parsing message from WS server ${msg}`);
         this.logger.error(e, e.stack);
