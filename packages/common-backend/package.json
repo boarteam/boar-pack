@@ -1,6 +1,6 @@
 {
   "name": "@jifeon/boar-pack-common-backend",
-  "version": "1.9.0",
+  "version": "1.10.0-demo",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
   "repository": "git@github.com:jifeon/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
