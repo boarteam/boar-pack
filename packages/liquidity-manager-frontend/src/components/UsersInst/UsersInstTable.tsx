@@ -53,7 +53,7 @@ export function usersInstToDto<
     action: entity.action?.id,
     commissionType: entity.commissionType?.id,
     commissionLotsMode: entity.commissionLotsMode?.id,
-    pwdHashType: entity.pwdHashType?.id,
+    pwdHashTypeId: entity.pwdHashType?.id,
   } as R;
 }
 
