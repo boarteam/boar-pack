@@ -41,10 +41,12 @@ const LiquidityManagersUsersTable: React.FC<TLiquidityManagersUsersTableProps> =
       columns={columns}
       idColumnName='id'
       params={{
-        join: [{
-          field: 'user',
-          select: ['id', 'name'],
-        }],
+        join: [
+          {
+            field: 'user',
+            select: ['name'],
+          },
+        ],
         baseFilters: {
           liquidityManagerId,
         },
@@ -56,20 +58,26 @@ const LiquidityManagersUsersTable: React.FC<TLiquidityManagersUsersTableProps> =
         liquidityManagerId,
       }}
       searchableColumns={[
+        // todo: error with search
+        // ERROR [TypeOrmExceptionFilter] QueryFailedError: invalid input syntax for type uuid: "SS", code: 22P02, constraint: undefined
+        // ERROR [ExceptionsHandler] invalid input syntax for type uuid: "SS"
         {
           field: 'liquidityManagerId',
           operator: Operators.equals,
+          searchField: null,
         },
         {
           field: 'user',
           searchField: 'user.name',
           operator: Operators.containsLow,
+          filterField: 'user.id',
+          filterOperator: Operators.in,
         },
-        {
-          field: 'role',
-          searchField: 'role.name',
-          operator: Operators.containsLow,
-        },
+        // todo: doesn't work lower(enum) in mysql
+        // {
+        //   field: 'role',
+        //   operator: Operators.containsLow,
+        // },
       ]}
       viewOnly={!canManageLiquidityManagersSettings}
     ></Table>
