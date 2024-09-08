@@ -3,8 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiRequestOptions } from './ApiRequestOptions';
-import { BaseHttpRequest } from './BaseHttpRequest';
-import type { CancelablePromise } from './CancelablePromise';
+import { BaseHttpRequest } from '@@api/generated';
+import type { CancelablePromise } from '@@api/generated';
 import type { OpenAPIConfig } from './OpenAPI';
 import { request as __request } from './request';
 
