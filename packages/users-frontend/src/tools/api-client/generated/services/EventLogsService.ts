@@ -2,14 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { EventLog } from '../models/EventLog';
-import type { EventLogCreateDto } from '../models/EventLogCreateDto';
-import type { EventLogTimelineDto } from '../models/EventLogTimelineDto';
-import type { EventLogUpdateDto } from '../models/EventLogUpdateDto';
-import type { GetManyEventLogResponseDto } from '../models/GetManyEventLogResponseDto';
+import type { EventLog } from '@@api/generated';
+import type { EventLogCreateDto } from '@@api/generated';
+import type { EventLogTimelineDto } from '@@api/generated';
+import type { EventLogUpdateDto } from '@@api/generated';
+import type { GetManyEventLogResponseDto } from '@@api/generated';
 
-import type { CancelablePromise } from '../core/CancelablePromise';
-import type { BaseHttpRequest } from '../core/BaseHttpRequest';
+import type { CancelablePromise } from '@@api/generated';
+import type { BaseHttpRequest } from '@@api/generated';
 
 export class EventLogsService {
 
