@@ -17,9 +17,20 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "preserveSymlinks": true,
+    "paths": {}
   },
   "include": [
-    "src"
+    "src",
+    "node_modules/@jifeon/boar-pack-common-backend/src",
+    "node_modules/@jifeon/boar-pack-common-backend/package.json",
   ],
+  "exclude": [
+    "test",
+    "**/dist*",
+    "**/*spec.ts",
+    ".yalc/**/*"
+  ]
 }
