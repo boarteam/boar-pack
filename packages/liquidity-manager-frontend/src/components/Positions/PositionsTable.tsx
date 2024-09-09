@@ -28,7 +28,7 @@ const PositionsTable: React.FC<TPositionsTableProps> = ({
   const columns = usePositionsColumns();
   const { worker } = useLiquidityManagerContext();
   const { connectionStatus, realTimeDataSource } = useRealTimeData();
-  const [positions, setPositions] = React.useState<PositionDto[]>([]);
+  const [positions, setPositions] = React.useState<PositionDto[] | null>(null);
 
   useEffect(() => {
     return () => {
@@ -49,13 +49,18 @@ const PositionsTable: React.FC<TPositionsTableProps> = ({
 
     const handler = (event: CustomEvent<PositionDto>) => {
       setPositions((positions) => {
-        const index = positions.findIndex((position) => position.id === event.detail.id);
-        if (index === -1) {
-          return positions;
-        }
+        const updatedPosition = event.detail;
+        const index = positions.findIndex((position) => position.id === updatedPosition.id);
 
-        const newPositions = [...positions];
-        newPositions[index] = event.detail;
+        const newPositions = [...positions || []];
+
+        if (index === -1) {
+          newPositions.push(updatedPosition);
+        } else if (Number(updatedPosition.amount) === 0) {
+          newPositions.splice(index, 1);
+        } else {
+          newPositions[index] = event.detail;
+        }
 
         return newPositions;
       });
@@ -71,7 +76,7 @@ const PositionsTable: React.FC<TPositionsTableProps> = ({
   }, [realTimeDataSource, userId, worker]);
 
 
-  if (!worker) return <PageLoading />;
+  if (!worker || positions === null) return <PageLoading />;
 
   return (
     <Table<PositionDto, {}, {}, TPositionFilterParams, TPositionsPathParams>
