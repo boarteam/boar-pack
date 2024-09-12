@@ -1,7 +1,7 @@
 // antd switch but not for boolean, for numbers 0 and 1
 import React from "react";
 import dayjs from "dayjs";
-import { DatePicker } from "antd/lib";
+import { DatePicker } from "antd";
 
 interface RangePickerProps extends Omit<React.ComponentProps<typeof DatePicker.RangePicker>, 'value' | 'onChange'> {
   value? : [string | null, string | null] | null;

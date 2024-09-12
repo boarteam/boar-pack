@@ -102,7 +102,7 @@ const EventLogsTable = ({
           Collapse: {
             contentPadding: '0',
             headerPadding: '0',
-          }
+          },
         }
       }}
     >

@@ -2974,6 +2974,14 @@
     "@types/yargs" "^17.0.8"
     chalk "^4.0.0"
 
+"@jifeon/boar-pack-common-frontend@^1.15.0-adm-122":
+  version "1.15.0-adm-122"
+  resolved "https://npm.pkg.github.com/download/@jifeon/boar-pack-common-frontend/1.15.0-adm-122/c01c3cdf5f342739ce1715bdc824a10c0d1b6813#c01c3cdf5f342739ce1715bdc824a10c0d1b6813"
+  integrity sha512-LIQAp4hEm8emr8r7y47FFUe0NNV7ST3jwE/6l1MBXHZVjrcFKN+yL0H8Jl+gx1se6AVf/4QrDqLqQJ6bPU5lTA==
+  dependencies:
+    "@nestjsx/crud-request" "^5.0.0-alpha.3"
+    lodash "^4.17.21"
+
 "@jridgewell/gen-mapping@^0.3.5":
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/@jridgewell/gen-mapping/-/gen-mapping-0.3.5.tgz#dcce6aff74bdf6dad1a95802b69b04a2fcb1fb36"
