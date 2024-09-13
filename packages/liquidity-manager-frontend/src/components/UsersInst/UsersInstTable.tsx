@@ -47,7 +47,7 @@ export function usersInstToDto<
       'hedgeFactor',
     ]),
     module: entity.module?.id,
-    marginModule: entity.marginModule?.id,
+    marginModuleId: entity.marginModule?.id,
     group: entity.group?.name,
     company: entity.company?.id,
     action: entity.action?.id,
