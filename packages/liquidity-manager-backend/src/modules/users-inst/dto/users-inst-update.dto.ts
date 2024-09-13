@@ -93,7 +93,7 @@ export class UsersInstUpdateDto {
   commissionTurnover?: string;
 
   @JoiSchema(Joi.number().integer().optional())
-  marginModule?: number;
+  marginModuleId?: number;
 
   @JoiSchema(Joi.number().integer().optional())
   company?: UsersInstCompany['id'];
