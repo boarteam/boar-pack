@@ -33,7 +33,7 @@ export type UsersInstUpdateDto = {
     commissionLotsMode?: number;
     rolloverTime?: string;
     commissionTurnover?: string;
-    marginModule?: number;
+    marginModuleId?: number;
     company?: number;
     trId?: number;
     fixTradingEnabled?: number;
