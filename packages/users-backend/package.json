@@ -1,6 +1,6 @@
 {
   "name": "@jifeon/boar-pack-users-backend",
-  "version": "3.3.0-adm-122",
+  "version": "3.3.0-adm-122.1",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
   "main": "src/index",
   "files": [
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@casl/ability": "^6.7.0",
-    "@jifeon/boar-pack-common-backend": "^1.9.0",
+    "@jifeon/boar-pack-common-backend": "^1.15.0-adm-122.1",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^3.2.0",
     "@nestjs/core": "^9.0.0",
