@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UsePipes } from '@nestjs/common';
+import { Controller, Get, Param, UseFilters, UsePipes } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { UsersInstService } from './users-inst.service';
@@ -13,6 +13,7 @@ import { AutoincrementIdPipe } from "../../tools/autoincrement_id.pipe";
 import { PasswordInterceptor } from "./password-interceptor.service";
 import { UsersInstAuthService } from "./users-inst-auth.service";
 import { UsersInstResetPassDto } from "./dto/users-inst-reset-pass.dto";
+import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/tools";
 
 @Crud({
   model: {
@@ -74,6 +75,7 @@ import { UsersInstResetPassDto } from "./dto/users-inst-reset-pass.dto";
   },
 })
 @ApiTags('UsersInst')
+@UseFilters(TypeOrmExceptionFilter)
 @ApiExtraModels(UsersInstResetPassDto)
 @CheckPolicies(new ManageUsersInstPolicy())
 @Controller('liquidity/users-inst')
