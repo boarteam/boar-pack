@@ -37,6 +37,7 @@ export const useLiquidityManagersUsersColumns = (): ProColumns<LiquidityManagers
     {
       title: 'Role',
       dataIndex: 'role',
+      sorter: true,
       valueType: 'select',
       valueEnum: {
         [LiquidityManagersUser.role.VIEWER]: {
