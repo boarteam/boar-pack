@@ -1,0 +1,35 @@
+{
+  "name": "@jifeon/boar-pack-users-frontend",
+  "version": "1.0.0",
+  "description": "Users frontend package for Boar Pack",
+  "repository": "git@github.com:jifeon/boar-pack.git",
+  "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
+  "license": "MIT",
+  "main": "src/index",
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "dependencies": {
+    "@ant-design/plots": "^2.3.2",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-brands-svg-icons": "^6.6.0",
+    "@jifeon/boar-pack-common-frontend": "^1.15.0-adm-122",
+    "@umijs/max": "^4.1.10",
+    "@umijs/plugins": "^4.1.10",
+    "@umijs/route-utils": "^4.0.1",
+    "@umijs/utils": "^4.1.10",
+    "antd-style": "^3.6.2",
+    "bowser": "^2.11.0",
+    "umi": "^4.1.10"
+  },
+  "devDependencies": {
+    "umi-presets-pro": "^2.0.3"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "yalc:push": "yalc push"
+  }
+}

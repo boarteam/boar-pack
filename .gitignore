@@ -1,5 +1,6 @@
 node_modules
 yarn-error.log
 .yalc
+.idea
 dist
 lerna-debug.log

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "jsx": "react-jsx",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -12,25 +13,21 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "preserveSymlinks": true,
-    "paths": {}
+    "paths": {
+      "@@api/*": ["./src/tools/api-client/*"],
+      "@/*": ["./src/*"],
+      "@@/*": ["./src/.umi/*"]
+    }
   },
   "include": [
-    "src",
-    "node_modules/@jifeon/boar-pack-common-backend/src",
-    "node_modules/@jifeon/boar-pack-common-backend/package.json",
-  ],
-  "exclude": [
-    "test",
-    "**/dist*",
-    "**/*spec.ts",
-    ".yalc/**/*"
+    "./**/*.d.ts",
+    "./**/*.ts",
+    "./**/*.tsx"
   ]
 }
