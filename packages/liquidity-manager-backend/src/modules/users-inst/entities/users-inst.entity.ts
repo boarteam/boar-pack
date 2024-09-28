@@ -157,6 +157,5 @@ export class UsersInst {
     onDelete: 'CASCADE'
   })
   @JoinColumn({ name: 'pwd_hash_type' })
-  @Column('int', { default: 0, comment: 'password hash type' })
   pwdHashType: EcnPasswordHashType;
 }

@@ -114,5 +114,5 @@ export class UsersInstUpdateDto {
   hedgeFactor?: string;
 
   @JoiSchema(Joi.number().integer().optional())
-  pwdHashType?: EcnPasswordHashType['id'];
+  pwdHashTypeId?: EcnPasswordHashType['id'];
 }
