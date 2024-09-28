@@ -24,19 +24,19 @@ export class PasswordInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
 
     if (request.body?.password) {
-      const { id, pwdHashType } = request.body;
-      if (id === undefined || pwdHashType === undefined) {
-        throw new BadRequestException('id and pwdHashType are required while setting password');
+      const { id, pwdHashTypeId } = request.body;
+      if (id === undefined || pwdHashTypeId === undefined) {
+        throw new BadRequestException('id and pwdHashTypeId are required while setting password');
       }
 
-      if (pwdHashType !== EcnPasswordHashType.MD5 && pwdHashType !== EcnPasswordHashType.BCRYPT) {
-        throw new BadRequestException('pwdHashType must be either 0 or 1');
+      if (pwdHashTypeId !== EcnPasswordHashType.MD5 && pwdHashTypeId !== EcnPasswordHashType.BCRYPT) {
+        throw new BadRequestException('pwdHashTypeId must be either 0 or 1');
       }
 
       const passParams = await this.users.generatePassword({
         id,
         password: request.body.password,
-        pwdHashTypeId: pwdHashType
+        pwdHashTypeId
       });
 
       request.body.password = passParams.password;

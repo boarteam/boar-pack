@@ -74,4 +74,11 @@ export const usersInstSearchableColumns = [
   },
   { field: 'ts', operator: Operators.containsLow, },
   { field: 'tsMs', operator: Operators.containsLow, },
+  {
+    field: 'pwdHashType',
+    searchField: 'pwdHashType.name',
+    filterField: 'pwdHashType.id',
+    operator: Operators.containsLow,
+    filterOperator: Operators.in,
+  },
 ];
