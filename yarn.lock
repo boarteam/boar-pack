@@ -2974,33 +2974,6 @@
     "@types/yargs" "^17.0.8"
     chalk "^4.0.0"
 
-"@jifeon/boar-pack-users-backend@^3.3.0":
-  version "3.3.0"
-  resolved "https://npm.pkg.github.com/download/@jifeon/boar-pack-users-backend/3.3.0/f80fe073f83547e001b8b2fc5ca85d51eb78ce76#f80fe073f83547e001b8b2fc5ca85d51eb78ce76"
-  integrity sha512-9BvEtUK+QuJoYWMDjYEptmM/IlNahCy4JAorIjxgh0sdshP/2dsCZX4+QssSNuJJK14XMo8AHJJpoorQxMrP5g==
-  dependencies:
-    "@casl/ability" "^6.7.0"
-    "@jifeon/boar-pack-common-backend" "^1.10.0"
-    "@nestjs/common" "^9.0.0"
-    "@nestjs/config" "^3.2.0"
-    "@nestjs/core" "^9.0.0"
-    "@nestjs/jwt" "^10.2.0"
-    "@nestjs/passport" "^10.0.3"
-    "@nestjs/swagger" "^7.3.0"
-    "@nestjs/typeorm" "^10.0.2"
-    "@nestjsx/crud-typeorm" "^5.0.0-alpha.3"
-    bcrypt "^5.1.1"
-    joi "^17.12.2"
-    lodash "^4.17.21"
-    moment "^2.30.1"
-    moment-timezone "^0.5.45"
-    nestjs-joi "^1.10.0"
-    passport "^0.7.0"
-    passport-jwt "^4.0.1"
-    passport-local "^1.0.0"
-    typeorm "^0.3.20"
-    ws "^8.16.0"
-
 "@jridgewell/gen-mapping@^0.3.5":
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/@jridgewell/gen-mapping/-/gen-mapping-0.3.5.tgz#dcce6aff74bdf6dad1a95802b69b04a2fcb1fb36"
