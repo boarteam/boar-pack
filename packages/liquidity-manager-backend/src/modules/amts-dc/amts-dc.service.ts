@@ -36,8 +36,7 @@ export class AmtsDcService {
       web_api_login: this.config.webApiLogin,
       web_api_pass: this.config.webApiPass,
     });
-    return `http://amts-tst-srv-01:3000/?${params.toString()}`;
-    // return `http://localhost:4300/`;
+    return `${this.config.httpBaseUrl}/?${params.toString()}`;
   }
 
   public getWsUrl(serverId: string | number): string {
@@ -46,7 +45,7 @@ export class AmtsDcService {
       web_api_login: this.config.webApiLogin,
       web_api_pass: this.config.webApiPass,
     });
-    return `ws://amts-tst-srv-01:3000/stream?${params.toString()}`;
+    return `${this.config.wsBaseUrl}?${params.toString()}`;
   }
 
   private toSafeNumberOrString(value: string): number | string {
