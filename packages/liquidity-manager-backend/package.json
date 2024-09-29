@@ -1,6 +1,6 @@
 {
   "name": "@jifeon/boar-pack-liquidity-manager-backend",
-  "version": "3.3.0-adm122.3",
+  "version": "3.3.0-adm122.4",
   "description": "Liquidity Manager",
   "main": "src/index",
   "files": [
