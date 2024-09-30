@@ -11,7 +11,7 @@ import XFlowGraph, { TData, TElements } from "../Graph";
 
 export interface IProps {
   modules: Set<EcnModule['id']>,
-  description: React.ReactNode,
+  description?: React.ReactNode,
 }
 
 const ConnectionsGraph: React.FC<IProps> = ({ modules, description }) => {

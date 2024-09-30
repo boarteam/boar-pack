@@ -14,6 +14,7 @@ export class AMTSUser {
   permissions: User['permissions'];
   policies?: User['policies'];
   ability?: AppAbility;
+  marginModuleId?: number;
 }
 
 declare global {
@@ -64,7 +65,7 @@ export class AuthService {
 
   me(user: AMTSUser): Promise<UsersInst|null> {
     return this.usersService.findOne({
-      select: ['id', 'name'],
+      select: ['id', 'name', 'marginModuleId'],
       where: { id: user.id },
     });
   }
