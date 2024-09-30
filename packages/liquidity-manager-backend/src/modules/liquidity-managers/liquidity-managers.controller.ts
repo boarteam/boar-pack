@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseFilters } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Optional, Post, Req, UseFilters } from '@nestjs/common';
 import { LiquidityManagersService } from './liquidity-managers.service';
 import { Crud } from '@nestjsx/crud';
 import { LiquidityManager } from './entities/liquidity-manager.entity';
@@ -12,6 +12,7 @@ import { LiquidityManagerCheckDto, LiquidityManagerCheckResponseDto } from "./dt
 import { CheckPolicies } from "@jifeon/boar-pack-users-backend";
 import { TypeOrmExceptionFilter } from "@jifeon/boar-pack-common-backend/src/tools";
 import { Request } from 'express';
+import { MANAGER_PANEL } from "./liquidity-managers.module";
 
 @Crud({
   model: {
@@ -64,6 +65,7 @@ import { Request } from 'express';
 export class LiquidityManagersController {
   constructor(
     private readonly service: LiquidityManagersService,
+    @Optional() @Inject(MANAGER_PANEL) private readonly managerPanel: boolean,
   ) {}
 
   @Post('check')
@@ -89,7 +91,7 @@ export class LiquidityManagersController {
       throw new Error('User is not authorized');
     }
 
-    if (new ManageLiquidityManagersPolicy().handle(user.ability)) {
+    if (this.managerPanel || new ManageLiquidityManagersPolicy().handle(user.ability)) {
       return this.service.getEnabled();
     }
 
