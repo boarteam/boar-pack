@@ -1,11 +1,34 @@
-import { Body, Controller, Delete, Logger, NotImplementedException, Param, Patch, Post, Put } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Logger,
+  NotImplementedException,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query
+} from "@nestjs/common";
 import { MtEmulatorService } from "./mt-emulator.service";
-import { CreateInstrumentDto, EmulatorDto, Instrument, UpdateInstrumentDto } from "./dto/mt-emulator.dto";
-import { MTInstrumentListRequest, MTInstrumentListShortRequest } from "../amts-dc/dto/amts-dc.dto";
+import {
+  CreateInstrumentDto,
+  CreatePositionDto,
+  EmulatorDto, GetPositionsDto,
+  Instrument,
+  UpdateInstrumentDto, UpdatePositionDto
+} from "./dto/mt-emulator.dto";
+import {
+  MTInstrumentListRequest,
+  MTInstrumentListShortRequest, MTPosition,
+  MTGetPositionsRequest
+} from "../amts-dc/dto/amts-dc.dto";
 
 type TRequest =
   | MTInstrumentListRequest
-  | MTInstrumentListShortRequest;
+  | MTInstrumentListShortRequest
+  | MTGetPositionsRequest
 
 @Controller()
 export class MtEmulatorController {
@@ -17,6 +40,7 @@ export class MtEmulatorController {
 
   @Post()
   async handle(@Body() request: TRequest) {
+    console.log(request);
     this.logger.log(`Request to ${request.method}`);
     switch (request.method) {
       case 'req_instrument_list':
@@ -24,6 +48,10 @@ export class MtEmulatorController {
           result: {
             instruments: this.service.generateInstruments(),
           }
+        }
+      case 'get_positions':
+        return {
+          positions: this.service.generatePositions()
         }
     }
 
@@ -75,5 +103,41 @@ export class MtEmulatorController {
     @Param('symbol') symbol: Instrument['n'],
   ): Promise<void> {
     this.service.deleteInstrument(symbol);
+  }
+
+  @Get('emulator/position')
+  async getPositions(
+      @Query() params: GetPositionsDto,
+  ): Promise<{ position: MTPosition }[]> {
+    return this.service.getPositions(params);
+  }
+
+  @Post('emulator/position')
+  async addPosition(
+      @Body() position: CreatePositionDto,
+  ): Promise<void> {
+    this.service.createPosition(position);
+  }
+
+  @Post('emulator/positions')
+  async addPositions(
+      @Body() positions: CreatePositionDto[],
+  ): Promise<void> {
+    positions.forEach((position) => this.service.createPosition(position));
+  }
+
+  @Put('emulator/position/:id')
+  async updatePosition(
+      @Param('id') id: MTPosition['id'],
+      @Body() position: UpdatePositionDto,
+  ): Promise<void> {
+    this.service.updatePosition(id, position);
+  }
+
+  @Delete('emulator/position/:id')
+  async deletePosition(
+      @Param('id') id: MTPosition['id'],
+  ): Promise<void> {
+    this.service.deletePosition(id);
   }
 }
