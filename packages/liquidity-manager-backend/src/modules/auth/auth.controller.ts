@@ -52,6 +52,7 @@ export default class AuthController {
       role: req.user.role,
       permissions: req.user.permissions,
       policies: this.caslAbilityFactory.packAbility(ability),
+      marginModuleId: user.marginModuleId,
     };
   }
 
