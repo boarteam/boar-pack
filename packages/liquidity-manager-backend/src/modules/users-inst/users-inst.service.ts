@@ -32,7 +32,7 @@ export class UsersInstService extends TypeOrmCrudService<UsersInst> {
   public generateMd5PasswordHash(id: string, password: string): string {
     const hash = createHash('md5');
     hash.update(password);
-    return hash.digest('hex');
+    return hash.digest('hex').toUpperCase();
   }
 
   public comparePasswordMd5Hash(id: string, password: string, hash: string): boolean {
