@@ -1,6 +1,6 @@
 {
   "name": "@jifeon/boar-pack-users-frontend",
-  "version": "1.2.0-adm122.2",
+  "version": "1.2.0-adm122.3",
   "description": "Users frontend package for Boar Pack",
   "repository": "git@github.com:jifeon/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
