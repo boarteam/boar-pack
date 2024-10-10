@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany
 import { EcnModuleType } from "../../ecn-module-types/entities/ecn-module-type.entity";
 import { EcnConnectSchemaSetupLabel } from "../../ecn-connect-schema-setup-labels/entities/ecn-connect-schema-setup-label.entity";
 import { EcnConnectSchema } from "../../ecn-connect-schema/entities/ecn-connect-schema.entity";
+import { UsersInst } from "../../users-inst/entities/users-inst.entity";
 
 @Entity('ecn_modules')
 export class EcnModule {
@@ -52,4 +53,10 @@ export class EcnModule {
 
   @OneToMany(() => EcnConnectSchema, connection => connection.toModule)
   incomingConnections: EcnConnectSchema[];
+
+  @OneToMany<UsersInst>(() => UsersInst, userInst => userInst.module)
+  accessForUsers: UsersInst[];
+
+  @OneToMany<UsersInst>(() => UsersInst, userInst => userInst.marginModuleId)
+  marginForUsers: UsersInst[];
 }

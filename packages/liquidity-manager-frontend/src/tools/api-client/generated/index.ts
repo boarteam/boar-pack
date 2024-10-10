@@ -134,6 +134,7 @@ export { EcnSubscrSchemasService } from './services/EcnSubscrSchemasService';
 export { EcnSwapTypesService } from './services/EcnSwapTypesService';
 export { EcnWeekDaysService } from './services/EcnWeekDaysService';
 export { EcnWorkingModesService } from './services/EcnWorkingModesService';
+export { InstrumentsService } from './services/InstrumentsService';
 export { LiquidityManagersService } from './services/LiquidityManagersService';
 export { LiquidityManagersUsersService } from './services/LiquidityManagersUsersService';
 export { PositionsService } from './services/PositionsService';

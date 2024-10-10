@@ -26,6 +26,7 @@ import { EcnSubscrSchemasService } from './services/EcnSubscrSchemasService';
 import { EcnSwapTypesService } from './services/EcnSwapTypesService';
 import { EcnWeekDaysService } from './services/EcnWeekDaysService';
 import { EcnWorkingModesService } from './services/EcnWorkingModesService';
+import { InstrumentsService } from './services/InstrumentsService';
 import { LiquidityManagersService } from './services/LiquidityManagersService';
 import { LiquidityManagersUsersService } from './services/LiquidityManagersUsersService';
 import { PositionsService } from './services/PositionsService';
@@ -60,6 +61,7 @@ export class ApiClient {
     public readonly ecnSwapTypes: EcnSwapTypesService;
     public readonly ecnWeekDays: EcnWeekDaysService;
     public readonly ecnWorkingModes: EcnWorkingModesService;
+    public readonly instruments: InstrumentsService;
     public readonly liquidityManagers: LiquidityManagersService;
     public readonly liquidityManagersUsers: LiquidityManagersUsersService;
     public readonly positions: PositionsService;
@@ -105,6 +107,7 @@ export class ApiClient {
         this.ecnSwapTypes = new EcnSwapTypesService(this.request);
         this.ecnWeekDays = new EcnWeekDaysService(this.request);
         this.ecnWorkingModes = new EcnWorkingModesService(this.request);
+        this.instruments = new InstrumentsService(this.request);
         this.liquidityManagers = new LiquidityManagersService(this.request);
         this.liquidityManagersUsers = new LiquidityManagersUsersService(this.request);
         this.positions = new PositionsService(this.request);

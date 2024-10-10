@@ -27,6 +27,7 @@ import {
   LiquidityManagersUsersService
 } from "../liquidity-managers-users";
 import { PositionsModule } from "../positions/positions.module";
+import { MyInstrumentsModule } from "../my-instruments/my-instruments.module";
 
 export const restModules = [
   EcnModulesModule,
@@ -107,6 +108,7 @@ export class LiquidityAppModule {
         LiquidityManagersModule.forManagerPanel({
           dataSourceName: config.dataSourceName,
         }),
+        MyInstrumentsModule,
         // RealTimeDataAppModule.forClusterMaster(),
         ...restModules,
       ],
