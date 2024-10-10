@@ -12,6 +12,8 @@ import { EcnInstrumentsGroup } from "../ecn-instruments-groups/entities/ecn-inst
 import { UsersGroupsInst } from "../users-groups-inst/entities/users-groups-inst.entity";
 import { UsersInst } from "../users-inst/entities/users-inst.entity";
 import { UsersSubAccountInst } from "../users-sub-accounts-inst/entities/users-sub-account-inst.entity";
+import { MyInstrumentsPermissions } from "../my-instruments/my-instruments.permissions";
+import { MyInstrument } from "../my-instruments/policies/view-my-instruments.policy";
 
 export enum Permissions {
   VIEW_LIQUIDITY = 'view_liquidity',
@@ -52,6 +54,11 @@ export class CaslPermissionsModule {
         action: Action.Manage,
         subject: subjects,
       },
+      {
+        permission: MyInstrumentsPermissions.VIEW,
+        action: Action.Read,
+        subject: MyInstrument,
+      }
     ];
 
     permissions.forEach(CaslAbilityFactory.addPermissionToAction);

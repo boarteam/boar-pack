@@ -25,6 +25,7 @@ import { entities } from "./modules/liquidity-app/liquidity-app.constants";
 import { UsersModule } from "@jifeon/boar-pack-users-backend";
 import { EcnSubscrSchemaController } from './modules/ecn-subscr-schema/ecn-subscr-schema.controller';
 import { EcnInstrumentsController } from "./modules/ecn-instruments/ecn-instruments.controller";
+import { MyInstrumentsModule } from "./modules/my-instruments/my-instruments.module";
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { EcnInstrumentsController } from "./modules/ecn-instruments/ecn-instrume
     LiquidityManagersModule.register({ dataSourceName: 'tid_db' }),
     LiquidityManagersUsersModule.forTID({ dataSourceName: 'tid_db' }),
     LMAuthModule,
+    MyInstrumentsModule,
     ...restModules,
   ],
 })

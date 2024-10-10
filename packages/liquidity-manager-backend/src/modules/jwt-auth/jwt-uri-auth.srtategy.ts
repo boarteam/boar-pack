@@ -7,6 +7,8 @@ import { AMTSUser, JWT_URI_AUTH } from '../auth';
 import { UsersInstService } from "../users-inst/users-inst.service";
 import { Roles } from "@jifeon/boar-pack-users-backend";
 import { Permissions } from "../casl-permissions";
+import { MyInstrumentsPermissions } from "../my-instruments/my-instruments.permissions";
+import { defaultPermissions } from "./default-permissions";
 
 export type TJWTPayload = {
   sub: string;
@@ -42,7 +44,7 @@ export class JwtUriAuthStrategy extends PassportStrategy(Strategy, JWT_URI_AUTH)
       id: user.id,
       name: user.name,
       role: Roles.USER,
-      permissions: [Permissions.VIEW_LIQUIDITY],
+      permissions: defaultPermissions,
     };
   }
 }

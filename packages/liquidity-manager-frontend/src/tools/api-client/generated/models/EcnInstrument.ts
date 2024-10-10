@@ -8,6 +8,7 @@ import type { EcnCommissionType } from './EcnCommissionType';
 import type { EcnInstrumentsGroup } from './EcnInstrumentsGroup';
 import type { EcnMarginCalcMode } from './EcnMarginCalcMode';
 import type { EcnProfitCalcMode } from './EcnProfitCalcMode';
+import type { EcnSubscrSchema } from './EcnSubscrSchema';
 import type { EcnSwapType } from './EcnSwapType';
 import type { EcnWeekDay } from './EcnWeekDay';
 
@@ -49,5 +50,6 @@ export type EcnInstrument = {
     basis: string;
     delBandOnAbookNos: number;
     delBandOnBbookNos: number;
+    subscriptions: Array<EcnSubscrSchema>;
 };
 
