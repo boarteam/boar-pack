@@ -104,6 +104,6 @@ export const EventLogsTimeline: React.FC<TEventLogsTimelineProps> = ({
         />
         {
             showFilterButton && <Button onClick={applySliderDates}>Filter dates</Button> || null
-        };
+        }
     </>
 }
