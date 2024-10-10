@@ -20,10 +20,12 @@ type TPositionsPathParams = {
 
 type TPositionsTableProps = {
   userId: number,
+  ghost?: boolean,
 }
 
 const PositionsTable: React.FC<TPositionsTableProps> = ({
   userId,
+  ghost,
 }) => {
   const columns = usePositionsColumns();
   const { worker } = useLiquidityManagerContext();
@@ -91,8 +93,11 @@ const PositionsTable: React.FC<TPositionsTableProps> = ({
       viewOnly={true}
       toolBarRender={() => {
         const status = connectionStatuses[connectionStatus];
-        return [<Tag key={'connectionStatus'} color={status.color} icon={status.icon}>{status.text}</Tag>];
+        return [
+          <Tag key={'connectionStatus'} color={status.color} icon={status.icon}>{status.text}</Tag>
+        ];
       }}
+      ghost={ghost}
     ></Table>
   );
 }
