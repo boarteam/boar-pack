@@ -43,7 +43,7 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
     params.join = ['instrumentGroup||name'];
     params.sort = params.sort.map(sort => sort.replace('symbol', 'name').replace('group', 'instrumentGroup.name'));
 
-    const response = await apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params);
+    const response = await apiClient.instruments.getManyBaseMyInstrumentsControllerEcnInstrument(params);
     const symbols = response.data.map(instrument => instrument.name);
 
     realTimeDataSource.subscribeToQuotes(symbols, moduleId);

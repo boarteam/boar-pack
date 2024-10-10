@@ -57,6 +57,6 @@ export class EcnModule {
   @OneToMany<UsersInst>(() => UsersInst, userInst => userInst.module)
   accessForUsers: UsersInst[];
 
-  @OneToMany<UsersInst>(() => UsersInst, userInst => userInst.marginModuleId)
+  @OneToMany<UsersInst>(() => UsersInst, userInst => userInst.marginModule)
   marginForUsers: UsersInst[];
 }
