@@ -41,6 +41,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       const userRole = user?.role ? EventLogsService.rolesMap[user.role] : UserRole.GUEST;
 
       logPartial.userId = user?.id || null;
+      logPartial.userName = user?.name || null;
       logPartial.userRole = userRole || UserRole.GUEST;
       logPartial.payload = request.body || null;
       logPartial.method = request.method || null;
@@ -48,10 +49,10 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       logPartial.entityId = request.params.id || null;
       logPartial.ipAddress = request.ip || null;
       logPartial.userAgent = request.headers['user-agent'] || null;
-    }
 
-    // @ts-ignore
-    request[EventLogsService.requestHandled] = true;
+      // @ts-ignore
+      request[EventLogsService.requestHandled] = true;
+    }
 
     await this.repo.save({
       ...logPartial,

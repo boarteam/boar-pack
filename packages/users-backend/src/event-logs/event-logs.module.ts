@@ -43,6 +43,7 @@ export class EventLogsModule implements NestModule {
   static forInterceptor(config: {
     dataSourceName: string,
     service?: TEventLogServiceConfig,
+    eventLogsServiceClass?: new (...args: any[]) => EventLogsService,
   }) {
     return {
       module: EventLogsModule,
@@ -55,7 +56,8 @@ export class EventLogsModule implements NestModule {
           provide: EventLogsService,
           inject: [getDataSourceToken(config.dataSourceName)],
           useFactory: (dataSource: DataSource) => {
-            return new EventLogsService(dataSource.getRepository(EventLog), dataSource);
+            const serviceClass = config.eventLogsServiceClass || EventLogsService;
+            return new serviceClass(dataSource.getRepository(EventLog), dataSource);
           }
         },
         {
