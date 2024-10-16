@@ -1,6 +1,6 @@
 import { Table, useFullscreen } from "@jifeon/boar-pack-common-frontend";
 import apiClient from '@@api/apiClient';
-import { SubloginSettings, SubloginSettingsCreateDto, SubloginSettingsUpdateDto } from "@@api/generated";
+import { SubloginSettings, SubloginSettingsCreateDto, SubloginSettingsUpdateDto, UsersInst } from "@@api/generated";
 import React from "react";
 import { subloginsSettingsJoinFields } from "./subloginsSettingsJoinFields";
 import { ProColumns } from "@ant-design/pro-components";
@@ -26,6 +26,7 @@ function toUpdateDto(entity: SubloginSettings): SubloginSettingsUpdateDto {
 }
 
 type TSubloginSettingsTableProps = {
+  canManage?: boolean;
   usersSubAccountInstId: string;
   columns: ProColumns<SubloginSettings>[];
   columnsState?: ColumnStateType,
@@ -33,6 +34,7 @@ type TSubloginSettingsTableProps = {
 }
 
 const SubloginsSettingsTable: React.FC<TSubloginSettingsTableProps> = ({
+  canManage,
   usersSubAccountInstId,
   columns,
   columnsState,
@@ -41,7 +43,7 @@ const SubloginsSettingsTable: React.FC<TSubloginSettingsTableProps> = ({
   const { isFullscreen } = useFullscreen();
   const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const canEdit = canManageLiquidity(liquidityManager);
+  const canEdit = canManageLiquidity(liquidityManager) || canManage;
 
   if (!worker) {
     return <PageLoading />;
@@ -78,6 +80,7 @@ const SubloginsSettingsTable: React.FC<TSubloginSettingsTableProps> = ({
           instrumentRel: 'instrumentRel.name',
           hedgeCurrency: 'hedgeCurrency.name',
           'instrumentRel,priceDigits': 'instrumentRel.priceDigits',
+          'instrumentRel,instrumentGroup': 'instrumentRel.instrumentGroup',
         }
       }}
       // fixes settings list height

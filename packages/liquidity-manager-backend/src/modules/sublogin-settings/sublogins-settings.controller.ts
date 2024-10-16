@@ -31,6 +31,7 @@ import { SubloginSettings } from "./entities/sublogin-settings.entity";
     join: {
       usersSubAccountInst: {},
       instrumentRel: {},
+      'instrumentRel.instrumentGroup': {},
       hedgeCurrency: {
         exclude: ['name'],
       },

@@ -1,4 +1,4 @@
-import { Table, TColumnsSet, useColumnsSets } from "@jifeon/boar-pack-common-frontend";
+import { Table, TColumnsSet, useColumnsSets, TTableProps } from "@jifeon/boar-pack-common-frontend";
 import apiClient from '@@api/apiClient';
 import {
   SubloginSettings,
@@ -28,7 +28,7 @@ function userSubAccountToDto<T extends Partial<UsersSubAccountInst>,
   } as R;
 }
 
-const columnsSets: TColumnsSet<SubloginSettings>[] = [
+export const columnsSets: TColumnsSet<SubloginSettings>[] = [
   {
     name: 'Default Columns',
     columns: [
@@ -46,6 +46,10 @@ const columnsSets: TColumnsSet<SubloginSettings>[] = [
     name: 'Markup Columns',
     columns: [
       'instrumentRel',
+      // @ts-ignore-next-line
+      'instrumentRel,instrumentGroup',
+      // @ts-ignore-next-line
+      'instrumentRel,priceDigits',
       'markupBid',
       'markupAsk',
     ],
@@ -54,10 +58,12 @@ const columnsSets: TColumnsSet<SubloginSettings>[] = [
     name: 'Spread Limit Columns',
     columns: [
       'instrumentRel',
-      'spreadLimit',
-      'spreadLimitOnRollover',
+      // @ts-ignore-next-line
+      'instrumentRel,instrumentGroup',
       // @ts-ignore-next-line
       'instrumentRel,priceDigits',
+      'spreadLimit',
+      'spreadLimitOnRollover',
     ],
   },
   {
@@ -65,6 +71,10 @@ const columnsSets: TColumnsSet<SubloginSettings>[] = [
     columns: [
       'instrumentRel',
       'alias',
+      // @ts-ignore-next-line
+      'instrumentRel,instrumentGroup',
+      // @ts-ignore-next-line
+      'instrumentRel,priceDigits',
     ],
   },
   {
@@ -72,17 +82,25 @@ const columnsSets: TColumnsSet<SubloginSettings>[] = [
     columns: [
       'instrumentRel',
       // @ts-ignore-next-line
+      'instrumentRel,instrumentGroup',
+      // @ts-ignore-next-line
+      'instrumentRel,priceDigits',
+      // @ts-ignore-next-line
       'hedge_group',
-      'hedgeAmount',
-      'hedgeStep',
-      'hedgeCurrency',
+      // 'hedgeAmount',
+      // 'hedgeStep',
+      // 'hedgeCurrency',
       'hedgeMultiplier',
+      'instrumentPriorityFlag',
+      'minVolumeForABook',
     ],
   },
   {
     name: 'All Columns',
     columns: [
       'instrumentRel',
+      // @ts-ignore-next-line
+      'instrumentRel,instrumentGroup',
       'spreadLimit',
       'minVolumeForABook',
       'spreadLimitOnRollover',
@@ -105,17 +123,22 @@ const columnsSets: TColumnsSet<SubloginSettings>[] = [
 ];
 
 type TUsersSubAccountsInstTableProps = {
+  canManage?: boolean;
   userId: string;
-}
+  defaultColumnState?: string;
+} & Partial<TTableProps<UsersSubAccountInst, UsersSubAccountInstCreateDto, UsersSubAccountInstUpdateDto, {}, { worker: string}>>
 
 const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
+  canManage,
   userId,
+  defaultColumnState,
+  ...restProps
 }) => {
-  const columns = useUsersSubAccountsInstColumns();
-  const settingsColumns = useSubloginsSettingsColumns();
   const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const canEdit = canManageLiquidity(liquidityManager);
+  const canEdit = canManageLiquidity(liquidityManager) || canManage;
+  const columns = useUsersSubAccountsInstColumns(canEdit);
+  const settingsColumns = useSubloginsSettingsColumns(canEdit);
 
   const {
     columnsSetSelect,
@@ -123,6 +146,7 @@ const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
   } = useColumnsSets<SubloginSettings>({
     columns: settingsColumns,
     columnsSets,
+    defaultColumnState,
   });
 
   if (!worker) return <PageLoading />;
@@ -168,6 +192,7 @@ const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
       expandable={{
         expandedRowRender: (record) => {
           return <SubloginsSettingsTable
+            userId={userId}
             usersSubAccountInstId={record.id}
             columns={settingsColumns}
             columnsSetSelect={columnsSetSelect}
@@ -178,6 +203,7 @@ const UsersSubAccountsInstTable: React.FC<TUsersSubAccountsInstTableProps> = ({
       options={{
         setting: false,
       }}
+      {...restProps}
     ></Table>
   );
 }

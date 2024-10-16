@@ -4,14 +4,27 @@ import { EcnCurrency, EcnInstrument, SubloginSettings } from "@@api/generated";
 import { EditOutlined } from "@ant-design/icons";
 import apiClient from '@@api/apiClient';
 import { Tag } from "antd";
+import { useState, useEffect } from 'react';
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { dropTrailZeroes, NumberSwitch, RelationSelect } from "@jifeon/boar-pack-common-frontend";
 
-export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] => {
+export const useSubloginsSettingsColumns = (canManage?: boolean): ProColumns<SubloginSettings>[] => {
   const intl = useIntl();
   const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const canEdit = canManageLiquidity(liquidityManager);
+  const canEdit = canManageLiquidity(liquidityManager) || canManage;
+
+  const [instrumentGroups, setInstrumentGroups] = useState<{ text: string, value: number }[]>([]);
+  useEffect(() => {
+    if (worker) {
+      apiClient.ecnInstrumentsGroups.getManyBaseEcnInstrumentsGroupsControllerEcnInstrumentsGroup({
+        worker,
+        sort: ['name,ASC'],
+      }).then((groups) => {
+        setInstrumentGroups(groups.data.map((item) => ({ text: item.name, value: item.id })));
+      });
+    }
+  }, [worker]);
 
   const columns: ProColumns<SubloginSettings>[] = [
     {
@@ -47,6 +60,18 @@ export const useSubloginsSettingsColumns = (): ProColumns<SubloginSettings>[] =>
           })}
         /> || null;
       }
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.usersSubloginInstrumentsSetting.group' }),
+      dataIndex: ['instrumentRel', 'instrumentGroup'],
+      sorter: true,
+      editable: false,
+      hideInDescriptions: true,
+      filters: instrumentGroups,
+      filterSearch: true,
+      render(text, record) {
+        return record.instrumentRel?.instrumentGroup?.name ?? '-';
+      },
     },
     {
       title: intl.formatMessage({ id: 'pages.usersSubloginInstrumentsSetting.spreadLimit' }),
