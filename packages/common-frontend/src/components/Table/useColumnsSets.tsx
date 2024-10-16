@@ -14,6 +14,7 @@ export type TColumnsSet<Entity> = {
 type TUseColumnsSetsParams<Entity> = {
   columns: ProColumns<Entity>[],
   columnsSets?: TColumnsSet<Entity>[],
+  defaultColumnState?: string;
 }
 
 export type TColumnsStates = Record<string, ColumnsState>;
@@ -49,6 +50,7 @@ function getColumnsStates<T>(
 export default function useColumnsSets<Entity>({
   columns,
   columnsSets,
+  defaultColumnState,
 }: TUseColumnsSetsParams<Entity>): TUseColumnsSetsResult<Entity> {
   const columnsSetsByName: Map<string, TColumnsStates> = useMemo(
     () => new Map<string, TColumnsStates>(
@@ -63,7 +65,7 @@ export default function useColumnsSets<Entity>({
   );
 
   const [chosenSetName, setChosenSetName] = useState<string | undefined>(
-    columnsSets?.[0].name || undefined
+    defaultColumnState || columnsSets?.[0].name || undefined
   );
   const [chosenColumnsSet, setChosenColumnsSet] = useState<TColumnsStates | undefined>(
     columnsSetsByName.get(chosenSetName || '') || undefined
