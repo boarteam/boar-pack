@@ -15,6 +15,7 @@ import { UsersSubAccountInst } from "../users-sub-accounts-inst/entities/users-s
 import { SubloginSettings } from "../sublogin-settings/entities/sublogin-settings.entity";
 import { MyInstrumentsPermissions } from "../my-instruments/my-instruments.permissions";
 import { MyInstrument } from "../my-instruments/policies/view-my-instruments.policy";
+import { MyAuditLog, MyAuditLogsPermissions } from "../my-audit-logs";
 
 export enum Permissions {
   VIEW_LIQUIDITY = 'view_liquidity',
@@ -60,6 +61,11 @@ export class CaslPermissionsModule {
         permission: MyInstrumentsPermissions.VIEW,
         action: Action.Read,
         subject: MyInstrument,
+      },
+      {
+        permission: MyAuditLogsPermissions.VIEW,
+        action: Action.Read,
+        subject: MyAuditLog,
       }
     ];
 
