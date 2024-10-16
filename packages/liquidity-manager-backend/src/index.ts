@@ -7,3 +7,4 @@ export * from './modules/liquidity-managers-users';
 export * from './modules/casl-permissions';
 export * from './modules/auth';
 export * from './modules/jwt-auth';
+export * from './modules/event-logs';
