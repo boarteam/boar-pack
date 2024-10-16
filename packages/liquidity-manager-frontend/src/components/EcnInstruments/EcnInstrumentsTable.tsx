@@ -1,4 +1,4 @@
-import { Table, TColumnsSet } from "@jifeon/boar-pack-common-frontend";
+import { Table, TColumnsSet, TTableProps } from "@jifeon/boar-pack-common-frontend";
 import apiClient from '@@api/apiClient';
 import { EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto } from "@@api/generated";
 import { useEcnInstrumentsColumns } from "./useEcnInstrumentsColumns";
@@ -125,7 +125,7 @@ const columnsSets: TColumnsSet<EcnInstrument>[] = [
   }
 ];
 
-const EcnInstrumentsTable = () => {
+const EcnInstrumentsTable = (props: Partial<TTableProps<EcnInstrument, EcnInstrumentCreateDto, EcnInstrumentUpdateDto, {}, { worker: string }>>) => {
   const columns = useEcnInstrumentsColumns();
   const { worker, liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
@@ -205,6 +205,7 @@ const EcnInstrumentsTable = () => {
       searchableColumns={ecnInstrumentSearchableColumns}
       viewOnly={!canEdit}
       popupCreation
+      {...props}
     />
   );
 }
