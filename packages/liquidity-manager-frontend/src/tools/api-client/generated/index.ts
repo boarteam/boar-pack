@@ -45,6 +45,7 @@ export type { EcnSubscrSchemaUpdateDto } from './models/EcnSubscrSchemaUpdateDto
 export type { EcnSwapType } from './models/EcnSwapType';
 export type { EcnWeekDay } from './models/EcnWeekDay';
 export type { EcnWorkingMode } from './models/EcnWorkingMode';
+export { EventLog } from './models/EventLog';
 export type { GetEcnInstrumentsInConnectionsData } from './models/GetEcnInstrumentsInConnectionsData';
 export type { GetEcnInstrumentsInConnectionsResponse } from './models/GetEcnInstrumentsInConnectionsResponse';
 export { GetInstrumentsInConnectionsQueryDto } from './models/GetInstrumentsInConnectionsQueryDto';
@@ -67,6 +68,7 @@ export type { GetManyEcnSubscrSchemaResponseDto } from './models/GetManyEcnSubsc
 export type { GetManyEcnSwapTypeResponseDto } from './models/GetManyEcnSwapTypeResponseDto';
 export type { GetManyEcnWeekDayResponseDto } from './models/GetManyEcnWeekDayResponseDto';
 export type { GetManyEcnWorkingModeResponseDto } from './models/GetManyEcnWorkingModeResponseDto';
+export type { GetManyEventLogResponseDto } from './models/GetManyEventLogResponseDto';
 export type { GetManyLiquidityManagerResponseDto } from './models/GetManyLiquidityManagerResponseDto';
 export type { GetManyLiquidityManagersUserResponseDto } from './models/GetManyLiquidityManagersUserResponseDto';
 export type { GetManySubloginSettingsResponseDto } from './models/GetManySubloginSettingsResponseDto';
@@ -137,6 +139,7 @@ export { EcnWorkingModesService } from './services/EcnWorkingModesService';
 export { InstrumentsService } from './services/InstrumentsService';
 export { LiquidityManagersService } from './services/LiquidityManagersService';
 export { LiquidityManagersUsersService } from './services/LiquidityManagersUsersService';
+export { MyAuditLogsService } from './services/MyAuditLogsService';
 export { PositionsService } from './services/PositionsService';
 export { SubloginSettingsService } from './services/SubloginSettingsService';
 export { UsersService } from './services/UsersService';

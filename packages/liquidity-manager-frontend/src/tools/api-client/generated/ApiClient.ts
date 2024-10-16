@@ -29,6 +29,7 @@ import { EcnWorkingModesService } from './services/EcnWorkingModesService';
 import { InstrumentsService } from './services/InstrumentsService';
 import { LiquidityManagersService } from './services/LiquidityManagersService';
 import { LiquidityManagersUsersService } from './services/LiquidityManagersUsersService';
+import { MyAuditLogsService } from './services/MyAuditLogsService';
 import { PositionsService } from './services/PositionsService';
 import { SubloginSettingsService } from './services/SubloginSettingsService';
 import { UsersService } from './services/UsersService';
@@ -64,6 +65,7 @@ export class ApiClient {
     public readonly instruments: InstrumentsService;
     public readonly liquidityManagers: LiquidityManagersService;
     public readonly liquidityManagersUsers: LiquidityManagersUsersService;
+    public readonly myAuditLogs: MyAuditLogsService;
     public readonly positions: PositionsService;
     public readonly subloginSettings: SubloginSettingsService;
     public readonly users: UsersService;
@@ -110,6 +112,7 @@ export class ApiClient {
         this.instruments = new InstrumentsService(this.request);
         this.liquidityManagers = new LiquidityManagersService(this.request);
         this.liquidityManagersUsers = new LiquidityManagersUsersService(this.request);
+        this.myAuditLogs = new MyAuditLogsService(this.request);
         this.positions = new PositionsService(this.request);
         this.subloginSettings = new SubloginSettingsService(this.request);
         this.users = new UsersService(this.request);
