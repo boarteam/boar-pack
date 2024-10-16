@@ -207,7 +207,6 @@ export const useEventLogsColumns = ({
           .replace(/([a-z])([A-Z])/g, '$1 $2');
       },
       hideInSearch: true,
-
     },
     {
       title: 'Entity ID',
