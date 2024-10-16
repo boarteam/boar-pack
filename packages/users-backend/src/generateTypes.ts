@@ -7,6 +7,7 @@ import { ConfigModule } from "@nestjs/config";
 // @ts-ignore-next-line - Ignore the error because the package on project level
 import { generate } from "openapi-typescript-codegen";
 import { EventLogsModule } from './event-logs'
+import { UsersModule } from "./users";
 
 @Module({
   imports: [
@@ -24,6 +25,10 @@ import { EventLogsModule } from './event-logs'
       entities: [
         resolve(__dirname, './*/entities/*.entity.{ts,js}'),
       ],
+    }),
+    UsersModule.register({
+      withControllers: true,
+      dataSourceName: 'tid_db',
     }),
     EventLogsModule.forRoot({
       dataSourceName: 'tid_db'

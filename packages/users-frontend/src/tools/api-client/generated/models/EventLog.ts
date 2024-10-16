@@ -14,6 +14,8 @@ export type EventLog = {
     userId: string | null;
     user: User | null;
     userRole: EventLog.userRole;
+    userName: string | null;
+    externalUserId: string | null;
     entity: string;
     entityId: string | null;
     payload: Record<string, any> | null;

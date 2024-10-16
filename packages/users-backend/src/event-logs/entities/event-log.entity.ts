@@ -61,6 +61,18 @@ export class EventLog {
   })
   userRole: UserRole;
 
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  userName: string | null;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  externalUserId: string | null;
+
   @Column()
   entity: string;
 

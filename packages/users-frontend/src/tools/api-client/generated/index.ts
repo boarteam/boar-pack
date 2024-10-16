@@ -17,6 +17,10 @@ export type { EventLogTimelineQueryDto } from './models/EventLogTimelineQueryDto
 export { EventLogUpdateDto } from './models/EventLogUpdateDto';
 export type { GetManyEventLogResponseDto } from './models/GetManyEventLogResponseDto';
 export type { GetManyUserResponseDto } from './models/GetManyUserResponseDto';
+export type { PermissionDto } from './models/PermissionDto';
 export { User } from './models/User';
+export { UserCreateDto } from './models/UserCreateDto';
+export { UserUpdateDto } from './models/UserUpdateDto';
 
 export { EventLogsService } from './services/EventLogsService';
+export { UsersService } from './services/UsersService';
