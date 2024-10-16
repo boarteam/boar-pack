@@ -22,6 +22,10 @@ const serviceNameToAbbreviation: Record<string, string> = {
   'TID Main App': 'TID',
   'Liquidity Manager': 'LM',
   'Quotes Monitor': 'QM',
+  'Admin Panel - Main': 'ADM',
+  'Manager Panel - Main': 'MNG',
+  'Admin RealTimeData': 'ARTD',
+  'Manager RealTimeData': 'MRTD',
 } as const;
 
 const logTypes = {
@@ -176,7 +180,7 @@ export const useEventLogsColumns = ({
       hideInSearch: true,
     },
     {
-      title: 'External User ID',
+      title: 'User Inst ID',
       dataIndex: 'externalUserId',
       copyable: true,
       hideInSearch: true,
