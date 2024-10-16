@@ -106,7 +106,7 @@ export const EventLogExplanation: React.FC<{ record: EventLog }> = ({ record }) 
 
   let payloadEl: React.ReactNode = <>N/A<br /></>;
   if (record.payload) {
-    payloadEl = <pre>{JSON.stringify(record.payload, null, 2).replaceAll(`\\n`, '\n')}</pre>;
+    payloadEl = <pre>{JSON.stringify(record.payload, null, 2).replace(/\n/g, '\n')}</pre>;
   }
   const payload = <Paragraph>
     <Title level={5}>Action Payload</Title>
