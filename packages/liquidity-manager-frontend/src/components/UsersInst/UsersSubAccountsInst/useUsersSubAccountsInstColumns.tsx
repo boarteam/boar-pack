@@ -5,11 +5,11 @@ import { UsersSubAccountInst } from "@@api/generated";
 import { useAccess } from "umi";
 import { useLiquidityManagerContext } from "../../../tools";
 
-export const useUsersSubAccountsInstColumns = (): ProColumns<UsersSubAccountInst>[] => {
+export const useUsersSubAccountsInstColumns = (canManage?: boolean): ProColumns<UsersSubAccountInst>[] => {
   const intl = useIntl();
   const { liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const canEdit = canManageLiquidity(liquidityManager);
+  const canEdit = canManageLiquidity(liquidityManager) || canManage;
 
   const columns: ProColumns<UsersSubAccountInst>[] = [
     {
