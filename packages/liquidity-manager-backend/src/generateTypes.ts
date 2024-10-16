@@ -26,6 +26,7 @@ import { UsersModule } from "@jifeon/boar-pack-users-backend";
 import { EcnSubscrSchemaController } from './modules/ecn-subscr-schema/ecn-subscr-schema.controller';
 import { EcnInstrumentsController } from "./modules/ecn-instruments/ecn-instruments.controller";
 import { MyInstrumentsModule } from "./modules/my-instruments/my-instruments.module";
+import { MyAuditLogsModule } from "./modules/my-audit-logs/my-audit-logs.module";
 
 @Module({
   imports: [
@@ -63,6 +64,9 @@ import { MyInstrumentsModule } from "./modules/my-instruments/my-instruments.mod
     LiquidityManagersUsersModule.forTID({ dataSourceName: 'tid_db' }),
     LMAuthModule,
     MyInstrumentsModule,
+    MyAuditLogsModule.forManagerPanel({
+      dataSourceName: 'tid_db',
+    }),
     ...restModules,
   ],
 })
