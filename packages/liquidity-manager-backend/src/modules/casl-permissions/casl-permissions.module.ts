@@ -16,6 +16,7 @@ import { SubloginSettings } from "../sublogin-settings/entities/sublogin-setting
 import { MyInstrumentsPermissions } from "../my-instruments/my-instruments.permissions";
 import { MyInstrument } from "../my-instruments/policies/view-my-instruments.policy";
 import { MyAuditLog, MyAuditLogsPermissions } from "../my-audit-logs";
+import { RealTimeData } from "../real-time-data/policies/view-real-time-data.policy";
 
 export enum Permissions {
   VIEW_LIQUIDITY = 'view_liquidity',
@@ -41,6 +42,7 @@ export const subjects = [
   Liquidity,
   Quotes,
   Position,
+  RealTimeData,
 ];
 
 @Module({})

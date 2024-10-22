@@ -3,7 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 import { JoiPipeModule } from "nestjs-joi";
 import { CaslModule, JwtAuthModule } from "@jifeon/boar-pack-users-backend";
 import { CaslPermissionsModule } from "../casl-permissions";
-import { QuotesModule } from "../quotes/quotes.module";
+import { RealTimeDataModule } from "../real-time-data/real-time-data.module";
 import { LiquidityManagersModule } from "../liquidity-managers";
 import { ClusterModule, ClusterService } from "@jifeon/boar-pack-common-backend";
 import { AMTS_DB_NAME, RealTimeDataAppConfig } from "./real-time-data-app.config";
@@ -39,7 +39,7 @@ export class RealTimeDataAppModule {
         CaslModule.forRoot(),
         CaslPermissionsModule,
         JoiPipeModule,
-        QuotesModule.forWorker(),
+        RealTimeDataModule.forWorker(),
       ],
       providers: [],
       exports: [],
@@ -66,7 +66,7 @@ export class RealTimeDataAppModule {
         CaslModule.forRoot(),
         CaslPermissionsModule,
         JoiPipeModule,
-        QuotesModule.forWorker(),
+        RealTimeDataModule.forWorker(),
       ],
       providers: [],
       exports: [],

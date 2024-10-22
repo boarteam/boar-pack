@@ -10,6 +10,7 @@ import { UsersGroupsInst } from "../users-groups-inst/entities/users-groups-inst
 import { UsersInst } from "../users-inst/entities/users-inst.entity";
 import { UsersSubAccountInst } from "../users-sub-accounts-inst/entities/users-sub-account-inst.entity";
 import { LiquidityManager } from "../liquidity-managers";
+import { RealTimeData } from "../real-time-data/policies/view-real-time-data.policy";
 
 export * from '@jifeon/boar-pack-users-backend';
 
@@ -30,5 +31,6 @@ declare module '@jifeon/boar-pack-users-backend' {
     Quotes: 'Quotes';
     Liquidity: 'Liquidity';
     Position: 'Position';
+    RealTimeData: typeof RealTimeData;
   }
 }

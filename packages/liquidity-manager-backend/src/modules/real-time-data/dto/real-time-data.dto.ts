@@ -9,7 +9,7 @@ export class QuoteDto {
   timestamp: number;
 }
 
-export class SubscribeEventDto implements WebsocketsEventDto {
+export class SubscribeToQuotesEventDto implements WebsocketsEventDto {
   event: 'subscribe';
   data: {
     symbols: QuoteDto['symbol'][];
@@ -19,6 +19,13 @@ export class SubscribeEventDto implements WebsocketsEventDto {
 
 export class SubscribeToPositionsEventDto implements WebsocketsEventDto {
   event: 'subscribeToPositions';
+  data: {
+    userId: number;
+  }
+}
+
+export class SubscribeToUserInfoEventDto implements WebsocketsEventDto {
+  event: 'subscribeToUserInfo';
   data: {
     userId: number;
   }

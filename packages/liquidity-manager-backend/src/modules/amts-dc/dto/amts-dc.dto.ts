@@ -66,13 +66,13 @@ export type MTGetPositionsResult = LosslessJsonResult<{
 }>;
 
 export type MTAttachStreamRequest = {
-  method: 'attach_stream';
+  method: 'subscribe_to_quotes_stream';
   req_id: number;
   session_id?: number;
   secret?: string;
   market_depth?: number;
   token?: string;
-  subscribe_quotes: string[];
+  instruments: string[];
   quotes_timeout: number;
   version?: number;
   platform_id?: number;
