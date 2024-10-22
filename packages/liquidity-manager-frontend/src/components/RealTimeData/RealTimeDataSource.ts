@@ -3,7 +3,7 @@ import {
   PositionEventDto,
   QuoteDto,
   QuoteEventDto,
-  SubscribeEventDto,
+  SubscribeToQuotesEventDto,
   WebsocketsErrorEventDto,
   SubscribeToPositionsEventDto,
 } from "../../tools/api-client/generated";
@@ -18,7 +18,7 @@ export type TIncomeEvent =
   | { event: 'status', status: WebSocket['readyState'] };
 
 export type TOutputEvent =
-  | { event: 'subscribe' } & SubscribeEventDto
+  | { event: 'subscribeToQuotes' } & SubscribeToQuotesEventDto
   | { event: 'subscribeToPositions' } & SubscribeToPositionsEventDto;
 
 export class RealTimeDataSource {
@@ -121,8 +121,8 @@ export class RealTimeDataSource {
 
   private onQuotesSocketOpen = () => {
     this.emitStatusEvent();
-    this.primarySocket?.send<SubscribeEventDto>({
-      event: 'subscribe',
+    this.primarySocket?.send<SubscribeToQuotesEventDto>({
+      event: 'subscribeToQuotes',
       data: {
         symbols: this.symbols,
         moduleId: this.moduleId,

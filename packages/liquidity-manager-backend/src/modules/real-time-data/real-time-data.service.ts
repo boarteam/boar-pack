@@ -1,21 +1,16 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { AmtsDcService } from "../amts-dc/amts-dc.service";
 import { mtPlatformsIds, MTVersions } from "../amts-dc/amts-dc.constants";
-import { CLOSED_OBSERVABLE, MessagesStream } from "./dto/quotes.dto";
+import { CLOSED_OBSERVABLE, MessagesStream } from "./dto/real-time-data.dto";
 import { MTPositionsWSMessage, MTQuoteWSMessage, MTWSMessage } from "../amts-dc/dto/amts-dc.dto";
 import { Subject } from "rxjs";
 import WebSocket from "ws";
 import { PositionSide } from "../positions/dto/positions.dto";
-
-type TConnectorConfig = {
-  instruments: string[];
-  moduleId: number;
-  socket?: WebSocket;
-}
+import { TConnectorConfig } from "./real-time-data.types";
 
 @Injectable()
-export class QuotesAmtsConnector {
-  private readonly logger = new Logger(QuotesAmtsConnector.name);
+export class RealTimeDataService {
+  private readonly logger = new Logger(RealTimeDataService.name);
   private readonly subjectsToConfigs = new Map<MessagesStream, TConnectorConfig>();
 
   constructor(
@@ -23,16 +18,22 @@ export class QuotesAmtsConnector {
   ) {
   }
 
-  public async getMessagesStream(instruments: string[], moduleId: number): Promise<MessagesStream> {
-    const messagesStream: MessagesStream = new Subject();
-    const config: TConnectorConfig = {
-      instruments,
+  public createConnectionConfig(moduleId: number): TConnectorConfig {
+    return {
       moduleId,
+      socket: null,
+      quotesSubscription: null,
+      positionsSubscription: null,
+      userInfoSubscription: null,
     };
+  }
+
+  public async createMessagesStream(config: TConnectorConfig): Promise<MessagesStream> {
+    const messagesStream: MessagesStream = new Subject();
     this.subjectsToConfigs.set(messagesStream, config);
 
     this.logger.log(`Connecting AMTS socket to new messages stream...`);
-    this.connectWebsocketToStream(messagesStream).catch(e => {
+    this.tryToPipeWebsocketToStream({ messagesStream }).catch(e => {
       this.logger.error(`Error while connecting to AMTS websocket`);
       this.logger.error(e, e.stack);
       this.stopMessagesStream(messagesStream).catch(e => {
@@ -49,7 +50,7 @@ export class QuotesAmtsConnector {
     messagesStream[CLOSED_OBSERVABLE] = true;
     this.subjectsToConfigs.delete(messagesStream);
     if (config?.socket) {
-      await this.amtsDcService.closeQuotesWebsocket(config.socket).catch(e => {
+      await this.amtsDcService.closeWebsocket(config.socket).catch(e => {
         this.logger.error(`Error while closing AMTS websocket`);
         this.logger.error(e, e.stack);
       });
@@ -57,7 +58,13 @@ export class QuotesAmtsConnector {
     messagesStream.complete();
   }
 
-  private async connectWebsocketToStream(messagesStream: MessagesStream, reconnectTries: number = 5): Promise<void> {
+  private async tryToPipeWebsocketToStream({
+    messagesStream,
+    reconnectTries = 5,
+  }: {
+    messagesStream: MessagesStream,
+    reconnectTries?: number
+  }): Promise<void> {
     this.logger.log(`Connecting to AMTS websocket...`);
     try {
       const config = this.subjectsToConfigs.get(messagesStream);
@@ -65,7 +72,14 @@ export class QuotesAmtsConnector {
         throw new Error(`Config not found for stream, can't connect`);
       }
 
-      config.socket = await this.createWebsocketAndConnect(messagesStream, config);
+      const socket = this.pipeWebsocketToStream({
+        messagesStream,
+        config,
+        onOpen: () => {
+          this.subscribeSocket({ ws: socket, config });
+        }
+      });
+      config.socket = socket;
       return;
     } catch (e) {
       if (reconnectTries <= 0) {
@@ -78,17 +92,56 @@ export class QuotesAmtsConnector {
       this.logger.error(`Error while reconnecting to AMTS websocket, reconnect in 5s..`);
       this.logger.error(e, e.stack);
       await new Promise(resolve => setTimeout(resolve, 5000));
-      return this.connectWebsocketToStream(messagesStream, reconnectTries - 1);
+      return this.tryToPipeWebsocketToStream({
+        messagesStream,
+        reconnectTries: reconnectTries - 1,
+      });
     }
   }
 
-  private async createWebsocketAndConnect(messagesStream: MessagesStream, config: TConnectorConfig): Promise<WebSocket> {
-    const ws = this.amtsDcService.createQuotesWebsocketAndAttachStream({
+  private async subscribeSocket({
+    ws,
+    config,
+  }: {
+    ws: WebSocket,
+    config: TConnectorConfig,
+  }) {
+    if (config.quotesSubscription) {
+      await this.amtsDcService.subscribeToQuotesStream({
+        ws,
+        instruments: config.quotesSubscription.symbols,
+        options: {
+          platform_id: mtPlatformsIds[MTVersions.MT5],
+        }
+      });
+    }
+
+    if (config.positionsSubscription) {
+      await this.amtsDcService.subscribeToPositionsUpdate({
+        ws,
+        userId: config.positionsSubscription.userId,
+      });
+    }
+
+    if (config.userInfoSubscription) {
+      await this.amtsDcService.subscribeToUserUpdate({
+        ws,
+        userId: config.userInfoSubscription.userId,
+      });
+    }
+  }
+
+  private pipeWebsocketToStream({
+    messagesStream,
+    config,
+    onOpen,
+  }: {
+    messagesStream: MessagesStream,
+    config: TConnectorConfig,
+    onOpen?: () => void,
+  }): WebSocket {
+    const ws = this.amtsDcService.connectWebsocket({
       url: this.amtsDcService.getWsUrl(config.moduleId),
-      instruments: config.instruments,
-      options: {
-        platform_id: mtPlatformsIds[MTVersions.MT5],
-      },
       onOpen: () => {
         messagesStream.next({
           event: 'status',
@@ -96,6 +149,7 @@ export class QuotesAmtsConnector {
             status: ws.readyState,
           },
         });
+        onOpen?.();
       },
       onMessage: (event) => {
         this.processWSMessage(messagesStream, event);
@@ -141,7 +195,7 @@ export class QuotesAmtsConnector {
 
     this.logger.log(`Reconnecting to AMTS websocket in 1 second...`);
 
-    setTimeout(() => this.connectWebsocketToStream(messagesStream).catch(e => {
+    setTimeout(() => this.tryToPipeWebsocketToStream({ messagesStream }).catch(e => {
       this.logger.error(`Error while reconnecting to AMTS websocket`);
       this.logger.error(e, e.stack);
       this.stopMessagesStream(messagesStream).catch(e => {
@@ -151,13 +205,13 @@ export class QuotesAmtsConnector {
     }), timeout);
   }
 
-  public async updateMessagesStream({
+  public async subscribeToQuotes({
     messagesStream,
-    instruments,
+    symbols,
     moduleId,
   }: {
     messagesStream: MessagesStream,
-    instruments: string[],
+    symbols: string[],
     moduleId: number,
   }) {
     const config = this.subjectsToConfigs.get(messagesStream);
@@ -166,37 +220,137 @@ export class QuotesAmtsConnector {
     }
 
     if (!config.socket) {
-      config.instruments = instruments;
       config.moduleId = moduleId;
+      config.quotesSubscription = {
+        symbols,
+      };
       this.logger.warn(`Socket is not connected, updating instruments and connecting socket to existing stream...`);
-      await this.connectWebsocketToStream(messagesStream);
+      await this.tryToPipeWebsocketToStream({ messagesStream });
       return;
     }
 
-    const params = {
-      ws: config.socket,
-    } as const;
+    this.logger.log(`Detaching messages stream from existing socket...`);
+    if (config.quotesSubscription) {
+      await this.amtsDcService.unsubscribeFromQuotesStream({
+        ws: config.socket,
+        instruments: config.quotesSubscription.symbols,
+      })
+    }
 
-    this.logger.log(`Detaching quotes stream from existing socket...`);
-    await this.amtsDcService.detachStream({
-      ...params,
-      instruments: config.instruments,
-    })
-
-    config.instruments = instruments;
+    config.quotesSubscription = {
+      symbols,
+    };
 
     if (moduleId === config.moduleId) {
-      this.logger.log(`Attaching quotes stream to existing socket...`);
-      await this.amtsDcService.attachStream({
-        ...params,
-        instruments,
+      this.logger.log(`Attaching messages stream to existing socket...`);
+      await this.amtsDcService.subscribeToQuotesStream({
+        ws: config.socket,
+        instruments: symbols,
         options: {
           platform_id: mtPlatformsIds[MTVersions.MT5],
         },
       });
     } else {
-      config.moduleId = moduleId;
       this.logger.log(`Reconnecting to AMTS websocket with new module id...`);
+      config.moduleId = moduleId;
+      this.recreateSocketForMessageStream(messagesStream, 0);
+    }
+  }
+
+  public async subscribeToUserInfo({
+    messagesStream,
+    userId,
+    moduleId,
+  }: {
+    messagesStream: MessagesStream,
+    userId: number,
+    moduleId: number,
+  }) {
+    const config = this.subjectsToConfigs.get(messagesStream);
+    if (!config) {
+      throw new Error(`Config not found for stream, can't update`);
+    }
+
+    if (!config.socket) {
+      config.moduleId = moduleId;
+      config.userInfoSubscription = {
+        userId,
+      };
+      this.logger.warn(`Socket is not connected, updating user info and connecting socket to existing stream...`);
+      await this.tryToPipeWebsocketToStream({ messagesStream });
+      return;
+    }
+
+    this.logger.log(`Detaching messages stream from existing socket...`);
+    if (config.userInfoSubscription) {
+      await this.amtsDcService.unsubscribeFromUserUpdate({
+        ws: config.socket,
+        userId: config.userInfoSubscription.userId,
+      })
+    }
+
+    config.userInfoSubscription = {
+      userId,
+    };
+
+    if (moduleId === config.moduleId) {
+      this.logger.log(`Attaching messages stream to existing socket...`);
+      await this.amtsDcService.subscribeToUserUpdate({
+        ws: config.socket,
+        userId,
+      });
+    } else {
+      this.logger.log(`Reconnecting to AMTS websocket with new module id...`);
+      config.moduleId = moduleId;
+      this.recreateSocketForMessageStream(messagesStream, 0);
+    }
+  }
+
+  public async subscribeToPositions({
+    messagesStream,
+    userId,
+    moduleId,
+  }: {
+    messagesStream: MessagesStream,
+    userId: number,
+    moduleId: number,
+  }) {
+    const config = this.subjectsToConfigs.get(messagesStream);
+    if (!config) {
+      throw new Error(`Config not found for stream, can't update`);
+    }
+
+    if (!config.socket) {
+      config.moduleId = moduleId;
+      config.positionsSubscription = {
+        userId,
+      };
+      this.logger.warn(`Socket is not connected, updating positions and connecting socket to existing stream...`);
+      await this.tryToPipeWebsocketToStream({ messagesStream });
+      return;
+    }
+
+    this.logger.log(`Detaching messages stream from existing socket...`);
+    if (config.positionsSubscription) {
+      await this.amtsDcService.unsubscribeFromPositionsUpdate({
+        ws: config.socket,
+        userId: config.positionsSubscription.userId,
+      })
+    }
+
+    config.positionsSubscription = {
+      userId,
+    };
+
+    if (moduleId === config.moduleId) {
+      this.logger.log(`Attaching messages stream to existing socket...`);
+      await this.amtsDcService.subscribeToPositionsUpdate({
+        ws: config.socket,
+        userId,
+      });
+    } else {
+      this.logger.log(`Reconnecting to AMTS websocket with new module id...`);
+      config.moduleId = moduleId;
       this.recreateSocketForMessageStream(messagesStream, 0);
     }
   }

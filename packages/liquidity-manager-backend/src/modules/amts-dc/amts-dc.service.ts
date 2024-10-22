@@ -99,44 +99,31 @@ export class AmtsDcService {
     });
   }
 
-  public createQuotesWebsocketAndAttachStream({
+  public connectWebsocket({
     url,
-    instruments,
-    options,
     onOpen,
     onMessage,
     onClose,
   }: {
     url: string,
-    instruments: string[],
-    options?: Partial<MTAttachStreamRequest>,
     onOpen?: () => void;
     onMessage?: (event: MTWSMessage) => void;
     onClose?: () => void;
   }): WebSocket {
-    const ws = this.websocketsClients.connect({
+    return this.websocketsClients.connect({
       url,
       ignoreInvalidJson: true,
-      onOpen: () => {
-        onOpen?.();
-        return this.attachStream({
-          ws,
-          instruments,
-          options,
-        });
-      },
+      onOpen,
       onMessage,
       onClose,
     });
-
-    return ws;
   }
 
-  public closeQuotesWebsocket(ws: WebSocket): Promise<void> {
+  public closeWebsocket(ws: WebSocket): Promise<void> {
     return this.websocketsClients.close(ws);
   }
 
-  public async attachStream({
+  public async subscribeToQuotesStream({
     ws,
     instruments,
     options,
@@ -146,21 +133,21 @@ export class AmtsDcService {
     options?: Partial<MTAttachStreamRequest>
   }): Promise<void> {
     const params: MTAttachStreamRequest = {
-      method: 'attach_stream',
+      method: 'subscribe_to_quotes_stream',
       version: this.VERSION,
       req_id: 1,
-      subscribe_quotes: instruments,
+      instruments,
       quotes_timeout: 1000,
       ...options,
     };
 
     this.logger.verbose(params);
-    this.logger.log(`Sending attach_stream request`);
+    this.logger.log(`Sending subscribe_to_quotes_stream request`);
 
     await this.websocketsClients.send(ws, params)
   }
 
-  public detachStream({
+  public unsubscribeFromQuotesStream({
     ws,
     instruments,
   }: {
@@ -168,15 +155,135 @@ export class AmtsDcService {
     instruments: string[],
   }): Promise<void> {
     const params = {
-      method: 'detach_stream',
+      method: 'unsubscribe_from_quotes_stream',
       version: this.VERSION,
       req_id: 1,
-      unsubscribe_quotes: instruments,
+      instruments,
     };
 
     this.logger.verbose(params);
-    this.logger.log(`Sending detach_stream request`);
+    this.logger.log(`Sending unsubscribe_from_quotes_stream request`);
     return this.websocketsClients.send(ws, params);
+  }
+
+  // subscribe_to_snapshots_stream
+  public async subscribeToSnapshotsStream({
+    ws,
+    instruments,
+  }: {
+    ws: WebSocket,
+    instruments: string[],
+  }): Promise<void> {
+    const params = {
+      method: 'subscribe_to_snapshots_stream',
+      version: this.VERSION,
+      req_id: 1,
+      instruments,
+    };
+
+    this.logger.verbose(params);
+    this.logger.log(`Sending subscribe_to_snapshots_stream request`);
+    await this.websocketsClients.send(ws, params);
+  }
+
+  // unsubscribe_from_snapshots_stream
+  public async unsubscribeFromSnapshotsStream({
+    ws,
+    instruments,
+  }: {
+    ws: WebSocket,
+    instruments: string[],
+  }): Promise<void> {
+    const params = {
+      method: 'unsubscribe_from_snapshots_stream',
+      version: this.VERSION,
+      req_id: 1,
+      instruments,
+    };
+
+    this.logger.verbose(params);
+    this.logger.log(`Sending unsubscribe_from_snapshots_stream request`);
+    await this.websocketsClients.send(ws, params);
+  }
+
+  // subscribe_to_positions_update
+  public async subscribeToPositionsUpdate({
+    ws,
+    userId,
+  }: {
+    ws: WebSocket,
+    userId: number,
+  }): Promise<void> {
+    const params = {
+      method: 'subscribe_to_positions_update',
+      version: this.VERSION,
+      req_id: 1,
+      user_id: userId,
+    };
+
+    this.logger.verbose(params);
+    this.logger.log(`Sending subscribe_to_positions_update request`);
+    await this.websocketsClients.send(ws, params);
+  }
+
+  // unsubscribe_from_positions_update
+  public async unsubscribeFromPositionsUpdate({
+    ws,
+    userId,
+  }: {
+    ws: WebSocket,
+    userId: number,
+  }): Promise<void> {
+    const params = {
+      method: 'unsubscribe_from_positions_update',
+      version: this.VERSION,
+      req_id: 1,
+      user_id: userId,
+    };
+
+    this.logger.verbose(params);
+    this.logger.log(`Sending unsubscribe_from_positions_update request`);
+    await this.websocketsClients.send(ws, params);
+  }
+
+  // subscribe_to_user_update
+  public async subscribeToUserUpdate({
+    ws,
+    userId,
+  }: {
+    ws: WebSocket,
+    userId: number,
+  }): Promise<void> {
+    const params = {
+      method: 'subscribe_to_user_update',
+      version: this.VERSION,
+      req_id: 1,
+      user_id: userId,
+    };
+
+    this.logger.verbose(params);
+    this.logger.log(`Sending subscribe_to_user_update request`);
+    await this.websocketsClients.send(ws, params);
+  }
+
+  // unsubscribe_from_user_update
+  public async unsubscribeFromUserUpdate({
+    ws,
+    userId,
+  }: {
+    ws: WebSocket,
+    userId: number,
+  }): Promise<void> {
+    const params = {
+      method: 'unsubscribe_from_user_update',
+      version: this.VERSION,
+      req_id: 1,
+      user_id: userId,
+    };
+
+    this.logger.verbose(params);
+    this.logger.log(`Sending unsubscribe_from_user_update request`);
+    await this.websocketsClients.send(ws, params);
   }
 }
 
