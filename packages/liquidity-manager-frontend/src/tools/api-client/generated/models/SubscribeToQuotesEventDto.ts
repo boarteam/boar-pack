@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type SubscribeEventDto = {
+export type SubscribeToQuotesEventDto = {
     event: string;
     data: {
         symbols?: Array<string>;

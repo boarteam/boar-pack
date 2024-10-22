@@ -17,9 +17,9 @@ import {
   PositionEventDto,
   QuoteDto,
   QuoteEventDto,
-  SubscribeEventDto,
+  SubscribeToQuotesEventDto,
   SubscribeToPositionsEventDto
-} from "./modules/quotes/dto/quotes.dto";
+} from "./modules/real-time-data/dto/real-time-data.dto";
 import { WebsocketsErrorEventDto } from "@jifeon/boar-pack-common-backend";
 import { entities } from "./modules/liquidity-app/liquidity-app.constants";
 import { UsersModule } from "@jifeon/boar-pack-users-backend";
@@ -86,7 +86,7 @@ async function bootstrap() {
         QuoteDto,
         QuoteEventDto,
         PositionEventDto,
-        SubscribeEventDto,
+        SubscribeToQuotesEventDto,
         SubscribeToPositionsEventDto,
       ],
     };
