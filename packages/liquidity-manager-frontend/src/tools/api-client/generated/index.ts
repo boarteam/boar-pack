@@ -98,10 +98,12 @@ export type { SubloginSettingsCreateDto } from './models/SubloginSettingsCreateD
 export type { SubloginSettingsUpdateDto } from './models/SubloginSettingsUpdateDto';
 export type { SubscribeToPositionsEventDto } from './models/SubscribeToPositionsEventDto';
 export type { SubscribeToQuotesEventDto } from './models/SubscribeToQuotesEventDto';
+export type { SubscribeToUserInfoEventDto } from './models/SubscribeToUserInfoEventDto';
 export type { SubscSchemasCountResponse } from './models/SubscSchemasCountResponse';
 export type { UpdateManyDto } from './models/UpdateManyDto';
 export { User } from './models/User';
 export { UserCreateDto } from './models/UserCreateDto';
+export type { UserInfoDto } from './models/UserInfoDto';
 export type { UsersGroupsInst } from './models/UsersGroupsInst';
 export type { UsersGroupsInstCreateDto } from './models/UsersGroupsInstCreateDto';
 export type { UsersGroupsInstUpdateDto } from './models/UsersGroupsInstUpdateDto';
@@ -142,6 +144,7 @@ export { LiquidityManagersUsersService } from './services/LiquidityManagersUsers
 export { MyAuditLogsService } from './services/MyAuditLogsService';
 export { PositionsService } from './services/PositionsService';
 export { SubloginSettingsService } from './services/SubloginSettingsService';
+export { UserInfoService } from './services/UserInfoService';
 export { UsersService } from './services/UsersService';
 export { UsersGroupsInstService } from './services/UsersGroupsInstService';
 export { UsersInstService } from './services/UsersInstService';

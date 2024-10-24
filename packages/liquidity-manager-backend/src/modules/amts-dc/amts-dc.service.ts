@@ -1,7 +1,13 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { isSafeNumber, parse } from "lossless-json";
-import { MTAttachStreamRequest, MTGetPositionsRequest, MTGetPositionsResult, MTWSMessage } from "./dto/amts-dc.dto";
+import {
+  MTAttachStreamRequest,
+  MTGetPositionsRequest,
+  MTGetPositionsResult,
+  MTGetUserInfoRequest, MTGetUserInfoResult, MTUserInfo,
+  MTWSMessage
+} from "./dto/amts-dc.dto";
 import WebSocket from "ws";
 import {
   TBaseConfig,
@@ -64,10 +70,10 @@ export class AmtsDcService {
     return response.data;
   }
 
-  public async getPositions({
+  public getPositions({
     userId,
     serverId,
-  }:{
+  }: {
     userId: number,
     serverId: number,
   }) {
@@ -79,6 +85,23 @@ export class AmtsDcService {
     } as const;
 
     return this.request<MTGetPositionsRequest, MTGetPositionsResult>(this.getHttpUrl(serverId), params);
+  }
+
+  public getUserInfo({
+    userId,
+    serverId,
+  }: {
+    userId: number,
+    serverId: number,
+  }) {
+    const params = {
+      method: 'get_user',
+      version: this.VERSION,
+      req_id: 1,
+      user_id: userId,
+    } as const;
+
+    return this.request<MTGetUserInfoRequest, MTGetUserInfoResult>(this.getHttpUrl(serverId), params);
   }
 
   public checkStreamConnection({
