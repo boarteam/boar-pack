@@ -18,10 +18,12 @@ type TQuotesPathParams = {
 
 type TQuotesTableProps = {
   moduleId: number,
+  controller: 'myInstruments' | 'ecnInstruments',
 }
 
 const QuotesTable: React.FC<TQuotesTableProps> = ({
   moduleId,
+  controller,
 }) => {
   const columns = useQuotesColumns();
   const { worker } = useLiquidityManagerContext();
@@ -43,7 +45,9 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
     params.join = ['instrumentGroup||name'];
     params.sort = params.sort.map(sort => sort.replace('symbol', 'name').replace('group', 'instrumentGroup.name'));
 
-    const response = await apiClient.instruments.getManyBaseMyInstrumentsControllerEcnInstrument(params);
+    const response = controller === 'myInstruments'
+      ? await apiClient.instruments.getManyBaseMyInstrumentsControllerEcnInstrument(params)
+      : await apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params);
     const symbols = response.data.map(instrument => instrument.name);
 
     realTimeDataSource.subscribeToQuotes(symbols, moduleId);
