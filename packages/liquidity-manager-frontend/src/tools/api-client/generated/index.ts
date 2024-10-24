@@ -104,6 +104,7 @@ export type { UpdateManyDto } from './models/UpdateManyDto';
 export { User } from './models/User';
 export { UserCreateDto } from './models/UserCreateDto';
 export type { UserInfoDto } from './models/UserInfoDto';
+export type { UserInfoEventDto } from './models/UserInfoEventDto';
 export type { UsersGroupsInst } from './models/UsersGroupsInst';
 export type { UsersGroupsInstCreateDto } from './models/UsersGroupsInstCreateDto';
 export type { UsersGroupsInstUpdateDto } from './models/UsersGroupsInstUpdateDto';

@@ -1,6 +1,7 @@
 import { Subject } from "rxjs";
 import { WebsocketsEventDto } from "@jifeon/boar-pack-common-backend";
 import { PositionDto } from "../../positions/dto/positions.dto";
+import { UserInfoDto } from "../../user-info/dto/user-info.dto";
 
 export class QuoteDto {
   symbol: string;
@@ -10,7 +11,7 @@ export class QuoteDto {
 }
 
 export class SubscribeToQuotesEventDto implements WebsocketsEventDto {
-  event: 'subscribe';
+  event: 'subscribeToQuotes';
   data: {
     symbols: QuoteDto['symbol'][];
     moduleId: number;
@@ -33,7 +34,7 @@ export class SubscribeToUserInfoEventDto implements WebsocketsEventDto {
 
 export const CLOSED_OBSERVABLE = Symbol('CLOSED_OBSERVABLE');
 
-export type MessageEventDto = QuoteEventDto | PositionEventDto | StatusEventDto;
+export type MessageEventDto = QuoteEventDto | PositionEventDto | StatusEventDto | UserInfoEventDto;
 export type MessagesStream = Subject<MessageEventDto> & {
   [CLOSED_OBSERVABLE]?: true | undefined;
 };
@@ -53,4 +54,9 @@ export class StatusEventDto implements WebsocketsEventDto {
   data: {
     status: WebSocket['readyState'],
   };
+}
+
+export class UserInfoEventDto implements WebsocketsEventDto {
+  event: 'user';
+  data: UserInfoDto;
 }

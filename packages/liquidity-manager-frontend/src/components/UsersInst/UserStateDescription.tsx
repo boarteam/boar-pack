@@ -6,25 +6,43 @@ import apiClient from "@@api/apiClient";
 import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
 import { Pie } from '@ant-design/plots';
+import { useRealTimeData } from "../RealTimeData/RealTimeDataSource";
 
 const { Title } = Typography;
 
-export type TUserStateDescriptionProps = {};
+export type TUserStateDescriptionProps = {
+  userId: number,
+};
 
 type TData = {
   label: string;
   value: number;
 };
 
-export const UserStateDescription: React.FC<TUserStateDescriptionProps> = ({}) => {
+export const UserStateDescription: React.FC<TUserStateDescriptionProps> = ({
+  userId,
+}) => {
   const [userInfo, setUserInfo] = React.useState<UserInfoDto | null | undefined>(undefined);
   const { worker } = useLiquidityManagerContext();
+  const { realTimeDataSource } = useRealTimeData();
 
   useEffect(() => {
     safetyRun(apiClient.userInfo.getUserInfo({
       worker,
     }).then((data) => setUserInfo(data)).catch(() => setUserInfo(null)));
-  }, [worker]);
+
+    const handler = (event: CustomEvent<UserInfoDto>) => {
+      setUserInfo(event.detail);
+    }
+
+    const eventName = 'userInfo';
+    realTimeDataSource.userInfoEvents.addEventListener(eventName, handler);
+    realTimeDataSource.subscribeToUserInfo(userId);
+
+    return () => {
+      realTimeDataSource.userInfoEvents.removeEventListener(eventName, handler);
+    }
+  }, [worker, realTimeDataSource]);
 
   if (userInfo === undefined) {
     return <>

@@ -3,9 +3,11 @@ import {
   PositionEventDto,
   QuoteDto,
   QuoteEventDto,
-  SubscribeToQuotesEventDto,
-  WebsocketsErrorEventDto,
   SubscribeToPositionsEventDto,
+  SubscribeToQuotesEventDto,
+  UserInfoDto,
+  UserInfoEventDto,
+  WebsocketsErrorEventDto,
 } from "../../tools/api-client/generated";
 import { WebsocketClient } from "@jifeon/boar-pack-common-frontend";
 import { useEffect, useState } from "react";
@@ -15,6 +17,7 @@ export type TIncomeEvent =
   | { event: 'error' } & WebsocketsErrorEventDto
   | { event: 'quote' } & QuoteEventDto
   | { event: 'position' } & PositionEventDto
+  | { event: 'user' } & UserInfoEventDto
   | { event: 'status', status: WebSocket['readyState'] };
 
 export type TOutputEvent =
@@ -27,48 +30,77 @@ export class RealTimeDataSource {
   private symbols: string[] = [];
   private moduleId: number = null;
   private userId: number = null;
+  private subscriptions: Set<'quotes' | 'positions' | 'userInfo'> = new Set();
   public readonly quotesEvents: EventTarget = new EventTarget();
   public readonly positionsEvents: EventTarget = new EventTarget();
   public readonly socketStatusEvents: EventTarget = new EventTarget();
+  public readonly userInfoEvents: EventTarget = new EventTarget();
 
   get status() {
     return this.primarySocket?.status ?? WebSocket.CLOSED;
   }
 
-  public subscribeToQuotes(symbols: string[], moduleId: number) {
-    if (this.active) {
-      this.updateConnection(symbols, moduleId);
-      return;
-    }
-
+  private createSocket() {
     this.active = true;
-    this.symbols = symbols;
-    this.moduleId = moduleId;
 
     this.primarySocket = new WebsocketClient({
       worker: null,
-      onOpen: this.onQuotesSocketOpen,
+      onOpen: this.onOpen,
       onMessage: this.onSocketMessage,
       onClose: this.onSocketClose,
     });
     this.emitStatusEvent();
   }
 
-  public subscribeToPositions(userId: number) {
+  private onOpen = () => {
+    this.emitStatusEvent();
+
+    if (this.subscriptions.has('quotes')) {
+      this.listenQuotes();
+    }
+    if (this.subscriptions.has('positions')) {
+      this.listenPositons();
+    }
+    if (this.subscriptions.has('userInfo')) {
+      this.listenUserInfo();
+    }
+  }
+
+  public subscribeToQuotes(symbols: string[], moduleId: number) {
+    this.subscriptions.add('quotes');
+    this.symbols = symbols;
+    this.moduleId = moduleId;
+
     if (this.active) {
+      this.listenQuotes();
       return;
     }
 
-    this.active = true;
+    this.createSocket();
+  }
+
+  public subscribeToPositions(userId: number) {
+    this.subscriptions.add('positions');
     this.userId = userId;
 
-    this.primarySocket = new WebsocketClient({
-      worker: null,
-      onOpen: this.onPositionsSocketOpen,
-      onMessage: this.onSocketMessage,
-      onClose: this.onSocketClose,
-    });
-    this.emitStatusEvent();
+    if (this.active) {
+      this.listenPositons();
+      return;
+    }
+
+    this.createSocket();
+  }
+
+  public subscribeToUserInfo(userId: number) {
+    this.subscriptions.add('userInfo');
+    this.userId = userId;
+
+    if (this.active) {
+      this.listenUserInfo();
+      return;
+    }
+
+    this.createSocket();
   }
 
   private emitStatusEvent() {
@@ -93,16 +125,6 @@ export class RealTimeDataSource {
     await this.primarySocket?.close();
   }
 
-  public updateConnection(symbols: string[], moduleId: number) {
-    this.symbols = symbols;
-    this.moduleId = moduleId;
-    if (!this.active) {
-      return;
-    }
-
-    this.onQuotesSocketOpen();
-  }
-
   private onSocketMessage = async (msg: TIncomeEvent) => {
     switch (msg.event) {
       case 'quote':
@@ -113,14 +135,17 @@ export class RealTimeDataSource {
         this.emitPositionEvent(msg.data);
         break;
 
+      case 'user':
+        this.emitUserInfoEvent(msg.data);
+        break;
+
       case 'status':
         this.emitStatusEvent();
         break;
     }
   }
 
-  private onQuotesSocketOpen = () => {
-    this.emitStatusEvent();
+  private listenQuotes = () => {
     this.primarySocket?.send<SubscribeToQuotesEventDto>({
       event: 'subscribeToQuotes',
       data: {
@@ -130,10 +155,18 @@ export class RealTimeDataSource {
     });
   }
 
-  private onPositionsSocketOpen = () => {
-    this.emitStatusEvent();
+  private listenPositons = () => {
     this.primarySocket?.send<SubscribeToPositionsEventDto>({
       event: 'subscribeToPositions',
+      data: {
+        userId: this.userId,
+      },
+    });
+  }
+
+  private listenUserInfo = () => {
+    this.primarySocket?.send({
+      event: 'subscribeToUserInfo',
       data: {
         userId: this.userId,
       },
@@ -156,6 +189,17 @@ export class RealTimeDataSource {
       `position:${position.userId}`,
       {
         detail: position,
+        bubbles: false,
+        cancelable: true,
+      }
+    ));
+  }
+
+  private emitUserInfoEvent(userInfo: UserInfoDto) {
+    this.userInfoEvents.dispatchEvent(new CustomEvent<UserInfoDto>(
+      `userInfo`,
+      {
+        detail: userInfo,
         bubbles: false,
         cancelable: true,
       }
