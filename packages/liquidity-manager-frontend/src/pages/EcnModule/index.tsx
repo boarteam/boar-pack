@@ -44,7 +44,10 @@ const ModulesGraph: React.FC = () => {
       onTabChange={(tab: Tabs) => setActiveTab(tab)}
     >
       {activeTab === Tabs.connections && <ConnectionsGraph modules={new Set([id])} />}
-      {activeTab === Tabs.quotes && <QuotesTable moduleId={id} />}
+      {activeTab === Tabs.quotes && <QuotesTable
+        moduleId={id}
+        controller={'ecnInstruments'}
+      />}
     </PageContainer>
   );
 };

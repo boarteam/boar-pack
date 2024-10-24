@@ -62,8 +62,32 @@ export type MTPosition = {
 export type MTGetPositionsResult = LosslessJsonResult<{
   req_id: number;
   user_id: number;
-  positions: {position: MTPosition}[];
+  positions: MTPosition[];
 }>;
+
+export type MTGetUserInfoRequest = {
+  method: 'get_user';
+  req_id: number;
+  user_id: number;
+}
+
+export type MTUserInfo = LosslessJsonResult<{
+  id: number;
+  name: string;
+  group_name: string;
+  leverage: number;
+  account_state: {
+    user_id: number;
+    balance: number;
+    margin: number;
+    profit: number;
+  }
+}>;
+
+export type MTGetUserInfoResult = {
+  req_id: number;
+  user: MTUserInfo;
+}
 
 export type MTAttachStreamRequest = {
   method: 'subscribe_to_quotes_stream';

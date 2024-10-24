@@ -32,6 +32,7 @@ import { LiquidityManagersUsersService } from './services/LiquidityManagersUsers
 import { MyAuditLogsService } from './services/MyAuditLogsService';
 import { PositionsService } from './services/PositionsService';
 import { SubloginSettingsService } from './services/SubloginSettingsService';
+import { UserInfoService } from './services/UserInfoService';
 import { UsersService } from './services/UsersService';
 import { UsersGroupsInstService } from './services/UsersGroupsInstService';
 import { UsersInstService } from './services/UsersInstService';
@@ -68,6 +69,7 @@ export class ApiClient {
     public readonly myAuditLogs: MyAuditLogsService;
     public readonly positions: PositionsService;
     public readonly subloginSettings: SubloginSettingsService;
+    public readonly userInfo: UserInfoService;
     public readonly users: UsersService;
     public readonly usersGroupsInst: UsersGroupsInstService;
     public readonly usersInst: UsersInstService;
@@ -115,6 +117,7 @@ export class ApiClient {
         this.myAuditLogs = new MyAuditLogsService(this.request);
         this.positions = new PositionsService(this.request);
         this.subloginSettings = new SubloginSettingsService(this.request);
+        this.userInfo = new UserInfoService(this.request);
         this.users = new UsersService(this.request);
         this.usersGroupsInst = new UsersGroupsInstService(this.request);
         this.usersInst = new UsersInstService(this.request);

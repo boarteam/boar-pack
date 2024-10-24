@@ -17,6 +17,8 @@ import { MyInstrumentsPermissions } from "../my-instruments/my-instruments.permi
 import { MyInstrument } from "../my-instruments/policies/view-my-instruments.policy";
 import { MyAuditLog, MyAuditLogsPermissions } from "../my-audit-logs";
 import { RealTimeData } from "../real-time-data/policies/view-real-time-data.policy";
+import { Position } from "../positions/policies/view-positions.policy";
+import { UserInfo } from "../user-info/policies/view-user-info.policy";
 
 export enum Permissions {
   VIEW_LIQUIDITY = 'view_liquidity',
@@ -25,7 +27,6 @@ export enum Permissions {
 
 export const Liquidity = 'Liquidity' as const;
 export const Quotes = 'Quotes' as const;
-export const Position = 'Position' as const;
 
 export const subjects = [
   EcnModule,
@@ -43,6 +44,7 @@ export const subjects = [
   Quotes,
   Position,
   RealTimeData,
+  UserInfo,
 ];
 
 @Module({})

@@ -28,6 +28,7 @@ import {
 } from "../liquidity-managers-users";
 import { PositionsModule } from "../positions/positions.module";
 import { MyInstrumentsModule } from "../my-instruments/my-instruments.module";
+import { UserInfoModule } from "../user-info/user-info.module";
 
 export const restModules = [
   EcnModulesModule,
@@ -42,6 +43,7 @@ export const restModules = [
   EcnConnectSchemaSetupLabelsModule,
   EcnSubscrSchemaModule,
   PositionsModule.forRestApi(),
+  UserInfoModule.forRestApi(),
 ] as const;
 
 @Module({})
