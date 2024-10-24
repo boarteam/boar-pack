@@ -76,7 +76,7 @@ export class RealTimeDataService {
         messagesStream,
         config,
         onOpen: () => {
-          this.subscribeSocket({ ws: socket, config });
+          this.onSocketConnect({ ws: socket, config });
         }
       });
       config.socket = socket;
@@ -99,7 +99,7 @@ export class RealTimeDataService {
     }
   }
 
-  private async subscribeSocket({
+  private async onSocketConnect({
     ws,
     config,
   }: {
@@ -229,6 +229,13 @@ export class RealTimeDataService {
       return;
     }
 
+    // this happens if several requests for subscription to quotes come at the same time
+    // todo: fix frontend to avoid such behaviour
+    if (config.socket.readyState !== WebSocket.OPEN) {
+      this.logger.warn(`Socket is not connected, subscribing to quotes after socket is open...`);
+      return;
+    }
+
     this.logger.log(`Detaching messages stream from existing socket...`);
     if (config.quotesSubscription) {
       await this.amtsDcService.unsubscribeFromQuotesStream({
@@ -242,14 +249,14 @@ export class RealTimeDataService {
     };
 
     if (moduleId === config.moduleId) {
-      this.logger.log(`Attaching messages stream to existing socket...`);
-      await this.amtsDcService.subscribeToQuotesStream({
-        ws: config.socket,
-        instruments: symbols,
-        options: {
-          platform_id: mtPlatformsIds[MTVersions.MT5],
-        },
-      });
+        this.logger.log(`Attaching messages stream to existing socket...`);
+        await this.amtsDcService.subscribeToQuotesStream({
+          ws: config.socket,
+          instruments: symbols,
+          options: {
+            platform_id: mtPlatformsIds[MTVersions.MT5],
+          },
+        });
     } else {
       this.logger.log(`Reconnecting to AMTS websocket with new module id...`);
       config.moduleId = moduleId;
@@ -294,11 +301,11 @@ export class RealTimeDataService {
     };
 
     if (moduleId === config.moduleId) {
-      this.logger.log(`Attaching messages stream to existing socket...`);
-      await this.amtsDcService.subscribeToUserUpdate({
-        ws: config.socket,
-        userId,
-      });
+        this.logger.log(`Attaching messages stream to existing socket...`);
+        await this.amtsDcService.subscribeToUserUpdate({
+          ws: config.socket,
+          userId,
+        });
     } else {
       this.logger.log(`Reconnecting to AMTS websocket with new module id...`);
       config.moduleId = moduleId;
@@ -343,11 +350,11 @@ export class RealTimeDataService {
     };
 
     if (moduleId === config.moduleId) {
-      this.logger.log(`Attaching messages stream to existing socket...`);
-      await this.amtsDcService.subscribeToPositionsUpdate({
-        ws: config.socket,
-        userId,
-      });
+        this.logger.log(`Attaching messages stream to existing socket...`);
+        await this.amtsDcService.subscribeToPositionsUpdate({
+          ws: config.socket,
+          userId,
+        });
     } else {
       this.logger.log(`Reconnecting to AMTS websocket with new module id...`);
       config.moduleId = moduleId;
