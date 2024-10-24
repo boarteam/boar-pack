@@ -1,20 +1,22 @@
 import React, { useEffect } from "react";
-import { Descriptions, Typography } from "antd";
+import { Descriptions, Typography, Row, Col, Card } from "antd";
 import { UserInfoDto } from "../../tools/api-client";
 import safetyRun from "@jifeon/boar-pack-common-frontend/src/tools/safetyRun";
 import apiClient from "@@api/apiClient";
 import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
+import { Pie } from '@ant-design/plots';
 
 const { Title } = Typography;
 
-export type TUserStateDescriptionProps = {
-  userId: number;
+export type TUserStateDescriptionProps = {};
+
+type TData = {
+  label: string;
+  value: number;
 };
 
-export const UserStateDescription: React.FC<TUserStateDescriptionProps> = ({
-  userId,
-}) => {
+export const UserStateDescription: React.FC<TUserStateDescriptionProps> = ({}) => {
   const [userInfo, setUserInfo] = React.useState<UserInfoDto | null | undefined>(undefined);
   const { worker } = useLiquidityManagerContext();
 
@@ -61,13 +63,56 @@ export const UserStateDescription: React.FC<TUserStateDescriptionProps> = ({
     },
   ];
 
+  const data: TData[] = [
+    {
+      label: 'Margin',
+      value: userInfo.accountState.margin || 0,
+    },
+    {
+      label: 'P&L',
+      value: userInfo.accountState.profit || 0,
+    },
+  ];
+
   return (
-    <Descriptions
-      title="Account Info"
-      items={items}
-      column={2}
-      bordered
-      size={'small'}
-    />
+    <Row gutter={20} align={'stretch'}>
+      <Col span={12}>
+        <Card style={{
+          height: '100%',
+        }}>
+          <Descriptions
+            title="Account Info"
+            items={items}
+            column={1}
+            bordered
+            size={'small'}
+          />
+        </Card>
+      </Col>
+      <Col span={12}>
+        <Card>
+          <Pie
+            theme={'dark'}
+            data={data}
+            angleField={'value'}
+            colorField={'label'}
+            radius={0.8}
+            tooltip={false}
+            label={{
+              text: (d: TData) => `${d.label}\n ${d.value}`,
+              position: 'spider',
+            }}
+            legend={{
+              color: {
+                title: false,
+                position: 'right',
+                rowPadding: 5,
+              },
+            }}
+            height={300}
+          />
+        </Card>
+      </Col>
+    </Row>
   );
 }
