@@ -2,11 +2,12 @@ import { Injectable, Logger } from "@nestjs/common";
 import { AmtsDcService } from "../amts-dc/amts-dc.service";
 import { mtPlatformsIds, MTVersions } from "../amts-dc/amts-dc.constants";
 import { CLOSED_OBSERVABLE, MessagesStream } from "./dto/real-time-data.dto";
-import { MTPositionsWSMessage, MTQuoteWSMessage, MTWSMessage } from "../amts-dc/dto/amts-dc.dto";
+import { MTPositionsWSMessage, MTQuoteWSMessage, MTUserInfoWSMessage, MTWSMessage } from "../amts-dc/dto/amts-dc.dto";
 import { Subject } from "rxjs";
 import WebSocket from "ws";
 import { PositionSide } from "../positions/dto/positions.dto";
 import { TConnectorConfig } from "./real-time-data.types";
+import { UserInfoService } from "../user-info/user-info.service";
 
 @Injectable()
 export class RealTimeDataService {
@@ -15,6 +16,7 @@ export class RealTimeDataService {
 
   constructor(
     private readonly amtsDcService: AmtsDcService,
+    private readonly userInfoService: UserInfoService,
   ) {
   }
 
@@ -23,6 +25,7 @@ export class RealTimeDataService {
       moduleId,
       socket: null,
       quotesSubscription: null,
+      snapshotsSubscription: null,
       positionsSubscription: null,
       userInfoSubscription: null,
     };
@@ -113,6 +116,13 @@ export class RealTimeDataService {
         options: {
           platform_id: mtPlatformsIds[MTVersions.MT5],
         }
+      });
+    }
+
+    if (config.snapshotsSubscription) {
+      await this.amtsDcService.subscribeToSnapshotsStream({
+        ws,
+        instruments: config.snapshotsSubscription.symbols,
       });
     }
 
@@ -264,6 +274,62 @@ export class RealTimeDataService {
     }
   }
 
+  public async subscribeToSnapshots({
+    messagesStream,
+    symbols,
+    moduleId,
+  }: {
+    messagesStream: MessagesStream,
+    symbols: string[],
+    moduleId: number,
+  }) {
+    const config = this.subjectsToConfigs.get(messagesStream);
+    if (!config) {
+      throw new Error(`Config not found for stream, can't update`);
+    }
+
+    if (!config.socket) {
+      config.moduleId = moduleId;
+      config.snapshotsSubscription = {
+        symbols,
+      };
+      this.logger.warn(`Socket is not connected, updating instruments and connecting socket to existing stream...`);
+      await this.tryToPipeWebsocketToStream({ messagesStream });
+      return;
+    }
+
+    // this happens if several requests for subscription to snapshots come at the same time
+    // todo: fix frontend to avoid such behaviour
+    if (config.socket.readyState !== WebSocket.OPEN) {
+      this.logger.warn(`Socket is not connected, subscribing to snapshots after socket is open...`);
+      return;
+    }
+
+    this.logger.log(`Detaching messages stream from existing socket...`);
+    if (config.snapshotsSubscription) {
+      await this.amtsDcService.unsubscribeFromSnapshotsStream({
+        ws: config.socket,
+        instruments: config.snapshotsSubscription.symbols,
+      })
+    }
+
+    config.snapshotsSubscription = {
+      symbols,
+    };
+
+    if (moduleId === config.moduleId) {
+        this.logger.log(`Attaching messages stream to existing socket...`);
+        await this.amtsDcService.subscribeToSnapshotsStream({
+          ws: config.socket,
+          instruments: symbols,
+        });
+    } else {
+      this.logger.log(`Reconnecting to AMTS websocket with new module id...`);
+      config.moduleId = moduleId;
+      this.recreateSocketForMessageStream(messagesStream, 0);
+    }
+  }
+
   public async subscribeToUserInfo({
     messagesStream,
     userId,
@@ -367,6 +433,8 @@ export class RealTimeDataService {
       this.processQuoteMessage(messagesStream, event);
     } else if ('position' in event) {
       this.processPositionMessage(messagesStream, event);
+    } else if ('user' in event) {
+      this.processUserMessage(messagesStream, event);
     } else {
       this.logger.warn(`Unknown WS message type for message: ${JSON.stringify(event)}`);
     }
@@ -399,6 +467,13 @@ export class RealTimeDataService {
         createdAt: new Date(msg.position.ts_create),
         updatedAt: new Date(msg.position.ts_update),
       }
+    });
+  }
+
+  private processUserMessage(messagesStream: MessagesStream, msg: MTUserInfoWSMessage): void {
+    messagesStream.next({
+      event: 'user',
+      data: this.userInfoService.formatUserInfo(msg.user),
     });
   }
 }

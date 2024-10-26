@@ -24,4 +24,20 @@ export class UserInfoModule {
       ]
     };
   }
+
+  static forFeature() {
+    return {
+      module: UserInfoModule,
+      imports: [
+        AmtsDcModule,
+        UsersInstModule.forFeature(),
+      ],
+      providers: [
+        UserInfoService,
+      ],
+      exports: [
+        UserInfoService,
+      ],
+    };
+  }
 }

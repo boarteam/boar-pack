@@ -112,7 +112,8 @@ export type MTWSMessage =
   | MTPositionsWSMessage
   | MTInstrumentAddMessage
   | MTInstrumentUpdateMessage
-  | MTInstrumentDeleteMessage;
+  | MTInstrumentDeleteMessage
+  | MTUserInfoWSMessage;
 
 export type MTQuoteWSMessage = {
   quote: {
@@ -125,6 +126,10 @@ export type MTQuoteWSMessage = {
 
 export type MTPositionsWSMessage = {
   position: MTPosition;
+}
+
+export type MTUserInfoWSMessage = {
+  user: MTUserInfo;
 }
 
 export type MTInstrumentAddMessage = {
