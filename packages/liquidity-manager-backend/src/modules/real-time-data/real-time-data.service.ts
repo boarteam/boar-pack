@@ -2,7 +2,13 @@ import { Injectable, Logger } from "@nestjs/common";
 import { TpDcService } from "../tp-dc/tp-dc.service";
 import { mtPlatformsIds, MTVersions } from "../tp-dc/tp-dc.constants";
 import { CLOSED_OBSERVABLE, MessagesStream } from "./dto/real-time-data.dto";
-import { MTPositionsWSMessage, MTQuoteWSMessage, MTUserInfoWSMessage, MTWSMessage } from "../tp-dc/dto/tp-dc.dto";
+import {
+  MTPositionsWSMessage,
+  MTQuoteWSMessage,
+  MTSnapshotWSMessage,
+  MTUserInfoWSMessage,
+  MTWSMessage
+} from "../tp-dc/dto/tp-dc.dto";
 import { Subject } from "rxjs";
 import WebSocket from "ws";
 import { PositionSide } from "../positions/dto/positions.dto";
@@ -431,6 +437,8 @@ export class RealTimeDataService {
   private processWSMessage(messagesStream: MessagesStream, event: MTWSMessage) {
     if ('quote' in event) {
       this.processQuoteMessage(messagesStream, event);
+    } else if ('snapshot' in event) {
+      this.processSnapshotMessage(messagesStream, event);
     } else if ('position' in event) {
       this.processPositionMessage(messagesStream, event);
     } else if ('user' in event) {
@@ -448,6 +456,17 @@ export class RealTimeDataService {
         bid: msg.quote.bid,
         ask: msg.quote.ask,
         timestamp: msg.quote.ts_msc,
+      },
+    });
+  }
+
+  private processSnapshotMessage(messagesStream: MessagesStream, msg: MTSnapshotWSMessage): void {
+    messagesStream.next({
+      event: 'snapshot',
+      data: {
+        symbol: msg.snapshot.instrument,
+        timestamp: msg.snapshot.ts_msc,
+        bands: msg.snapshot.bands,
       },
     });
   }

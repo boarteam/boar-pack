@@ -10,6 +10,16 @@ export class QuoteDto {
   timestamp: number;
 }
 
+export class SnapshotDto {
+  symbol: string;
+  timestamp: number;
+  bands: {
+    side: number;
+    price: number;
+    amount: number;
+  }[];
+}
+
 export class SubscribeToQuotesEventDto implements WebsocketsEventDto {
   event: 'subscribeToQuotes';
   data: {
@@ -34,7 +44,13 @@ export class SubscribeToUserInfoEventDto implements WebsocketsEventDto {
 
 export const CLOSED_OBSERVABLE = Symbol('CLOSED_OBSERVABLE');
 
-export type MessageEventDto = QuoteEventDto | PositionEventDto | StatusEventDto | UserInfoEventDto;
+export type MessageEventDto =
+  | QuoteEventDto
+  | SnapshotEventDto
+  | PositionEventDto
+  | StatusEventDto
+  | UserInfoEventDto;
+
 export type MessagesStream = Subject<MessageEventDto> & {
   [CLOSED_OBSERVABLE]?: true | undefined;
 };
@@ -42,6 +58,11 @@ export type MessagesStream = Subject<MessageEventDto> & {
 export class QuoteEventDto implements WebsocketsEventDto {
   event: 'quote';
   data: QuoteDto;
+}
+
+export class SnapshotEventDto implements WebsocketsEventDto {
+  event: 'snapshot';
+  data: SnapshotDto;
 }
 
 export class PositionEventDto implements WebsocketsEventDto {
