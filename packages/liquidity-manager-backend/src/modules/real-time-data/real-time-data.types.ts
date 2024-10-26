@@ -25,6 +25,7 @@ export type TConnectorConfig = {
   moduleId: number;
   socket: WebSocket | null;
   quotesSubscription: TQuotesSubscriptionConfig | null;
+  snapshotsSubscription: TQuotesSubscriptionConfig | null;
   positionsSubscription: TPositionsSubscriptionConfig | null;
   userInfoSubscription: TUserInfoSubscriptionConfig | null;
 }

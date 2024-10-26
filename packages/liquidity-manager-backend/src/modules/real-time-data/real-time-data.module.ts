@@ -5,6 +5,7 @@ import { CaslModule, WsAuthModule } from "@jifeon/boar-pack-users-backend";
 import { AmtsDcModule } from "../amts-dc/amts-dc.module";
 import { RealTimeDataService } from "./real-time-data.service";
 import { UsersInstModule } from "../users-inst/users-inst.module";
+import { UserInfoModule } from "../user-info/user-info.module";
 
 @Module({})
 export class RealTimeDataModule {
@@ -20,6 +21,7 @@ export class RealTimeDataModule {
         AmtsDcModule,
         CaslModule.forFeature(),
         UsersInstModule.forFeature(),
+        UserInfoModule,
       ],
       providers: [
         RealTimeDataGateway,

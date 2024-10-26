@@ -78,6 +78,37 @@ export class RealTimeDataGateway {
     }
   }
 
+  @SubscribeMessage('subscribeToSnapshots')
+  @CheckPolicies(new ViewRealTimeDataPolicy())
+  private async handleSubscribeToSnapshots(
+    @ConnectedSocket() client: WebSocket,
+    @MessageBody() subscribeEventDto: SubscribeToQuotesEventDto['data'],
+  ): Promise<MessagesStream | void> {
+    let { symbols, moduleId } = subscribeEventDto;
+    if (!Array.isArray(symbols) || !symbols.length || !symbols.every((symbol) => typeof symbol === 'string')) {
+      // TODO: add validation pipe, also check there are corresponding instruments, number of symbols and length
+      // of every symbol
+      throw new WsException('Symbols should be a non-empty array of strings');
+    }
+
+    symbols = symbols.filter((symbol) => symbol.length > 0);
+
+    const existingStream = this.messagesStreamsByClients.get(client);
+    if (existingStream) {
+      await this.service.subscribeToSnapshots({
+        messagesStream: existingStream,
+        symbols,
+        moduleId,
+      });
+    } else {
+      const config = this.service.createConnectionConfig(moduleId);
+      config.snapshotsSubscription = {
+        symbols,
+      }
+      return this.createMessageStream(config, client);
+    }
+  }
+
   @SubscribeMessage('subscribeToUserInfo')
   @CheckPolicies(new ViewRealTimeDataPolicy())
   private async handleSubscribeToUserInfo(
