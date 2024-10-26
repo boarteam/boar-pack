@@ -2,7 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { isSafeNumber, parse } from "lossless-json";
 import {
-  MTAttachStreamRequest,
+  MTSubscribeToQuotesRequest,
   MTGetPositionsRequest,
   MTGetPositionsResult,
   MTGetUserInfoRequest, MTGetUserInfoResult, MTUserInfo,
@@ -30,7 +30,7 @@ export class AmtsDcService {
     private readonly configService: AmtsDcConfigService,
     private readonly websocketsClients: WebsocketsClients<
       MTWSMessage,
-      MTAttachStreamRequest,
+      MTSubscribeToQuotesRequest,
       TAmtsSocketsConfig
     >,
   ) {
@@ -153,9 +153,9 @@ export class AmtsDcService {
   }: {
     ws: WebSocket,
     instruments: string[],
-    options?: Partial<MTAttachStreamRequest>
+    options?: Partial<MTSubscribeToQuotesRequest>
   }): Promise<void> {
-    const params: MTAttachStreamRequest = {
+    const params: MTSubscribeToQuotesRequest = {
       method: 'subscribe_to_quotes_stream',
       version: this.VERSION,
       req_id: 1,

@@ -89,7 +89,17 @@ export type MTGetUserInfoResult = {
   user: MTUserInfo;
 }
 
-export type MTAttachStreamRequest = {
+export type MTSnapshot = {
+  instrument: string;
+  ts_msc: number;
+  bands: {
+    side: number;
+    price: number;
+    amount: number;
+  }[];
+};
+
+export type MTSubscribeToQuotesRequest = {
   method: 'subscribe_to_quotes_stream';
   req_id: number;
   session_id?: number;
@@ -109,6 +119,7 @@ export type MTAttachStreamResult = LosslessJsonResult<{
 
 export type MTWSMessage =
   | MTQuoteWSMessage
+  | MTSnapshotWSMessage
   | MTPositionsWSMessage
   | MTInstrumentAddMessage
   | MTInstrumentUpdateMessage
@@ -122,6 +133,10 @@ export type MTQuoteWSMessage = {
     ask: number;
     bid: number
   }
+}
+
+export type MTSnapshotWSMessage = {
+  snapshot: MTSnapshot;
 }
 
 export type MTPositionsWSMessage = {
