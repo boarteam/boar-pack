@@ -24,4 +24,20 @@ export class UserInfoModule {
       ]
     };
   }
+
+  static forFeature() {
+    return {
+      module: UserInfoModule,
+      imports: [
+        TpDcModule,
+        UsersInstModule.forFeature(),
+      ],
+      providers: [
+        UserInfoService,
+      ],
+      exports: [
+        UserInfoService,
+      ],
+    };
+  }
 }

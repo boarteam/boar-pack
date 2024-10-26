@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserInfoDto } from "./dto/user-info.dto";
 import { TpDcService } from "../tp-dc/tp-dc.service";
 import { UsersInstService } from "../users-inst/users-inst.service";
+import { MTUserInfo } from "../tp-dc/dto/tp-dc.dto";
 
 @Injectable()
 export class UserInfoService {
@@ -11,23 +12,27 @@ export class UserInfoService {
   ) {
   }
 
-  async getUserInfo(userId: number): Promise<UserInfoDto> {
+  public formatUserInfo(userInfo: MTUserInfo): UserInfoDto {
+    return {
+      id: Number(userInfo.id),
+      name: userInfo.name,
+      groupName: userInfo.group_name,
+      leverage: Number(userInfo.leverage),
+      accountState: {
+        balance: userInfo.account_state.balance,
+        margin: userInfo.account_state.margin,
+        profit: userInfo.account_state.profit,
+      }
+    }
+  }
+
+  public async getUserInfo(userId: number): Promise<UserInfoDto> {
     const serverId = await this.usersInstService.getMarginModuleId(userId);
     const { user } = await this.tpDcService.getUserInfo({
       userId,
       serverId,
     });
 
-    return {
-      id: Number(user.id),
-      name: user.name,
-      groupName: user.group_name,
-      leverage: Number(user.leverage),
-      accountState: {
-        balance: user.account_state.balance,
-        margin: user.account_state.margin,
-        profit: user.account_state.profit,
-      }
-    }
+    return this.formatUserInfo(user);
   }
 }
