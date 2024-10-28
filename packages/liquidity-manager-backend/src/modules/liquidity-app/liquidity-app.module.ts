@@ -29,6 +29,9 @@ import {
 import { PositionsModule } from "../positions/positions.module";
 import { MyInstrumentsModule } from "../my-instruments/my-instruments.module";
 import { UserInfoModule } from "../user-info/user-info.module";
+import { MySubloginSettingsModule } from "../my-sublogin-settings/my-sublogin-settings.module";
+import { MyUsersSubAccountsInstModule } from "../my-users-sub-accounts-inst/my-users-sub-accounts-inst.module";
+import { ViewInstrumentsSpecificationsModule } from "../view-instruments-specifications/view-instruments-specifications.module";
 
 export const restModules = [
   EcnModulesModule,
@@ -39,6 +42,7 @@ export const restModules = [
   SubloginsSettingsModule,
   EcnInstrumentsGroupsModule,
   EcnInstrumentsModule,
+  ViewInstrumentsSpecificationsModule,
   EcnConnectSchemaModule,
   EcnConnectSchemaSetupLabelsModule,
   EcnSubscrSchemaModule,
@@ -111,6 +115,8 @@ export class LiquidityAppModule {
           dataSourceName: config.dataSourceName,
         }),
         MyInstrumentsModule,
+        MySubloginSettingsModule,
+        MyUsersSubAccountsInstModule,
         // RealTimeDataAppModule.forClusterMaster(),
         ...restModules,
       ],
