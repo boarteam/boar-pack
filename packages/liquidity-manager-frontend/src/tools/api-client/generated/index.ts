@@ -143,6 +143,8 @@ export { InstrumentsService } from './services/InstrumentsService';
 export { LiquidityManagersService } from './services/LiquidityManagersService';
 export { LiquidityManagersUsersService } from './services/LiquidityManagersUsersService';
 export { MyAuditLogsService } from './services/MyAuditLogsService';
+export { MySubloginSettingsService } from './services/MySubloginSettingsService';
+export { MyUsersSubAccountsInstService } from './services/MyUsersSubAccountsInstService';
 export { PositionsService } from './services/PositionsService';
 export { SubloginSettingsService } from './services/SubloginSettingsService';
 export { UserInfoService } from './services/UserInfoService';
