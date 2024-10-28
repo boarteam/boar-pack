@@ -16,11 +16,16 @@ export class MyUsersSubAccountsInstGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const user = request.user as TUser;
 
-    const subAccountId = request.params['subAccountId'];
-    const belongsToUser = await this.usersSubAccountsInstService.belongsToUser(subAccountId, user.id);
+    const userSubAccountInstId = request.params['id'];
+    if (!userSubAccountInstId) {
+      this.logger.warn(`User ${user.id} tried to activate SubAccount without providing subAccountId`);
+      return false;
+    }
+
+    const belongsToUser = await this.usersSubAccountsInstService.belongsToUser(userSubAccountInstId, user.id);
 
     if (!belongsToUser) {
-      this.logger.warn(`User ${user.id} tried to activate SubAccount ${subAccountId} that does not belong to him`);
+      this.logger.warn(`User ${user.id} tried to activate SubAccount ${userSubAccountInstId} that does not belong to him`);
     }
 
     return belongsToUser;
