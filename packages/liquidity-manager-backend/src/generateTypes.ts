@@ -28,7 +28,10 @@ import { UsersModule } from "@jifeon/boar-pack-users-backend";
 import { EcnSubscrSchemaController } from './modules/ecn-subscr-schema/ecn-subscr-schema.controller';
 import { EcnInstrumentsController } from "./modules/ecn-instruments/ecn-instruments.controller";
 import { MyInstrumentsModule } from "./modules/my-instruments/my-instruments.module";
+import { MySubloginSettingsModule } from "./modules/my-sublogin-settings/my-sublogin-settings.module";
 import { MyAuditLogsModule } from "./modules/my-audit-logs/my-audit-logs.module";
+import { MyUsersSubAccountsInstModule } from './modules/my-users-sub-accounts-inst/my-users-sub-accounts-inst.module';
+import { ViewInstrumentsSpecificationsModule } from './modules/view-instruments-specifications/view-instruments-specifications.module';
 
 @Module({
   imports: [
@@ -66,6 +69,9 @@ import { MyAuditLogsModule } from "./modules/my-audit-logs/my-audit-logs.module"
     LiquidityManagersUsersModule.forTID({ dataSourceName: 'tid_db' }),
     LMAuthModule,
     MyInstrumentsModule,
+    MySubloginSettingsModule,
+    MyUsersSubAccountsInstModule,
+    ViewInstrumentsSpecificationsModule,
     MyAuditLogsModule.forManagerPanel({
       dataSourceName: 'tid_db',
     }),
