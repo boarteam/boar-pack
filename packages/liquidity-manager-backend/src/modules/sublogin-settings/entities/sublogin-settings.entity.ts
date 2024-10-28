@@ -13,7 +13,9 @@ export class SubloginSettings {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'users_sub_account_inst_id' })
+  @JoinColumn({
+    name: 'users_sub_account_inst_id',
+  })
   usersSubAccountInst: UsersSubAccountInst;
 
   @Column('varchar', { length: 20, primary: true, name: 'instrument' })

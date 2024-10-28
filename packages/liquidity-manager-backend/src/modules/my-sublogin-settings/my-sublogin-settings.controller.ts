@@ -30,7 +30,10 @@ import { MySubloginSettingsGuard } from './my-sublogin-settings.guard';
     alwaysPaginate: true,
     exclude: ['usersSubAccountInstId'],
     join: {
-      usersSubAccountInst: {},
+      usersSubAccountInst: {
+        eager: true,
+        select: false,
+      },
       instrumentRel: {},
       'instrumentRel.instrumentGroup': {},
       hedgeCurrency: {
@@ -71,14 +74,13 @@ import { MySubloginSettingsGuard } from './my-sublogin-settings.guard';
     update: SubloginSettingsUpdateDto,
   },
 })
-// todo: andrey help
-// @CrudAuth({
-//   property: 'user',
-//   filter: (user: TUser) => {
-//     return {
-//     'usersSubAccountInst.id': user.id,
-//   }},
-// })
+@CrudAuth({
+  property: 'user',
+  filter: (user: TUser) => {
+    return {
+    'usersSubAccountInst.userId': user.id,
+  }},
+})
 @ApiTags('mySubloginSettings')
 @CheckPolicies(new ManageMySubloginSettingsPolicy())
 @Controller('liquidity/my-sublogins-settings')
