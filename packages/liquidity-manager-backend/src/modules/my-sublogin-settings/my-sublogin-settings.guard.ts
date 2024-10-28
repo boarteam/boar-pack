@@ -17,6 +17,11 @@ export class MySubloginSettingsGuard implements CanActivate {
     const user = request.user as TUser;
 
     const usersSubAccountInstId = request.params['usersSubAccountInstId'];
+    if (usersSubAccountInstId === undefined) {
+      this.logger.warn(`Request to change SubloginSettings without usersSubAccountInstId`);
+      return false;
+    }
+
     const belongsToUser = await this.usersSubAccountsInstService.belongsToUser(usersSubAccountInstId, user.id);
 
     if (!belongsToUser) {
