@@ -76,6 +76,7 @@ export type MTUserInfo = LosslessJsonResult<{
   name: string;
   group_name: string;
   leverage: number;
+  currency: string;
   account_state: {
     user_id: number;
     balance: number;

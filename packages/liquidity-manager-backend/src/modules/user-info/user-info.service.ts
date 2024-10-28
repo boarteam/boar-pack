@@ -18,6 +18,7 @@ export class UserInfoService {
       name: userInfo.name,
       groupName: userInfo.group_name,
       leverage: Number(userInfo.leverage),
+      currency: userInfo.currency,
       accountState: {
         balance: userInfo.account_state.balance,
         margin: userInfo.account_state.margin,

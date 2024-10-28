@@ -40,6 +40,7 @@ import { UsersGroupsInstService } from './services/UsersGroupsInstService';
 import { UsersInstService } from './services/UsersInstService';
 import { UsersInstCompaniesService } from './services/UsersInstCompaniesService';
 import { UsersSubAccountsInstService } from './services/UsersSubAccountsInstService';
+import { ViewInstrumentsSpecificationsService } from './services/ViewInstrumentsSpecificationsService';
 
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 
@@ -79,6 +80,7 @@ export class ApiClient {
     public readonly usersInst: UsersInstService;
     public readonly usersInstCompanies: UsersInstCompaniesService;
     public readonly usersSubAccountsInst: UsersSubAccountsInstService;
+    public readonly viewInstrumentsSpecifications: ViewInstrumentsSpecificationsService;
 
     public readonly request: BaseHttpRequest;
 
@@ -129,6 +131,7 @@ export class ApiClient {
         this.usersInst = new UsersInstService(this.request);
         this.usersInstCompanies = new UsersInstCompaniesService(this.request);
         this.usersSubAccountsInst = new UsersSubAccountsInstService(this.request);
+        this.viewInstrumentsSpecifications = new ViewInstrumentsSpecificationsService(this.request);
     }
 }
 

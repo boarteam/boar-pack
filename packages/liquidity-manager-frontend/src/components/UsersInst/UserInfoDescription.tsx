@@ -19,7 +19,7 @@ type TData = {
   value: number;
 };
 
-export const UserStateDescription: React.FC<TUserStateDescriptionProps> = ({
+export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
   userId,
 }) => {
   const [userInfo, setUserInfo] = React.useState<UserInfoDto | null | undefined>(undefined);
@@ -77,7 +77,7 @@ export const UserStateDescription: React.FC<TUserStateDescriptionProps> = ({
     {
       key: 'currency',
       label: 'Currency',
-      children: '-',
+      children: userInfo.currency,
     },
   ];
 
