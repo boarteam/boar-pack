@@ -64,13 +64,12 @@ import { MyUsersSubAccountsInstGuard } from './my-users-sub-accounts-inst.guard'
     update: UsersSubAccountInstUpdateDto,
   },
 })
-// todo: andrey help
-// @CrudAuth({
-//   property: 'user',
-//   filter: (user: TUser) => ({
-//     'id': user.id,
-//   }),
-// })
+@CrudAuth({
+  property: 'user',
+  filter: (user: TUser) => ({
+    userId: user.id,
+  }),
+})
 @ApiTags('myUsersSubAccountsInst')
 @CheckPolicies(new ManageMyUsersSubAccountsInstPolicy())
 @UseFilters(TypeOrmExceptionFilter)
