@@ -21,7 +21,7 @@ export class RealTimeDataModule {
         TpDcModule,
         CaslModule.forFeature(),
         UsersInstModule.forFeature(),
-        UserInfoModule,
+        UserInfoModule.forFeature(),
       ],
       providers: [
         RealTimeDataGateway,
