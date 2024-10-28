@@ -77,6 +77,7 @@ export type { GetManyUsersGroupsInstResponseDto } from './models/GetManyUsersGro
 export type { GetManyUsersInstCompanyResponseDto } from './models/GetManyUsersInstCompanyResponseDto';
 export type { GetManyUsersInstResponseDto } from './models/GetManyUsersInstResponseDto';
 export type { GetManyUsersSubAccountInstResponseDto } from './models/GetManyUsersSubAccountInstResponseDto';
+export type { GetManyViewInstrumentsSpecificationResponseDto } from './models/GetManyViewInstrumentsSpecificationResponseDto';
 export { LiquidityManager } from './models/LiquidityManager';
 export type { LiquidityManagerCheckDto } from './models/LiquidityManagerCheckDto';
 export { LiquidityManagerCheckResponseDto } from './models/LiquidityManagerCheckResponseDto';
@@ -117,6 +118,7 @@ export type { UsersSubAccountInst } from './models/UsersSubAccountInst';
 export type { UsersSubAccountInstCreateDto } from './models/UsersSubAccountInstCreateDto';
 export type { UsersSubAccountInstUpdateDto } from './models/UsersSubAccountInstUpdateDto';
 export { UserUpdateDto } from './models/UserUpdateDto';
+export type { ViewInstrumentsSpecification } from './models/ViewInstrumentsSpecification';
 export type { WebsocketsErrorEventDto } from './models/WebsocketsErrorEventDto';
 
 export { AmtsAuthenticationService } from './services/AmtsAuthenticationService';
@@ -153,3 +155,4 @@ export { UsersGroupsInstService } from './services/UsersGroupsInstService';
 export { UsersInstService } from './services/UsersInstService';
 export { UsersInstCompaniesService } from './services/UsersInstCompaniesService';
 export { UsersSubAccountsInstService } from './services/UsersSubAccountsInstService';
+export { ViewInstrumentsSpecificationsService } from './services/ViewInstrumentsSpecificationsService';
