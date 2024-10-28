@@ -71,14 +71,14 @@ import { MySubloginSettingsGuard } from './my-sublogin-settings.guard';
     update: SubloginSettingsUpdateDto,
   },
 })
-@CrudAuth({
-  property: 'user',
-  filter: (user: TUser) => {
-    console.log(user)
-    return {
-    'usersSubAccountInst.userid': user.id,
-  }},
-})
+// todo: andrey help
+// @CrudAuth({
+//   property: 'user',
+//   filter: (user: TUser) => {
+//     return {
+//     'usersSubAccountInst.id': user.id,
+//   }},
+// })
 @ApiTags('mySubloginSettings')
 @CheckPolicies(new ManageMySubloginSettingsPolicy())
 @Controller('liquidity/my-sublogins-settings')
