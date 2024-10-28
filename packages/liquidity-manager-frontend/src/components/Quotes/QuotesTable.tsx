@@ -19,11 +19,13 @@ type TQuotesPathParams = {
 type TQuotesTableProps = {
   moduleId: number,
   controller: 'myInstruments' | 'ecnInstruments',
+  onSymbolClick?: (instrument: string) => void,
 }
 
 const QuotesTable: React.FC<TQuotesTableProps> = ({
   moduleId,
   controller,
+  onSymbolClick,
 }) => {
   const columns = useQuotesColumns();
   const { worker } = useLiquidityManagerContext();
@@ -90,6 +92,14 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
         const status = connectionStatuses[connectionStatus];
         return [<Tag key={'connectionStatus'} color={status.color} icon={status.icon}>{status.text}</Tag>];
       }}
+      onRow={(record) => {
+        return {
+          onClick: () => {
+            onSymbolClick?.(record.symbol);
+          }
+        }
+      }
+      }
     ></Table>
   );
 }

@@ -466,7 +466,8 @@ export class RealTimeDataService {
       data: {
         symbol: msg.snapshot.instrument,
         timestamp: msg.snapshot.ts_msc,
-        bands: msg.snapshot.bands,
+        asks: msg.snapshot.asks,
+        bids: msg.snapshot.bids,
       },
     });
   }

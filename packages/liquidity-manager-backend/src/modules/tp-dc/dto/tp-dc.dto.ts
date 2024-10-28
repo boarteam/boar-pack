@@ -93,8 +93,11 @@ export type MTGetUserInfoResult = {
 export type MTSnapshot = {
   instrument: string;
   ts_msc: number;
-  bands: {
-    side: number;
+  asks: {
+    price: number;
+    amount: number;
+  }[];
+  bids: {
     price: number;
     amount: number;
   }[];

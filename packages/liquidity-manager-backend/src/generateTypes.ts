@@ -17,8 +17,11 @@ import {
   PositionEventDto,
   QuoteDto,
   QuoteEventDto,
+  SnapshotDto,
+  SnapshotEventDto,
   SubscribeToPositionsEventDto,
   SubscribeToQuotesEventDto,
+  SubscribeToSnapshotsEventDto,
   SubscribeToUserInfoEventDto,
   UserInfoEventDto
 } from "./modules/real-time-data/dto/real-time-data.dto";
@@ -31,7 +34,9 @@ import { MyInstrumentsModule } from "./modules/my-instruments/my-instruments.mod
 import { MySubloginSettingsModule } from "./modules/my-sublogin-settings/my-sublogin-settings.module";
 import { MyAuditLogsModule } from "./modules/my-audit-logs/my-audit-logs.module";
 import { MyUsersSubAccountsInstModule } from './modules/my-users-sub-accounts-inst/my-users-sub-accounts-inst.module';
-import { ViewInstrumentsSpecificationsModule } from './modules/view-instruments-specifications/view-instruments-specifications.module';
+import {
+  ViewInstrumentsSpecificationsModule
+} from './modules/view-instruments-specifications/view-instruments-specifications.module';
 
 @Module({
   imports: [
@@ -92,10 +97,13 @@ async function bootstrap() {
       extraModels: [
         WebsocketsErrorEventDto,
         QuoteDto,
+        SnapshotDto,
         QuoteEventDto,
+        SnapshotEventDto,
         PositionEventDto,
         UserInfoEventDto,
         SubscribeToQuotesEventDto,
+        SubscribeToSnapshotsEventDto,
         SubscribeToPositionsEventDto,
         SubscribeToUserInfoEventDto,
       ],
