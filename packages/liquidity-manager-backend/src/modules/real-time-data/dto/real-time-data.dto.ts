@@ -10,20 +10,30 @@ export class QuoteDto {
   timestamp: number;
 }
 
+export class BandDto {
+  price: number;
+  amount: number;
+}
+
 export class SnapshotDto {
   symbol: string;
   timestamp: number;
-  bands: {
-    side: number;
-    price: number;
-    amount: number;
-  }[];
+  asks: BandDto[];
+  bids: BandDto[];
 }
 
 export class SubscribeToQuotesEventDto implements WebsocketsEventDto {
   event: 'subscribeToQuotes';
   data: {
     symbols: QuoteDto['symbol'][];
+    moduleId: number;
+  }
+}
+
+export class SubscribeToSnapshotsEventDto implements WebsocketsEventDto {
+  event: 'subscribeToSnapshots';
+  data: {
+    symbols: SnapshotDto['symbol'][];
     moduleId: number;
   }
 }
