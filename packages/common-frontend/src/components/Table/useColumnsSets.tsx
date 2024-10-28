@@ -23,6 +23,7 @@ type TUseColumnsSetsResult<Entity> = {
   columnsSetSelect: () => React.ReactNode,
   chosenColumnsSet: TColumnsStates | undefined,
   setChosenColumnsSet: React.Dispatch<React.SetStateAction<TColumnsStates | undefined>>,
+  setChosenColumnsSetByName: (value: string) => void,
   columnsState: ColumnStateType,
 }
 
@@ -71,6 +72,11 @@ export default function useColumnsSets<Entity>({
     columnsSetsByName.get(chosenSetName || '') || undefined
   );
 
+  const setChosenColumnsSetByName = (value: string) => {
+    setChosenSetName(value);
+    setChosenColumnsSet(columnsSetsByName.get(value));
+  }
+
   const options = Array.from(columnsSetsByName.keys()).map(name => ({
     value: name,
     label: name,
@@ -81,10 +87,7 @@ export default function useColumnsSets<Entity>({
       key="columnsSetSelect"
       style={{ width: 200 }}
       value={chosenSetName}
-      onChange={(value: string) => {
-        setChosenSetName(value);
-        setChosenColumnsSet(columnsSetsByName.get(value));
-      }}
+      onChange={(value: string) => setChosenColumnsSetByName(value)}
       options={options}
     />
     <QuestionMarkHint intlPrefix={'tables.columnsSetSelect'} values={{
@@ -101,6 +104,7 @@ export default function useColumnsSets<Entity>({
     columnsSetSelect,
     chosenColumnsSet,
     setChosenColumnsSet,
+    setChosenColumnsSetByName,
     columnsState,
   }
 }
