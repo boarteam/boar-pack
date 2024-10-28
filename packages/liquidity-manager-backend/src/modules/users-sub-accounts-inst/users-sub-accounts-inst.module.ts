@@ -14,6 +14,7 @@ import { AMTS_DB_NAME } from "../liquidity-app/liquidity-app.config";
   ],
   exports: [
     UsersSubAccountsInstService,
+    TypeOrmModule,
   ],
   controllers: [UsersSubAccountsInstController],
 })
