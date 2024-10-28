@@ -52,6 +52,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {
     return {
       id: user.id,
       name: user.name,
+      marginModuleId: user.marginModuleId,
       role: Roles.USER,
       permissions: defaultPermissions,
     };

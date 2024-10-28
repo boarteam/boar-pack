@@ -24,7 +24,7 @@ export class UsersInstService extends TypeOrmCrudService<UsersInst> {
 
   public findById(id: string): Promise<UsersInst | null> {
     return this.repo.findOne({
-      select: ['id', 'name', 'password', 'pwdHashTypeId'],
+      select: ['id', 'name', 'password', 'pwdHashTypeId', 'marginModuleId'],
       where: { id },
     });
   }
