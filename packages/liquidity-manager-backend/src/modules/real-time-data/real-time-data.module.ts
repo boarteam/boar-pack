@@ -21,7 +21,7 @@ export class RealTimeDataModule {
         AmtsDcModule,
         CaslModule.forFeature(),
         UsersInstModule.forFeature(),
-        UserInfoModule,
+        UserInfoModule.forFeature(),
       ],
       providers: [
         RealTimeDataGateway,
