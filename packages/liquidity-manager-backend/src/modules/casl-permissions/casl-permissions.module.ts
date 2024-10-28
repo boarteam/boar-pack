@@ -19,6 +19,12 @@ import { MyAuditLog, MyAuditLogsPermissions } from "../my-audit-logs";
 import { RealTimeData } from "../real-time-data/policies/view-real-time-data.policy";
 import { Position } from "../positions/policies/view-positions.policy";
 import { UserInfo } from "../user-info/policies/view-user-info.policy";
+import { MySubloginSettingsPermissions } from '../my-sublogin-settings/my-sublogin-settings.permissions';
+import { MySubloginSettings } from '../my-sublogin-settings/policies/view-my-sublogin-settings.policy';
+import { MyUsersSubAccountsInstPermissions } from '../my-users-sub-accounts-inst/my-users-sub-accounts-inst.permissions';
+import { MyUsersSubAccountsInst } from '../my-users-sub-accounts-inst/policies/view-my-users-sub-accounts-inst.policy';
+import { ViewInstrumentsSpecification } from '../view-instruments-specifications/entities/view-instruments-specifications.entity';
+import { ViewInstrumentsSpecificationsPermissions } from '../view-instruments-specifications/view-instruments-specifications.permissions';
 
 export enum Permissions {
   VIEW_LIQUIDITY = 'view_liquidity',
@@ -40,6 +46,7 @@ export const subjects = [
   UsersInst,
   UsersSubAccountInst,
   SubloginSettings,
+  ViewInstrumentsSpecification,
   Liquidity,
   Quotes,
   Position,
@@ -65,6 +72,31 @@ export class CaslPermissionsModule {
         permission: MyInstrumentsPermissions.VIEW,
         action: Action.Read,
         subject: MyInstrument,
+      },
+      {
+        permission: MySubloginSettingsPermissions.VIEW,
+        action: Action.Read,
+        subject: MySubloginSettings,
+      },
+      {
+        permission: MySubloginSettingsPermissions.MANAGE,
+        action: Action.Manage,
+        subject: MySubloginSettings,
+      },
+      {
+        permission: MyUsersSubAccountsInstPermissions.VIEW,
+        action: Action.Read,
+        subject: MyUsersSubAccountsInst,
+      },
+      {
+        permission: MyUsersSubAccountsInstPermissions.MANAGE,
+        action: Action.Manage,
+        subject: MyUsersSubAccountsInst,
+      },
+      {
+        permission: ViewInstrumentsSpecificationsPermissions.VIEW,
+        action: Action.Read,
+        subject: ViewInstrumentsSpecification,
       },
       {
         permission: MyAuditLogsPermissions.VIEW,
