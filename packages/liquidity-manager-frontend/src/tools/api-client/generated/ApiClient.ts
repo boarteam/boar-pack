@@ -30,6 +30,8 @@ import { InstrumentsService } from './services/InstrumentsService';
 import { LiquidityManagersService } from './services/LiquidityManagersService';
 import { LiquidityManagersUsersService } from './services/LiquidityManagersUsersService';
 import { MyAuditLogsService } from './services/MyAuditLogsService';
+import { MySubloginSettingsService } from './services/MySubloginSettingsService';
+import { MyUsersSubAccountsInstService } from './services/MyUsersSubAccountsInstService';
 import { PositionsService } from './services/PositionsService';
 import { SubloginSettingsService } from './services/SubloginSettingsService';
 import { UserInfoService } from './services/UserInfoService';
@@ -67,6 +69,8 @@ export class ApiClient {
     public readonly liquidityManagers: LiquidityManagersService;
     public readonly liquidityManagersUsers: LiquidityManagersUsersService;
     public readonly myAuditLogs: MyAuditLogsService;
+    public readonly mySubloginSettings: MySubloginSettingsService;
+    public readonly myUsersSubAccountsInst: MyUsersSubAccountsInstService;
     public readonly positions: PositionsService;
     public readonly subloginSettings: SubloginSettingsService;
     public readonly userInfo: UserInfoService;
@@ -115,6 +119,8 @@ export class ApiClient {
         this.liquidityManagers = new LiquidityManagersService(this.request);
         this.liquidityManagersUsers = new LiquidityManagersUsersService(this.request);
         this.myAuditLogs = new MyAuditLogsService(this.request);
+        this.mySubloginSettings = new MySubloginSettingsService(this.request);
+        this.myUsersSubAccountsInst = new MyUsersSubAccountsInstService(this.request);
         this.positions = new PositionsService(this.request);
         this.subloginSettings = new SubloginSettingsService(this.request);
         this.userInfo = new UserInfoService(this.request);
