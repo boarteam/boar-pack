@@ -3,8 +3,11 @@ import {
   PositionEventDto,
   QuoteDto,
   QuoteEventDto,
+  SnapshotDto,
+  SnapshotEventDto,
   SubscribeToPositionsEventDto,
   SubscribeToQuotesEventDto,
+  SubscribeToSnapshotsEventDto,
   UserInfoDto,
   UserInfoEventDto,
   WebsocketsErrorEventDto,
@@ -17,6 +20,7 @@ export type TIncomeEvent =
   | { event: 'error' } & WebsocketsErrorEventDto
   | { event: 'quote' } & QuoteEventDto
   | { event: 'position' } & PositionEventDto
+  | { event: 'snapshot' } & SnapshotEventDto
   | { event: 'user' } & UserInfoEventDto
   | { event: 'status', status: WebSocket['readyState'] };
 
@@ -30,8 +34,9 @@ export class RealTimeDataSource {
   private symbols: string[] = [];
   private moduleId: number = null;
   private userId: number = null;
-  private subscriptions: Set<'quotes' | 'positions' | 'userInfo'> = new Set();
+  private subscriptions: Set<'quotes' | 'snapshots' | 'positions' | 'userInfo'> = new Set();
   public readonly quotesEvents: EventTarget = new EventTarget();
+  public readonly snapshotsEvents: EventTarget = new EventTarget();
   public readonly positionsEvents: EventTarget = new EventTarget();
   public readonly socketStatusEvents: EventTarget = new EventTarget();
   public readonly userInfoEvents: EventTarget = new EventTarget();
@@ -58,6 +63,9 @@ export class RealTimeDataSource {
     if (this.subscriptions.has('quotes')) {
       this.listenQuotes();
     }
+    if (this.subscriptions.has('snapshots')) {
+      this.listenSnapshots();
+    }
     if (this.subscriptions.has('positions')) {
       this.listenPositons();
     }
@@ -73,6 +81,19 @@ export class RealTimeDataSource {
 
     if (this.active) {
       this.listenQuotes();
+      return;
+    }
+
+    this.createSocket();
+  }
+
+  public subscribeToSnapshots(symbols: string[], moduleId: number) {
+    this.subscriptions.add('snapshots');
+    this.symbols = symbols;
+    this.moduleId = moduleId;
+
+    if (this.active) {
+      this.listenSnapshots();
       return;
     }
 
@@ -131,6 +152,10 @@ export class RealTimeDataSource {
         this.emitQuoteEvent(msg.data);
         break;
 
+      case 'snapshot':
+        this.emitSnapshotEvent(msg.data);
+        break;
+
       case 'position':
         this.emitPositionEvent(msg.data);
         break;
@@ -148,6 +173,16 @@ export class RealTimeDataSource {
   private listenQuotes = () => {
     this.primarySocket?.send<SubscribeToQuotesEventDto>({
       event: 'subscribeToQuotes',
+      data: {
+        symbols: this.symbols,
+        moduleId: this.moduleId,
+      },
+    });
+  }
+
+  private listenSnapshots = () => {
+    this.primarySocket?.send<SubscribeToSnapshotsEventDto>({
+      event: 'subscribeToSnapshots',
       data: {
         symbols: this.symbols,
         moduleId: this.moduleId,
@@ -178,6 +213,17 @@ export class RealTimeDataSource {
       `quote:${quote.symbol}`,
       {
         detail: quote,
+        bubbles: false,
+        cancelable: true,
+      }
+    ));
+  }
+
+  private emitSnapshotEvent(snapshot: SnapshotDto) {
+    this.snapshotsEvents.dispatchEvent(new CustomEvent<SnapshotDto>(
+      `snapshot:${snapshot.symbol}`,
+      {
+        detail: snapshot,
         bubbles: false,
         cancelable: true,
       }

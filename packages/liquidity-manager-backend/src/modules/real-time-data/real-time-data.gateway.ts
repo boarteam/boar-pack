@@ -7,8 +7,9 @@ import { ViewRealTimeDataPolicy } from "./policies/view-real-time-data.policy";
 import {
   MessageEventDto,
   MessagesStream,
-  SubscribeToQuotesEventDto,
   SubscribeToPositionsEventDto,
+  SubscribeToQuotesEventDto,
+  SubscribeToSnapshotsEventDto,
   SubscribeToUserInfoEventDto
 } from "./dto/real-time-data.dto";
 import { Subject } from "rxjs";
@@ -82,7 +83,7 @@ export class RealTimeDataGateway {
   @CheckPolicies(new ViewRealTimeDataPolicy())
   private async handleSubscribeToSnapshots(
     @ConnectedSocket() client: WebSocket,
-    @MessageBody() subscribeEventDto: SubscribeToQuotesEventDto['data'],
+    @MessageBody() subscribeEventDto: SubscribeToSnapshotsEventDto['data'],
   ): Promise<MessagesStream | void> {
     let { symbols, moduleId } = subscribeEventDto;
     if (!Array.isArray(symbols) || !symbols.length || !symbols.every((symbol) => typeof symbol === 'string')) {
