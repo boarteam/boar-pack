@@ -12,12 +12,14 @@ import { UsersSubAccountInst } from "../users-sub-accounts-inst/entities/users-s
 import { LiquidityManager } from "../liquidity-managers";
 import { RealTimeData } from "../real-time-data/policies/view-real-time-data.policy";
 import { UserInfo } from "../user-info/policies/view-user-info.policy";
+import { ViewInstrumentsSpecification } from "../view-instruments-specifications/entities/view-instruments-specifications.entity";
 
 export * from '@jifeon/boar-pack-users-backend';
 
 declare module '@jifeon/boar-pack-users-backend' {
   interface TSubjects {
     EcnModule: typeof EcnModule;
+    ViewInstrumentsSpecification: typeof ViewInstrumentsSpecification;
     EcnModuleType: typeof EcnModuleType;
     EcnConnectSchema: typeof EcnConnectSchema;
     EcnConnectSchemaSetupLabel: typeof EcnConnectSchemaSetupLabel;
