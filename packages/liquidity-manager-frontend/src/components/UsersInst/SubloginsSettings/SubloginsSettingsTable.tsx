@@ -10,7 +10,7 @@ import { subloginsSearchableColumns } from "./subloginsSearchableColumns";
 import { useLiquidityManagerContext } from "../../../tools/liquidityManagerContext";
 import { PageLoading } from "@ant-design/pro-layout";
 
-function toCreateDto(entity: SubloginSettings): SubloginSettingsCreateDto {
+export function toCreateDto(entity: SubloginSettings): SubloginSettingsCreateDto {
   return {
     ...entity,
     hedgeCurrency: entity.hedgeCurrency?.name,
@@ -18,7 +18,7 @@ function toCreateDto(entity: SubloginSettings): SubloginSettingsCreateDto {
   };
 }
 
-function toUpdateDto(entity: SubloginSettings): SubloginSettingsUpdateDto {
+export function toUpdateDto(entity: SubloginSettings): SubloginSettingsUpdateDto {
   return {
     ...entity,
     hedgeCurrency: entity.hedgeCurrency?.name,

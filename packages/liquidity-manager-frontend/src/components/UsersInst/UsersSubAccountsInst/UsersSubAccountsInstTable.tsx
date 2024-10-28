@@ -17,7 +17,7 @@ import { useSubloginsSettingsColumns } from "../SubloginsSettings/useSubloginsSe
 import { useLiquidityManagerContext } from "../../../tools";
 import { PageLoading } from "@ant-design/pro-components";
 
-function userSubAccountToDto<T extends Partial<UsersSubAccountInst>,
+export function userSubAccountToDto<T extends Partial<UsersSubAccountInst>,
   R extends UsersSubAccountInstCreateDto | UsersSubAccountInstUpdateDto>(entity: T): R {
   return {
     ...pick(entity, [
