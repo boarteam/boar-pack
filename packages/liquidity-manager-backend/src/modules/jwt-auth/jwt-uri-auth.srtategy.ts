@@ -17,7 +17,7 @@ export type TJWTPayload = {
 @Injectable()
 export class JwtUriAuthStrategy extends PassportStrategy(Strategy, JWT_URI_AUTH) {
   constructor(
-    private usersService: UsersInstService,
+    private usersInstService: UsersInstService,
     private jwtAuthConfigService: JWTAuthConfigService,
   ) {
     super({
@@ -33,7 +33,7 @@ export class JwtUriAuthStrategy extends PassportStrategy(Strategy, JWT_URI_AUTH)
 
   async validate(payload: TJWTPayload): Promise<AMTSUser> {
     const userId = payload.sub;
-    const user = await this.usersService.findById(userId);
+    const user = await this.usersInstService.findById(userId);
 
     if (!user) {
       console.log('User not found, id:', userId);
@@ -43,6 +43,7 @@ export class JwtUriAuthStrategy extends PassportStrategy(Strategy, JWT_URI_AUTH)
     return {
       id: user.id,
       name: user.name,
+      marginModuleId: user.marginModuleId,
       role: Roles.USER,
       permissions: defaultPermissions,
     };

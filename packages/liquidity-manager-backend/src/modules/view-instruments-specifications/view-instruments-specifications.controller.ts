@@ -1,10 +1,11 @@
-import { Controller, Get, Query, UsePipes } from '@nestjs/common';
-import { Crud } from '@nestjsx/crud';
-import { ApiExtraModels, ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
+import { Controller } from '@nestjs/common';
+import { Crud, CrudAuth } from '@nestjsx/crud';
+import { ApiTags } from '@nestjs/swagger';
 import { ViewInstrumentsSpecificationsService } from './view-instruments-specifications.service';
 import { ViewInstrumentsSpecification } from './entities/view-instruments-specifications.entity';
 import { CheckPolicies } from "@jifeon/boar-pack-users-backend";
 import { ViewViewInstrumentsSpecificationsPolicy } from './policies/view-view-instruments-specifications.policy';
+import { AMTSUser } from "../auth";
 
 @Crud({
   model: {
@@ -35,6 +36,12 @@ import { ViewViewInstrumentsSpecificationsPolicy } from './policies/view-view-in
       ],
     },
   },
+})
+@CrudAuth({
+  property: 'user',
+  filter: (user: AMTSUser) => ({
+    'from_moduleid': user.marginModuleId,
+  }),
 })
 @ApiTags('viewInstrumentsSpecifications')
 @Controller('liquidity/view-instruments-specifications')
