@@ -18,7 +18,7 @@ export type ViewInstrumentsSpecification = {
     tickSize: string;
     tickValue: string;
     swapType: string;
-    swapRollover3Days: string;
+    tripleSwapDay: string;
     swapLong: string;
     swapShort: string;
 };
