@@ -2,8 +2,11 @@ import { ViewEntity, PrimaryColumn, ViewColumn } from 'typeorm';
 
 @ViewEntity('view_instruments_specifications')
 export class ViewInstrumentsSpecification {
-  @PrimaryColumn()
+  @ViewColumn({ name: 'from_moduleid' })
+  fromModuleId: number;
+
   @ViewColumn()
+  @PrimaryColumn()
   instrument: string;
 
   @ViewColumn()

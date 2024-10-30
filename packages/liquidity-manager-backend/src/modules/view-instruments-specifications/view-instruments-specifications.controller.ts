@@ -20,8 +20,6 @@ import { TPUser } from "../auth";
   },
   query: {
     alwaysPaginate: true,
-    join: {
-    }
   },
   routes: {
     only: ['getOneBase', 'getManyBase'],
@@ -40,7 +38,7 @@ import { TPUser } from "../auth";
 @CrudAuth({
   property: 'user',
   filter: (user: TPUser) => ({
-    'from_moduleid': user.marginModuleId,
+    'fromModuleId': user.marginModuleId,
   }),
 })
 @ApiTags('viewInstrumentsSpecifications')

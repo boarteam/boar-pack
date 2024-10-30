@@ -4,6 +4,7 @@
 /* eslint-disable */
 
 export type ViewInstrumentsSpecification = {
+    fromModuleId: number;
     instrument: string;
     instrumentDescr?: string;
     groupName: string;
