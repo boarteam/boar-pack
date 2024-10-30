@@ -22,7 +22,7 @@ type TAmtsSocketsConfig = TBaseConfig<MTWSMessage> & {
 @Injectable()
 export class AmtsDcService {
   private readonly logger = new Logger(AmtsDcService.name);
-  private readonly VERSION = 10;
+  private reqId = 1;
   private readonly config = this.configService.config;
 
   constructor(
@@ -79,8 +79,7 @@ export class AmtsDcService {
   }) {
     const params = {
       method: 'get_positions',
-      version: this.VERSION,
-      req_id: 1,
+      req_id: this.reqId++,
       user_id: userId,
     } as const;
 
@@ -96,8 +95,7 @@ export class AmtsDcService {
   }) {
     const params = {
       method: 'get_user',
-      version: this.VERSION,
-      req_id: 1,
+      req_id: this.reqId++,
       user_id: userId,
     } as const;
 
@@ -157,8 +155,7 @@ export class AmtsDcService {
   }): Promise<void> {
     const params: MTSubscribeToQuotesRequest = {
       method: 'subscribe_to_quotes_stream',
-      version: this.VERSION,
-      req_id: 1,
+      req_id: this.reqId++,
       instruments,
       quotes_timeout: 1000,
       ...options,
@@ -179,8 +176,7 @@ export class AmtsDcService {
   }): Promise<void> {
     const params = {
       method: 'unsubscribe_from_quotes_stream',
-      version: this.VERSION,
-      req_id: 1,
+      req_id: this.reqId++,
       instruments,
     };
 
@@ -199,8 +195,7 @@ export class AmtsDcService {
   }): Promise<void> {
     const params = {
       method: 'subscribe_to_snapshots_stream',
-      version: this.VERSION,
-      req_id: 1,
+      req_id: this.reqId++,
       instruments,
     };
 
@@ -219,8 +214,7 @@ export class AmtsDcService {
   }): Promise<void> {
     const params = {
       method: 'unsubscribe_from_snapshots_stream',
-      version: this.VERSION,
-      req_id: 1,
+      req_id: this.reqId++,
       instruments,
     };
 
@@ -239,8 +233,7 @@ export class AmtsDcService {
   }): Promise<void> {
     const params = {
       method: 'subscribe_to_positions_update',
-      version: this.VERSION,
-      req_id: 1,
+      req_id: this.reqId++,
       user_id: userId,
     };
 
@@ -259,8 +252,7 @@ export class AmtsDcService {
   }): Promise<void> {
     const params = {
       method: 'unsubscribe_from_positions_update',
-      version: this.VERSION,
-      req_id: 1,
+      req_id: this.reqId++,
       user_id: userId,
     };
 
@@ -279,8 +271,7 @@ export class AmtsDcService {
   }): Promise<void> {
     const params = {
       method: 'subscribe_to_user_update',
-      version: this.VERSION,
-      req_id: 1,
+      req_id: this.reqId++,
       user_id: userId,
     };
 
@@ -299,8 +290,7 @@ export class AmtsDcService {
   }): Promise<void> {
     const params = {
       method: 'unsubscribe_from_user_update',
-      version: this.VERSION,
-      req_id: 1,
+      req_id: this.reqId++,
       user_id: userId,
     };
 
