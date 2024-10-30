@@ -20,8 +20,6 @@ import { AMTSUser } from "../auth";
   },
   query: {
     alwaysPaginate: true,
-    join: {
-    }
   },
   routes: {
     only: ['getOneBase', 'getManyBase'],
@@ -40,7 +38,7 @@ import { AMTSUser } from "../auth";
 @CrudAuth({
   property: 'user',
   filter: (user: AMTSUser) => ({
-    'from_moduleid': user.marginModuleId,
+    'fromModuleId': user.marginModuleId,
   }),
 })
 @ApiTags('viewInstrumentsSpecifications')
