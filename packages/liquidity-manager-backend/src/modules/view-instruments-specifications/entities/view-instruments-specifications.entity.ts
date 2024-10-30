@@ -45,8 +45,8 @@ export class ViewInstrumentsSpecification {
   @ViewColumn()
   swapType: string;
 
-  @ViewColumn({ name: 'swap_rollover3days' })
-  swapRollover3Days: string;
+  @ViewColumn()
+  tripleSwapDay: string;
 
   @ViewColumn()
   swapLong: string;
