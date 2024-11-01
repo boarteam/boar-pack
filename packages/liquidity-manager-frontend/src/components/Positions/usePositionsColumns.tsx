@@ -7,6 +7,7 @@ export const usePositionsColumns = (): ProColumns<PositionDto>[] => {
       title: 'ID',
       dataIndex: 'id',
       copyable: true,
+      ellipsis: true,
     },
     {
       title: 'Instrument',
