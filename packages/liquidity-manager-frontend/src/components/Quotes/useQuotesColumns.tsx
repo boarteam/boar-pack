@@ -88,7 +88,7 @@ export const useQuotesColumns = (): ProColumns<Quote>[] => {
         symbol={record.symbol}
         quoteParam='timestamp'
         // DD/MM/YYYY, HH:mm:ss.SSS
-        format={(value) => dayjs(value).format('DD/MM/YYYY, HH:mm:ss.SSS')}
+        format={(value) => dayjs(value).format('HH:mm:ss.SSS')}
       />,
     },
     {

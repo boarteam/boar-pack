@@ -98,6 +98,9 @@ const PositionsTable: React.FC<TPositionsTableProps> = ({
         ];
       }}
       ghost={ghost}
+      scroll={{
+        x: 'max-content',
+      }}
     ></Table>
   );
 }

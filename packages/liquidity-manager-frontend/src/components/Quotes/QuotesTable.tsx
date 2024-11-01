@@ -98,8 +98,10 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
             onSymbolClick?.(record.symbol);
           }
         }
-      }
-      }
+      }}
+      scroll={{
+        x: 'max-content',
+      }}
     ></Table>
   );
 }

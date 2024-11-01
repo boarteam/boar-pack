@@ -68,6 +68,10 @@ const SnapshotsTable: React.FC<TSnapshotsTableProps> = ({
       columns={columns}
       size={'small'}
       bordered={true}
+      pagination={false}
+      scroll={{
+        x: 'max-content',
+      }}
     />
   );
 }

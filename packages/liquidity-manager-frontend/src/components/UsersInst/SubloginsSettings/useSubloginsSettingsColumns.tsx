@@ -68,6 +68,7 @@ export const useSubloginsSettingsColumns = (canManage?: boolean): ProColumns<Sub
       editable: false,
       hideInDescriptions: true,
       filters: instrumentGroups,
+      width: '130px',
       filterSearch: true,
       render(text, record) {
         return record.instrumentRel?.instrumentGroup?.name ?? '-';
@@ -87,6 +88,7 @@ export const useSubloginsSettingsColumns = (canManage?: boolean): ProColumns<Sub
       dataIndex: 'minVolumeForABook',
       valueType: 'digit',
       sorter: true,
+      width: '130px',
       fieldProps: {
         autoComplete: 'one-time-code',
         stringMode: true,
@@ -117,6 +119,7 @@ export const useSubloginsSettingsColumns = (canManage?: boolean): ProColumns<Sub
       dataIndex: 'instrumentPriorityFlag',
       valueType: 'digit',
       sorter: true,
+      width: '130px',
       fieldProps: {
         autoComplete: 'one-time-code',
       },

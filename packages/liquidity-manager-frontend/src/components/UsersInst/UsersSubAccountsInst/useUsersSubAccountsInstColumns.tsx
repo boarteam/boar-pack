@@ -17,8 +17,7 @@ export const useUsersSubAccountsInstColumns = (canManage?: boolean): ProColumns<
       dataIndex: 'subAccountId',
       sorter: true,
       editable: false,
-      copyable: true,
-      width: '150px',
+      width: '40px',
     },
     {
       title: intl.formatMessage({ id: 'pages.subAccounts.descr' }),
@@ -34,6 +33,7 @@ export const useUsersSubAccountsInstColumns = (canManage?: boolean): ProColumns<
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+      ellipsis: true,
     },
   ];
 
