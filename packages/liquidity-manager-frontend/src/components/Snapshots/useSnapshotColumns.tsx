@@ -12,10 +12,12 @@ export const useSnapshotColumns = (): ColumnsType<Band> => {
     {
       title: 'Bid',
       dataIndex: 'bid',
+      width: '33%',
     },
     {
       title: 'Price',
       dataIndex: 'price',
+      width: '33%',
     },
     {
       title: 'Ask',
