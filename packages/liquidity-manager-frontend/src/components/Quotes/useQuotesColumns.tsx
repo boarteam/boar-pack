@@ -40,7 +40,7 @@ const Ticker: React.FC<{
 
   const value = quote
     ? (format?.(quote[quoteParam]) || quote[quoteParam])
-    : 'N/A';
+    : '-';
 
   return <span>{value}</span>;
 }
@@ -87,8 +87,7 @@ export const useQuotesColumns = (): ProColumns<Quote>[] => {
       render: (_, record) => <Ticker
         symbol={record.symbol}
         quoteParam='timestamp'
-        // DD/MM/YYYY, HH:mm:ss.SSS
-        format={(value) => dayjs(value).format('HH:mm:ss.SSS')}
+        format={(value) => dayjs(value).isSame(dayjs(), 'day') ? dayjs(value).format('HH:mm:ss.SSS') : dayjs(value).format('DD/MM/YYYY, HH:mm:ss.SSS')}
       />,
     },
     {
