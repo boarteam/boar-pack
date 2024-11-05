@@ -55,7 +55,7 @@ export class RealTimeDataGateway {
     @MessageBody() subscribeEventDto: SubscribeToQuotesEventDto['data'],
   ): Promise<MessagesStream | void> {
     let { symbols, moduleId } = subscribeEventDto;
-    if (!Array.isArray(symbols) || !symbols.length || !symbols.every((symbol) => typeof symbol === 'string')) {
+    if (!Array.isArray(symbols) || !symbols.every((symbol) => typeof symbol === 'string')) {
       // TODO: add validation pipe, also check there are corresponding instruments, number of symbols and length
       // of every symbol
       throw new WsException('Symbols should be a non-empty array of strings');
@@ -86,7 +86,7 @@ export class RealTimeDataGateway {
     @MessageBody() subscribeEventDto: SubscribeToSnapshotsEventDto['data'],
   ): Promise<MessagesStream | void> {
     let { symbols, moduleId } = subscribeEventDto;
-    if (!Array.isArray(symbols) || !symbols.length || !symbols.every((symbol) => typeof symbol === 'string')) {
+    if (!Array.isArray(symbols) || !symbols.every((symbol) => typeof symbol === 'string')) {
       // TODO: add validation pipe, also check there are corresponding instruments, number of symbols and length
       // of every symbol
       throw new WsException('Symbols should be a non-empty array of strings');
