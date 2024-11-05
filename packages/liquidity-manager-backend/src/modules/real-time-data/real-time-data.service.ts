@@ -115,7 +115,7 @@ export class RealTimeDataService {
     ws: WebSocket,
     config: TConnectorConfig,
   }) {
-    if (config.quotesSubscription) {
+    if (config.quotesSubscription && config.quotesSubscription.symbols.length) {
       await this.amtsDcService.subscribeToQuotesStream({
         ws,
         instruments: config.quotesSubscription.symbols,
@@ -125,7 +125,7 @@ export class RealTimeDataService {
       });
     }
 
-    if (config.snapshotsSubscription) {
+    if (config.snapshotsSubscription && config.snapshotsSubscription.symbols.length) {
       await this.amtsDcService.subscribeToSnapshotsStream({
         ws,
         instruments: config.snapshotsSubscription.symbols,
@@ -265,6 +265,7 @@ export class RealTimeDataService {
     };
 
     if (moduleId === config.moduleId) {
+      if (symbols.length) {
         this.logger.log(`Attaching messages stream to existing socket...`);
         await this.amtsDcService.subscribeToQuotesStream({
           ws: config.socket,
@@ -273,6 +274,9 @@ export class RealTimeDataService {
             platform_id: mtPlatformsIds[MTVersions.MT5],
           },
         });
+      } else {
+        this.logger.log(`No symbols to subscribe for quotes, skipping...`);
+      }
     } else {
       this.logger.log(`Reconnecting to AMTS websocket with new module id...`);
       config.moduleId = moduleId;
@@ -324,11 +328,15 @@ export class RealTimeDataService {
     };
 
     if (moduleId === config.moduleId) {
+      if (symbols.length) {
         this.logger.log(`Attaching messages stream to existing socket...`);
         await this.amtsDcService.subscribeToSnapshotsStream({
           ws: config.socket,
           instruments: symbols,
         });
+      } else {
+        this.logger.log(`No symbols to subscribe for snapshots, skipping...`);
+      }
     } else {
       this.logger.log(`Reconnecting to AMTS websocket with new module id...`);
       config.moduleId = moduleId;
