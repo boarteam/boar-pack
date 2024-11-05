@@ -13,16 +13,28 @@ export class UserInfoService {
   }
 
   public formatUserInfo(userInfo: MTUserInfo): UserInfoDto {
+    const {
+      balance,
+      profit,
+      margin,
+    } = userInfo.account_state;
+
+    const leverage = Number(userInfo.leverage);
+    const equity = balance + profit;
+
     return {
       id: Number(userInfo.id),
       name: userInfo.name,
       groupName: userInfo.group_name,
-      leverage: Number(userInfo.leverage),
+      leverage,
       currency: userInfo.currency,
       accountState: {
-        balance: userInfo.account_state.balance,
-        margin: userInfo.account_state.margin,
-        profit: userInfo.account_state.profit,
+        balance,
+        margin,
+        profit,
+        equity,
+        freeMargin: balance + profit - margin,
+        marginLevel: equity / margin * leverage,
       }
     }
   }
