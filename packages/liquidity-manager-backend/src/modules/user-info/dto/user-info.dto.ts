@@ -8,5 +8,8 @@ export class UserInfoDto {
     balance: number;
     margin: number;
     profit: number;
+    equity: number;
+    freeMargin: number;
+    marginLevel: number;
   };
 }
