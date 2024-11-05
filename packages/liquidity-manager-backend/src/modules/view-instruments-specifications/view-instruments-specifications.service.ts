@@ -4,6 +4,9 @@ import { ViewInstrumentsSpecification } from './entities/view-instruments-specif
 import { InjectRepository } from "@nestjs/typeorm";
 import { AMTS_DB_NAME } from "../liquidity-app/liquidity-app.config";
 import { Repository } from "typeorm";
+import { QueryOptions } from '@nestjsx/crud';
+import { ParsedRequestParams } from '@nestjsx/crud-request';
+import { getCustomInstrumentSort } from '../../tools/instrumentSort';
 
 @Injectable()
 export class ViewInstrumentsSpecificationsService extends TypeOrmCrudService<ViewInstrumentsSpecification> {
@@ -12,5 +15,10 @@ export class ViewInstrumentsSpecificationsService extends TypeOrmCrudService<Vie
     readonly repo: Repository<ViewInstrumentsSpecification>,
   ) {
     super(repo);
+  }
+
+  protected getSort(query: ParsedRequestParams, options: QueryOptions) {
+    const originalSort = super.getSort(query, options);
+    return getCustomInstrumentSort(originalSort, `${this.repo.metadata.name}.instrument`);
   }
 }
