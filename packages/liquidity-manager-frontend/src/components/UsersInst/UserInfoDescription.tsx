@@ -17,6 +17,7 @@ export type TUserStateDescriptionProps = {
 type TData = {
   label: string;
   value: number;
+  realValue: number;
 };
 
 export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
@@ -58,21 +59,50 @@ export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
     </>;
   }
 
+  const {
+    margin,
+    balance,
+    profit,
+    equity,
+    freeMargin,
+    marginLevel,
+  } = userInfo.accountState;
+
   const items = [
     {
       key: 'balance',
       label: 'Balance',
-      children: userInfo.accountState.balance,
+      children: balance.toFixed(2),
     },
     {
       key: 'margin',
       label: 'Margin',
-      children: userInfo.accountState.margin,
+      children: margin.toFixed(2),
+    },
+    {
+      key: 'equity',
+      label: 'Equity',
+      children: equity.toFixed(2),
     },
     {
       key: 'pnl',
-      label: 'P&L',
-      children: userInfo.accountState.profit,
+      label: 'Profit',
+      children: profit.toFixed(2),
+    },
+    {
+      key: 'freeMargin',
+      label: 'Free Margin',
+      children: freeMargin.toFixed(2),
+    },
+    {
+      key: 'marginLevel',
+      label: 'Margin Level',
+      children: marginLevel.toFixed(2) + '%',
+    },
+    {
+      key: 'leverage',
+      label: 'Leverage',
+      children: userInfo.leverage.toFixed(2),
     },
     {
       key: 'currency',
@@ -84,11 +114,14 @@ export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
   const data: TData[] = [
     {
       label: 'Margin',
-      value: userInfo.accountState.margin || 0,
+      // for extremely low values antd plots works incorrectly
+      value: margin / freeMargin < 0.01 ? 0 : userInfo.accountState.margin,
+      realValue: margin,
     },
     {
-      label: 'P&L',
-      value: userInfo.accountState.profit || 0,
+      label: 'Free Margin',
+      value: freeMargin,
+      realValue: freeMargin,
     },
   ];
 
@@ -104,11 +137,16 @@ export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
             column={1}
             bordered
             size={'small'}
+            contentStyle={{
+              textAlign: 'right',
+            }}
           />
         </Card>
       </Col>
       <Col span={12}>
-        <Card>
+        <Card style={{
+          height: '100%',
+        }}>
           <Pie
             theme={'dark'}
             data={data}
@@ -117,7 +155,7 @@ export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
             radius={0.8}
             tooltip={false}
             label={{
-              text: (d: TData) => `${d.label}\n ${d.value}`,
+              text: (d: TData) => `${d.label}\n ${d.realValue}`,
               position: 'spider',
             }}
             legend={{
@@ -127,7 +165,7 @@ export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
                 rowPadding: 5,
               },
             }}
-            height={300}
+            height={350}
           />
         </Card>
       </Col>
