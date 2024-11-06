@@ -11,6 +11,9 @@ import {
   GetEcnInstrumentsInConnectionsResponse,
   GetInstrumentsInConnectionsQueryDto,
 } from './dto/ecn-instruments-get-in-connections.dto';
+import { CrudRequestOptions } from '@nestjsx/crud';
+import { updateBuilderSort } from '../../tools/instrumentSort';
+import { ParsedRequestParams } from "@nestjsx/crud-request";
 
 @Injectable()
 export class EcnInstrumentsService extends TypeOrmCrudService<EcnInstrument> {
@@ -191,5 +194,10 @@ export class EcnInstrumentsService extends TypeOrmCrudService<EcnInstrument> {
 
     const [data, total] = await Promise.all([dataPromise, totalPromise]);
     return { data, total };
+  }
+
+  public async createBuilder(parsed: ParsedRequestParams, options: CrudRequestOptions, many: boolean = true, withDeleted: boolean = true) {
+    const builder = await super.createBuilder(parsed, options, many, withDeleted);
+    return updateBuilderSort<EcnInstrument>(builder, many, 'EcnInstrument.name', '`EcnInstrument`.`name`');
   }
 }
