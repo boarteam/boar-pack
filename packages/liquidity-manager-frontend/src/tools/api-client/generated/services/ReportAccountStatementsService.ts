@@ -16,8 +16,12 @@ export class ReportAccountStatementsService {
      * @throws ApiError
      */
     public getReport({
+        startTime,
+        endTime,
         worker,
     }: {
+        startTime: string,
+        endTime: string,
         worker: string,
     }): CancelablePromise<ReportAccountStatement> {
         return this.httpRequest.request({
@@ -25,6 +29,10 @@ export class ReportAccountStatementsService {
             url: '/{worker}/liquidity/report-account-statements/report',
             path: {
                 'worker': worker,
+            },
+            query: {
+                'startTime': startTime,
+                'endTime': endTime,
             },
         });
     }

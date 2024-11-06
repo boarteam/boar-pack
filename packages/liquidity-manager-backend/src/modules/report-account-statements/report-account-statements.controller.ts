@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Req, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Query, Req, UnauthorizedException } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudController } from '@nestjsx/crud';
 import { CheckPolicies } from "@jifeon/boar-pack-users-backend";
@@ -21,6 +21,8 @@ export class ReportAccountStatementsController implements CrudController<ReportA
   })
   getReport(
     @Req() req: Request,
+    @Query('startTime') startTime: string,
+    @Query('endTime') endTime: string,
   ): Promise<ReportAccountStatement | null> {
     const userId = Number(req.user?.id);
 
@@ -30,8 +32,8 @@ export class ReportAccountStatementsController implements CrudController<ReportA
 
     return this.service.getReport({
       userId,
-      startTime: '2024-10-01 00:00:00',
-      endTime: '2024-10-03 00:00:00',
+      startTime,
+      endTime,
     });
   }
 }
