@@ -37,6 +37,7 @@ import { MyUsersSubAccountsInstModule } from './modules/my-users-sub-accounts-in
 import {
   ViewInstrumentsSpecificationsModule
 } from './modules/view-instruments-specifications/view-instruments-specifications.module';
+import { ReportAccountStatementsModule } from "./modules/report-account-statements/report-account-statements.module";
 
 @Module({
   imports: [
@@ -80,6 +81,7 @@ import {
     MyAuditLogsModule.forManagerPanel({
       dataSourceName: 'tid_db',
     }),
+    ReportAccountStatementsModule,
     ...restModules,
   ],
 })
