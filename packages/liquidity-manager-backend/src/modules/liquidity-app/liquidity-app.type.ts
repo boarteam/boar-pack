@@ -13,6 +13,7 @@ import { LiquidityManager } from "../liquidity-managers";
 import { RealTimeData } from "../real-time-data/policies/view-real-time-data.policy";
 import { UserInfo } from "../user-info/policies/view-user-info.policy";
 import { ViewInstrumentsSpecification } from "../view-instruments-specifications/entities/view-instruments-specifications.entity";
+import { ReportAccountStatement } from "../report-account-statements/entities/report-account-statement.entity";
 
 export * from '@jifeon/boar-pack-users-backend';
 
@@ -36,5 +37,6 @@ declare module '@jifeon/boar-pack-users-backend' {
     Position: 'Position';
     RealTimeData: typeof RealTimeData;
     UserInfo: typeof UserInfo;
+    ReportAccountStatement: typeof ReportAccountStatement;
   }
 }

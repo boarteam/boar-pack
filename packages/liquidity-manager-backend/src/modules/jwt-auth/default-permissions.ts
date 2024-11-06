@@ -4,6 +4,7 @@ import { MyAuditLogsPermissions } from "../my-audit-logs";
 import { MyUsersSubAccountsInstPermissions } from "../my-users-sub-accounts-inst/my-users-sub-accounts-inst.permissions";
 import { MySubloginSettingsPermissions } from "../my-sublogin-settings/my-sublogin-settings.permissions";
 import { ViewInstrumentsSpecificationsPermissions } from "../view-instruments-specifications/view-instruments-specifications.permissions";
+import { ReportAccountStatementsPermissions } from "../report-account-statements/report-account-statements.permissions";
 
 export const defaultPermissions = [
   Permissions.VIEW_LIQUIDITY,
@@ -14,4 +15,5 @@ export const defaultPermissions = [
   MySubloginSettingsPermissions.VIEW,
   MySubloginSettingsPermissions.MANAGE,
   ViewInstrumentsSpecificationsPermissions.VIEW,
+  ReportAccountStatementsPermissions.VIEW,
 ];
