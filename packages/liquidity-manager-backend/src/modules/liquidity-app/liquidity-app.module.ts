@@ -33,6 +33,7 @@ import { MySubloginSettingsModule } from "../my-sublogin-settings/my-sublogin-se
 import { MyUsersSubAccountsInstModule } from "../my-users-sub-accounts-inst/my-users-sub-accounts-inst.module";
 import { ViewInstrumentsSpecificationsModule } from "../view-instruments-specifications/view-instruments-specifications.module";
 import { ReportAccountStatementsModule } from "../report-account-statements/report-account-statements.module";
+import { ReportBalanceOperationsModule } from "../report-balance-operations/report-balance-operations.module";
 
 export const restModules = [
   EcnModulesModule,
@@ -119,6 +120,7 @@ export class LiquidityAppModule {
         MySubloginSettingsModule,
         MyUsersSubAccountsInstModule,
         ReportAccountStatementsModule,
+        ReportBalanceOperationsModule,
         // RealTimeDataAppModule.forClusterMaster(),
         ...restModules,
       ],
