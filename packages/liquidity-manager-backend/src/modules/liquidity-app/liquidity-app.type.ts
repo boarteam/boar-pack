@@ -15,6 +15,7 @@ import { UserInfo } from "../user-info/policies/view-user-info.policy";
 import { ViewInstrumentsSpecification } from "../view-instruments-specifications/entities/view-instruments-specifications.entity";
 import { ReportAccountStatement } from "../report-account-statements/entities/report-account-statement.entity";
 import { ReportBalanceOperation } from "../report-balance-operations/entities/report-balance-operation.entity";
+import { ReportTrade } from "../report-trades/entities/report-trade.entity";
 
 export * from '@jifeon/boar-pack-users-backend';
 
@@ -40,5 +41,6 @@ declare module '@jifeon/boar-pack-users-backend' {
     UserInfo: typeof UserInfo;
     ReportAccountStatement: typeof ReportAccountStatement;
     ReportBalanceOperation: typeof ReportBalanceOperation;
+    ReportTrade: typeof ReportTrade;
   }
 }
