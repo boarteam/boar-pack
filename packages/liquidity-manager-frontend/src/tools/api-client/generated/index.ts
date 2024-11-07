@@ -72,6 +72,7 @@ export type { GetManyEcnWorkingModeResponseDto } from './models/GetManyEcnWorkin
 export type { GetManyEventLogResponseDto } from './models/GetManyEventLogResponseDto';
 export type { GetManyLiquidityManagerResponseDto } from './models/GetManyLiquidityManagerResponseDto';
 export type { GetManyLiquidityManagersUserResponseDto } from './models/GetManyLiquidityManagersUserResponseDto';
+export type { GetManyReportBalanceOperationResponseDto } from './models/GetManyReportBalanceOperationResponseDto';
 export type { GetManySubloginSettingsResponseDto } from './models/GetManySubloginSettingsResponseDto';
 export type { GetManyUserResponseDto } from './models/GetManyUserResponseDto';
 export type { GetManyUsersGroupsInstResponseDto } from './models/GetManyUsersGroupsInstResponseDto';
@@ -95,6 +96,7 @@ export type { PositionEventDto } from './models/PositionEventDto';
 export type { QuoteDto } from './models/QuoteDto';
 export type { QuoteEventDto } from './models/QuoteEventDto';
 export type { ReportAccountStatement } from './models/ReportAccountStatement';
+export type { ReportBalanceOperation } from './models/ReportBalanceOperation';
 export type { ResetPasswordDto } from './models/ResetPasswordDto';
 export type { SnapshotDto } from './models/SnapshotDto';
 export type { SnapshotEventDto } from './models/SnapshotEventDto';
@@ -154,6 +156,7 @@ export { MySubloginSettingsService } from './services/MySubloginSettingsService'
 export { MyUsersSubAccountsInstService } from './services/MyUsersSubAccountsInstService';
 export { PositionsService } from './services/PositionsService';
 export { ReportAccountStatementsService } from './services/ReportAccountStatementsService';
+export { ReportBalanceOperationsService } from './services/ReportBalanceOperationsService';
 export { SubloginSettingsService } from './services/SubloginSettingsService';
 export { UserInfoService } from './services/UserInfoService';
 export { UsersService } from './services/UsersService';

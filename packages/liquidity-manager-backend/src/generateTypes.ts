@@ -38,6 +38,7 @@ import {
   ViewInstrumentsSpecificationsModule
 } from './modules/view-instruments-specifications/view-instruments-specifications.module';
 import { ReportAccountStatementsModule } from "./modules/report-account-statements/report-account-statements.module";
+import { ReportBalanceOperationsModule } from "./modules/report-balance-operations/report-balance-operations.module";
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { ReportAccountStatementsModule } from "./modules/report-account-statemen
       dataSourceName: 'tid_db',
     }),
     ReportAccountStatementsModule,
+    ReportBalanceOperationsModule,
     ...restModules,
   ],
 })

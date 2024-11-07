@@ -34,6 +34,7 @@ import { MySubloginSettingsService } from './services/MySubloginSettingsService'
 import { MyUsersSubAccountsInstService } from './services/MyUsersSubAccountsInstService';
 import { PositionsService } from './services/PositionsService';
 import { ReportAccountStatementsService } from './services/ReportAccountStatementsService';
+import { ReportBalanceOperationsService } from './services/ReportBalanceOperationsService';
 import { SubloginSettingsService } from './services/SubloginSettingsService';
 import { UserInfoService } from './services/UserInfoService';
 import { UsersService } from './services/UsersService';
@@ -75,6 +76,7 @@ export class ApiClient {
     public readonly myUsersSubAccountsInst: MyUsersSubAccountsInstService;
     public readonly positions: PositionsService;
     public readonly reportAccountStatements: ReportAccountStatementsService;
+    public readonly reportBalanceOperations: ReportBalanceOperationsService;
     public readonly subloginSettings: SubloginSettingsService;
     public readonly userInfo: UserInfoService;
     public readonly users: UsersService;
@@ -127,6 +129,7 @@ export class ApiClient {
         this.myUsersSubAccountsInst = new MyUsersSubAccountsInstService(this.request);
         this.positions = new PositionsService(this.request);
         this.reportAccountStatements = new ReportAccountStatementsService(this.request);
+        this.reportBalanceOperations = new ReportBalanceOperationsService(this.request);
         this.subloginSettings = new SubloginSettingsService(this.request);
         this.userInfo = new UserInfoService(this.request);
         this.users = new UsersService(this.request);
