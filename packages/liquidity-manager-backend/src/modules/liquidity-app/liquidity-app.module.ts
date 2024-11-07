@@ -34,6 +34,7 @@ import { MyUsersSubAccountsInstModule } from "../my-users-sub-accounts-inst/my-u
 import { ViewInstrumentsSpecificationsModule } from "../view-instruments-specifications/view-instruments-specifications.module";
 import { ReportAccountStatementsModule } from "../report-account-statements/report-account-statements.module";
 import { ReportBalanceOperationsModule } from "../report-balance-operations/report-balance-operations.module";
+import { ReportTradesModule } from "../report-trades/report-trades.module";
 
 export const restModules = [
   EcnModulesModule,
@@ -121,6 +122,7 @@ export class LiquidityAppModule {
         MyUsersSubAccountsInstModule,
         ReportAccountStatementsModule,
         ReportBalanceOperationsModule,
+        ReportTradesModule,
         // RealTimeDataAppModule.forClusterMaster(),
         ...restModules,
       ],
