@@ -1,4 +1,8 @@
-import { ViewEntity, ViewColumn } from 'typeorm';
+import { ViewEntity, ViewColumn, ManyToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+import { DclOrderSide } from "../../../entities/dcl-order-side.entity";
+import { DclOrderType } from "../../../entities/dcl-order-type.entity";
+import { DclOrderBookType } from "../../../entities/dcl-order-book-type.entity";
+import { DclOrderState } from "../../../entities/dcl-order-state.entity";
 
 @ViewEntity('view_report_trades')
 export class ReportTrade {
@@ -15,19 +19,48 @@ export class ReportTrade {
   subAccount: number;
 
   @ViewColumn({ name: 'client_order_id' })
+  @PrimaryColumn()
   clientOrderId: string;
 
   @ViewColumn({ name: 'status' })
-  status: number;
+  statusId: number;
+
+  @ManyToOne(() => DclOrderState)
+  @JoinColumn({
+    name: 'status',
+    referencedColumnName: 'id'
+  })
+  status: DclOrderState;
 
   @ViewColumn({ name: 'book_type' })
-  bookType: number;
+  bookTypeId: number;
+
+  @ManyToOne(() => DclOrderBookType)
+  @JoinColumn({
+    name: 'book_type',
+    referencedColumnName: 'id'
+  })
+  bookType: DclOrderBookType;
 
   @ViewColumn({ name: 'order_type' })
-  orderType: number;
+  orderTypeId: number;
+
+  @ManyToOne(() => DclOrderType)
+  @JoinColumn({
+    name: 'order_type',
+    referencedColumnName: 'id'
+  })
+  orderType: DclOrderType;
 
   @ViewColumn({ name: 'side' })
-  side: number;
+  sideId: number;
+
+  @ManyToOne(() => DclOrderSide)
+  @JoinColumn({
+    name: 'side',
+    referencedColumnName: 'id'
+  })
+  side: DclOrderSide;
 
   @ViewColumn({ name: 'instrument' })
   instrument: string;

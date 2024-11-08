@@ -19,17 +19,21 @@ import { ViewReportTradesPolicy } from "./policies/view-report-trades.policy";
   },
   query: {
     alwaysPaginate: true,
+    join: {
+      // do not add joins here since it will force typeorm to create super uneficient queries
+      // to calculate distinct values
+    },
   },
   routes: {
     only: ['getManyBase'],
   },
 })
-@CrudAuth({
-  property: 'user',
-  filter: (user) => ({
-    userId: user.id,
-  }),
-})
+// @CrudAuth({
+//   property: 'user',
+//   filter: (user) => ({
+//     userId: user.id,
+//   }),
+// })
 @CheckPolicies(new ViewReportTradesPolicy())
 @ApiTags('ReportTrades')
 @Controller('report-trades')
