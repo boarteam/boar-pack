@@ -28,12 +28,12 @@ import { ViewReportTradesPolicy } from "./policies/view-report-trades.policy";
     only: ['getManyBase'],
   },
 })
-// @CrudAuth({
-//   property: 'user',
-//   filter: (user) => ({
-//     userId: user.id,
-//   }),
-// })
+@CrudAuth({
+  property: 'user',
+  filter: (user) => ({
+    userId: user.id,
+  }),
+})
 @CheckPolicies(new ViewReportTradesPolicy())
 @ApiTags('ReportTrades')
 @Controller('report-trades')
