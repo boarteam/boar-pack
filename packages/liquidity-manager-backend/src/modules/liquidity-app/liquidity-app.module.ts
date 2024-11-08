@@ -35,6 +35,7 @@ import { ViewInstrumentsSpecificationsModule } from "../view-instruments-specifi
 import { ReportAccountStatementsModule } from "../report-account-statements/report-account-statements.module";
 import { ReportBalanceOperationsModule } from "../report-balance-operations/report-balance-operations.module";
 import { ReportTradesModule } from "../report-trades/report-trades.module";
+import { ReportSwapsModule } from "../report-swaps/report-swaps.module";
 
 export const restModules = [
   EcnModulesModule,
@@ -123,6 +124,7 @@ export class LiquidityAppModule {
         ReportAccountStatementsModule,
         ReportBalanceOperationsModule,
         ReportTradesModule,
+        ReportSwapsModule,
         // RealTimeDataAppModule.forClusterMaster(),
         ...restModules,
       ],

@@ -40,6 +40,7 @@ import {
 import { ReportAccountStatementsModule } from "./modules/report-account-statements/report-account-statements.module";
 import { ReportBalanceOperationsModule } from "./modules/report-balance-operations/report-balance-operations.module";
 import { ReportTradesModule } from "./modules/report-trades/report-trades.module";
+import { ReportSwapsModule } from './modules/report-swaps/report-swaps.module';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { ReportTradesModule } from "./modules/report-trades/report-trades.module
     ReportAccountStatementsModule,
     ReportBalanceOperationsModule,
     ReportTradesModule,
+    ReportSwapsModule,
     ...restModules,
   ],
 })
