@@ -32,6 +32,10 @@ import { LiquidityManagersUsersService } from './services/LiquidityManagersUsers
 import { MyAuditLogsService } from './services/MyAuditLogsService';
 import { MySubloginSettingsService } from './services/MySubloginSettingsService';
 import { MyUsersSubAccountsInstService } from './services/MyUsersSubAccountsInstService';
+import { OrderBookTypesService } from './services/OrderBookTypesService';
+import { OrderSidesService } from './services/OrderSidesService';
+import { OrderStatesService } from './services/OrderStatesService';
+import { OrderTypesService } from './services/OrderTypesService';
 import { PositionsService } from './services/PositionsService';
 import { ReportAccountStatementsService } from './services/ReportAccountStatementsService';
 import { ReportBalanceOperationsService } from './services/ReportBalanceOperationsService';
@@ -75,6 +79,10 @@ export class ApiClient {
     public readonly myAuditLogs: MyAuditLogsService;
     public readonly mySubloginSettings: MySubloginSettingsService;
     public readonly myUsersSubAccountsInst: MyUsersSubAccountsInstService;
+    public readonly orderBookTypes: OrderBookTypesService;
+    public readonly orderSides: OrderSidesService;
+    public readonly orderStates: OrderStatesService;
+    public readonly orderTypes: OrderTypesService;
     public readonly positions: PositionsService;
     public readonly reportAccountStatements: ReportAccountStatementsService;
     public readonly reportBalanceOperations: ReportBalanceOperationsService;
@@ -129,6 +137,10 @@ export class ApiClient {
         this.myAuditLogs = new MyAuditLogsService(this.request);
         this.mySubloginSettings = new MySubloginSettingsService(this.request);
         this.myUsersSubAccountsInst = new MyUsersSubAccountsInstService(this.request);
+        this.orderBookTypes = new OrderBookTypesService(this.request);
+        this.orderSides = new OrderSidesService(this.request);
+        this.orderStates = new OrderStatesService(this.request);
+        this.orderTypes = new OrderTypesService(this.request);
         this.positions = new PositionsService(this.request);
         this.reportAccountStatements = new ReportAccountStatementsService(this.request);
         this.reportBalanceOperations = new ReportBalanceOperationsService(this.request);

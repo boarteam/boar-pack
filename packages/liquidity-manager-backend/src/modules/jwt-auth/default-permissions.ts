@@ -6,6 +6,7 @@ import { MySubloginSettingsPermissions } from "../my-sublogin-settings/my-sublog
 import { ViewInstrumentsSpecificationsPermissions } from "../view-instruments-specifications/view-instruments-specifications.permissions";
 import { ReportAccountStatementsPermissions } from "../report-account-statements/report-account-statements.permissions";
 import { ReportBalanceOperationsPermissions } from "../report-balance-operations/report-balance-operations.permissions";
+import { ReportTradesPermissions } from "../report-trades/report-trades.permissions";
 import { ReportSwapsPermissions } from "../report-swaps/report-swaps.permissions";
 
 export const defaultPermissions = [
@@ -19,5 +20,6 @@ export const defaultPermissions = [
   ViewInstrumentsSpecificationsPermissions.VIEW,
   ReportAccountStatementsPermissions.VIEW,
   ReportBalanceOperationsPermissions.VIEW,
+  ReportTradesPermissions.VIEW,
   ReportSwapsPermissions.VIEW,
 ];
