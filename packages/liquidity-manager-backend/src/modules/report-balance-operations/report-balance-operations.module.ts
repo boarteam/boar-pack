@@ -4,9 +4,6 @@ import { ReportBalanceOperationsService } from './report-balance-operations.serv
 import { ReportBalanceOperationsController } from './report-balance-operations.controller';
 import { ReportBalanceOperation } from './entities/report-balance-operation.entity';
 import { CaslModule } from "@jifeon/boar-pack-users-backend/src/casl/casl.module";
-import { CaslAbilityFactory } from "@jifeon/boar-pack-users-backend/src/casl/casl-ability.factory";
-import { ReportBalanceOperationsPermissions } from "./report-balance-operations.permissions";
-import { Action } from "@jifeon/boar-pack-users-backend/src/casl/action.enum";
 import { AMTS_DB_NAME } from "../liquidity-app/liquidity-app.config";
 
 @Module({
@@ -25,11 +22,4 @@ import { AMTS_DB_NAME } from "../liquidity-app/liquidity-app.config";
   ]
 })
 export class ReportBalanceOperationsModule {
-  constructor() {
-    CaslAbilityFactory.addPermissionToAction({
-      permission: ReportBalanceOperationsPermissions.VIEW,
-      action: Action.Read,
-      subject: ReportBalanceOperation,
-    });
-  }
 }

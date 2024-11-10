@@ -4,9 +4,6 @@ import { ReportTradesService } from './report-trades.service';
 import { ReportTradesController } from './report-trades.controller';
 import { ReportTrade } from './entities/report-trade.entity';
 import { CaslModule } from "@jifeon/boar-pack-users-backend/src/casl/casl.module";
-import { CaslAbilityFactory } from "@jifeon/boar-pack-users-backend/src/casl/casl-ability.factory";
-import { ReportTradesPermissions } from "./report-trades.permissions";
-import { Action } from "@jifeon/boar-pack-users-backend/src/casl/action.enum";
 import { AMTS_DB_NAME } from "../liquidity-app/liquidity-app.config";
 import { DclOrderType } from "../../entities/dcl-order-type.entity";
 import { DclOrderState } from "../../entities/dcl-order-state.entity";
@@ -61,11 +58,4 @@ import { ViewReportTradesPolicy } from "./policies/view-report-trades.policy";
   ]
 })
 export class ReportTradesModule {
-  constructor() {
-    CaslAbilityFactory.addPermissionToAction({
-      permission: ReportTradesPermissions.VIEW,
-      action: Action.Read,
-      subject: ReportTrade,
-    });
-  }
 }
