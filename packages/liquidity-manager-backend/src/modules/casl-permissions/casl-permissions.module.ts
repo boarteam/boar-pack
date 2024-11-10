@@ -25,6 +25,14 @@ import { MyUsersSubAccountsInstPermissions } from '../my-users-sub-accounts-inst
 import { MyUsersSubAccountsInst } from '../my-users-sub-accounts-inst/policies/view-my-users-sub-accounts-inst.policy';
 import { ViewInstrumentsSpecification } from '../view-instruments-specifications/entities/view-instruments-specifications.entity';
 import { ViewInstrumentsSpecificationsPermissions } from '../view-instruments-specifications/view-instruments-specifications.permissions';
+import { ReportAccountStatementsPermissions } from "../report-account-statements/report-account-statements.permissions";
+import { ReportAccountStatement } from "../report-account-statements/entities/report-account-statement.entity";
+import { ReportBalanceOperationsPermissions } from "../report-balance-operations/report-balance-operations.permissions";
+import { ReportBalanceOperation } from "../report-balance-operations/entities/report-balance-operation.entity";
+import { ReportSwapsPermissions } from "../report-swaps/report-swaps.permissions";
+import { ReportSwap } from "../report-swaps/entities/report-swap.entity";
+import { ReportTradesPermissions } from "../report-trades/report-trades.permissions";
+import { ReportTrade } from "../report-trades/entities/report-trade.entity";
 
 export enum Permissions {
   VIEW_LIQUIDITY = 'view_liquidity',
@@ -102,6 +110,26 @@ export class CaslPermissionsModule {
         permission: MyAuditLogsPermissions.VIEW,
         action: Action.Read,
         subject: MyAuditLog,
+      },
+      {
+        permission: ReportAccountStatementsPermissions.VIEW,
+        action: Action.Read,
+        subject: ReportAccountStatement,
+      },
+      {
+        permission: ReportBalanceOperationsPermissions.VIEW,
+        action: Action.Read,
+        subject: ReportBalanceOperation,
+      },
+      {
+        permission: ReportSwapsPermissions.VIEW,
+        action: Action.Read,
+        subject: ReportSwap,
+      },
+      {
+        permission: ReportTradesPermissions.VIEW,
+        action: Action.Read,
+        subject: ReportTrade,
       }
     ];
 
