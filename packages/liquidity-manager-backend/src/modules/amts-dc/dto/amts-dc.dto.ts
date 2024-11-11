@@ -54,6 +54,7 @@ export type MTPosition = {
   side: 'buy' | 'sell';
   amount: number;
   open_price: number;
+  price: number;
   margin: number;
   profit: number;
   ts_create: number;
