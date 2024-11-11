@@ -51,7 +51,6 @@ import { MyUsersSubAccountsInstGuard } from './my-users-sub-accounts-inst.guard'
     },
     createOneBase: {
       decorators: [
-        UseGuards(MyUsersSubAccountsInstGuard),
         UsePipes(
           AutoincrementIdPipe({Entity: UsersSubAccountInst}),
           AutoincrementIdPipe({Entity: UsersSubAccountInst, idField: 'subAccountId', uniqueFields: ['userId']}),
