@@ -84,6 +84,7 @@ const Table = <Entity extends Record<string | symbol, any>,
   const [allSelected, setAllSelected] = useState(false);
   const { styles } = useStyles();
   const [messageApi, contextHolder] = message.useMessage();
+  const [editableData, setEditableData] = useState<(Entity)[]>([]);
 
   const intl = useIntl();
 
@@ -213,6 +214,9 @@ const Table = <Entity extends Record<string | symbol, any>,
         type: 'multiple',
         editableKeys,
         onChange: setEditableRowKeys,
+        onValuesChange(entity, data) {
+          setEditableData(data);
+        },
         async onSave(
           id,
           record,
@@ -248,7 +252,12 @@ const Table = <Entity extends Record<string | symbol, any>,
           record,
           origin,
         ) {
-          Object.assign(record, origin);
+          console.log(record, origin)
+          editableData.forEach(entity => {
+            if (entity[idColumnName] === id) {
+              Object.assign(entity, origin);
+            }
+          })
         },
         async onDelete(id, row) {
           await onDelete({ ...row, ...pathParams });
