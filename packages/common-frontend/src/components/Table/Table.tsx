@@ -248,7 +248,9 @@ const Table = <Entity extends Record<string | symbol, any>,
           record,
           origin,
         ) {
-          Object.assign(record, origin);
+          if (record) {
+            Object.assign(record, origin);
+          }
         },
         async onDelete(id, row) {
           await onDelete({ ...row, ...pathParams });
@@ -266,7 +268,7 @@ const Table = <Entity extends Record<string | symbol, any>,
         !viewOnly && onUpdateMany
           ? (
             <BulkEditButton
-              selectedRecords={selectedRecords} 
+              selectedRecords={selectedRecords}
               lastRequest={lastRequest}
               allSelected={allSelected}
               columns={columns}
@@ -281,7 +283,7 @@ const Table = <Entity extends Record<string | symbol, any>,
                     entityToUpdateDto({
                       ...pathParams,
                       ...values,
-                    }), 
+                    }),
                     (value, key) =>  _.has(values, key),
                   ),
                   records: allSelected ? [] : selectedRecords,
@@ -299,7 +301,7 @@ const Table = <Entity extends Record<string | symbol, any>,
         !viewOnly && onDeleteMany
           ? (
             <BulkDeleteButton
-              selectedRecords={selectedRecords} 
+              selectedRecords={selectedRecords}
               lastRequest={lastRequest}
               allSelected={allSelected}
               // @ts-ignore
@@ -328,7 +330,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       {
         ...(
           !viewOnly && (onUpdateMany || onDeleteMany)
-            ? { 
+            ? {
               rowSelection: {
                 selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]),
                 selections: [
@@ -348,7 +350,7 @@ const Table = <Entity extends Record<string | symbol, any>,
                           zIndex={1080}
                         >
                           <QuestionCircleTwoTone />
-                        </Popover> 
+                        </Popover>
                       </Space>
                     ),
                     onSelect: () => {
