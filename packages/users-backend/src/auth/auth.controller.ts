@@ -7,7 +7,7 @@ import { SkipPoliciesGuard } from '../casl/policies.guard';
 import { GoogleAuthGuard } from './google-auth.guard';
 import { AuthExceptionFilter } from './google-auth.filter';
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { LocalAuthLoginDto, LocalAuthTokenDto } from "./local-auth.dto";
 import { MSAuthGuard } from "./ms-auth.guard";
 

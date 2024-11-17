@@ -14,7 +14,7 @@ import { EventLogsService } from "./event-logs.service";
 import { Request, Response } from 'express';
 import { HttpException } from "@nestjs/common/exceptions/http.exception";
 import { SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
-import { TEventLogServiceConfig } from "./event-logs.types";
+import type { TEventLogServiceConfig } from "./event-logs.types";
 import { Reflector } from "@nestjs/core";
 
 export const SKIP_EVENTS_LOG = 'SKIP_EVENTS_LOG';

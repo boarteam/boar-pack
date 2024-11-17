@@ -1,7 +1,7 @@
-import { Crud, CrudAuth, CrudController, CrudRequest, Override, ParsedRequest, } from '@nestjsx/crud';
+import { Crud, CrudAuth, CrudController, type CrudRequest, Override, ParsedRequest, } from '@nestjsx/crud';
 import { TUser, User } from './entities/user.entity';
 import { Controller, Req } from '@nestjs/common';
-import { Request } from 'express';
+import type { Request } from 'express';
 import { UsersService } from './users.service';
 import { CaslAbilityFactory } from '../casl/casl-ability.factory';
 import { SkipPoliciesGuard } from '../casl/policies.guard';
