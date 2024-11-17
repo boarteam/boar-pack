@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { EventLogsService } from './event-logs.service';
 import { EventLog, LogLevel } from './entities/event-log.entity';
 import { SERVICE_CONFIG_TOKEN } from './event-logs.constants';
-import { TEventLogServiceConfig } from './event-logs.types';
+import type { TEventLogServiceConfig } from './event-logs.types';
 
 @Injectable()
 export class EventLogMiddleware implements NestMiddleware {

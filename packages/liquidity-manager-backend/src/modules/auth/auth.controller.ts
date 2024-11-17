@@ -15,7 +15,7 @@ import { AMTSUser, AuthService } from './auth.service';
 import { tokenName } from './auth.constants';
 import { SkipJWTGuard } from '../jwt-auth';
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { LocalAuthLoginDto, LocalAuthTokenDto } from "./dto/local-auth.dto";
 import { CaslAbilityFactory, SkipPoliciesGuard } from "@jifeon/boar-pack-users-backend";
 import { JwtUriAuthGuard } from "../jwt-auth/jwt-uri-auth.guard";

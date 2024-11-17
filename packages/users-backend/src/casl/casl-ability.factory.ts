@@ -3,9 +3,10 @@ import { Roles, User } from '../users/entities/user.entity';
 import { Action } from './action.enum';
 import { Injectable } from '@nestjs/common';
 import { PackRule, packRules } from '@casl/ability/extra';
-import { AnyObject } from '@casl/ability/dist/types/types';
 import { Permission } from '../users/entities/permissions';
 import { EventLog } from '../event-logs';
+
+type AnyObject = Record<PropertyKey, unknown>;
 
 export interface TSubjects {
   User: typeof User;
