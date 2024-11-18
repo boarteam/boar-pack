@@ -2,11 +2,6 @@ import { Operators, TSearchableColumn } from "@jifeon/boar-pack-common-frontend"
 
 export const auditLogsSearchableColumns: TSearchableColumn[] = [
   {
-    field: 'method',
-    operator: Operators.containsLow,
-    filterOperator: Operators.in,
-  },
-  {
     field: 'logLevel',
     searchField: null,
     operator: Operators.equals,
@@ -25,26 +20,12 @@ export const auditLogsSearchableColumns: TSearchableColumn[] = [
     operator: Operators.equals,
   },
   {
-    field: 'url',
-    operator: Operators.containsLow,
-  },
-  {
     field: 'ipAddress',
     operator: Operators.containsLow,
   },
   {
     field: 'userAgent',
     operator: Operators.containsLow,
-  },
-  {
-    field: 'duration',
-    operator: Operators.equals,
-    numeric: true,
-  },
-  {
-    field: 'statusCode',
-    operator: Operators.equals,
-    numeric: true,
   },
   {
     field: 'createdAt',
