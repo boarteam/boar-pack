@@ -27,6 +27,7 @@ import { ViewMyAuditLogsPolicy } from "./policies/view-my-audit-logs.policy";
   filter: (user: TUser) => ({
     'externalUserId': user.id,
     'logType': LogType.AUDIT,
+    'method': { $ne: 'GET' }
   }),
 })
 @CheckPolicies(new ViewMyAuditLogsPolicy())
