@@ -7,6 +7,7 @@ import { useRealTimeData } from "../RealTimeData/RealTimeDataSource";
 import React, { useEffect, useState } from "react";
 import { Tag } from "antd";
 import { connectionStatuses, TConnectionStatus } from "../RealTimeData/realTimeDataStatuses";
+import { createStyles } from "antd-style";
 
 type TQuoteFilterParams = {
   symbol?: string,
@@ -22,17 +23,34 @@ type TQuotesTableProps = {
   onSymbolClick?: (instrument: string) => void,
 }
 
+const useStyles = createStyles(() => {
+  return {
+    table: {
+      '.ant-table-row': {
+        cursor: 'pointer'
+      },
+    },
+  };
+});
+
 const QuotesTable: React.FC<TQuotesTableProps> = ({
   moduleId,
   controller,
   onSymbolClick,
 }) => {
+  const [selectedRowKey, setSelectedRowKey] = useState<string | null>(null);
   const columns = useQuotesColumns();
+  const { styles } = useStyles();
   const { worker } = useLiquidityManagerContext();
   const {
     realTimeDataSource,
     connectionStatus,
   } = useRealTimeData();
+
+  const handleRowClick = (record: Quote) => {
+    setSelectedRowKey(record.symbol);
+    onSymbolClick?.(record.symbol);
+  }
 
   useEffect(() => {
     return () => {
@@ -65,7 +83,13 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
 
   return (
     <Table<Quote, {}, {}, TQuoteFilterParams, TQuotesPathParams>
+      className={styles.table}
       getAll={getAll}
+      onLoad={(data) => {
+        if (data.length > 0) {
+          handleRowClick(data[0]);
+        }
+      }}
       columns={columns}
       idColumnName='symbol'
       pathParams={{
@@ -95,10 +119,11 @@ const QuotesTable: React.FC<TQuotesTableProps> = ({
       onRow={(record) => {
         return {
           onClick: () => {
-            onSymbolClick?.(record.symbol);
+            handleRowClick(record)
           }
         }
       }}
+      rowClassName={(record) => selectedRowKey === record.symbol ? 'ant-table-row-selected' : ''}
       scroll={{
         x: 'max-content',
       }}
