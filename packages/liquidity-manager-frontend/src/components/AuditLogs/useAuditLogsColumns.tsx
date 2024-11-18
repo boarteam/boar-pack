@@ -1,5 +1,5 @@
 import { ProColumns } from "@ant-design/pro-components";
-import { Badge, Collapse, CollapseProps, Typography } from "antd";
+import { Typography } from "antd";
 import { ExclamationCircleOutlined, InfoCircleTwoTone, WarningOutlined } from "@ant-design/icons";
 import { DateRange } from "@jifeon/boar-pack-common-frontend";
 import { EventLogTimelineQueryDto } from "@jifeon/boar-pack-users-frontend/src/tools/api-client";
@@ -57,12 +57,6 @@ export const useAuditLogsColumns = ({
       hideInSearch: true,
     },
     {
-      title: 'User Name',
-      dataIndex: 'userName',
-      hideInTable: true,
-      hideInSearch: true,
-    },
-    {
       title: 'Entity',
       dataIndex: 'entity',
       render(dom, record) {
@@ -80,86 +74,10 @@ export const useAuditLogsColumns = ({
       hideInSearch: true,
     },
     {
-      title: 'Method',
-      dataIndex: 'method',
-      valueEnum: {
-        GET: {
-          text: 'GET',
-        },
-        POST: {
-          text: 'POST',
-        },
-        PUT: {
-          text: 'PUT',
-        },
-        PATCH: {
-          text: 'PATCH',
-        },
-        DELETE: {
-          text: 'DELETE',
-        },
-        OPTIONS: {
-          text: 'OPTIONS',
-        },
-        HEAD: {
-          text: 'HEAD',
-        },
-      },
-      filters: true,
-      hideInSearch: true,
-    },
-    {
-      title: 'URL',
-      dataIndex: 'url',
-      width: 600,
-      render(dom, record) {
-        return <Typography.Paragraph
-          style={{
-            width: 600,
-            margin: 0,
-          }}
-          ellipsis={{
-            rows: 1,
-            expandable: true,
-          }}
-          copyable={true}
-        >{record.url}</Typography.Paragraph>;
-      },
-      hideInSearch: true,
-    },
-    {
-      title: 'Payload',
-      dataIndex: 'payload',
-      render(dom, record) {
-        if (record.payload === null) {
-          return 'N/A';
-        }
-
-        if ('message' in record.payload) {
-          const items: CollapseProps['items'] = [
-            {
-              key: '1',
-              label: <pre style={{ margin: 0 }}>{record.payload.message}</pre>,
-              children: <pre
-                style={{ margin: 0 }}
-              >{
-                JSON.stringify(record.payload, null, 2).replace(/\n/g, '\n')
-              }</pre>,
-            },
-          ];
-
-          return <Collapse items={items} ghost />;
-        }
-
-        return <pre style={{ margin: 0 }}>{JSON.stringify(record.payload)}</pre>;
-      },
-      hideInSearch: true,
-    },
-    {
       title: 'IP Address',
       dataIndex: 'ipAddress',
-      copyable: true,
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: 'User Agent',
@@ -171,55 +89,11 @@ export const useAuditLogsColumns = ({
 
         return <UserAgentDisplay userAgent={record.userAgent} />;
       },
-      hideInSearch: true,
-
-    },
-    {
-      title: 'Duration',
-      dataIndex: 'duration',
-      render(dom, record) {
-        const text = record.duration + ' ms';
-
-        if (record.duration === null) {
-          return 'N/A';
-        }
-
-        if (record.duration >= 1000) {
-          return <Typography.Text type='danger'>{text}</Typography.Text>;
-        }
-
-        if (record.duration >= 200) {
-          return <Typography.Text type='warning'>{text}</Typography.Text>;
-        }
-
-        return text;
-      },
-      valueType: 'digit',
-      sorter: true,
+      hideInTable: true,
       hideInSearch: true,
     },
     {
-      title: 'Status Code',
-      dataIndex: 'statusCode',
-      render(dom, record) {
-        if (record.statusCode === null) {
-          return 'N/A';
-        }
-
-        if (record.statusCode >= 500) {
-          return <Badge color={'red'} text={record.statusCode} />;
-        }
-
-        if (record.statusCode >= 300) {
-          return <Badge color={'orange'} text={record.statusCode} />;
-        }
-
-        return <Badge color={'green'} text={record.statusCode} />;
-      },
-      hideInSearch: true,
-    },
-    {
-      title: 'Log Level',
+      title: 'Type',
       dataIndex: 'logLevel',
       render(dom, record) {
         return <Text
