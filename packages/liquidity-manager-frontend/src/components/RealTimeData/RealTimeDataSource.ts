@@ -12,9 +12,11 @@ import {
   UserInfoEventDto,
   WebsocketsErrorEventDto,
 } from "../../tools/api-client/generated";
-import { WebsocketClient } from "@jifeon/boar-pack-common-frontend";
+import { WebsocketClient, WsErrorCodes } from "@jifeon/boar-pack-common-frontend";
 import { useEffect, useState } from "react";
 import { TConnectionStatus } from "./realTimeDataStatuses";
+import { logout } from "@jifeon/boar-pack-users-frontend/src/pages/getInitialState";
+import apiClient from "@@api/apiClient";
 
 export type TIncomeEvent =
   | { event: 'error' } & WebsocketsErrorEventDto
@@ -132,8 +134,13 @@ export class RealTimeDataSource {
     }));
   }
 
-  private onSocketClose = () => {
+  private onSocketClose = async (event: WebSocketEventMap['close']) => {
     this.emitStatusEvent();
+    if (event.code === WsErrorCodes.Unauthorized) {
+      await logout(apiClient.amtsAuthentication.logout.bind(apiClient.amtsAuthentication));
+      return;
+    }
+
     console.log('RealTimeDataSource: onSocketClose: reconnecting in 1s...');
     if (this.active) {
       this.primarySocket?.reconnect(1000);

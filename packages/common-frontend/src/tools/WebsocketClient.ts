@@ -1,9 +1,11 @@
 import { TIncomeEvent } from "../../../liquidity-manager-frontend/src/components/RealTimeData/RealTimeDataSource";
 import { message } from "antd";
 
-enum WsErrorCodes {
+export enum WsErrorCodes {
+  ConnectionClosed = 1000,
   InvalidJson = 4000,
   ErrorMessage = 4001,
+  Unauthorized = 4003,
 }
 
 export class WebsocketClient {

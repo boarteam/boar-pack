@@ -12,10 +12,11 @@ export type TBaseConfig<EventType> = {
   ignoreInvalidJson?: boolean;
 };
 
-enum WsErrorCodes {
+export enum WsErrorCodes {
   ConnectionClosed = 1000,
   InvalidJson = 4000,
   ErrorMessage = 4001,
+  Unauthorized = 4003,
 }
 
 @Injectable({ scope: Scope.TRANSIENT })
