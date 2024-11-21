@@ -5035,6 +5035,11 @@
     swagger2openapi "^7.0.4"
     tiny-pinyin "^1.3.2"
 
+"@umijs/plugin-initial-state@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@umijs/plugin-initial-state/-/plugin-initial-state-2.4.0.tgz#a6759082f2bdd0aeb278ae95b2e4b562a061aed6"
+  integrity sha512-UHH5fTL9skm4771R3xvWCrjd5xiQ7OdJ83G0P1YZLhuNbh0cAFVT8SPTU8dA9o8TTAZ66IEq7axhWl1cGxVsXw==
+
 "@umijs/plugin-locale@^0.16.0":
   version "0.16.0"
   resolved "https://registry.yarnpkg.com/@umijs/plugin-locale/-/plugin-locale-0.16.0.tgz#776a6e02f397a812145363ec04e70e4c35605137"
