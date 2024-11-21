@@ -1,0 +1,14 @@
+shape: sequence_diagram
+
+client: Client
+server: Server
+
+client -> server: Connect
+server -> wsAuthService: Handle Connection (Sync)
+wsAuthService -> usersService: Check user from DB (Async)
+client -> server: Subscribe
+server.WS Auth Guard
+usersService -> wsAuthService: OK
+wsAuthService -> server: OK
+server -> client: message 1
+server -> client: message 2
