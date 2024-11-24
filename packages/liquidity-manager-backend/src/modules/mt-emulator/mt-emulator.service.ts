@@ -1,35 +1,38 @@
 import { forwardRef, Inject, Injectable, Logger } from "@nestjs/common";
 import {
   BehaviorSubject,
+  concat,
   concatMap,
   EMPTY,
+  filter,
+  from,
   map,
   Observable,
   range,
   share,
   switchMap,
   tap,
-  timer,
-  filter,
-  concat,
-  from
+  timer
 } from "rxjs";
-import { EmulatorDto, Instrument } from "./dto/mt-emulator.dto";
+import { CreatePositionDto, EmulatorDto, GetPositionsDto, Instrument, UpdatePositionDto } from "./dto/mt-emulator.dto";
 import { MtEmulatorGateway } from "./mt-emulator.gateway";
-import { MTQuoteWSMessage } from "../amts-dc/dto/amts-dc.dto";
+import {MTPosition, MTPositionsWSMessage, MTQuoteWSMessage} from "../amts-dc/dto/amts-dc.dto";
 import { MTInstrument } from "../amts-dc/dto/amts-dc.types";
+import { PositionDto, PositionSide } from "../positions/dto/positions.dto";
 
 @Injectable()
 export class MtEmulatorService {
   private readonly logger = new Logger(MtEmulatorService.name);
   private readonly DELAY = 1000;
   private readonly generator: Observable<string>;
+  private readonly positionsGenerator: Observable<string>;
   private running = new BehaviorSubject<boolean>(true);
   private generatingInstruments = new BehaviorSubject<number>(10);
   private problematicSymbols = new BehaviorSubject(new Set<Instrument['n']>());
   private addedInstruments = new BehaviorSubject(new Map<Instrument['n'], Instrument>());
   private removedInstruments = new BehaviorSubject(new Set<Instrument['n']>());
   private pathsForInstruments = new Map<Instrument['n'], string>();
+  private positions: { position: MTPosition }[];
 
   constructor(
     @Inject(forwardRef(() => MtEmulatorGateway))
@@ -90,6 +93,29 @@ export class MtEmulatorService {
         }),
       }
     ]]));
+
+    this.positions = this.generatePositions();
+    this.positionsGenerator = new Observable<string>((subscriber) => {
+        setInterval(() => {
+            // Generate random index between 0 and positions.length numbers
+            const index = Math.floor(Math.random() * (this.positions.length - 1));
+            const position = this.positions[index].position;
+            const d = Math.random() - 0.5;
+
+            position.side = Math.random() > 0.5 ? PositionSide.BUY : PositionSide.SELL;
+            position.amount -= d;
+            position.open_price -= d * 10;
+            position.margin += d * 10;
+            position.user_id = 707;
+            position.ts_update = new Date().getTime();
+
+            const message = JSON.stringify({
+                position,
+            } as MTPositionsWSMessage);
+
+            subscriber.next(message);
+        }, this.DELAY);
+    })
   }
 
   public start(): void {
@@ -188,6 +214,10 @@ export class MtEmulatorService {
     return this.generator;
   }
 
+  public getPositionsStream(): Observable<string> {
+      return this.positionsGenerator;
+  }
+
   private getPathForInstrument(symbol: string): string {
     let path = this.pathsForInstruments.get(symbol);
 
@@ -227,5 +257,83 @@ export class MtEmulatorService {
       }))
       .concat(Array.from(this.addedInstruments.value.values()))
       .filter(({ n }) => !this.removedInstruments.value.has(n));
+  }
+
+  generatePositions(): { position: MTPosition }[] {
+    const instruments = ['BTCEUR', 'EURAUD', 'EURCAD', 'EURCHF', 'EURCHF1', 'EURCHF2', 'EURCHF3', 'EURCZK', 'EURHKD', 'EURHUF'];
+    return Array.from({
+      length: instruments.length,
+    })
+        .map((_, i) => {
+          const amount = Math.random() * 1000;
+          return {
+            position: {
+              id: i + 1,
+              user_id: 0,
+              instrument: instruments[i],
+              side: Math.random() > 0.5 ? PositionSide.BUY : PositionSide.SELL,
+              amount,
+              open_price: Math.random() * 100 + 1,
+              margin: (amount * 0.1),
+              profit: (Math.random() - 0.5) * 200,
+              ts_create: new Date().getTime(),
+              ts_update: new Date().getTime(),
+            }
+          };
+        });
+  }
+
+  public getPositions(params: GetPositionsDto): { position: MTPosition }[] {
+      const {user_id} = params;
+      return this.positions.map(({position}) => ({
+          position: {
+              ...position,
+              user_id
+          }
+      }));
+  }
+
+  public createPosition(position: CreatePositionDto): void {
+    const lastIndex = this.positions.length - 1;
+    this.positions.push({
+      position: {
+        id: +this.positions[lastIndex].position.id + 1,
+        ts_create: new Date().getTime(),
+        ts_update: new Date().getTime(),
+        ...position
+      }
+    });
+    this.gateway.broadcast(JSON.stringify({
+      position: position,
+    }));
+    this.logger.log('Added position', position);
+  }
+
+  public updatePosition(id: PositionDto['id'], position: UpdatePositionDto): void {
+    const item = this.positions.find(({ position }) => position.id === +id);
+
+    if (item) {
+      item.position = {
+        ...item.position,
+        ...position
+      }
+
+      this.gateway.broadcast(JSON.stringify({
+        position: item.position,
+      }));
+      this.logger.log(`Updated position ${id}`);
+    }
+  }
+
+  public deletePosition(id: PositionDto['id']): void {
+    const index = this.positions.findIndex(({ position }) => position.id === +id);
+
+    if (index !== -1) {
+      this.positions[index].position.amount = 0;
+      this.gateway.broadcast(JSON.stringify({
+        position: this.positions[index].position,
+      }));
+      this.logger.log(`Deleted position ${id}`);
+    }
   }
 }
