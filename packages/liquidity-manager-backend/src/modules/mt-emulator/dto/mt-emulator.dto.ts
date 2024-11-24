@@ -76,6 +76,9 @@ export class CreatePositionDto {
   open_price: MTPosition['open_price'];
 
   @JoiSchema(Joi.number().required())
+  price: MTPosition['price'];
+
+  @JoiSchema(Joi.number().required())
   margin: MTPosition['margin'];
 
   @JoiSchema(Joi.number().required())

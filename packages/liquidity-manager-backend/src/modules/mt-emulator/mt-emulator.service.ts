@@ -274,11 +274,12 @@ export class MtEmulatorService {
               side: Math.random() > 0.5 ? PositionSide.BUY : PositionSide.SELL,
               amount,
               open_price: Math.random() * 100 + 1,
+              price: Math.random() * 100 + 1,
               margin: (amount * 0.1),
               profit: (Math.random() - 0.5) * 200,
               ts_create: new Date().getTime(),
               ts_update: new Date().getTime(),
-            }
+            },
           };
         });
   }
