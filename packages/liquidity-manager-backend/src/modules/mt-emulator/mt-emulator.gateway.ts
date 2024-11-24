@@ -1,4 +1,7 @@
-import { OnGatewayConnection, WebSocketGateway } from "@nestjs/websockets";
+import {
+  OnGatewayConnection,
+  WebSocketGateway
+} from "@nestjs/websockets";
 import { WebSocket } from "ws";
 import { forwardRef, Inject, Logger } from "@nestjs/common";
 import { MtEmulatorService } from "./mt-emulator.service";
@@ -23,9 +26,19 @@ export class MtEmulatorGateway implements OnGatewayConnection {
       });
     });
 
+    const positionSubscription = this.mtEmulatorService.getPositionsStream().subscribe((position) => {
+
+      client.send(position, (err) => {
+        if (err) {
+          this.logger.error(`Error sending position to mt emulator client: ${err.message}`);
+        }
+      });
+    });
+
     client.on('close', () => {
       this.logger.log('Client disconnected from mt emulator');
       subscription.unsubscribe();
+      positionSubscription.unsubscribe();
       this.clients.delete(client);
     });
 
