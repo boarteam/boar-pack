@@ -1,6 +1,6 @@
 {
   "name": "@jifeon/boar-pack-liquidity-manager-backend",
-  "version": "3.4.0-adm122.6",
+  "version": "3.4.0-adm122.7",
   "description": "Liquidity Manager",
   "main": "src/index",
   "files": [
@@ -12,8 +12,8 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
-    "@jifeon/boar-pack-common-backend": "^1.11.0-adm122.2",
-    "@jifeon/boar-pack-users-backend": "^3.4.0-adm122.0",
+    "@jifeon/boar-pack-common-backend": "^1.11.0-adm122.3",
+    "@jifeon/boar-pack-users-backend": "^3.4.0-adm122.1",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^9.0.0",
     "@nestjs/schedule": "^4.0.2",
