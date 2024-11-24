@@ -2,14 +2,18 @@ export class UserInfoDto {
   id: number;
   name: string;
   groupName: string;
-  leverage: number;
+  leverage: string;
   currency: string;
-  accountState: {
-    balance: number;
-    margin: number;
-    profit: number;
-    equity: number;
-    freeMargin: number;
-    marginLevel: number;
-  };
+  balance: string;
+  margin: string;
+  profit: string;
+  equity: string;
+  freeMargin: string;
+  marginLevel: string;
+}
+
+export class AccountStateDto {
+  balance: string;
+  margin: string;
+  profit: string;
 }

@@ -61,10 +61,11 @@ import { ReportSwapsModule } from './modules/report-swaps/report-swaps.module';
       name: 'tid_db',
       type: 'postgres',
       host: 'localhost',
-      port: 5470,
+      port: 5951,
       username: 'app',
       password: 'password',
-      database: 'client',
+      database: 'tp_manager_panel',
+      schema: 'tp_manager_panel',
       entities: [
         resolve(__dirname, '../node_modules/@jifeon/boar-pack-users-backend/src/*/entities/*.entity.{ts,js}'),
         resolve(__dirname, '../src/modules/liquidity-managers*/entities/*.entity.{ts,js}'),

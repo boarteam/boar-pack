@@ -1,7 +1,7 @@
 import { Subject } from "rxjs";
 import { WebsocketsEventDto } from "@jifeon/boar-pack-common-backend";
 import { PositionDto } from "../../positions/dto/positions.dto";
-import { UserInfoDto } from "../../user-info/dto/user-info.dto";
+import { AccountStateDto } from "../../user-info/dto/user-info.dto";
 
 export class QuoteDto {
   symbol: string;
@@ -89,5 +89,5 @@ export class StatusEventDto implements WebsocketsEventDto {
 
 export class UserInfoEventDto implements WebsocketsEventDto {
   event: 'user';
-  data: UserInfoDto;
+  data: AccountStateDto;
 }

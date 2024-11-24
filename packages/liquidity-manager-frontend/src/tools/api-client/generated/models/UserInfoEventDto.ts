@@ -3,10 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { UserInfoDto } from './UserInfoDto';
+import type { AccountStateDto } from './AccountStateDto';
 
 export type UserInfoEventDto = {
     event: string;
-    data: UserInfoDto;
+    data: AccountStateDto;
 };
 
