@@ -118,13 +118,18 @@ export class WebsocketClient {
   }
 
   public send<T>(data: T) {
+    const send = () => {
+      this.socket?.send(JSON.stringify(data));
+    }
+
     if (this.socket?.readyState !== WebSocket.OPEN) {
       console.warn(`QuotesDataSocket: socket is not ready to send data`);
+      this.socket.addEventListener("open", send, { once: true });
       return;
     }
 
     try {
-      this.socket?.send(JSON.stringify(data));
+      send();
     } catch (e) {
       console.error(`QuotesDataSocket: error, while sending data to WS server`);
       console.error(e);

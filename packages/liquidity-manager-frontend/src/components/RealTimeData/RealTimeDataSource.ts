@@ -25,7 +25,7 @@ export type TIncomeEvent =
   | { event: 'position' } & PositionEventDto
   | { event: 'snapshot' } & SnapshotEventDto
   | { event: 'user' } & UserInfoEventDto
-  | { event: 'status', status: WebSocket['readyState'] };
+  | { event: 'status', data: {status: WebSocket['readyState']} };
 
 export type TOutputEvent =
   | { event: 'subscribeToQuotes' } & SubscribeToQuotesEventDto
@@ -35,6 +35,7 @@ export class RealTimeDataSource {
   private primarySocket: WebsocketClient | null = null;
   private active: boolean = false;
   private symbols: string[] = [];
+  private snapshotSymbols: string[] = [];
   private moduleId: number = null;
   private userId: number = null;
   private subscriptions: Set<'quotes' | 'snapshots' | 'positions' | 'userInfo'> = new Set();
@@ -70,7 +71,7 @@ export class RealTimeDataSource {
       this.listenSnapshots();
     }
     if (this.subscriptions.has('positions')) {
-      this.listenPositons();
+      this.listenPositions();
     }
     if (this.subscriptions.has('userInfo')) {
       this.listenUserInfo();
@@ -92,7 +93,7 @@ export class RealTimeDataSource {
 
   public subscribeToSnapshots(symbols: string[], moduleId: number) {
     this.subscriptions.add('snapshots');
-    this.symbols = symbols;
+    this.snapshotSymbols = symbols;
     this.moduleId = moduleId;
 
     if (this.active) {
@@ -108,7 +109,7 @@ export class RealTimeDataSource {
     this.userId = userId;
 
     if (this.active) {
-      this.listenPositons();
+      this.listenPositions();
       return;
     }
 
@@ -192,13 +193,13 @@ export class RealTimeDataSource {
     this.primarySocket?.send<SubscribeToSnapshotsEventDto>({
       event: 'subscribeToSnapshots',
       data: {
-        symbols: this.symbols,
+        symbols: this.snapshotSymbols,
         moduleId: this.moduleId,
       },
     });
   }
 
-  private listenPositons = () => {
+  private listenPositions = () => {
     this.primarySocket?.send<SubscribeToPositionsEventDto>({
       event: 'subscribeToPositions',
       data: {
