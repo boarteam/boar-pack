@@ -1,10 +1,11 @@
 import {
+  EcnConnectSchema,
   EcnInstrument,
   EcnSubscrSchema,
   EcnSubscrSchemaCreateDto,
   EcnSubscrSchemaUpdateDto
 } from '@@api/generated';
-import { Button, Drawer, Flex } from 'antd';
+import { Button, Drawer, Flex, Spin } from 'antd';
 import React, { useEffect, useState } from "react";
 import { useAccess } from '@umijs/max';
 import apiClient from "@@api/apiClient";
@@ -22,40 +23,45 @@ const AddSubscrSchemaDrawer: React.FC<{
   onClose: () => void;
 }> = ({ instrumentHash, connectSchemaId, onCreate, onClose }) => {
   const { worker, liquidityManager } = useLiquidityManagerContext();
+  if (!worker) {
+    return <Spin />;
+  }
+
   const { canManageLiquidity } = useAccess() || {};
   const canEdit = canManageLiquidity(liquidityManager);
   const subscrColumns = useEcnSubscrSchemaColumns();
-  subscrColumns.forEach(column => {
-    if (column.dataIndex === 'instrument') {
-      column.editable = false;
-    }
-  })
 
-  const [selectedSubscrSchema, setSelectedSubscrSchema] = useState<EcnSubscrSchema | null>(null);
+  const [selectedSubscrSchema, setSelectedSubscrSchema] = useState<EcnSubscrSchema & { connectSchemaDescr: string } | null>(null);
   const [instrument, setInstrument] = useState<EcnInstrument | null>(null);
-  const [data, setData] = useState<Partial<EcnSubscrSchema & { instrument: EcnInstrument | null }>>({});
+  const [connectSchema, setConnectSchema] = useState<EcnConnectSchema | null>(null);
+  const [data, setData] = useState<EcnSubscrSchema | {}>({});
 
   useEffect(() => {
-    if (!worker) {
-      return;
-    }
-
     apiClient.ecnInstruments.getOneBaseEcnInstrumentsControllerEcnInstrument({
       worker,
       instrumentHash,
+      join: ['instrumentGroup'],
     }).then(setInstrument);
   }, [instrumentHash]);
 
   useEffect(() => {
-    setData({
-      ...selectedSubscrSchema,
-      instrumentHash,
-      instrument,
-      connectSchemaId,
-    })
-  }, [selectedSubscrSchema, instrument, connectSchemaId]);
+    apiClient.ecnConnectSchemas.getOneBaseEcnConnectSchemaControllerEcnConnectSchema({
+      worker,
+      id: connectSchemaId,
+    }).then(setConnectSchema);
+  }, [connectSchemaId]);
 
-  if (!worker || !canEdit) {
+  useEffect(() => {
+    if (selectedSubscrSchema) {
+      const { connectSchemaId, connectSchemaDescr, ...rest } = selectedSubscrSchema; 
+      setData({ ...rest, instrument, connectSchema });
+    }
+    else {
+      setData({ instrument, connectSchema });
+    }
+  }, [selectedSubscrSchema, connectSchema, instrument]);
+
+  if (!canEdit) {
     return <></>;
   }
 
@@ -69,7 +75,7 @@ const AddSubscrSchemaDrawer: React.FC<{
       <Flex style={{ flexDirection: 'column', gap: 10 }}>
         <Flex justify={'space-between'} align={'center'}>
           Copy setting from this Connect Schema:
-          <RelationSelect<EcnSubscrSchema>
+          <RelationSelect<EcnSubscrSchema & { connectSchemaDescr: string }>
             style={{ minWidth: '200px' }}
             onChange={setSelectedSubscrSchema}
             fieldNames={{
@@ -77,6 +83,7 @@ const AddSubscrSchemaDrawer: React.FC<{
               value: 'connectSchemaId',
             }}
             selectedItem={selectedSubscrSchema}
+            //@ts-ignore
             fetchItems={(_, keyword) => apiClient.ecnSubscrSchemas.getManyBaseEcnSubscrSchemaControllerEcnSubscrSchema({
               worker,
               s: JSON.stringify({ "$and": [
@@ -103,7 +110,7 @@ const AddSubscrSchemaDrawer: React.FC<{
         }>
           style={{ marginBottom: 0 }}
           afterSave={async subscrSchema => {
-            setData(subscrSchema);
+            setData({ ...subscrSchema, instrument, connectSchema })
           }}
           entity={data}
           column={2}
