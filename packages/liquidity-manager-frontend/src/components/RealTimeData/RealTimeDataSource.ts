@@ -1,4 +1,5 @@
 import {
+  AccountStateDto,
   PositionDto,
   PositionEventDto,
   QuoteDto,
@@ -248,11 +249,11 @@ export class RealTimeDataSource {
     ));
   }
 
-  private emitUserInfoEvent(userInfo: UserInfoDto) {
-    this.userInfoEvents.dispatchEvent(new CustomEvent<UserInfoDto>(
+  private emitUserInfoEvent(accountState: AccountStateDto) {
+    this.userInfoEvents.dispatchEvent(new CustomEvent<AccountStateDto>(
       `userInfo`,
       {
-        detail: userInfo,
+        detail: accountState,
         bubbles: false,
         cancelable: true,
       }

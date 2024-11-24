@@ -39,6 +39,7 @@ import { OrderTypesService } from './services/OrderTypesService';
 import { PositionsService } from './services/PositionsService';
 import { ReportAccountStatementsService } from './services/ReportAccountStatementsService';
 import { ReportBalanceOperationsService } from './services/ReportBalanceOperationsService';
+import { ReportSwapsService } from './services/ReportSwapsService';
 import { ReportTradesService } from './services/ReportTradesService';
 import { SubloginSettingsService } from './services/SubloginSettingsService';
 import { UserInfoService } from './services/UserInfoService';
@@ -86,6 +87,7 @@ export class ApiClient {
     public readonly positions: PositionsService;
     public readonly reportAccountStatements: ReportAccountStatementsService;
     public readonly reportBalanceOperations: ReportBalanceOperationsService;
+    public readonly reportSwaps: ReportSwapsService;
     public readonly reportTrades: ReportTradesService;
     public readonly subloginSettings: SubloginSettingsService;
     public readonly userInfo: UserInfoService;
@@ -144,6 +146,7 @@ export class ApiClient {
         this.positions = new PositionsService(this.request);
         this.reportAccountStatements = new ReportAccountStatementsService(this.request);
         this.reportBalanceOperations = new ReportBalanceOperationsService(this.request);
+        this.reportSwaps = new ReportSwapsService(this.request);
         this.reportTrades = new ReportTradesService(this.request);
         this.subloginSettings = new SubloginSettingsService(this.request);
         this.userInfo = new UserInfoService(this.request);

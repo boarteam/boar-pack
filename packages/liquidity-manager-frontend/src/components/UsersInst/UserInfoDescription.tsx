@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Descriptions, Typography, Row, Col, Card } from "antd";
-import { UserInfoDto } from "../../tools/api-client";
+import { AccountStateDto, UserInfoDto } from "../../tools/api-client";
 import safetyRun from "@jifeon/boar-pack-common-frontend/src/tools/safetyRun";
 import apiClient from "@@api/apiClient";
 import { useLiquidityManagerContext } from "../../tools";
@@ -17,7 +17,7 @@ export type TUserStateDescriptionProps = {
 type TData = {
   label: string;
   value: number;
-  realValue: number;
+  realValue: string;
 };
 
 export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
@@ -32,8 +32,13 @@ export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
       worker,
     }).then((data) => setUserInfo(data)).catch(() => setUserInfo(null)));
 
-    const handler = (event: CustomEvent<UserInfoDto>) => {
-      setUserInfo(event.detail);
+    const handler = (event: CustomEvent<AccountStateDto>) => {
+      setUserInfo(userInfo => {
+        return {
+          ...userInfo,
+          ...event.detail,
+        };
+      });
     }
 
     const eventName = 'userInfo';
@@ -66,43 +71,43 @@ export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
     equity,
     freeMargin,
     marginLevel,
-  } = userInfo.accountState;
+  } = userInfo;
 
   const items = [
     {
       key: 'balance',
       label: 'Balance',
-      children: balance.toFixed(2),
+      children: balance,
     },
     {
       key: 'margin',
       label: 'Margin',
-      children: margin.toFixed(2),
+      children: margin,
     },
     {
       key: 'equity',
       label: 'Equity',
-      children: equity.toFixed(2),
+      children: equity,
     },
     {
       key: 'pnl',
       label: 'Profit',
-      children: profit.toFixed(2),
+      children: profit,
     },
     {
       key: 'freeMargin',
       label: 'Free Margin',
-      children: freeMargin.toFixed(2),
+      children: freeMargin,
     },
     {
       key: 'marginLevel',
       label: 'Margin Level',
-      children: marginLevel.toFixed(2) + '%',
+      children: marginLevel === '-' ? marginLevel : marginLevel + '%',
     },
     {
       key: 'leverage',
       label: 'Leverage',
-      children: userInfo.leverage.toFixed(2),
+      children: userInfo.leverage,
     },
     {
       key: 'currency',
@@ -111,16 +116,19 @@ export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
     },
   ];
 
+  const marginNum = Number(margin);
+  const freeMarginNum = Number(freeMargin);
+
   const data: TData[] = [
     {
       label: 'Margin',
       // for extremely low values antd plots works incorrectly
-      value: margin / freeMargin < 0.01 ? 0 : userInfo.accountState.margin,
+      value: marginNum / freeMarginNum < 0.01 ? 0 : marginNum,
       realValue: margin,
     },
     {
       label: 'Free Margin',
-      value: freeMargin,
+      value: freeMarginNum,
       realValue: freeMargin,
     },
   ];
@@ -148,6 +156,7 @@ export const UserInfoDescription: React.FC<TUserStateDescriptionProps> = ({
           height: '100%',
         }}>
           <Pie
+            animate={false}
             theme={'dark'}
             data={data}
             angleField={'value'}

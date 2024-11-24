@@ -449,7 +449,7 @@ export class RealTimeDataService {
       this.processSnapshotMessage(messagesStream, event);
     } else if ('position' in event) {
       this.processPositionMessage(messagesStream, event);
-    } else if ('user' in event) {
+    } else if ('account_state' in event) {
       this.processUserMessage(messagesStream, event);
     } else {
       this.logger.warn(`Unknown WS message type for message: ${JSON.stringify(event)}`);
@@ -501,7 +501,11 @@ export class RealTimeDataService {
   private processUserMessage(messagesStream: MessagesStream, msg: MTUserInfoWSMessage): void {
     messagesStream.next({
       event: 'user',
-      data: this.userInfoService.formatUserInfo(msg.user),
+      data: {
+        balance: msg.account_state.balance,
+        margin: msg.account_state.margin,
+        profit: msg.account_state.profit,
+      },
     });
   }
 }

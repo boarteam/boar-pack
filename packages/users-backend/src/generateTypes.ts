@@ -18,10 +18,10 @@ import { UsersModule } from "./users";
       name: 'tid_db',
       type: 'postgres',
       host: 'localhost',
-      port: 5470,
+      port: 5951,
       username: 'app',
       password: 'password',
-      database: 'admirals',
+      database: 'amts_manager_panel',
       entities: [
         resolve(__dirname, './*/entities/*.entity.{ts,js}'),
       ],

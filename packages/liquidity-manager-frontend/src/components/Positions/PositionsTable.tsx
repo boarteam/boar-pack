@@ -51,6 +51,8 @@ const PositionsTable: React.FC<TPositionsTableProps> = ({
 
     const handler = (event: CustomEvent<PositionDto>) => {
       setPositions((positions) => {
+        if (!positions) return [];
+
         const updatedPosition = event.detail;
         const index = positions.findIndex((position) => position.id === updatedPosition.id);
 

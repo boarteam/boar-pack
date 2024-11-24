@@ -13,39 +13,34 @@ export class UserInfoService {
   }
 
   public formatUserInfo(userInfo: MTUserInfo): UserInfoDto {
-    const {
-      balance,
-      profit,
-      margin,
-    } = userInfo.account_state;
-
     const leverage = Number(userInfo.leverage);
+    const balance = Number(userInfo.balance);
+    const profit = Number(userInfo.profit);
+    const margin = Number(userInfo.margin);
     const equity = balance + profit;
 
     return {
       id: Number(userInfo.id),
       name: userInfo.name,
       groupName: userInfo.group_name,
-      leverage,
+      leverage: String(userInfo.leverage),
       currency: userInfo.currency,
-      accountState: {
-        balance,
-        margin,
-        profit,
-        equity,
-        freeMargin: balance + profit - margin,
-        marginLevel: equity / margin * leverage,
-      }
+      balance: userInfo.balance,
+      margin: userInfo.margin,
+      profit: userInfo.profit,
+      equity: String(equity),
+      freeMargin: String(balance + profit - margin),
+      marginLevel: margin === 0 ? '-' : String(equity / margin * leverage),
     }
   }
 
   public async getUserInfo(userId: number): Promise<UserInfoDto> {
     const serverId = await this.usersInstService.getMarginModuleId(userId);
-    const { user } = await this.amtsDcService.getUserInfo({
+    const response = await this.amtsDcService.getUserInfo({
       userId,
       serverId,
     });
 
-    return this.formatUserInfo(user);
+    return this.formatUserInfo(response.result);
   }
 }

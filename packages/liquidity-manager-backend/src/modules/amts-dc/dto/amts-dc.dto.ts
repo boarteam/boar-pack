@@ -1,5 +1,6 @@
 import { MTInstrument } from "./amts-dc.types";
 import { LosslessNumber } from "lossless-json";
+import { AccountStateDto } from "../../user-info/dto/user-info.dto";
 
 type LosslessJsonValue<T> = T extends number
   ? LosslessNumber
@@ -61,8 +62,7 @@ export type MTPosition = {
 
 export type MTGetPositionsResult = LosslessJsonResult<{
   req_id: number;
-  user_id: number;
-  positions: MTPosition[];
+  result: MTPosition[];
 }>;
 
 export type MTGetUserInfoRequest = {
@@ -77,17 +77,14 @@ export type MTUserInfo = LosslessJsonResult<{
   group_name: string;
   leverage: number;
   currency: string;
-  account_state: {
-    user_id: number;
-    balance: number;
-    margin: number;
-    profit: number;
-  }
+  balance: string;
+  margin: string;
+  profit: string;
 }>;
 
 export type MTGetUserInfoResult = {
   req_id: number;
-  user: MTUserInfo;
+  result: MTUserInfo;
 }
 
 export type MTSnapshot = {
@@ -148,7 +145,9 @@ export type MTPositionsWSMessage = {
 }
 
 export type MTUserInfoWSMessage = {
-  user: MTUserInfo;
+  account_state: AccountStateDto & {
+    user_id: number;
+  };
 }
 
 export type MTInstrumentAddMessage = {
