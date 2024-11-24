@@ -125,12 +125,7 @@ export class WebsocketsClients<IncomeEventType,
 
   public send<T>(client: WebSocket, data: T): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (client.readyState !== WebSocket.OPEN) {
-        reject(new Error(`Can't send data to WS server, because client is not connected`));
-        return;
-      }
-
-      try {
+      const send = () => {
         client.send(JSON.stringify(data), (err) => {
           if (err) {
             this.logger.error(`Error sending data to WS server`);
@@ -141,6 +136,23 @@ export class WebsocketsClients<IncomeEventType,
 
           resolve();
         });
+      }
+
+      if (client.readyState !== WebSocket.OPEN) {
+        const timeout = setTimeout(() => {
+          reject(new Error(`Can't send data to WS server, because client is not connected`));
+        }, 1000);
+
+        client.once('open', () => {
+          clearTimeout(timeout);
+          send();
+        });
+
+        return;
+      }
+
+      try {
+        send();
       } catch (e) {
         this.logger.error(`Error, while sending data to WS server`);
         this.logger.error(e);
