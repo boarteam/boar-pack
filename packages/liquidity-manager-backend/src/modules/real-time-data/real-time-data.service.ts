@@ -248,6 +248,11 @@ export class RealTimeDataService {
     // this happens if several requests for subscription to quotes come at the same time
     // todo: fix frontend to avoid such behaviour
     if (config.socket.readyState !== WebSocket.OPEN) {
+      config.moduleId = moduleId;
+      config.quotesSubscription = {
+        symbols,
+      };
+
       this.logger.warn(`Socket is not connected, subscribing to quotes after socket is open...`);
       return;
     }
@@ -311,6 +316,11 @@ export class RealTimeDataService {
     // this happens if several requests for subscription to snapshots come at the same time
     // todo: fix frontend to avoid such behaviour
     if (config.socket.readyState !== WebSocket.OPEN) {
+      config.moduleId = moduleId;
+      config.snapshotsSubscription = {
+        symbols,
+      };
+
       this.logger.warn(`Socket is not connected, subscribing to snapshots after socket is open...`);
       return;
     }
@@ -490,6 +500,7 @@ export class RealTimeDataService {
         side: msg.position.side as PositionSide,
         amount: msg.position.amount,
         openPrice: msg.position.open_price,
+        price: msg.position.price,
         margin: msg.position.margin,
         profit: msg.position.profit,
         createdAt: new Date(msg.position.ts_create),
