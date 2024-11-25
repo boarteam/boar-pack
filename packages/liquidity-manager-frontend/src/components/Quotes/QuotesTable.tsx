@@ -23,12 +23,17 @@ type TQuotesTableProps = {
   onSymbolClick?: (instrument: string) => void,
 }
 
-const useStyles = createStyles(() => {
+const useStyles = createStyles(({ token }) => {
   return {
     table: {
       '.ant-table-row': {
         cursor: 'pointer'
       },
+      '.ant-table-row-selected': {
+        '.ant-table-cell': {
+          background: token.colorPrimary + ' !important',
+        }
+      }
     },
   };
 });
