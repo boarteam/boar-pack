@@ -13,12 +13,34 @@ import { resolve } from "path";
 import { ConfigModule } from "@nestjs/config";
 // @ts-ignore-next-line - Ignore the error because the package on project level
 import { generate } from "openapi-typescript-codegen";
-import { QuoteDto, QuoteEventDto, SubscribeEventDto } from "./modules/quotes/dto/quotes.dto";
+import {
+  PositionEventDto,
+  QuoteDto,
+  QuoteEventDto,
+  SnapshotDto,
+  SnapshotEventDto,
+  SubscribeToPositionsEventDto,
+  SubscribeToQuotesEventDto,
+  SubscribeToSnapshotsEventDto,
+  SubscribeToUserInfoEventDto,
+  UserInfoEventDto
+} from "./modules/real-time-data/dto/real-time-data.dto";
 import { WebsocketsErrorEventDto } from "@jifeon/boar-pack-common-backend";
 import { entities } from "./modules/liquidity-app/liquidity-app.constants";
 import { UsersModule } from "@jifeon/boar-pack-users-backend";
 import { EcnSubscrSchemaController } from './modules/ecn-subscr-schema/ecn-subscr-schema.controller';
 import { EcnInstrumentsController } from "./modules/ecn-instruments/ecn-instruments.controller";
+import { MyInstrumentsModule } from "./modules/my-instruments/my-instruments.module";
+import { MySubloginSettingsModule } from "./modules/my-sublogin-settings/my-sublogin-settings.module";
+import { MyAuditLogsModule } from "./modules/my-audit-logs/my-audit-logs.module";
+import { MyUsersSubAccountsInstModule } from './modules/my-users-sub-accounts-inst/my-users-sub-accounts-inst.module';
+import {
+  ViewInstrumentsSpecificationsModule
+} from './modules/view-instruments-specifications/view-instruments-specifications.module';
+import { ReportAccountStatementsModule } from "./modules/report-account-statements/report-account-statements.module";
+import { ReportBalanceOperationsModule } from "./modules/report-balance-operations/report-balance-operations.module";
+import { ReportTradesModule } from "./modules/report-trades/report-trades.module";
+import { ReportSwapsModule } from './modules/report-swaps/report-swaps.module';
 
 @Module({
   imports: [
@@ -39,10 +61,11 @@ import { EcnInstrumentsController } from "./modules/ecn-instruments/ecn-instrume
       name: 'tid_db',
       type: 'postgres',
       host: 'localhost',
-      port: 5470,
+      port: 5951,
       username: 'app',
       password: 'password',
-      database: 'admirals',
+      database: 'amts_manager_panel',
+      schema: 'amts_manager_panel',
       entities: [
         resolve(__dirname, '../node_modules/@jifeon/boar-pack-users-backend/src/*/entities/*.entity.{ts,js}'),
         resolve(__dirname, '../src/modules/liquidity-managers*/entities/*.entity.{ts,js}'),
@@ -55,6 +78,17 @@ import { EcnInstrumentsController } from "./modules/ecn-instruments/ecn-instrume
     LiquidityManagersModule.register({ dataSourceName: 'tid_db' }),
     LiquidityManagersUsersModule.forTID({ dataSourceName: 'tid_db' }),
     LMAuthModule,
+    MyInstrumentsModule,
+    MySubloginSettingsModule,
+    MyUsersSubAccountsInstModule,
+    ViewInstrumentsSpecificationsModule,
+    MyAuditLogsModule.forManagerPanel({
+      dataSourceName: 'tid_db',
+    }),
+    ReportAccountStatementsModule,
+    ReportBalanceOperationsModule,
+    ReportTradesModule,
+    ReportSwapsModule,
     ...restModules,
   ],
 })
@@ -72,8 +106,15 @@ async function bootstrap() {
       extraModels: [
         WebsocketsErrorEventDto,
         QuoteDto,
+        SnapshotDto,
         QuoteEventDto,
-        SubscribeEventDto,
+        SnapshotEventDto,
+        PositionEventDto,
+        UserInfoEventDto,
+        SubscribeToQuotesEventDto,
+        SubscribeToSnapshotsEventDto,
+        SubscribeToPositionsEventDto,
+        SubscribeToUserInfoEventDto,
       ],
     };
 

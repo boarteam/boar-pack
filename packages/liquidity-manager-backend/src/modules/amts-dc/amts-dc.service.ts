@@ -1,20 +1,19 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import crypto from 'crypto';
-import { LosslessNumber, parse } from "lossless-json";
+import { isSafeNumber, parse } from "lossless-json";
 import {
-  MTAttachStreamRequest,
-  MTInstrumentListRequest,
-  MTInstrumentListResult,
-  MTLoginRequest,
-  MTLoginResult,
-  MTResponse, MTWSMessage
+  MTSubscribeToQuotesRequest,
+  MTGetPositionsRequest,
+  MTGetPositionsResult,
+  MTGetUserInfoRequest, MTGetUserInfoResult, MTUserInfo,
+  MTWSMessage
 } from "./dto/amts-dc.dto";
 import WebSocket from "ws";
 import {
   TBaseConfig,
   WebsocketsClients
 } from "@jifeon/boar-pack-common-backend/src/modules/websockets/websockets.clients";
+import { AmtsDcConfigService } from "./amts-dc.config";
 
 type TAmtsSocketsConfig = TBaseConfig<MTWSMessage> & {
   // instruments: string[];
@@ -23,77 +22,84 @@ type TAmtsSocketsConfig = TBaseConfig<MTWSMessage> & {
 @Injectable()
 export class AmtsDcService {
   private readonly logger = new Logger(AmtsDcService.name);
-  private readonly VERSION = 10;
-
+  private reqId = 1;
+  private readonly config = this.configService.config;
 
   constructor(
     private httpService: HttpService,
+    private readonly configService: AmtsDcConfigService,
     private readonly websocketsClients: WebsocketsClients<
       MTWSMessage,
-      MTAttachStreamRequest,
+      MTSubscribeToQuotesRequest,
       TAmtsSocketsConfig
     >,
   ) {
   }
 
-  public async request<TReq extends { method: string }, TRes>(url: string, params: TReq): Promise<MTResponse<TRes>['result']> {
+  public getHttpUrl(serverId: number): string {
+    const params = new URLSearchParams({
+      server_id: String(serverId),
+      web_api_login: this.config.webApiLogin,
+      web_api_pass: this.config.webApiPass,
+    });
+    return `${this.config.httpBaseUrl}/?${params.toString()}`;
+  }
+
+  public getWsUrl(serverId: string | number): string {
+    const params = new URLSearchParams({
+      server_id: String(serverId),
+      web_api_login: this.config.webApiLogin,
+      web_api_pass: this.config.webApiPass,
+    });
+    return `${this.config.wsBaseUrl}?${params.toString()}`;
+  }
+
+  private toSafeNumberOrString(value: string): number | string {
+    return isSafeNumber(value) ? parseFloat(value) : value;
+  }
+
+  public async request<TReq extends { method: string }, TRes>(url: string, params: TReq): Promise<TRes> {
     this.logger.log(`Request to ${url}, method: ${params.method}`);
-    const response = await this.httpService.axiosRef.post<MTResponse<TRes>>(url, params, {
+    this.logger.verbose(params);
+    const response = await this.httpService.axiosRef.post<TRes>(url, params, {
       transformResponse: (data: any) => {
-        return parse(data);
+        return parse(data, null, this.toSafeNumberOrString);
       }
     });
 
-    const result = response.data.result;
-    if (result.status === false) {
-      this.logger.error(`Error while requesting ${url}, method: ${params.method}`);
-      this.logger.error(result);
-      throw new Error(result.description);
-    }
-
-    return response.data.result;
+    return response.data;
   }
 
-  public async auth(url: string, params: Omit<MTLoginRequest, 'method'>) {
-    return this.request<MTLoginRequest, MTLoginResult>(url, {
-      method: 'req_login',
-      version: this.VERSION,
-      ...params,
-    });
-  }
-
-
-  private calculateSecret(data: Record<string, string | number | string[]>, sessionId: LosslessNumber, pin: LosslessNumber): string {
-    const sortedKeys = Object.keys(data).sort();
-    const keyValueString = sortedKeys.map(key => {
-      let value = data[key];
-      if (Array.isArray(value)) {
-        value = value.join('');
-      }
-      return `${key}=${value}`;
-    }).join('');
-
-    const hashingString = keyValueString
-      + sessionId.toString()
-      + pin.toString();
-
-    return crypto
-      .createHash('sha1')
-      .update(hashingString)
-      .digest('hex');
-  }
-
-  public async getInstruments(url: string, auth: MTLoginResult) {
+  public getPositions({
+    userId,
+    serverId,
+  }: {
+    userId: number,
+    serverId: number,
+  }) {
     const params = {
-      method: 'req_instrument_list',
-      version: this.VERSION,
-      session_id: Number(auth.session_id),
+      method: 'get_positions',
+      req_id: this.reqId++,
+      user_id: userId,
     } as const;
 
-    return this.request<MTInstrumentListRequest, MTInstrumentListResult>(url, {
-      ...params,
-      secret: this.calculateSecret(params, auth.session_id, auth.pin),
-    });
+    return this.request<MTGetPositionsRequest, MTGetPositionsResult>(this.getHttpUrl(serverId), params);
+  }
+
+  public getUserInfo({
+    userId,
+    serverId,
+  }: {
+    userId: number,
+    serverId: number,
+  }) {
+    const params = {
+      method: 'get_user',
+      req_id: this.reqId++,
+      user_id: userId,
+    } as const;
+
+    return this.request<MTGetUserInfoRequest, MTGetUserInfoResult>(this.getHttpUrl(serverId), params);
   }
 
   public checkStreamConnection({
@@ -114,99 +120,183 @@ export class AmtsDcService {
     });
   }
 
-  public createQuotesWebsocketAndAttachStream({
+  public connectWebsocket({
     url,
-    auth,
-    instruments,
-    options,
     onOpen,
     onMessage,
     onClose,
   }: {
     url: string,
-    auth: MTLoginResult,
-    instruments: string[],
-    options?: Partial<MTAttachStreamRequest>,
     onOpen?: () => void;
     onMessage?: (event: MTWSMessage) => void;
     onClose?: () => void;
   }): WebSocket {
-    const ws = this.websocketsClients.connect({
+    return this.websocketsClients.connect({
       url,
       ignoreInvalidJson: true,
-      onOpen: () => {
-        onOpen?.();
-        return this.attachStream({
-          ws,
-          auth,
-          instruments,
-          options,
-        });
-      },
+      onOpen,
       onMessage,
       onClose,
     });
-
-    return ws;
   }
 
-  public closeQuotesWebsocket(ws: WebSocket): Promise<void> {
+  public closeWebsocket(ws: WebSocket): Promise<void> {
     return this.websocketsClients.close(ws);
   }
 
-  public async attachStream({
+  public async subscribeToQuotesStream({
     ws,
-    auth,
     instruments,
     options,
   }: {
     ws: WebSocket,
-    auth: MTLoginResult,
     instruments: string[],
-    options?: Partial<MTAttachStreamRequest>
+    options?: Partial<MTSubscribeToQuotesRequest>
   }): Promise<void> {
-    const params: MTAttachStreamRequest = {
-      method: 'attach_stream',
-      version: this.VERSION,
-      session_id: Number(auth.session_id),
-      req_id: 1,
-      subscribe_quotes: instruments,
+    const params: MTSubscribeToQuotesRequest = {
+      method: 'subscribe_to_quotes_stream',
+      req_id: this.reqId++,
+      instruments,
       quotes_timeout: 1000,
       ...options,
     };
 
-    const data = {
-      ...params,
-      secret: this.calculateSecret(params, auth.session_id, auth.pin),
-    };
+    this.logger.verbose(params);
+    this.logger.log(`Sending subscribe_to_quotes_stream request`);
 
-    this.logger.verbose(data);
-    this.logger.log(`Sending attach_stream request`);
-
-    await this.websocketsClients.send(ws, data)
+    await this.websocketsClients.send(ws, params)
   }
 
-  public detachStream({
+  public unsubscribeFromQuotesStream({
     ws,
-    auth,
     instruments,
-  }: {ws: WebSocket, auth: MTLoginResult, instruments: string[]}): Promise<void> {
+  }: {
+    ws: WebSocket,
+    instruments: string[],
+  }): Promise<void> {
     const params = {
-      method: 'detach_stream',
-      version: this.VERSION,
-      session_id: Number(auth.session_id),
-      req_id: 1,
-      unsubscribe_quotes: instruments,
+      method: 'unsubscribe_from_quotes_stream',
+      req_id: this.reqId++,
+      instruments,
     };
 
-    const data = {
-      ...params,
-      secret: this.calculateSecret(params, auth.session_id, auth.pin),
+    this.logger.verbose(params);
+    this.logger.log(`Sending unsubscribe_from_quotes_stream request`);
+    return this.websocketsClients.send(ws, params);
+  }
+
+  // subscribe_to_snapshots_stream
+  public async subscribeToSnapshotsStream({
+    ws,
+    instruments,
+  }: {
+    ws: WebSocket,
+    instruments: string[],
+  }): Promise<void> {
+    const params = {
+      method: 'subscribe_to_snapshots_stream',
+      req_id: this.reqId++,
+      instruments,
     };
 
-    this.logger.verbose(data);
-    this.logger.log(`Sending detach_stream request`);
-    return this.websocketsClients.send(ws, data);
+    this.logger.verbose(params);
+    this.logger.log(`Sending subscribe_to_snapshots_stream request`);
+    await this.websocketsClients.send(ws, params);
+  }
+
+  // unsubscribe_from_snapshots_stream
+  public async unsubscribeFromSnapshotsStream({
+    ws,
+    instruments,
+  }: {
+    ws: WebSocket,
+    instruments: string[],
+  }): Promise<void> {
+    const params = {
+      method: 'unsubscribe_from_snapshots_stream',
+      req_id: this.reqId++,
+      instruments,
+    };
+
+    this.logger.verbose(params);
+    this.logger.log(`Sending unsubscribe_from_snapshots_stream request`);
+    await this.websocketsClients.send(ws, params);
+  }
+
+  // subscribe_to_positions_update
+  public async subscribeToPositionsUpdate({
+    ws,
+    userId,
+  }: {
+    ws: WebSocket,
+    userId: number,
+  }): Promise<void> {
+    const params = {
+      method: 'subscribe_to_positions_update',
+      req_id: this.reqId++,
+      user_id: userId,
+    };
+
+    this.logger.verbose(params);
+    this.logger.log(`Sending subscribe_to_positions_update request`);
+    await this.websocketsClients.send(ws, params);
+  }
+
+  // unsubscribe_from_positions_update
+  public async unsubscribeFromPositionsUpdate({
+    ws,
+    userId,
+  }: {
+    ws: WebSocket,
+    userId: number,
+  }): Promise<void> {
+    const params = {
+      method: 'unsubscribe_from_positions_update',
+      req_id: this.reqId++,
+      user_id: userId,
+    };
+
+    this.logger.verbose(params);
+    this.logger.log(`Sending unsubscribe_from_positions_update request`);
+    await this.websocketsClients.send(ws, params);
+  }
+
+  // subscribe_to_user_update
+  public async subscribeToUserUpdate({
+    ws,
+    userId,
+  }: {
+    ws: WebSocket,
+    userId: number,
+  }): Promise<void> {
+    const params = {
+      method: 'subscribe_to_user_update',
+      req_id: this.reqId++,
+      user_id: userId,
+    };
+
+    this.logger.verbose(params);
+    this.logger.log(`Sending subscribe_to_user_update request`);
+    await this.websocketsClients.send(ws, params);
+  }
+
+  // unsubscribe_from_user_update
+  public async unsubscribeFromUserUpdate({
+    ws,
+    userId,
+  }: {
+    ws: WebSocket,
+    userId: number,
+  }): Promise<void> {
+    const params = {
+      method: 'unsubscribe_from_user_update',
+      req_id: this.reqId++,
+      user_id: userId,
+    };
+
+    this.logger.verbose(params);
+    this.logger.log(`Sending unsubscribe_from_user_update request`);
+    await this.websocketsClients.send(ws, params);
   }
 }
 

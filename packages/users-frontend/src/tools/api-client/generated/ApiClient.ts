@@ -7,12 +7,14 @@ import type { OpenAPIConfig } from './core/OpenAPI';
 import { NodeHttpRequest } from './core/NodeHttpRequest';
 
 import { EventLogsService } from './services/EventLogsService';
+import { UsersService } from './services/UsersService';
 
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 
 export class ApiClient {
 
     public readonly eventLogs: EventLogsService;
+    public readonly users: UsersService;
 
     public readonly request: BaseHttpRequest;
 
@@ -30,6 +32,7 @@ export class ApiClient {
         });
 
         this.eventLogs = new EventLogsService(this.request);
+        this.users = new UsersService(this.request);
     }
 }
 

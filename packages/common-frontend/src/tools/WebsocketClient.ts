@@ -1,9 +1,11 @@
-import { TIncomeEvent } from "../../../liquidity-manager-frontend/src/components/Quotes/QuotesDataSource";
+import { TIncomeEvent } from "../../../liquidity-manager-frontend/src/components/RealTimeData/RealTimeDataSource";
 import { message } from "antd";
 
-enum WsErrorCodes {
+export enum WsErrorCodes {
+  ConnectionClosed = 1000,
   InvalidJson = 4000,
   ErrorMessage = 4001,
+  Unauthorized = 4003,
 }
 
 export class WebsocketClient {
@@ -41,7 +43,7 @@ export class WebsocketClient {
 
   private connect() {
     const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const url = `${wsProtocol}//${location.host}/ws/${this.worker || 'primary'}/quotes`;
+    const url = `${wsProtocol}//${location.host}/ws/${this.worker || 'primary'}/ws`;
     console.log(`QuotesDataSocket: connecting to ${url}...`);
     this.serverSocketStatus = WebSocket.CONNECTING;
     this.socket = new WebSocket(url);
@@ -116,13 +118,18 @@ export class WebsocketClient {
   }
 
   public send<T>(data: T) {
+    const send = () => {
+      this.socket?.send(JSON.stringify(data));
+    }
+
     if (this.socket?.readyState !== WebSocket.OPEN) {
       console.warn(`QuotesDataSocket: socket is not ready to send data`);
+      this.socket.addEventListener("open", send, { once: true });
       return;
     }
 
     try {
-      this.socket?.send(JSON.stringify(data));
+      send();
     } catch (e) {
       console.error(`QuotesDataSocket: error, while sending data to WS server`);
       console.error(e);

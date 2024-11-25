@@ -5,11 +5,11 @@ import { UsersSubAccountInst } from "@@api/generated";
 import { useAccess } from "umi";
 import { useLiquidityManagerContext } from "../../../tools";
 
-export const useUsersSubAccountsInstColumns = (): ProColumns<UsersSubAccountInst>[] => {
+export const useUsersSubAccountsInstColumns = (canManage?: boolean): ProColumns<UsersSubAccountInst>[] => {
   const intl = useIntl();
   const { liquidityManager } = useLiquidityManagerContext();
   const { canManageLiquidity } = useAccess() || {};
-  const canEdit = canManageLiquidity(liquidityManager);
+  const canEdit = canManageLiquidity(liquidityManager) || canManage;
 
   const columns: ProColumns<UsersSubAccountInst>[] = [
     {
@@ -17,8 +17,7 @@ export const useUsersSubAccountsInstColumns = (): ProColumns<UsersSubAccountInst
       dataIndex: 'subAccountId',
       sorter: true,
       editable: false,
-      copyable: true,
-      width: '150px',
+      width: '40px',
     },
     {
       title: intl.formatMessage({ id: 'pages.subAccounts.descr' }),
@@ -34,6 +33,7 @@ export const useUsersSubAccountsInstColumns = (): ProColumns<UsersSubAccountInst
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
+      ellipsis: true,
     },
   ];
 

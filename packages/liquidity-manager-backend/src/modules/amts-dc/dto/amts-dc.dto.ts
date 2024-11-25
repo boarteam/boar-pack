@@ -1,5 +1,6 @@
 import { MTInstrument } from "./amts-dc.types";
 import { LosslessNumber } from "lossless-json";
+import { AccountStateDto } from "../../user-info/dto/user-info.dto";
 
 type LosslessJsonValue<T> = T extends number
   ? LosslessNumber
@@ -19,29 +20,6 @@ export class MTResponse<T> {
   });
   version: number = 1;
 }
-
-export type MTLoginRequest = {
-  method: 'req_login';
-  login: number;
-  platform_id?: number;
-  password?: string;
-  token?: string;
-  version?: number;
-}
-
-export type MTLoginResult = LosslessJsonResult<{
-  daylight: boolean;
-  pin: number;
-  session_id: number;
-  timezone: number;
-  timeserver: string;
-  volume_div: number;
-  td: 0 | 1;
-  aes_key_b64: string;
-  aes_iv_b64: string;
-  token?: string;
-  token_lifetime?: number;
-}>;
 
 export type MTInstrumentListRequest = {
   method: 'req_instrument_list';
@@ -63,14 +41,74 @@ export type MTInstrumentListResult = LosslessJsonResult<{
   instruments: MTInstrument[];
 }>;
 
-export type MTAttachStreamRequest = {
-  method: 'attach_stream';
+export type MTGetPositionsRequest = {
+  method: 'get_positions';
+  req_id: number;
+  user_id: number;
+}
+
+export type MTPosition = {
+  user_id: number;
+  id: number;
+  instrument: string;
+  side: 'buy' | 'sell';
+  amount: number;
+  open_price: number;
+  price: number;
+  margin: number;
+  profit: number;
+  ts_create: number;
+  ts_update: number;
+}
+
+export type MTGetPositionsResult = LosslessJsonResult<{
+  req_id: number;
+  result: MTPosition[];
+}>;
+
+export type MTGetUserInfoRequest = {
+  method: 'get_user';
+  req_id: number;
+  user_id: number;
+}
+
+export type MTUserInfo = LosslessJsonResult<{
+  id: number;
+  name: string;
+  group_name: string;
+  leverage: number;
+  currency: string;
+  balance: string;
+  margin: string;
+  profit: string;
+}>;
+
+export type MTGetUserInfoResult = {
+  req_id: number;
+  result: MTUserInfo;
+}
+
+export type MTSnapshot = {
+  instrument: string;
+  ts_msc: number;
+  asks: {
+    price: number;
+    amount: number;
+  }[];
+  bids: {
+    price: number;
+    amount: number;
+  }[];
+};
+
+export type MTSubscribeToQuotesRequest = {
+  method: 'subscribe_to_quotes_stream';
   req_id: number;
   session_id?: number;
   secret?: string;
   market_depth?: number;
   token?: string;
-  subscribe_quotes: string[];
+  instruments: string[];
   quotes_timeout: number;
   version?: number;
   platform_id?: number;
@@ -83,9 +121,12 @@ export type MTAttachStreamResult = LosslessJsonResult<{
 
 export type MTWSMessage =
   | MTQuoteWSMessage
+  | MTSnapshotWSMessage
+  | MTPositionsWSMessage
   | MTInstrumentAddMessage
   | MTInstrumentUpdateMessage
-  | MTInstrumentDeleteMessage;
+  | MTInstrumentDeleteMessage
+  | MTUserInfoWSMessage;
 
 export type MTQuoteWSMessage = {
   quote: {
@@ -94,6 +135,20 @@ export type MTQuoteWSMessage = {
     ask: number;
     bid: number
   }
+}
+
+export type MTSnapshotWSMessage = {
+  snapshot: MTSnapshot;
+}
+
+export type MTPositionsWSMessage = {
+  position: MTPosition;
+}
+
+export type MTUserInfoWSMessage = {
+  account_state: AccountStateDto & {
+    user_id: number;
+  };
 }
 
 export type MTInstrumentAddMessage = {

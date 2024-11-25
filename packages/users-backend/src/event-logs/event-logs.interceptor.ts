@@ -28,8 +28,7 @@ export class EventLogInterceptor implements NestInterceptor {
     private readonly reflector: Reflector,
     private readonly eventLogService: EventLogsService,
     @Inject(SERVICE_CONFIG_TOKEN) private readonly serviceConfig?: TEventLogServiceConfig,
-  ) {
-  }
+  ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest() as Request;

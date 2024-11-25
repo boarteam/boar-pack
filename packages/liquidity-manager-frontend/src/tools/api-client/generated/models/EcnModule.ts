@@ -6,6 +6,7 @@
 import type { EcnConnectSchema } from './EcnConnectSchema';
 import type { EcnConnectSchemaSetupLabel } from './EcnConnectSchemaSetupLabel';
 import type { EcnModuleType } from './EcnModuleType';
+import type { UsersInst } from './UsersInst';
 
 export type EcnModule = {
     id: number;
@@ -16,5 +17,7 @@ export type EcnModule = {
     setupLabels: Array<EcnConnectSchemaSetupLabel>;
     outgoingConnections: Array<EcnConnectSchema>;
     incomingConnections: Array<EcnConnectSchema>;
+    accessForUsers: Array<UsersInst>;
+    marginForUsers: Array<UsersInst>;
 };
 

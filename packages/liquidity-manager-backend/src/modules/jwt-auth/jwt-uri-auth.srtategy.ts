@@ -7,6 +7,8 @@ import { AMTSUser, JWT_URI_AUTH } from '../auth';
 import { UsersInstService } from "../users-inst/users-inst.service";
 import { Roles } from "@jifeon/boar-pack-users-backend";
 import { Permissions } from "../casl-permissions";
+import { MyInstrumentsPermissions } from "../my-instruments/my-instruments.permissions";
+import { defaultPermissions } from "./default-permissions";
 
 export type TJWTPayload = {
   sub: string;
@@ -15,7 +17,7 @@ export type TJWTPayload = {
 @Injectable()
 export class JwtUriAuthStrategy extends PassportStrategy(Strategy, JWT_URI_AUTH) {
   constructor(
-    private usersService: UsersInstService,
+    private usersInstService: UsersInstService,
     private jwtAuthConfigService: JWTAuthConfigService,
   ) {
     super({
@@ -31,7 +33,7 @@ export class JwtUriAuthStrategy extends PassportStrategy(Strategy, JWT_URI_AUTH)
 
   async validate(payload: TJWTPayload): Promise<AMTSUser> {
     const userId = payload.sub;
-    const user = await this.usersService.findById(userId);
+    const user = await this.usersInstService.findById(userId);
 
     if (!user) {
       console.log('User not found, id:', userId);
@@ -41,8 +43,9 @@ export class JwtUriAuthStrategy extends PassportStrategy(Strategy, JWT_URI_AUTH)
     return {
       id: user.id,
       name: user.name,
+      marginModuleId: user.marginModuleId,
       role: Roles.USER,
-      permissions: [Permissions.VIEW_LIQUIDITY],
+      permissions: defaultPermissions,
     };
   }
 }

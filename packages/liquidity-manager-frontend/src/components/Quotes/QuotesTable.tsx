@@ -3,10 +3,11 @@ import { Operators, Table, TGetAllParams } from "@jifeon/boar-pack-common-fronte
 import apiClient from "@@api/apiClient";
 import { useLiquidityManagerContext } from "../../tools";
 import { PageLoading } from "@ant-design/pro-layout";
-import { useQuotes } from "./QuotesDataSource";
-import { useEffect, useState } from "react";
-import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import { useRealTimeData } from "../RealTimeData/RealTimeDataSource";
+import React, { useEffect, useState } from "react";
 import { Tag } from "antd";
+import { connectionStatuses, TConnectionStatus } from "../RealTimeData/realTimeDataStatuses";
+import { createStyles } from "antd-style";
 
 type TQuoteFilterParams = {
   symbol?: string,
@@ -16,40 +17,46 @@ type TQuotesPathParams = {
   worker: string,
 }
 
-const connectionStatuses = {
-  [WebSocket.CLOSED]: {
-    text: 'Connection Closed',
-    color: 'error',
-    icon: <CloseCircleOutlined />,
-  },
-  [WebSocket.CLOSING]: {
-    text: 'Connection Closing',
-    color: 'error',
-    icon: <CloseCircleOutlined />,
-  },
-  [WebSocket.CONNECTING]: {
-    text: 'Connecting',
-    color: 'processing',
-    icon: <SyncOutlined spin />,
-  },
-  [WebSocket.OPEN]: {
-    text: 'Connected',
-    color: 'success',
-    icon: <CheckCircleOutlined />,
-  },
-};
+type TQuotesTableProps = {
+  moduleId: number,
+  controller: 'myInstruments' | 'ecnInstruments',
+  onSymbolClick?: (instrument: string) => void,
+}
 
-const QuotesTable = () => {
+const useStyles = createStyles(() => {
+  return {
+    table: {
+      '.ant-table-row': {
+        cursor: 'pointer'
+      },
+    },
+  };
+});
+
+const QuotesTable: React.FC<TQuotesTableProps> = ({
+  moduleId,
+  controller,
+  onSymbolClick,
+}) => {
+  const [selectedRowKey, setSelectedRowKey] = useState<string | null>(null);
   const columns = useQuotesColumns();
+  const { styles } = useStyles();
   const { worker } = useLiquidityManagerContext();
-  const { quotesDataSource } = useQuotes();
-  const [connectionStatus, setConnectionStatus] = useState<WebSocket['readyState']>(WebSocket.CLOSED);
+  const {
+    realTimeDataSource,
+    connectionStatus,
+  } = useRealTimeData();
+
+  const handleRowClick = (record: Quote) => {
+    setSelectedRowKey(record.symbol);
+    onSymbolClick?.(record.symbol);
+  }
 
   useEffect(() => {
-    quotesDataSource.socketStatusEvents.addEventListener('status', (evt: CustomEvent<WebSocket['readyState'] | undefined>) => {
-      setConnectionStatus(evt.detail ?? WebSocket.CLOSED);
-    });
-  }, [quotesDataSource]);
+    return () => {
+      realTimeDataSource.closeSocketConnections().catch(console.error);
+    };
+  }, []);
 
   if (!worker) return <PageLoading />;
 
@@ -58,10 +65,12 @@ const QuotesTable = () => {
     params.join = ['instrumentGroup||name'];
     params.sort = params.sort.map(sort => sort.replace('symbol', 'name').replace('group', 'instrumentGroup.name'));
 
-    const response = await apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params);
+    const response = controller === 'myInstruments'
+      ? await apiClient.instruments.getManyBaseMyInstrumentsControllerEcnInstrument(params)
+      : await apiClient.ecnInstruments.getManyBaseEcnInstrumentsControllerEcnInstrument(params);
     const symbols = response.data.map(instrument => instrument.name);
 
-    quotesDataSource.subscribe(symbols);
+    realTimeDataSource.subscribeToQuotes(symbols, moduleId);
 
     return {
       ...response,
@@ -74,7 +83,13 @@ const QuotesTable = () => {
 
   return (
     <Table<Quote, {}, {}, TQuoteFilterParams, TQuotesPathParams>
+      className={styles.table}
       getAll={getAll}
+      onLoad={(data) => {
+        if (data.length > 0) {
+          handleRowClick(data[0]);
+        }
+      }}
       columns={columns}
       idColumnName='symbol'
       pathParams={{
@@ -100,6 +115,17 @@ const QuotesTable = () => {
       toolBarRender={() => {
         const status = connectionStatuses[connectionStatus];
         return [<Tag key={'connectionStatus'} color={status.color} icon={status.icon}>{status.text}</Tag>];
+      }}
+      onRow={(record) => {
+        return {
+          onClick: () => {
+            handleRowClick(record)
+          }
+        }
+      }}
+      rowClassName={(record) => selectedRowKey === record.symbol ? 'ant-table-row-selected' : ''}
+      scroll={{
+        x: 'max-content',
       }}
     ></Table>
   );

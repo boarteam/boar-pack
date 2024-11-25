@@ -6,6 +6,7 @@ import { UsersInst } from "../users-inst/entities/users-inst.entity";
 import { AppAbility, Roles, User } from "@jifeon/boar-pack-users-backend";
 import { Permissions } from "../casl-permissions";
 import { EcnPasswordHashType } from "../users-inst/users-inst.constants";
+import { defaultPermissions } from "../jwt-auth/default-permissions";
 
 export class AMTSUser {
   id: string;
@@ -14,6 +15,7 @@ export class AMTSUser {
   permissions: User['permissions'];
   policies?: User['policies'];
   ability?: AppAbility;
+  marginModuleId?: number;
 }
 
 declare global {
@@ -25,12 +27,12 @@ declare global {
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersInstService,
+    private usersInstService: UsersInstService,
     private jwtAuthService: JWTAuthService,
   ) {}
 
   async validateUser(id: string, pass: string): Promise<AMTSUser | null> {
-    const user = await this.usersService.findById(id);
+    const user = await this.usersInstService.findById(id);
     if (!user?.password) {
       return null;
     }
@@ -38,13 +40,14 @@ export class AuthService {
     const response = {
       id: user.id,
       name: user.name,
+      marginModuleId: user.marginModuleId,
       role: Roles.USER,
-      permissions: [Permissions.VIEW_LIQUIDITY],
+      permissions: defaultPermissions,
     };
 
-    if (user.pwdHashTypeId === EcnPasswordHashType.MD5 && this.usersService.comparePasswordMd5Hash(id, pass, user.password)) {
+    if (user.pwdHashTypeId === EcnPasswordHashType.MD5 && this.usersInstService.comparePasswordMd5Hash(id, pass, user.password)) {
       return response;
-    } else if (user.pwdHashTypeId === EcnPasswordHashType.BCRYPT && await this.usersService.comparePasswordBcryptHash(pass, user.password)) {
+    } else if (user.pwdHashTypeId === EcnPasswordHashType.BCRYPT && await this.usersInstService.comparePasswordBcryptHash(pass, user.password)) {
       return response;
     }
     return null;
@@ -63,15 +66,15 @@ export class AuthService {
   }
 
   me(user: AMTSUser): Promise<UsersInst|null> {
-    return this.usersService.findOne({
-      select: ['id', 'name'],
+    return this.usersInstService.findOne({
+      select: ['id', 'name', 'marginModuleId'],
       where: { id: user.id },
     });
   }
 
   async resetPassword(user: AMTSUser, password: string): Promise<void> {
     const userId = user.id;
-    const storedUser = await this.usersService.findById(userId);
+    const storedUser = await this.usersInstService.findById(userId);
     if (!storedUser) {
       throw new NotFoundException('User not found');
     }
@@ -80,7 +83,7 @@ export class AuthService {
       throw new UnprocessableEntityException('Unknown password hash type');
     }
 
-    await this.usersService.updatePassword(await this.usersService.generatePassword({
+    await this.usersInstService.updatePassword(await this.usersInstService.generatePassword({
       id: userId,
       password,
       pwdHashTypeId: storedUser.pwdHashTypeId,
