@@ -10,6 +10,7 @@ export class PositionDto {
   side: PositionSide;
   amount: number | string;
   openPrice: number | string;
+  price: number | string;
   margin: number | string;
   profit: number | string;
   createdAt: Date;
