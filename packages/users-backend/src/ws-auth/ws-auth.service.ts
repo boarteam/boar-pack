@@ -10,6 +10,11 @@ export interface AuthSocket extends WebSocket {
   user?: TUser;
 }
 
+export interface EventDto {
+  event: string;
+  data: any;
+}
+
 @Injectable()
 export class WsAuthService {
   private logger = new Logger(WsAuthService.name);
@@ -49,6 +54,17 @@ export class WsAuthService {
 
   public handleDisconnect(client: WebSocket) {
     this.clients.delete(client);
+  }
+
+  public broadcast(event: EventDto) {
+    const eventStr = JSON.stringify(event);
+    for (const client of this.clients) {
+      client.send(eventStr, (err) => {
+        if (err) {
+          this.logger.error(`Error sending event to client: ${err.message}`);
+        }
+      });
+    }
   }
 
   private addClient(client: WebSocket) {
