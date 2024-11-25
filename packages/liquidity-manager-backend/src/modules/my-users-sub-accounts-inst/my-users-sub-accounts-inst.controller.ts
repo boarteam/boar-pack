@@ -68,6 +68,11 @@ import { MyUsersSubAccountsInstGuard } from './my-users-sub-accounts-inst.guard'
   filter: (user: TUser) => ({
     userId: user.id,
   }),
+  persist(user: TUser) {
+    return {
+      userId: user.id,
+    };
+  },
 })
 @ApiTags('myUsersSubAccountsInst')
 @CheckPolicies(new ManageMyUsersSubAccountsInstPolicy())
