@@ -21,12 +21,21 @@ import { Action, AuthModule, CaslAbilityFactory, CaslModule } from "@jifeon/boar
 import { ClusterConfigService, ClusterModule, TClusterConfig } from "@jifeon/boar-pack-common-backend";
 import { CaslPermissionsModule, subjects } from "../casl-permissions";
 import { AuthModule as LMAuthModule } from "../auth";
-import { QuotesModule } from "../quotes/quotes.module";
 import {
   LiquidityManagersUserRoles,
   LiquidityManagersUsersModule,
   LiquidityManagersUsersService
 } from "../liquidity-managers-users";
+import { PositionsModule } from "../positions/positions.module";
+import { MyInstrumentsModule } from "../my-instruments/my-instruments.module";
+import { UserInfoModule } from "../user-info/user-info.module";
+import { MySubloginSettingsModule } from "../my-sublogin-settings/my-sublogin-settings.module";
+import { MyUsersSubAccountsInstModule } from "../my-users-sub-accounts-inst/my-users-sub-accounts-inst.module";
+import { ViewInstrumentsSpecificationsModule } from "../view-instruments-specifications/view-instruments-specifications.module";
+import { ReportAccountStatementsModule } from "../report-account-statements/report-account-statements.module";
+import { ReportBalanceOperationsModule } from "../report-balance-operations/report-balance-operations.module";
+import { ReportTradesModule } from "../report-trades/report-trades.module";
+import { ReportSwapsModule } from "../report-swaps/report-swaps.module";
 
 export const restModules = [
   EcnModulesModule,
@@ -37,9 +46,12 @@ export const restModules = [
   SubloginsSettingsModule,
   EcnInstrumentsGroupsModule,
   EcnInstrumentsModule,
+  ViewInstrumentsSpecificationsModule,
   EcnConnectSchemaModule,
   EcnConnectSchemaSetupLabelsModule,
   EcnSubscrSchemaModule,
+  PositionsModule.forRestApi(),
+  UserInfoModule.forRestApi(),
 ] as const;
 
 @Module({})
@@ -106,7 +118,14 @@ export class LiquidityAppModule {
         LiquidityManagersModule.forManagerPanel({
           dataSourceName: config.dataSourceName,
         }),
-        QuotesModule.forMaster(),
+        MyInstrumentsModule,
+        MySubloginSettingsModule,
+        MyUsersSubAccountsInstModule,
+        ReportAccountStatementsModule,
+        ReportBalanceOperationsModule,
+        ReportTradesModule,
+        ReportSwapsModule,
+        // RealTimeDataAppModule.forClusterMaster(),
         ...restModules,
       ],
       providers: [],

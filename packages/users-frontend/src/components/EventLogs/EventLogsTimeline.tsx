@@ -5,21 +5,21 @@ import { EventLogTimelineDto, EventLogTimelineQueryDto } from "@@api/generated";
 import apiClient from "@@api/apiClient";
 import { Button } from "antd";
 import { PageLoading } from "@ant-design/pro-layout";
-import {createStyles} from "antd-style";
+import { useModel } from "umi";
 
 type TEventLogsTimelineProps = EventLogTimelineQueryDto & {
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
 }
-
-const useStyles = createStyles(({ token }) => {});
 
 export const EventLogsTimeline: React.FC<TEventLogsTimelineProps> = ({
   startTime,
   endTime,
   onDateRangeChange,
 }) => {
-    const { theme } = useStyles();
-    console.log(theme.appearance);
+    // @ts-ignore
+    const { initialState } = useModel('@@initialState');
+    // @ts-ignore
+    const { navTheme } = initialState?.settings || {};
 
     const [data, setData] = useState<EventLogTimelineDto[] | null>(null);
     const sliderPosition = useMemo(() => [0, 1], []);
@@ -59,8 +59,8 @@ export const EventLogsTimeline: React.FC<TEventLogsTimelineProps> = ({
         colorField: 'logLevel',
         stack: true,
         height: 300,
-        legend: {
-        },
+        theme: navTheme === 'realDark' ? 'dark' : 'light',
+        legend: {},
         // slider: {
         //   x: {
         //     values: sliderPosition,
@@ -78,12 +78,9 @@ export const EventLogsTimeline: React.FC<TEventLogsTimelineProps> = ({
                 labelFormatter: (v: string, i: number) => {
                     return data[i * domain.length]?.time
                 },
-                labelFill: theme.colorText,
             },
             y: {
                 gridLineWidth: 1,
-                gridStroke: theme.appearance === 'light' ? '#000000' : '#f0f0f0',
-                labelFill: theme.colorText,
             }
         },
         scale: {
@@ -107,6 +104,6 @@ export const EventLogsTimeline: React.FC<TEventLogsTimelineProps> = ({
         />
         {
             showFilterButton && <Button onClick={applySliderDates}>Filter dates</Button> || null
-        };
+        }
     </>
 }

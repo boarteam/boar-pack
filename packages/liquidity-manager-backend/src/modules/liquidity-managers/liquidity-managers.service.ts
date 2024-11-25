@@ -71,6 +71,7 @@ export class LiquidityManagersService extends TypeOrmCrudService<LiquidityManage
 
   getEnabled(): Promise<LiquidityManager[]> {
     return this.repo.find({
+      select: ['id', 'name', 'worker', 'color', 'enabled'],
       where: {
         enabled: true,
       },
@@ -100,6 +101,7 @@ export class LiquidityManagersService extends TypeOrmCrudService<LiquidityManage
 
   getEnabledForUser(id: TUser['id']) {
     return this.repo.find({
+      select: ['id', 'name', 'worker', 'color', 'enabled'],
       relations: ['lmUsers'],
       where: {
         enabled: true,

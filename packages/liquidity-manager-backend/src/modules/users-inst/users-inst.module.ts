@@ -56,6 +56,22 @@ export class UsersInstModule {
     };
   }
 
+  static forFeature() {
+    return {
+      module: UsersInstModule,
+      imports: [
+        TypeOrmModule.forFeature([UsersInst], TP_DB_NAME),
+      ],
+      providers: [
+        UsersInstService,
+      ],
+      exports: [
+        UsersInstService,
+      ],
+      controllers: [],
+    };
+  }
+
   static forAuth() {
     return {
       module: UsersInstModule,

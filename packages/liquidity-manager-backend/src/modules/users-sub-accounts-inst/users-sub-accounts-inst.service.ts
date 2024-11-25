@@ -13,4 +13,15 @@ export class UsersSubAccountsInstService extends TypeOrmCrudService<UsersSubAcco
   ) {
     super(repo);
   }
+
+  async belongsToUser(id: string, userId: string): Promise<boolean> {
+    const belongsToUser = await this.repo.count({
+      where: {
+        id,
+        userId,
+      },
+    });
+
+    return belongsToUser > 0;
+  }
 }

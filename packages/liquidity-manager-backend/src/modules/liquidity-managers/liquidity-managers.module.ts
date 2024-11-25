@@ -1,4 +1,4 @@
-import { DynamicModule, Logger, Module, Optional } from '@nestjs/common';
+import { DynamicModule, Inject, Logger, Module, Optional } from '@nestjs/common';
 import { LiquidityManagersService } from './liquidity-managers.service';
 import { LiquidityManagersController } from './liquidity-managers.controller';
 import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
@@ -11,6 +11,8 @@ import {
   LiquidityManagersUsersModule,
   LiquidityManagersUsersService
 } from "../liquidity-managers-users";
+
+export const MANAGER_PANEL = Symbol('MANAGER_PANEL');
 
 @Module({})
 export class LiquidityManagersModule {
@@ -96,6 +98,10 @@ export class LiquidityManagersModule {
             return new LiquidityManagersService(dataSource.getRepository(LiquidityManager), scryptService);
           }
         },
+        {
+          provide: MANAGER_PANEL,
+          useValue: true,
+        },
       ],
       exports: [
         LiquidityManagersService,
@@ -133,6 +139,7 @@ export class LiquidityManagersModule {
     @Optional() private readonly cluster: ClusterService,
     @Optional() private readonly liquidityManagersCluster: LiquidityManagersCluster,
     @Optional() private readonly liquidityManagersUsers: LiquidityManagersUsersService,
+    @Optional() @Inject(MANAGER_PANEL) private readonly managerPanel: boolean,
   ) {
     Tools.TypeOrmExceptionFilter.setUniqueConstraintMessage(WORKER_UNIQUE_CONSTRAINT, 'Choose another worker for this liquidity manager');
     if (this.cluster && this.liquidityManagersCluster) {
@@ -157,6 +164,12 @@ export class LiquidityManagersModule {
           const action = lmUser.role === LiquidityManagersUserRoles.MANAGER ? Action.Manage : Action.Read;
           can(action, LiquidityManager, { id: lmUser.liquidityManagerId });
         });
+      });
+    }
+
+    if (this.managerPanel) {
+      CaslAbilityFactory.addAbilitiesDefiner(async (user, can, cannot) => {
+        can(Action.Read, LiquidityManager);
       });
     }
   }

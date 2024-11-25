@@ -41,6 +41,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       const userRole = user?.role ? EventLogsService.rolesMap[user.role] : UserRole.GUEST;
 
       logPartial.userId = user?.id || null;
+      logPartial.userName = user?.name || null;
       logPartial.userRole = userRole || UserRole.GUEST;
       logPartial.payload = request.body || null;
       logPartial.method = request.method || null;
@@ -48,10 +49,10 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       logPartial.entityId = request.params.id || null;
       logPartial.ipAddress = request.ip || null;
       logPartial.userAgent = request.headers['user-agent'] || null;
-    }
 
-    // @ts-ignore
-    request[EventLogsService.requestHandled] = true;
+      // @ts-ignore
+      request[EventLogsService.requestHandled] = true;
+    }
 
     await this.repo.save({
       ...logPartial,
@@ -108,7 +109,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     return this.dataSource.query(`
       with 
         time_series as (select generate_series($1, $2, '1 ${interval}'::interval) as time),
-        log_levels as (select unnest(enum_range(null::event_logs_log_level_enum)) as loglevel)
+        log_levels as (select unnest(enum_range(null::"${this.dataSource.driver.schema}".event_logs_log_level_enum)) as loglevel)
       select
         ${formatTimeFunction} as time,
         ll.loglevel as "logLevel",
@@ -117,7 +118,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
         ts.time + interval '1 ${interval}' as "endTime"
       from time_series ts
         cross join log_levels ll
-        left join event_logs el on date_trunc('${interval}', el.created_at, $5) = ts.time
+        left join "${this.dataSource.driver.schema}".event_logs el on date_trunc('${interval}', el.created_at, $5) = ts.time
         and el.log_level = ll.loglevel
         and el.created_at between $3 and $4
       group by ts.time,

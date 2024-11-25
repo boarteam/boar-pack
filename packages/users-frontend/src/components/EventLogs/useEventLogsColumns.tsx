@@ -22,6 +22,10 @@ const serviceNameToAbbreviation: Record<string, string> = {
   'TID Main App': 'TID',
   'Liquidity Manager': 'LM',
   'Quotes Monitor': 'QM',
+  'Admin Panel - Main': 'ADM',
+  'Manager Panel - Main': 'MNG',
+  'Admin RealTimeData': 'ARTD',
+  'Manager RealTimeData': 'MRTD',
 } as const;
 
 const logTypes = {
@@ -43,7 +47,7 @@ const logLevels = {
   [EventLog.logLevel.INFO]: {
     text: 'Info',
     icon: <InfoCircleTwoTone />,
-    type: undefined,
+    type: undefined as undefined,
   },
   [EventLog.logLevel.WARNING]: {
     text: 'Warning',
@@ -137,7 +141,13 @@ export const useEventLogsColumns = ({
       render: (text, record) => {
         return <Space>
           {getUserRoleIcon(record.userRole)}
-          {record.user?.name || record.userId || <Text type={'secondary'}>role: {record.userRole}</Text>}
+          {
+            record.userName
+            || record.user?.name
+            || record.userId
+            || record.externalUserId
+            || <Text type={'secondary'}>role: {record.userRole}</Text>
+          }
         </Space>;
       },
       filters: users,
@@ -165,6 +175,17 @@ export const useEventLogsColumns = ({
       hideInSearch: true,
     },
     {
+      title: 'User Name',
+      dataIndex: 'userName',
+      hideInSearch: true,
+    },
+    {
+      title: 'User Inst ID',
+      dataIndex: 'externalUserId',
+      copyable: true,
+      hideInSearch: true,
+    },
+    {
       title: 'Action',
       dataIndex: 'action',
       render(dom, record) {
@@ -186,7 +207,6 @@ export const useEventLogsColumns = ({
           .replace(/([a-z])([A-Z])/g, '$1 $2');
       },
       hideInSearch: true,
-
     },
     {
       title: 'Entity ID',
@@ -258,7 +278,7 @@ export const useEventLogsColumns = ({
               children: <pre
                 style={{ margin: 0 }}
               >{
-                JSON.stringify(record.payload, null, 2).replaceAll(`\\n`, '\n')
+                JSON.stringify(record.payload, null, 2).replace(/\n/g, '\n')
               }</pre>,
             },
           ];

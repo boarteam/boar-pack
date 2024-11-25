@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { UsersInst } from './entities/users-inst.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,15 +24,15 @@ export class UsersInstService extends TypeOrmCrudService<UsersInst> {
 
   public findById(id: string): Promise<UsersInst | null> {
     return this.repo.findOne({
-      select: ['id', 'name', 'password', 'pwdHashTypeId'],
+      select: ['id', 'name', 'password', 'pwdHashTypeId', 'marginModuleId'],
       where: { id },
     });
   }
 
   public generateMd5PasswordHash(id: string, password: string): string {
     const hash = createHash('md5');
-    hash.update(id + password);
-    return hash.digest('hex');
+    hash.update(password);
+    return hash.digest('hex').toUpperCase();
   }
 
   public comparePasswordMd5Hash(id: string, password: string, hash: string): boolean {
@@ -69,5 +69,16 @@ export class UsersInstService extends TypeOrmCrudService<UsersInst> {
       password: params.password,
       salt: params.salt,
     });
+  }
+
+  async getMarginModuleId(userId: number): Promise<UsersInst['marginModuleId']> {
+    const user = await this.repo.findOne({
+      select: ['marginModuleId'],
+      where: { id: String(userId) },
+    });
+    if (!user) {
+      throw new NotFoundException(`User with id ${userId} not found`);
+    }
+    return user.marginModuleId;
   }
 }

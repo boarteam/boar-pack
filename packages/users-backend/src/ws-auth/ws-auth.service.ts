@@ -4,9 +4,15 @@ import { TUser } from "../users/entities/user.entity";
 import { IncomingMessage } from "http";
 import passport from "passport";
 import { JWT_AUTH } from "../auth/auth-strategies.constants";
+import { Interval } from "@nestjs/schedule";
 
 export interface AuthSocket extends WebSocket {
   user?: TUser;
+}
+
+export interface EventDto {
+  event: string;
+  data: any;
 }
 
 @Injectable()
@@ -14,7 +20,10 @@ export class WsAuthService {
   private logger = new Logger(WsAuthService.name);
   private socketsAuthenticators = new WeakMap<WebSocket, Promise<TUser | null>>();
 
-  onClientConnect(socket: AuthSocket, req: IncomingMessage) {
+  private clients: Set<WebSocket> = new Set();
+  private clientsToTerminate: Set<WebSocket> = new Set();
+
+  public handleConnection(socket: AuthSocket, req: IncomingMessage) {
     this.logger.debug(`Client connected`);
 
     this.socketsAuthenticators.set(socket, new Promise<TUser | null>((resolve) => {
@@ -28,6 +37,7 @@ export class WsAuthService {
         }
 
         socket.user = user;
+        this.addClient(socket);
         resolve(user);
       })(req, null, (e: Error | null) => {
         if (e) {
@@ -38,7 +48,46 @@ export class WsAuthService {
     }));
   }
 
-  async finishInitialization(socket: WebSocket): Promise<TUser | null> {
+  public async finishInitialization(socket: WebSocket): Promise<TUser | null> {
     return await this.socketsAuthenticators.get(socket) || null;
+  }
+
+  public handleDisconnect(client: WebSocket) {
+    this.clients.delete(client);
+  }
+
+  public broadcast(event: EventDto) {
+    const eventStr = JSON.stringify(event);
+    for (const client of this.clients) {
+      client.send(eventStr, (err) => {
+        if (err) {
+          this.logger.error(`Error sending event to client: ${err.message}`);
+        }
+      });
+    }
+  }
+
+  private addClient(client: WebSocket) {
+    if (this.clients.has(client)) {
+      return;
+    }
+
+    this.clients.add(client);
+    client.on('pong', () => {
+      this.clientsToTerminate.delete(client);
+    });
+  }
+
+  @Interval(5000)
+  private checkClients() {
+    this.clients.forEach((client) => {
+      if (this.clientsToTerminate.has(client)) {
+        client.terminate();
+        this.clients.delete(client);
+      } else {
+        this.clientsToTerminate.add(client);
+        client.ping();
+      }
+    });
   }
 }

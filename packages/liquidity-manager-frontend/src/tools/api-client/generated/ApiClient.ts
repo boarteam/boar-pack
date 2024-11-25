@@ -26,14 +26,29 @@ import { EcnSubscrSchemasService } from './services/EcnSubscrSchemasService';
 import { EcnSwapTypesService } from './services/EcnSwapTypesService';
 import { EcnWeekDaysService } from './services/EcnWeekDaysService';
 import { EcnWorkingModesService } from './services/EcnWorkingModesService';
+import { InstrumentsService } from './services/InstrumentsService';
 import { LiquidityManagersService } from './services/LiquidityManagersService';
 import { LiquidityManagersUsersService } from './services/LiquidityManagersUsersService';
+import { MyAuditLogsService } from './services/MyAuditLogsService';
+import { MySubloginSettingsService } from './services/MySubloginSettingsService';
+import { MyUsersSubAccountsInstService } from './services/MyUsersSubAccountsInstService';
+import { OrderBookTypesService } from './services/OrderBookTypesService';
+import { OrderSidesService } from './services/OrderSidesService';
+import { OrderStatesService } from './services/OrderStatesService';
+import { OrderTypesService } from './services/OrderTypesService';
+import { PositionsService } from './services/PositionsService';
+import { ReportAccountStatementsService } from './services/ReportAccountStatementsService';
+import { ReportBalanceOperationsService } from './services/ReportBalanceOperationsService';
+import { ReportSwapsService } from './services/ReportSwapsService';
+import { ReportTradesService } from './services/ReportTradesService';
 import { SubloginSettingsService } from './services/SubloginSettingsService';
+import { UserInfoService } from './services/UserInfoService';
 import { UsersService } from './services/UsersService';
 import { UsersGroupsInstService } from './services/UsersGroupsInstService';
 import { UsersInstService } from './services/UsersInstService';
 import { UsersInstCompaniesService } from './services/UsersInstCompaniesService';
 import { UsersSubAccountsInstService } from './services/UsersSubAccountsInstService';
+import { ViewInstrumentsSpecificationsService } from './services/ViewInstrumentsSpecificationsService';
 
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 
@@ -59,14 +74,29 @@ export class ApiClient {
     public readonly ecnSwapTypes: EcnSwapTypesService;
     public readonly ecnWeekDays: EcnWeekDaysService;
     public readonly ecnWorkingModes: EcnWorkingModesService;
+    public readonly instruments: InstrumentsService;
     public readonly liquidityManagers: LiquidityManagersService;
     public readonly liquidityManagersUsers: LiquidityManagersUsersService;
+    public readonly myAuditLogs: MyAuditLogsService;
+    public readonly mySubloginSettings: MySubloginSettingsService;
+    public readonly myUsersSubAccountsInst: MyUsersSubAccountsInstService;
+    public readonly orderBookTypes: OrderBookTypesService;
+    public readonly orderSides: OrderSidesService;
+    public readonly orderStates: OrderStatesService;
+    public readonly orderTypes: OrderTypesService;
+    public readonly positions: PositionsService;
+    public readonly reportAccountStatements: ReportAccountStatementsService;
+    public readonly reportBalanceOperations: ReportBalanceOperationsService;
+    public readonly reportSwaps: ReportSwapsService;
+    public readonly reportTrades: ReportTradesService;
     public readonly subloginSettings: SubloginSettingsService;
+    public readonly userInfo: UserInfoService;
     public readonly users: UsersService;
     public readonly usersGroupsInst: UsersGroupsInstService;
     public readonly usersInst: UsersInstService;
     public readonly usersInstCompanies: UsersInstCompaniesService;
     public readonly usersSubAccountsInst: UsersSubAccountsInstService;
+    public readonly viewInstrumentsSpecifications: ViewInstrumentsSpecificationsService;
 
     public readonly request: BaseHttpRequest;
 
@@ -103,14 +133,29 @@ export class ApiClient {
         this.ecnSwapTypes = new EcnSwapTypesService(this.request);
         this.ecnWeekDays = new EcnWeekDaysService(this.request);
         this.ecnWorkingModes = new EcnWorkingModesService(this.request);
+        this.instruments = new InstrumentsService(this.request);
         this.liquidityManagers = new LiquidityManagersService(this.request);
         this.liquidityManagersUsers = new LiquidityManagersUsersService(this.request);
+        this.myAuditLogs = new MyAuditLogsService(this.request);
+        this.mySubloginSettings = new MySubloginSettingsService(this.request);
+        this.myUsersSubAccountsInst = new MyUsersSubAccountsInstService(this.request);
+        this.orderBookTypes = new OrderBookTypesService(this.request);
+        this.orderSides = new OrderSidesService(this.request);
+        this.orderStates = new OrderStatesService(this.request);
+        this.orderTypes = new OrderTypesService(this.request);
+        this.positions = new PositionsService(this.request);
+        this.reportAccountStatements = new ReportAccountStatementsService(this.request);
+        this.reportBalanceOperations = new ReportBalanceOperationsService(this.request);
+        this.reportSwaps = new ReportSwapsService(this.request);
+        this.reportTrades = new ReportTradesService(this.request);
         this.subloginSettings = new SubloginSettingsService(this.request);
+        this.userInfo = new UserInfoService(this.request);
         this.users = new UsersService(this.request);
         this.usersGroupsInst = new UsersGroupsInstService(this.request);
         this.usersInst = new UsersInstService(this.request);
         this.usersInstCompanies = new UsersInstCompaniesService(this.request);
         this.usersSubAccountsInst = new UsersSubAccountsInstService(this.request);
+        this.viewInstrumentsSpecifications = new ViewInstrumentsSpecificationsService(this.request);
     }
 }
 

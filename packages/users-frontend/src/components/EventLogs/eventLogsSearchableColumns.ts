@@ -41,6 +41,10 @@ export const eventLogsSearchableColumns: TSearchableColumn[] = [
     filterOperator: Operators.in,
   },
   {
+    field: 'externalUserId',
+    operator: Operators.containsLow,
+  },
+  {
     field: 'action',
     operator: Operators.containsLow,
   },

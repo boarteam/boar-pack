@@ -1,6 +1,6 @@
 import { Injectable, Logger, Scope } from "@nestjs/common";
 import WebSocket from "ws";
-// import { LosslessNumber, parse } from "lossless-json";
+import { isSafeNumber, parse } from "lossless-json";
 
 export type TBaseConfig<EventType> = {
   url: string;
@@ -12,10 +12,11 @@ export type TBaseConfig<EventType> = {
   ignoreInvalidJson?: boolean;
 };
 
-enum WsErrorCodes {
+export enum WsErrorCodes {
   ConnectionClosed = 1000,
   InvalidJson = 4000,
   ErrorMessage = 4001,
+  Unauthorized = 4003,
 }
 
 @Injectable({ scope: Scope.TRANSIENT })
@@ -27,6 +28,10 @@ export class WebsocketsClients<IncomeEventType,
   private readonly clients = new WeakMap<WebSocket, ConfigType>();
 
   constructor() {
+  }
+
+  private toSafeNumberOrString(value: string): number | string {
+    return isSafeNumber(value) ? parseFloat(value) : value;
   }
 
   public connect(config: ConfigType): WebSocket {
@@ -60,8 +65,7 @@ export class WebsocketsClients<IncomeEventType,
       let event: IncomeEventType;
       try {
         this.logger.verbose(msg);
-        event = JSON.parse(String(msg));
-        // event = parse(String(msg)) as IncomeEventType;
+        event = parse(String(msg), null, this.toSafeNumberOrString) as IncomeEventType;
       } catch (e) {
         this.logger.error(`Error, while parsing message from WS server ${msg}`);
         this.logger.error(e, e.stack);
@@ -121,12 +125,7 @@ export class WebsocketsClients<IncomeEventType,
 
   public send<T>(client: WebSocket, data: T): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (client.readyState !== WebSocket.OPEN) {
-        reject(new Error(`Can't send data to WS server, because client is not connected`));
-        return;
-      }
-
-      try {
+      const send = () => {
         client.send(JSON.stringify(data), (err) => {
           if (err) {
             this.logger.error(`Error sending data to WS server`);
@@ -137,6 +136,23 @@ export class WebsocketsClients<IncomeEventType,
 
           resolve();
         });
+      }
+
+      if (client.readyState !== WebSocket.OPEN) {
+        const timeout = setTimeout(() => {
+          reject(new Error(`Can't send data to WS server, because client is not connected`));
+        }, 1000);
+
+        client.once('open', () => {
+          clearTimeout(timeout);
+          send();
+        });
+
+        return;
+      }
+
+      try {
+        send();
       } catch (e) {
         this.logger.error(`Error, while sending data to WS server`);
         this.logger.error(e);

@@ -14,6 +14,7 @@ export type TColumnsSet<Entity> = {
 type TUseColumnsSetsParams<Entity> = {
   columns: ProColumns<Entity>[],
   columnsSets?: TColumnsSet<Entity>[],
+  defaultColumnState?: string;
 }
 
 export type TColumnsStates = Record<string, ColumnsState>;
@@ -22,6 +23,7 @@ type TUseColumnsSetsResult<Entity> = {
   columnsSetSelect: () => React.ReactNode,
   chosenColumnsSet: TColumnsStates | undefined,
   setChosenColumnsSet: React.Dispatch<React.SetStateAction<TColumnsStates | undefined>>,
+  setChosenColumnsSetByName: (value: string) => void,
   columnsState: ColumnStateType,
 }
 
@@ -49,6 +51,7 @@ function getColumnsStates<T>(
 export default function useColumnsSets<Entity>({
   columns,
   columnsSets,
+  defaultColumnState,
 }: TUseColumnsSetsParams<Entity>): TUseColumnsSetsResult<Entity> {
   const columnsSetsByName: Map<string, TColumnsStates> = useMemo(
     () => new Map<string, TColumnsStates>(
@@ -63,11 +66,16 @@ export default function useColumnsSets<Entity>({
   );
 
   const [chosenSetName, setChosenSetName] = useState<string | undefined>(
-    columnsSets?.[0].name || undefined
+    defaultColumnState || columnsSets?.[0].name || undefined
   );
   const [chosenColumnsSet, setChosenColumnsSet] = useState<TColumnsStates | undefined>(
     columnsSetsByName.get(chosenSetName || '') || undefined
   );
+
+  const setChosenColumnsSetByName = (value: string) => {
+    setChosenSetName(value);
+    setChosenColumnsSet(columnsSetsByName.get(value));
+  }
 
   const options = Array.from(columnsSetsByName.keys()).map(name => ({
     value: name,
@@ -79,10 +87,7 @@ export default function useColumnsSets<Entity>({
       key="columnsSetSelect"
       style={{ width: 200 }}
       value={chosenSetName}
-      onChange={(value: string) => {
-        setChosenSetName(value);
-        setChosenColumnsSet(columnsSetsByName.get(value));
-      }}
+      onChange={(value: string) => setChosenColumnsSetByName(value)}
       options={options}
     />
     <QuestionMarkHint intlPrefix={'tables.columnsSetSelect'} values={{
@@ -99,6 +104,7 @@ export default function useColumnsSets<Entity>({
     columnsSetSelect,
     chosenColumnsSet,
     setChosenColumnsSet,
+    setChosenColumnsSetByName,
     columnsState,
   }
 }

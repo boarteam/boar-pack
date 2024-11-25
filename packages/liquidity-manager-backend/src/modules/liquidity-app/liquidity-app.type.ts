@@ -10,12 +10,20 @@ import { UsersGroupsInst } from "../users-groups-inst/entities/users-groups-inst
 import { UsersInst } from "../users-inst/entities/users-inst.entity";
 import { UsersSubAccountInst } from "../users-sub-accounts-inst/entities/users-sub-account-inst.entity";
 import { LiquidityManager } from "../liquidity-managers";
+import { RealTimeData } from "../real-time-data/policies/view-real-time-data.policy";
+import { UserInfo } from "../user-info/policies/view-user-info.policy";
+import { ViewInstrumentsSpecification } from "../view-instruments-specifications/entities/view-instruments-specifications.entity";
+import { ReportAccountStatement } from "../report-account-statements/entities/report-account-statement.entity";
+import { ReportBalanceOperation } from "../report-balance-operations/entities/report-balance-operation.entity";
+import { ReportTrade } from "../report-trades/entities/report-trade.entity";
+import { ReportSwap } from "../report-swaps/entities/report-swap.entity";
 
 export * from '@jifeon/boar-pack-users-backend';
 
 declare module '@jifeon/boar-pack-users-backend' {
   interface TSubjects {
     EcnModule: typeof EcnModule;
+    ViewInstrumentsSpecification: typeof ViewInstrumentsSpecification;
     EcnModuleType: typeof EcnModuleType;
     EcnConnectSchema: typeof EcnConnectSchema;
     EcnConnectSchemaSetupLabel: typeof EcnConnectSchemaSetupLabel;
@@ -29,5 +37,12 @@ declare module '@jifeon/boar-pack-users-backend' {
     LiquidityManager: typeof LiquidityManager;
     Quotes: 'Quotes';
     Liquidity: 'Liquidity';
+    Position: 'Position';
+    RealTimeData: typeof RealTimeData;
+    UserInfo: typeof UserInfo;
+    ReportAccountStatement: typeof ReportAccountStatement;
+    ReportBalanceOperation: typeof ReportBalanceOperation;
+    ReportTrade: typeof ReportTrade;
+    ReportSwap: typeof ReportSwap;
   }
 }

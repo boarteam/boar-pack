@@ -1,5 +1,5 @@
 import { ProColumns } from "@ant-design/pro-components";
-import { useQuotes } from "./QuotesDataSource";
+import { useRealTimeData } from "../RealTimeData/RealTimeDataSource";
 import React, { useEffect, useState } from "react";
 import { QuoteDto } from "../../tools/api-client";
 import dayjs from "dayjs";
@@ -23,16 +23,24 @@ const Ticker: React.FC<{
   quoteParam,
   format
 }) => {
-  const { quotesDataSource } = useQuotes();
+  const { realTimeDataSource } = useRealTimeData();
   const [ quote, setQuote ] = useState<QuoteDto | null>(null);
 
-  quotesDataSource.quotesEvents.addEventListener(`quote:${symbol}`, (event: CustomEvent<QuoteDto>) => {
-    setQuote(event.detail);
-  });
+  useEffect(() => {
+    const handler = (event: CustomEvent<QuoteDto>) => {
+      setQuote(event.detail);
+    }
+
+    realTimeDataSource.quotesEvents.addEventListener(`quote:${symbol}`, handler);
+
+    return () => {
+      realTimeDataSource.quotesEvents.removeEventListener(`quote:${symbol}`, handler);
+    };
+  }, [realTimeDataSource, symbol]);
 
   const value = quote
     ? (format?.(quote[quoteParam]) || quote[quoteParam])
-    : 'N/A';
+    : '-';
 
   return <span>{value}</span>;
 }
@@ -79,8 +87,7 @@ export const useQuotesColumns = (): ProColumns<Quote>[] => {
       render: (_, record) => <Ticker
         symbol={record.symbol}
         quoteParam='timestamp'
-        // DD/MM/YYYY, HH:mm:ss.SSS
-        format={(value) => dayjs(value).format('DD/MM/YYYY, HH:mm:ss.SSS')}
+        format={(value) => dayjs(value).isSame(dayjs(), 'day') ? dayjs(value).format('HH:mm:ss.SSS') : dayjs(value).format('DD/MM/YYYY, HH:mm:ss.SSS')}
       />,
     },
     {

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, Unique, } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, Unique, } from 'typeorm';
 import { EcnInstrumentsGroup } from '../../ecn-instruments-groups/entities/ecn-instruments-group.entity';
 import { EcnMarginCalcMode } from '../../../entities/ecn-margin-calc-mode.entity';
 import { EcnProfitCalcMode } from '../../../entities/ecn-profit-calc-mode.entity';
@@ -6,6 +6,7 @@ import { EcnSwapType } from '../../../entities/ecn-swap-type.entity';
 import { EcnCommissionLotsMode } from '../../../entities/ecn-commission-lots-mode.entity';
 import { EcnCommissionType } from '../../../entities/ecn-commission-type.entity';
 import { EcnWeekDay } from '../../../entities/ecn-week-day.entity';
+import { EcnSubscrSchema } from "../../ecn-subscr-schema/entities/ecn-subscr-schema.entity";
 
 @Entity('ecn_instruments')
 @Unique('idx_ecn_instruments_name', ['name'])
@@ -142,4 +143,7 @@ export class EcnInstrument {
 
   @Column('tinyint', { width: 1, default: 0, comment: 'Delete band on bbook nos' })
   delBandOnBbookNos: number;
+
+  @OneToMany<EcnSubscrSchema>(() => EcnSubscrSchema, subscrSchema => subscrSchema.instrument)
+  subscriptions: EcnSubscrSchema[];
 }
