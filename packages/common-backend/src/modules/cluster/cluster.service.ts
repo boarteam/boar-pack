@@ -90,6 +90,10 @@ export class ClusterService {
       workerVars: vars,
     });
 
+    cluster.on('message', (worker, message) => {
+      runningCluster.onClusterMessage?.(cluster, worker, message);
+    })
+
     workerProcess.on('exit', (code, signal) => {
       clusterWorkers.delete(workerProcess.id);
       runningCluster.onWorkerExit?.(workerSettings, code, signal);
