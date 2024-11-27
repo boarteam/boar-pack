@@ -11,10 +11,10 @@ Use singular form for the module name. It will be converted to plural form in th
 Example:
 
 ```shell
-yarn gen:module liquidity-manager quote
+yarn gen:module common quote
 ```
 
-It will add a new module `quotes` to `packages/liquidity-manager-backend/src/modules` folder.
+It will add a new module `quotes` to `packages/common-backend/src/modules` folder.
 
 #### Generate a page with table
 
