@@ -1,3 +1,6 @@
+import { Cluster } from "node:cluster";
+import { Worker } from "cluster";
+
 export interface WorkerSettings {
   workerId: string;
   workerName?: string;
@@ -18,4 +21,5 @@ export interface ClusterInterface {
   onWorkerRun?(worker: WorkerSettings, vars: Record<string, string>): void;
   onWorkerExit?(worker: WorkerSettings, code: number, signal: string): void;
   onWorkerListening?(worker: WorkerSettings): void;
+  onClusterMessage?(cluster: Cluster, worker: Worker, message: any): void;
 }
