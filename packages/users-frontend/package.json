@@ -33,5 +33,5 @@
     "build": "tsc --project tsconfig.build.json",
     "yalc:push": "yalc push"
   },
-  "gitHead": "51af829e62518ab0c582c3a9c55dd0b1ebcc1c6b"
+  "gitHead": "6b80635fb06b1de1f2f6f7f155122e507b02d2d8"
 }
