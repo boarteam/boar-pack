@@ -10,7 +10,7 @@
     "src"
   ],
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://registry.npmjs.org/"
   },
   "peerDependencies": {
     "@ant-design/icons": "^4.8.3",

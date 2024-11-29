@@ -10,7 +10,7 @@
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://registry.npmjs.org/"
   },
   "peerDependencies": {
     "@nestjs/common": "^9.0.0",
