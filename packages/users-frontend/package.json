@@ -1,8 +1,8 @@
 {
-  "name": "@jifeon/boar-pack-users-frontend",
+  "name": "@boarteam/boar-pack-users-frontend",
   "version": "2.0.1",
   "description": "Users frontend package for Boar Pack",
-  "repository": "git@github.com:jifeon/boar-pack.git",
+  "repository": "git@github.com:boarteam/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "main": "src/index",
@@ -16,7 +16,7 @@
     "@ant-design/plots": "^2.3.2",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
-    "@jifeon/boar-pack-common-frontend": "^2.0.1",
+    "@boarteam/boar-pack-common-frontend": "^2.0.1",
     "@umijs/max": "^4.1.10",
     "@umijs/plugin-initial-state": "^2.4.0",
     "@umijs/plugins": "^4.1.10",
@@ -32,5 +32,6 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "yalc:push": "yalc push"
-  }
+  },
+  "gitHead": "51af829e62518ab0c582c3a9c55dd0b1ebcc1c6b"
 }

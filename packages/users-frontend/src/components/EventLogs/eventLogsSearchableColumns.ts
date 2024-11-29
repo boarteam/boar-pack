@@ -1,4 +1,4 @@
-import { Operators, TSearchableColumn } from "@jifeon/boar-pack-common-frontend";
+import { Operators, TSearchableColumn } from "@boarteam/boar-pack-common-frontend";
 
 export const eventLogsSearchableColumns: TSearchableColumn[] = [
   {
