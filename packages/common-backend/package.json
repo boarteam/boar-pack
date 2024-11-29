@@ -10,7 +10,8 @@
     "src"
   ],
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "peerDependencies": {
     "@nestjs/common": "^9.0.0",
@@ -20,7 +21,7 @@
   "scripts": {
     "yalc:push": "yalc push"
   },
-  "gitHead": "1ef5de3edb2fb200828b4126db33027226b019fb",
+  "gitHead": "c56c90047b5cb4e4d719890553e61f8d7e6ff25f",
   "dependencies": {
     "@nestjs/websockets": "^10.3.9"
   }

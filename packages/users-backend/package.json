@@ -10,7 +10,8 @@
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "peerDependencies": {
     "@nestjs/common": "^9.0.0",
@@ -55,5 +56,5 @@
     "yalc:push": "yalc push",
     "gen-types": "JWT_SECRET=swagger nest start"
   },
-  "gitHead": "1ef5de3edb2fb200828b4126db33027226b019fb"
+  "gitHead": "c56c90047b5cb4e4d719890553e61f8d7e6ff25f"
 }
