@@ -1,7 +1,7 @@
 import apiClient from "@@api/apiClient";
 import { EventLog, EventLogCreateDto, EventLogTimelineQueryDto, EventLogUpdateDto } from "@@api/generated";
 import { useEventLogsColumns } from "./useEventLogsColumns";
-import { Table, TColumnsSet } from "@jifeon/boar-pack-common-frontend";
+import { Table, TColumnsSet } from "@boarteam/boar-pack-common-frontend";
 import { eventLogsSearchableColumns } from "./eventLogsSearchableColumns";
 import { EventLogExplanation } from "./EventLogExplanation";
 import { createStyles } from "antd-style";

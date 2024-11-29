@@ -8,7 +8,7 @@ import { Action, CaslAbilityFactory, CaslModule } from '../casl';
 import { UsersConfigService } from "./users.config";
 import BcryptService from "./bcrypt.service";
 import { ConfigModule } from "@nestjs/config";
-import { Tools } from "@jifeon/boar-pack-common-backend";
+import { Tools } from "@boarteam/boar-pack-common-backend";
 import { VIEW_USERS } from "./users.constants";
 import { DataSource } from "typeorm";
 

@@ -1,8 +1,8 @@
 {
-  "name": "@jifeon/boar-pack-common-backend",
+  "name": "@boarteam/boar-pack-common-backend",
   "version": "2.1.1",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
-  "repository": "git@github.com:jifeon/boar-pack.git",
+  "repository": "git@github.com:boarteam/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "main": "src/index",
@@ -20,7 +20,7 @@
   "scripts": {
     "yalc:push": "yalc push"
   },
-  "gitHead": "8bd22bd2364f307911e6e7012c8de00aa6f55265",
+  "gitHead": "51af829e62518ab0c582c3a9c55dd0b1ebcc1c6b",
   "dependencies": {
     "@nestjs/websockets": "^10.3.9"
   }
