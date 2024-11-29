@@ -9,9 +9,9 @@
   "files": [
     "src"
   ],
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
+    "publishConfig": {
+      "registry": "https://registry.npmjs.org/"
+    },
   "peerDependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
