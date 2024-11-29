@@ -10,7 +10,7 @@
     "src"
   ],
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
     "@ant-design/plots": "^2.3.2",
