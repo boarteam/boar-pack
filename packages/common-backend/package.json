@@ -20,7 +20,7 @@
   "scripts": {
     "yalc:push": "yalc push"
   },
-  "gitHead": "d2582af5e72222e1908d906e0e63cd19426b7b37",
+  "gitHead": "1ef5de3edb2fb200828b4126db33027226b019fb",
   "dependencies": {
     "@nestjs/websockets": "^10.3.9"
   }
