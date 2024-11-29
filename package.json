@@ -21,7 +21,7 @@
     "clean": "lerna clean",
     "build": "lerna run build",
     "ver": "lerna version",
-    "pub": "lerna publish from-package --access public",
+    "pub": "lerna publish from-package -- --access public",
     "watch:common-fontend": "chokidar 'packages/common-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/common-frontend'",
     "watch:common-backend": "chokidar 'packages/common-backend/src/**/*' -c 'npm run yalc:push --prefix packages/common-backend'",
     "watch:users-backend": "chokidar 'packages/users-backend/src/**/*' -c 'npm run yalc:push --prefix packages/users-backend'",
