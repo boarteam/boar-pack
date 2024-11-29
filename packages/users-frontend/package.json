@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-users-frontend",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Users frontend package for Boar Pack",
   "repository": "git@github.com:boarteam/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@ant-design/plots": "^2.3.2",
+    "@boarteam/boar-pack-common-frontend": "^2.0.1",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
-    "@boarteam/boar-pack-common-frontend": "^2.0.1",
     "@umijs/max": "^4.1.10",
     "@umijs/plugin-initial-state": "^2.4.0",
     "@umijs/plugins": "^4.1.10",
