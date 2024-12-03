@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn, } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  Unique,
+  UpdateDateColumn,
+} from 'typeorm';
 import { SubjectRawRule } from '@casl/ability';
 import { PackRule } from '@casl/ability/extra';
 import { Action, AppAbility, TSubjectsNames } from '../../casl';
@@ -48,6 +56,9 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 
   policies: PackRule<SubjectRawRule<Action, TSubjectsNames, unknown>>[];
 }
