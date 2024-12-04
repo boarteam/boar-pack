@@ -52,6 +52,7 @@ export class EventLogsController implements CrudController<EventLog>{
     readonly service: EventLogsService,
   ) {}
 
+  @CheckPolicies(new ViewEventLogsPolicy())
   @Get('timeline')
   @ApiOkResponse({
     type: EventLogTimelineDto,
