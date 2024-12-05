@@ -10,7 +10,7 @@ import { HashPasswordInterceptor } from "./hash-password.interceptor";
 import { PermissionDto } from "./dto/permission.dto";
 import { UsersEditingGuard } from "./users-editing.guard";
 import { ViewUsersPolicy } from "./policies/view-users.policy";
-import { Tools } from "@jifeon/boar-pack-common-backend";
+import { Tools } from "@boarteam/boar-pack-common-backend";
 
 @Crud({
   model: {

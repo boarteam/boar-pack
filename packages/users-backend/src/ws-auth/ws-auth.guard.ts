@@ -3,7 +3,7 @@ import { WebSocket } from "ws";
 import { WsAuthService } from "./ws-auth.service";
 import {
   WsErrorCodes
-} from "@jifeon/boar-pack-common-backend/src/modules/websockets/websockets.clients";
+} from "@boarteam/boar-pack-common-backend/src/modules/websockets/websockets.clients";
 
 @Injectable()
 export class WsAuthGuard implements CanActivate {

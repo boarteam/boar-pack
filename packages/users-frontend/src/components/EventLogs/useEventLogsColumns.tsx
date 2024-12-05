@@ -14,7 +14,7 @@ import UserAgentDisplay from "./UserAgentDisplay";
 import apiClient from "@@api/apiClient";
 import { getUserRoleIcon } from "./EventLogExplanation";
 
-import { DateRange } from "@jifeon/boar-pack-common-frontend";
+import { DateRange } from "@boarteam/boar-pack-common-frontend";
 
 const { Text } = Typography;
 

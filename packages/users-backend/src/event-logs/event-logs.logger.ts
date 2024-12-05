@@ -1,4 +1,4 @@
-import { NamedLogger } from "@jifeon/boar-pack-common-backend/src/tools";
+import { NamedLogger } from "@boarteam/boar-pack-common-backend/src/tools";
 import { EventLogsService } from "./event-logs.service";
 import { Inject } from "@nestjs/common";
 import { SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
