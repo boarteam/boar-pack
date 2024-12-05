@@ -5,16 +5,16 @@
 export { defineApp } from './core/defineApp'
 export type { RuntimeConfig } from './core/defineApp'
 // plugins
-export { Access, useAccess, useAccessMarkedRoutes } from '/Users/jifeon/projects/boar-pack/packages/users-frontend/src/.umi/plugin-access';
-export { addLocale, setLocale, getLocale, getIntl, useIntl, injectIntl, formatMessage, FormattedMessage, getAllLocales, FormattedDate, FormattedDateParts, FormattedDisplayName, FormattedHTMLMessage, FormattedList, FormattedNumber, FormattedNumberParts, FormattedPlural, FormattedRelativeTime, FormattedTime, FormattedTimeParts, IntlProvider, RawIntlProvider, SelectLang } from '/Users/jifeon/projects/boar-pack/packages/users-frontend/src/.umi/plugin-locale';
-export { Provider, useModel } from '/Users/jifeon/projects/boar-pack/packages/users-frontend/src/.umi/plugin-model';
+export { Access, useAccess, useAccessMarkedRoutes } from '/Users/boarteam/projects/boar-pack/packages/users-frontend/src/.umi/plugin-access';
+export { addLocale, setLocale, getLocale, getIntl, useIntl, injectIntl, formatMessage, FormattedMessage, getAllLocales, FormattedDate, FormattedDateParts, FormattedDisplayName, FormattedHTMLMessage, FormattedList, FormattedNumber, FormattedNumberParts, FormattedPlural, FormattedRelativeTime, FormattedTime, FormattedTimeParts, IntlProvider, RawIntlProvider, SelectLang } from '/Users/boarteam/projects/boar-pack/packages/users-frontend/src/.umi/plugin-locale';
+export { Provider, useModel } from '/Users/boarteam/projects/boar-pack/packages/users-frontend/src/.umi/plugin-model';
 // plugins types.d.ts
-export * from '/Users/jifeon/projects/boar-pack/packages/users-frontend/src/.umi/plugin-access/types.d';
+export * from '/Users/boarteam/projects/boar-pack/packages/users-frontend/src/.umi/plugin-access/types.d';
 // @umijs/renderer-*
-export { createBrowserHistory, createHashHistory, createMemoryHistory, Helmet, HelmetProvider, createSearchParams, generatePath, matchPath, matchRoutes, Navigate, NavLink, Outlet, resolvePath, useLocation, useMatch, useNavigate, useOutlet, useOutletContext, useParams, useResolvedPath, useRoutes, useSearchParams, useAppData, useClientLoaderData, useRouteProps, useSelectedRoutes, useServerLoaderData, renderClient, __getRoot, Link, useRouteData, __useFetcher, withRouter } from '/Users/jifeon/.config/yarn/global/node_modules/@umijs/renderer-react';
-export type { History } from '/Users/jifeon/.config/yarn/global/node_modules/@umijs/renderer-react'
+export { createBrowserHistory, createHashHistory, createMemoryHistory, Helmet, HelmetProvider, createSearchParams, generatePath, matchPath, matchRoutes, Navigate, NavLink, Outlet, resolvePath, useLocation, useMatch, useNavigate, useOutlet, useOutletContext, useParams, useResolvedPath, useRoutes, useSearchParams, useAppData, useClientLoaderData, useRouteProps, useSelectedRoutes, useServerLoaderData, renderClient, __getRoot, Link, useRouteData, __useFetcher, withRouter } from '/Users/boarteam/.config/yarn/global/node_modules/@umijs/renderer-react';
+export type { History } from '/Users/boarteam/.config/yarn/global/node_modules/@umijs/renderer-react'
 // umi/client/client/plugin
-export { ApplyPluginsType, PluginManager } from '/Users/jifeon/.config/yarn/global/node_modules/umi/client/client/plugin.js';
+export { ApplyPluginsType, PluginManager } from '/Users/boarteam/.config/yarn/global/node_modules/umi/client/client/plugin.js';
 export { history, createHistory } from './core/history';
 export { terminal } from './core/terminal';
 // react ssr

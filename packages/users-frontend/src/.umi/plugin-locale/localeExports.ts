@@ -5,11 +5,11 @@ import {
   createIntl,
   IntlShape,
   MessageDescriptor,
-} from '/Users/jifeon/projects/boar-pack/node_modules/react-intl';
+} from '/Users/boarteam/projects/boar-pack/node_modules/react-intl';
 import { getPluginManager } from '../core/plugin';
-import EventEmitter from '/Users/jifeon/projects/boar-pack/node_modules/event-emitter';
+import EventEmitter from '/Users/boarteam/projects/boar-pack/node_modules/event-emitter';
 // @ts-ignore
-import warning from '/Users/jifeon/projects/boar-pack/node_modules/warning';
+import warning from '/Users/boarteam/projects/boar-pack/node_modules/warning';
 
 export {
   createIntl,
@@ -34,7 +34,7 @@ export {
   defineMessages,
   injectIntl,
   useIntl,
-} from '/Users/jifeon/projects/boar-pack/node_modules/react-intl';
+} from '/Users/boarteam/projects/boar-pack/node_modules/react-intl';
 
 let g_intl: IntlShape;
 
