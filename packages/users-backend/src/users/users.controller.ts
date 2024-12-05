@@ -26,6 +26,7 @@ import { Tools } from "@jifeon/boar-pack-common-backend";
   query: {
     alwaysPaginate: true,
     exclude: ['pass'],
+    softDelete: true
   },
   routes: {
     only: ['getManyBase', 'getOneBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
