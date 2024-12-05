@@ -23,6 +23,7 @@
   },
   "gitHead": "c56c90047b5cb4e4d719890553e61f8d7e6ff25f",
   "dependencies": {
-    "@nestjs/websockets": "^10.3.9"
+    "@nestjs/websockets": "^10.3.9",
+    "lossless-json": "^4.0.2"
   }
 }
