@@ -1,7 +1,6 @@
 import { Controller, UseFilters, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Crud, Override, ParsedRequest, CrudRequest } from '@nestjsx/crud';
-import { QueryFilter } from '@nestjsx/crud-request';
+import { Crud } from '@nestjsx/crud';
 import { User } from './entities/user.entity';
 import { CheckPolicies, ManageAllPolicy } from '../casl';
 import { UserCreateDto } from './dto/user-create.dto';
@@ -27,12 +26,7 @@ import { Tools } from "@jifeon/boar-pack-common-backend";
   query: {
     alwaysPaginate: true,
     exclude: ['pass'],
-    // @ts-ignore
-    filter: {
-      deletedAt: {
-        $eq: null
-      }
-    },
+    softDelete: true
   },
   routes: {
     only: ['getManyBase', 'getOneBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
@@ -77,16 +71,4 @@ import { Tools } from "@jifeon/boar-pack-common-backend";
 @Controller('users')
 export class UsersController {
   constructor(private readonly service: UsersService) {}
-
-  @Override()
-  async deleteOne(@ParsedRequest() req: CrudRequest) {
-    const id = req.parsed.paramsFilter
-        .find((f: QueryFilter) => f.field === 'id' && f.operator === '$eq')?.value;
-
-    if (!id) {
-      throw new Error("Can't find id value in the params filter request field");
-    }
-
-    return this.service.markDeleted(id);
-  }
 }

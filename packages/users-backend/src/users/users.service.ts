@@ -20,8 +20,4 @@ export class UsersService extends TypeOrmCrudService<User> {
     await this.repo.save(user);
     return user;
   }
-
-  async markDeleted(id: any) {
-    return this.repo.softDelete({ id })
-  }
 }
