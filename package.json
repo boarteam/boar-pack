@@ -9,10 +9,11 @@
     ]
   },
   "devDependencies": {
+    "@lerna/conventional-commits": "^6.4.1",
+    "@types/node": "^20.14.2",
     "chokidar-cli": "^3.0.0",
     "lerna": "^8.1.2",
     "npm-run-all": "^4.1.5",
-    "@types/node": "^20.14.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
@@ -20,6 +21,7 @@
     "push": "lerna run yalc:push",
     "clean": "lerna clean",
     "build": "lerna run build",
+    "ver:pre": "lerna version prerelease --no-git-tag-version --no-push",
     "ver": "lerna version",
     "pub": "lerna publish from-package",
     "watch:common-fontend": "chokidar 'packages/common-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/common-frontend'",
