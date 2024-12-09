@@ -68,7 +68,6 @@ const Table = <Entity extends Record<string | symbol, any>,
     popupCreation = false,
     toolBarRender,
     params,
-    popupDataState,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -78,7 +77,7 @@ const Table = <Entity extends Record<string | symbol, any>,
 ) => {
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
-  const [createPopupData, setCreatePopupData] = popupDataState ?? useState<Partial<Entity> | undefined>();
+  const [createPopupData, setCreatePopupData] = useState<Partial<Entity> | undefined>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [selectedRecords, setSelectedRecords] = useState<Entity[]>([]);
   const [lastRequest, setLastRequest] = useState<[TGetAllParams & TPathParams, any] | []>([]);

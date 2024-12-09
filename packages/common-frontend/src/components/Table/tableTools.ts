@@ -113,21 +113,6 @@ export function collectFieldsFromColumns<T>(
   return [Array.from(buildFieldsFromColumns<T>(columns, idColumnName, joinFields, fields)).join(',')];
 }
 
-export function buildFieldsFromColumnsForDescriptionsDisplay<T>(
-  columns: TIndexableRecord[] | undefined,
-  idColumnName: string | string[],
-  fields: Set<string> = new Set,
-): Set<string> {
-  columns?.forEach(col => {
-    if ('children' in col && Array.isArray(col.children)) {
-      buildFieldsFromColumnsForDescriptionsDisplay(col.children, idColumnName, fields);
-    }
-    fields.add(String(Array.isArray(col.dataIndex) ? col.dataIndex[0] : col.dataIndex));
-  });
-
-  return fields;
-}
-
 export function buildFieldsFromColumns<T>(
   columns: TIndexableRecord[] | undefined,
   idColumnName: string | string[],
