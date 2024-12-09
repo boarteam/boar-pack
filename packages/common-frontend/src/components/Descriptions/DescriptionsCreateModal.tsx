@@ -4,7 +4,7 @@ import { TDescriptionsCreateModalProps } from "./descriptionTypes";
 import { ProDescriptions } from "@ant-design/pro-components";
 import { columnsToDescriptionItemProps } from "./useDescriptionColumns";
 import { useForm } from "antd/es/form/Form";
-import { buildFieldsFromColumns } from "../Table";
+import { buildFieldsFromColumnsForDescriptionsDisplay } from "../Table";
 
 const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
   idColumnName,
@@ -19,7 +19,7 @@ const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
 
   const editableKeys = useMemo(() => {
     return [
-      ...buildFieldsFromColumns(
+      ...buildFieldsFromColumnsForDescriptionsDisplay(
         columns,
         idColumnName,
       ),
