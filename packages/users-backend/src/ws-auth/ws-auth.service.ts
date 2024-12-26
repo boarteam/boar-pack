@@ -28,11 +28,14 @@ export class WsAuthService {
 
     this.socketsAuthenticators.set(socket, new Promise<TUser | null>((resolve) => {
       passport.authenticate(JWT_AUTH, (err: Error, user: TUser) => {
+        this.logger.debug(`Authenticating user`);
+
         if (err) {
           this.logger.error(err, err.stack);
           return resolve(null);
         }
         if (!user) {
+          this.logger.warn(`User was not taken from JWT`);
           return resolve(null);
         }
 
