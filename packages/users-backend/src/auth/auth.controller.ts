@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Req, Res, UnauthorizedException, UseFilter
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
 import { tokenName } from './auth.constants';
-import { SkipJWTGuard } from '../jwt-auth/jwt-auth.guard';
+import { JwtAuthGuard, SkipJWTGuard } from '../jwt-auth/jwt-auth.guard';
 import { SkipPoliciesGuard } from '../casl/policies.guard';
 import { GoogleAuthGuard } from './google-auth.guard';
 import { AuthExceptionFilter } from './google-auth.filter';
@@ -11,7 +11,6 @@ import type { Request, Response } from 'express';
 import { LocalAuthLoginDto, LocalAuthTokenDto } from "./local-auth.dto";
 import { MSAuthGuard } from "./ms-auth.guard";
 
-@SkipJWTGuard()
 @SkipPoliciesGuard()
 @ApiTags('Authentication')
 @ApiExtraModels(LocalAuthTokenDto)
@@ -19,6 +18,7 @@ import { MSAuthGuard } from "./ms-auth.guard";
 export default class AuthController {
   constructor(private authService: AuthService) {}
 
+  @SkipJWTGuard()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(
@@ -34,10 +34,23 @@ export default class AuthController {
     return loginResult;
   }
 
+  @Post('token')
+  @UseGuards(JwtAuthGuard)
+  async token(
+    @Req() req: Request,
+  ): Promise<LocalAuthTokenDto> {
+    if (!req.user) {
+      throw new UnauthorizedException(`User is not authorized`);
+    }
+    return this.authService.login(req.user);
+  }
+
+  @SkipJWTGuard()
   @UseGuards(GoogleAuthGuard)
   @Get('google')
   async loginGoogle() {}
 
+  @SkipJWTGuard()
   @UseGuards(GoogleAuthGuard)
   @UseFilters(AuthExceptionFilter)
   @Get('google/callback')
@@ -54,10 +67,12 @@ export default class AuthController {
     res.redirect('/');
   }
 
+  @SkipJWTGuard()
   @UseGuards(MSAuthGuard)
   @Get('ms')
   async loginMS() {}
 
+  @SkipJWTGuard()
   @UseGuards(MSAuthGuard)
   @UseFilters(AuthExceptionFilter)
   @Get('ms/callback')
@@ -74,6 +89,7 @@ export default class AuthController {
     res.redirect('/');
   }
 
+  @SkipJWTGuard()
   @Post('logout')
   async logout(
     @Res({ passthrough: true }) res: Response,
