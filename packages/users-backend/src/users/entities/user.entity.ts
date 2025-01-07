@@ -11,7 +11,6 @@ import { SubjectRawRule } from '@casl/ability';
 import { PackRule } from '@casl/ability/extra';
 import { Action, AppAbility, TSubjectsNames } from '../../casl';
 import { Permission } from './permissions';
-import { ExperimentalFeaturesDto } from "../dto/experimental-features.dto";
 
 export enum Roles {
   ADMIN = 'admin',
@@ -63,5 +62,5 @@ export class User {
 
   policies: PackRule<SubjectRawRule<Action, TSubjectsNames, unknown>>[];
 
-  experimentalFeatures: ExperimentalFeaturesDto;
+  experimentalFeatures: string[];
 }
