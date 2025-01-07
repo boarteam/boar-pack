@@ -43,6 +43,7 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
+    "@nestjs/platform-express": "^10.4.15",
     "@types/bcrypt": "^5.0.2",
     "@types/passport-google-oauth20": "^2.0.14",
     "@types/passport-http-bearer": "^1.0.41",
@@ -50,8 +51,10 @@
     "@types/passport-local": "^1.0.38",
     "@types/ws": "^8.5.10",
     "class-transformer": "^0.5.1",
+    "openapi-typescript-codegen": "^0.29.0",
     "passport-azure-ad-oauth2": "^0.0.4",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "pg": "^8.13.1"
   },
   "scripts": {
     "yalc:push": "yalc push",
