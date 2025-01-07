@@ -13,6 +13,7 @@ export type User = {
     updatedAt: string;
     deletedAt: string;
     policies: Array<Record<string, any>>;
+    experimentalFeatures: Record<string, any>;
 };
 export namespace User {
     export enum role {
