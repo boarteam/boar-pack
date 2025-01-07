@@ -1,4 +1,4 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -6,14 +6,10 @@ import type { GetManyUserResponseDto } from '../models/GetManyUserResponseDto';
 import type { User } from '../models/User';
 import type { UserCreateDto } from '../models/UserCreateDto';
 import type { UserUpdateDto } from '../models/UserUpdateDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class UsersService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * Retrieve a single User
      * @returns User Get one base response
@@ -24,6 +20,7 @@ export class UsersService {
         fields,
         join,
         cache,
+        includeDeleted,
     }: {
         id: string,
         /**
@@ -38,6 +35,10 @@ export class UsersService {
          * Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache" target="_blank">Docs</a>
          */
         cache?: number,
+        /**
+         * Include deleted. <a href="https://github.com/nestjsx/crud/wiki/Requests#includeDeleted" target="_blank">Docs</a>
+         */
+        includeDeleted?: number,
     }): CancelablePromise<User> {
         return this.httpRequest.request({
             method: 'GET',
@@ -49,10 +50,10 @@ export class UsersService {
                 'fields': fields,
                 'join': join,
                 'cache': cache,
+                'include_deleted': includeDeleted,
             },
         });
     }
-
     /**
      * Update a single User
      * @returns User Response
@@ -75,7 +76,6 @@ export class UsersService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Delete a single User
      * @returns any Delete one base response
@@ -94,7 +94,6 @@ export class UsersService {
             },
         });
     }
-
     /**
      * Retrieve multiple Users
      * @returns GetManyUserResponseDto Get paginated response
@@ -111,6 +110,7 @@ export class UsersService {
         offset,
         page,
         cache,
+        includeDeleted,
     }: {
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
@@ -152,6 +152,10 @@ export class UsersService {
          * Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache" target="_blank">Docs</a>
          */
         cache?: number,
+        /**
+         * Include deleted. <a href="https://github.com/nestjsx/crud/wiki/Requests#includeDeleted" target="_blank">Docs</a>
+         */
+        includeDeleted?: number,
     }): CancelablePromise<GetManyUserResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
@@ -167,10 +171,10 @@ export class UsersService {
                 'offset': offset,
                 'page': page,
                 'cache': cache,
+                'include_deleted': includeDeleted,
             },
         });
     }
-
     /**
      * Create a single User
      * @returns User Get create one base response
@@ -188,7 +192,6 @@ export class UsersService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Retrieve a single User
      * @returns User
@@ -222,5 +225,4 @@ export class UsersService {
             },
         });
     }
-
 }

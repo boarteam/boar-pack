@@ -1,10 +1,8 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { User } from './User';
-
 export type EventLog = {
     id: string;
     logType: EventLog.logType;
@@ -29,28 +27,22 @@ export type EventLog = {
     createdAt: string;
     updatedAt: string;
 };
-
 export namespace EventLog {
-
     export enum logType {
         AUDIT = 'Audit',
         OPERATIONAL = 'Operational',
         APPLICATION = 'Application',
     }
-
     export enum logLevel {
         INFO = 'Info',
         WARNING = 'Warning',
         ERROR = 'Error',
     }
-
     export enum userRole {
         ADMIN = 'Admin',
         USER = 'User',
         GUEST = 'Guest',
         SYSTEM = 'System',
     }
-
-
 }
 

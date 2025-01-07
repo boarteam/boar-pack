@@ -1,4 +1,4 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -7,14 +7,10 @@ import type { EventLogCreateDto } from '../models/EventLogCreateDto';
 import type { EventLogTimelineDto } from '../models/EventLogTimelineDto';
 import type { EventLogUpdateDto } from '../models/EventLogUpdateDto';
 import type { GetManyEventLogResponseDto } from '../models/GetManyEventLogResponseDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class EventLogsService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns EventLogTimelineDto
      * @throws ApiError
@@ -38,7 +34,6 @@ export class EventLogsService {
             },
         });
     }
-
     /**
      * Retrieve multiple EventLogs
      * @returns GetManyEventLogResponseDto Get paginated response
@@ -114,7 +109,6 @@ export class EventLogsService {
             },
         });
     }
-
     /**
      * Create a single EventLog
      * @returns EventLog Get create one base response
@@ -132,7 +126,6 @@ export class EventLogsService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Update a single EventLog
      * @returns EventLog Response
@@ -155,7 +148,6 @@ export class EventLogsService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Delete a single EventLog
      * @returns any Delete one base response
@@ -174,5 +166,4 @@ export class EventLogsService {
             },
         });
     }
-
 }
