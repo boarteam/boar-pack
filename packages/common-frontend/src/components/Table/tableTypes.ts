@@ -88,6 +88,7 @@ interface BaseProps<Entity,
   pathParams: TPathParams;
   idColumnName?: string & keyof Entity | (string & keyof Entity)[];
   createNewDefaultParams?: Partial<Entity>;
+  editableRecord?: Partial<Entity>;
   afterSave?: (record: Entity) => Promise<void>;
   actionRef?: MutableRefObject<ActionType | undefined>;
   editable?: RowEditableConfig<Entity>;
