@@ -3,6 +3,7 @@ import { ActionType } from "@ant-design/pro-table";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { QueryJoin } from "@nestjsx/crud-request";
 import { ProColumns, ProDescriptionsProps } from "@ant-design/pro-components";
+import { DESCRIPTIONS_MODAL_TYPE, DESCRIPTIONS_VIEW_MODE_TYPE } from "./DescriptionsModal";
 
 export type TGetOneParams = {
   /**
@@ -46,4 +47,6 @@ export type TDescriptionsCreateModalProps<Entity> = Omit<ProDescriptionsProps<En
   data: Partial<Entity> | undefined,
   onSubmit: (data: Entity) => Promise<void>,
   onClose: () => void,
+  type: DESCRIPTIONS_MODAL_TYPE,
+  viewMode: DESCRIPTIONS_VIEW_MODE_TYPE,
 }

@@ -1,13 +1,23 @@
 import ProTable, { ActionType } from "@ant-design/pro-table";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Popover, Space, Tooltip, message } from "antd";
-import { DeleteOutlined, PlusOutlined, QuestionCircleTwoTone, StopOutlined } from "@ant-design/icons";
+import {
+  AppstoreOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+  QuestionCircleTwoTone,
+  StopOutlined,
+  UnorderedListOutlined
+} from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { flushSync } from "react-dom";
 import { applyKeywordToSearch, buildJoinFields, collectFieldsFromColumns, getFiltersSearch } from "./tableTools";
 import { TFilterParams, TFilters, TGetAllParams, TSort, TTableProps } from "./tableTypes";
 import useColumnsSets from "./useColumnsSets";
-import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
+import DescriptionsModal, {
+  DESCRIPTIONS_MODAL_TYPE,
+  DESCRIPTIONS_VIEW_MODE_TYPE
+} from "../Descriptions/DescriptionsModal";
 import BulkEditButton from "./BulkEditButton";
 import _ from "lodash";
 import BulkDeleteButton from "./BulkDeleteButton";
@@ -55,6 +65,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     entityToCreateDto,
     entityToUpdateDto,
     createNewDefaultParams,
+    editableRecord,
     afterSave,
     actionRef: actionRefProp,
     editable,
@@ -79,18 +90,21 @@ const Table = <Entity extends Record<string | symbol, any>,
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
   const [createPopupData, setCreatePopupData] = popupDataState ?? useState<Partial<Entity> | undefined>();
+  const [updatePopupData, setUpdatePopupData] = useState<Partial<Entity> | undefined>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [selectedRecords, setSelectedRecords] = useState<Entity[]>([]);
   const [lastRequest, setLastRequest] = useState<[TGetAllParams & TPathParams, any] | []>([]);
   const [allSelected, setAllSelected] = useState(false);
   const { styles } = useStyles();
   const [messageApi, contextHolder] = message.useMessage();
+  const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<DESCRIPTIONS_VIEW_MODE_TYPE>(DESCRIPTIONS_VIEW_MODE_TYPE.TABS);
 
   const intl = useIntl();
 
   useEffect(() => {
+    setUpdatePopupData(editableRecord);
     actionRef?.current?.reload();
-  }, [JSON.stringify(pathParams), JSON.stringify(params)]);
+  }, [editableRecord, JSON.stringify(pathParams), JSON.stringify(params)]);
 
   const {
     columnsSetSelect: localColumnsSetSelect,
@@ -323,6 +337,13 @@ const Table = <Entity extends Record<string | symbol, any>,
           )
           : <></>,
         !viewOnly && createButton || null,
+        <Tooltip title={descriptionsModalViewMode === DESCRIPTIONS_VIEW_MODE_TYPE.TABS ? 'Switch to general view' : 'Switch to tabs view'} key="viewModeToggle">
+          <Button
+              type="text"
+              icon={descriptionsModalViewMode === DESCRIPTIONS_VIEW_MODE_TYPE.TABS ? <UnorderedListOutlined /> : <AppstoreOutlined />}
+              onClick={() => setDescriptionsModalViewMode(descriptionsModalViewMode === DESCRIPTIONS_VIEW_MODE_TYPE.TABS ? DESCRIPTIONS_VIEW_MODE_TYPE.GENERAL : DESCRIPTIONS_VIEW_MODE_TYPE.TABS)}
+          />
+        </Tooltip>,
       ]}
       columns={columns}
       defaultSize='small'
@@ -371,8 +392,10 @@ const Table = <Entity extends Record<string | symbol, any>,
       }
       {...rest}
     />
-    <DescriptionsCreateModal<Entity>
+    <DescriptionsModal<Entity>
+      type={DESCRIPTIONS_MODAL_TYPE.CREATE}
       data={createPopupData}
+      viewMode={descriptionsModalViewMode}
       onClose={() => setCreatePopupData(undefined)}
       onSubmit={async (data) => {
         try {
@@ -392,6 +415,30 @@ const Table = <Entity extends Record<string | symbol, any>,
       }}
       idColumnName={idColumnName}
       columns={columns ?? []}
+    />
+    <DescriptionsModal<Entity>
+        type={DESCRIPTIONS_MODAL_TYPE.UPDATE}
+        data={updatePopupData}
+        viewMode={descriptionsModalViewMode}
+        onClose={() => setUpdatePopupData(undefined)}
+        onSubmit={async (data) => {
+          try {
+            await onCreate?.({
+              ...pathParams,
+              requestBody: entityToCreateDto({
+                ...pathParams,
+                ...data,
+              })
+            });
+            actionRef?.current?.reload();
+            setUpdatePopupData(undefined);
+          }
+          catch (e) {
+            console.error(e);
+          }
+        }}
+        idColumnName={idColumnName}
+        columns={columns ?? []}
     />
     {contextHolder}
   </>);
