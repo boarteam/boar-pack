@@ -1,27 +1,23 @@
 import ProTable, { ActionType } from "@ant-design/pro-table";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Popover, Space, Tooltip, message } from "antd";
+import { Button, Popover, Space, Tooltip, message, Modal } from "antd";
 import {
-  AppstoreOutlined,
   DeleteOutlined,
   PlusOutlined,
   QuestionCircleTwoTone,
   StopOutlined,
-  UnorderedListOutlined
 } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { flushSync } from "react-dom";
 import { applyKeywordToSearch, buildJoinFields, collectFieldsFromColumns, getFiltersSearch } from "./tableTools";
 import { TFilterParams, TFilters, TGetAllParams, TSort, TTableProps } from "./tableTypes";
 import useColumnsSets from "./useColumnsSets";
-import DescriptionsModal, {
-  DESCRIPTIONS_MODAL_TYPE,
-  DESCRIPTIONS_VIEW_MODE_TYPE
-} from "../Descriptions/DescriptionsModal";
 import BulkEditButton from "./BulkEditButton";
 import _ from "lodash";
 import BulkDeleteButton from "./BulkDeleteButton";
 import { createStyles } from "antd-style";
+import ContentViewModeButton, { VIEW_MODE_TYPE } from "./ContentViewModeButton";
+import DescriptionsView from "../Descriptions/DescriptionsView";
 
 let creatingRecordsCount = 0;
 
@@ -80,6 +76,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     toolBarRender,
     params,
     popupDataState,
+    modalsViewMode = VIEW_MODE_TYPE.TABS,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -97,7 +94,41 @@ const Table = <Entity extends Record<string | symbol, any>,
   const [allSelected, setAllSelected] = useState(false);
   const { styles } = useStyles();
   const [messageApi, contextHolder] = message.useMessage();
-  const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<DESCRIPTIONS_VIEW_MODE_TYPE>(DESCRIPTIONS_VIEW_MODE_TYPE.TABS);
+  const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<VIEW_MODE_TYPE>(VIEW_MODE_TYPE.TABS);
+
+  const onSubmitCreateModal = async (data: Entity) => {
+    try {
+      await onCreate?.({
+        ...pathParams,
+        requestBody: entityToCreateDto({
+          ...pathParams,
+          ...data,
+        })
+      });
+      actionRef?.current?.reload();
+      setCreatePopupData(undefined);
+    }
+    catch (e) {
+      console.error(e);
+    }
+  }
+
+  const onSubmitUpdateModal = async (data: Entity) => {
+    try {
+      await onCreate?.({
+        ...pathParams,
+        requestBody: entityToCreateDto({
+          ...pathParams,
+          ...data,
+        })
+      });
+      actionRef?.current?.reload();
+      setUpdatePopupData(undefined);
+    }
+    catch (e) {
+      console.error(e);
+    }
+  }
 
   const intl = useIntl();
 
@@ -337,13 +368,10 @@ const Table = <Entity extends Record<string | symbol, any>,
           )
           : <></>,
         !viewOnly && createButton || null,
-        <Tooltip title={descriptionsModalViewMode === DESCRIPTIONS_VIEW_MODE_TYPE.TABS ? 'Switch to general view' : 'Switch to tabs view'} key="viewModeToggle">
-          <Button
-              type="text"
-              icon={descriptionsModalViewMode === DESCRIPTIONS_VIEW_MODE_TYPE.TABS ? <UnorderedListOutlined /> : <AppstoreOutlined />}
-              onClick={() => setDescriptionsModalViewMode(descriptionsModalViewMode === DESCRIPTIONS_VIEW_MODE_TYPE.TABS ? DESCRIPTIONS_VIEW_MODE_TYPE.GENERAL : DESCRIPTIONS_VIEW_MODE_TYPE.TABS)}
-          />
-        </Tooltip>,
+        <ContentViewModeButton
+            contentViewMode={descriptionsModalViewMode}
+            setContentViewMode={setDescriptionsModalViewMode}
+        />
       ]}
       columns={columns}
       defaultSize='small'
@@ -392,54 +420,36 @@ const Table = <Entity extends Record<string | symbol, any>,
       }
       {...rest}
     />
-    <DescriptionsModal<Entity>
-      type={DESCRIPTIONS_MODAL_TYPE.CREATE}
-      data={createPopupData}
-      viewMode={descriptionsModalViewMode}
-      onClose={() => setCreatePopupData(undefined)}
-      onSubmit={async (data) => {
-        try {
-          await onCreate?.({
-            ...pathParams,
-            requestBody: entityToCreateDto({
-              ...pathParams,
-              ...data,
-            })
-          });
-          actionRef?.current?.reload();
-          setCreatePopupData(undefined);
-        }
-        catch (e) {
-          console.error(e);
-        }
-      }}
-      idColumnName={idColumnName}
-      columns={columns ?? []}
-    />
-    <DescriptionsModal<Entity>
-        type={DESCRIPTIONS_MODAL_TYPE.UPDATE}
-        data={updatePopupData}
-        viewMode={descriptionsModalViewMode}
-        onClose={() => setUpdatePopupData(undefined)}
-        onSubmit={async (data) => {
-          try {
-            await onCreate?.({
-              ...pathParams,
-              requestBody: entityToCreateDto({
-                ...pathParams,
-                ...data,
-              })
-            });
-            actionRef?.current?.reload();
-            setUpdatePopupData(undefined);
-          }
-          catch (e) {
-            console.error(e);
-          }
-        }}
-        idColumnName={idColumnName}
-        columns={columns ?? []}
-    />
+    <Modal
+        open={createPopupData !== undefined}
+        onCancel={() => setCreatePopupData(undefined)}
+        width='80%'
+        footer={null}
+    >
+      <DescriptionsView<Entity>
+          data={createPopupData}
+          viewMode={modalsViewMode}
+          idColumnName={'id'}
+          columns={columns ?? []}
+          onSubmit={onSubmitCreateModal}
+          onCancel={() => setCreatePopupData(undefined)}
+      />
+    </Modal>
+    <Modal
+        open={updatePopupData !== undefined}
+        onCancel={() => setUpdatePopupData(undefined)}
+        width='80%'
+        footer={null}
+    >
+      <DescriptionsView<Entity>
+          data={updatePopupData}
+          viewMode={modalsViewMode}
+          idColumnName={'id'}
+          columns={columns ?? []}
+          onSubmit={onSubmitUpdateModal}
+          onCancel={() => setUpdatePopupData(undefined)}
+      />
+    </Modal>
     {contextHolder}
   </>);
 };
