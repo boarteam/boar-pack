@@ -20,19 +20,44 @@ export function getFiltersSearch({
     let operator = col.filterOperator || col.operator;
     let value = filters[colDataIndex] || baseFilters[colDataIndex];
     filterKeys.delete(colDataIndex);
-    if (!value || col.numeric && !Number.isFinite(Number(value))) {
+    if (value === '' || value === undefined || col.numeric && !Number.isFinite(Number(value))) {
       return;
     }
 
-    if (operator === Operators.between) {
-      if (value?.[0] === undefined) {
-        operator = Operators.lowerOrEquals;
-        value = value?.[1];
-      }
-      else if (value?.[1] === undefined) {
-        operator = Operators.greaterOrEquals;
-        value = value?.[0];
-      }
+    switch (operator) {
+      case Operators.between:
+        if (Array.isArray(value)) {
+          if (value?.[0] === undefined) {
+            operator = Operators.lowerOrEquals;
+            value = value?.[1];
+          } else if (value?.[1] === undefined) {
+            operator = Operators.greaterOrEquals;
+            value = value?.[0];
+          }
+        }
+        break;
+
+      case Operators.isNull:
+        if (Array.isArray(value)) {
+          value = value[0];
+        }
+
+        if (value !== true) {
+          operator = Operators.notNull;
+          value = true;
+        }
+        break;
+
+      case Operators.notNull:
+        if (Array.isArray(value)) {
+          value = value[0];
+        }
+
+        if (value !== true) {
+          operator = Operators.isNull;
+          value = true;
+        }
+        break;
     }
 
     search.$and?.push({ [field]: { [operator]: value } });
@@ -54,6 +79,8 @@ export const Operators = {
   between: CondOperator.BETWEEN,
   greaterOrEquals: CondOperator.GREATER_THAN_EQUALS,
   lowerOrEquals: CondOperator.LOWER_THAN_EQUALS,
+  isNull: CondOperator.IS_NULL,
+  notNull: CondOperator.NOT_NULL,
 } as const;
 
 export function applyKeywordToSearch(
