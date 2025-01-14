@@ -5,7 +5,6 @@ import { Operators } from "./tableTools";
 import { TColumnsSet } from "./useColumnsSets";
 import { ColumnStateType } from "@ant-design/pro-table/es/typing";
 import { RowEditableConfig } from "@ant-design/pro-utils";
-import { VIEW_MODE_TYPE } from "./ContentViewModeButton";
 
 export type IWithId = {
   id: string | number,
@@ -101,7 +100,6 @@ interface BaseProps<Entity,
   columnsState?: ColumnStateType;
   columnsSetSelect?: () => React.ReactNode;
   popupDataState?: [Partial<Entity>, React.Dispatch<React.SetStateAction<Partial<Entity>>>]
-  modalsViewMode?: VIEW_MODE_TYPE,
 }
 
 interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {

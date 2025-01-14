@@ -76,7 +76,6 @@ const Table = <Entity extends Record<string | symbol, any>,
     toolBarRender,
     params,
     popupDataState,
-    modalsViewMode = VIEW_MODE_TYPE.TABS,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -115,12 +114,13 @@ const Table = <Entity extends Record<string | symbol, any>,
 
   const onSubmitUpdateModal = async (data: Entity) => {
     try {
-      await onCreate?.({
+      await onUpdate?.({
         ...pathParams,
-        requestBody: entityToCreateDto({
+        ...data,
+        requestBody: entityToUpdateDto({
           ...pathParams,
           ...data,
-        })
+        }),
       });
       actionRef?.current?.reload();
       setUpdatePopupData(undefined);
@@ -428,7 +428,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     >
       <DescriptionsView<Entity>
           data={createPopupData}
-          viewMode={modalsViewMode}
+          viewMode={descriptionsModalViewMode}
           idColumnName={'id'}
           columns={columns ?? []}
           onSubmit={onSubmitCreateModal}
@@ -443,7 +443,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     >
       <DescriptionsView<Entity>
           data={updatePopupData}
-          viewMode={modalsViewMode}
+          viewMode={descriptionsModalViewMode}
           idColumnName={'id'}
           columns={columns ?? []}
           onSubmit={onSubmitUpdateModal}
