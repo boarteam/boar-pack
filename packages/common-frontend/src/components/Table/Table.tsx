@@ -1,6 +1,6 @@
 import ProTable, { ActionType } from "@ant-design/pro-table";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Popover, Space, Tooltip, message, Modal } from "antd";
+import {Button, Popover, Space, Tooltip, message, Modal } from "antd";
 import {
   DeleteOutlined,
   PlusOutlined,
@@ -17,7 +17,8 @@ import _ from "lodash";
 import BulkDeleteButton from "./BulkDeleteButton";
 import { createStyles } from "antd-style";
 import ContentViewModeButton, { VIEW_MODE_TYPE } from "./ContentViewModeButton";
-import DescriptionsView from "../Descriptions/DescriptionsView";
+import { Descriptions } from "../Descriptions";
+import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
 
 let creatingRecordsCount = 0;
 
@@ -76,6 +77,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     toolBarRender,
     params,
     popupDataState,
+    editPopupTitle,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -94,41 +96,6 @@ const Table = <Entity extends Record<string | symbol, any>,
   const { styles } = useStyles();
   const [messageApi, contextHolder] = message.useMessage();
   const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<VIEW_MODE_TYPE>(VIEW_MODE_TYPE.TABS);
-
-  const onSubmitCreateModal = async (data: Entity) => {
-    try {
-      await onCreate?.({
-        ...pathParams,
-        requestBody: entityToCreateDto({
-          ...pathParams,
-          ...data,
-        })
-      });
-      actionRef?.current?.reload();
-      setCreatePopupData(undefined);
-    }
-    catch (e) {
-      console.error(e);
-    }
-  }
-
-  const onSubmitUpdateModal = async (data: Entity) => {
-    try {
-      await onUpdate?.({
-        ...pathParams,
-        ...data,
-        requestBody: entityToUpdateDto({
-          ...pathParams,
-          ...data,
-        }),
-      });
-      actionRef?.current?.reload();
-      setUpdatePopupData(undefined);
-    }
-    catch (e) {
-      console.error(e);
-    }
-  }
 
   const intl = useIntl();
 
@@ -309,7 +276,6 @@ const Table = <Entity extends Record<string | symbol, any>,
         ...editable,
       }}
       toolBarRender={(...args) => [
-        ...toolBarRender && toolBarRender(...args) || [],
         columnsSetSelect?.() || null,
         !viewOnly && onUpdateMany
           ? (
@@ -368,10 +334,7 @@ const Table = <Entity extends Record<string | symbol, any>,
           )
           : <></>,
         !viewOnly && createButton || null,
-        <ContentViewModeButton
-            contentViewMode={descriptionsModalViewMode}
-            setContentViewMode={setDescriptionsModalViewMode}
-        />
+        ...toolBarRender && toolBarRender(...args) || [],
       ]}
       columns={columns}
       defaultSize='small'
@@ -420,34 +383,55 @@ const Table = <Entity extends Record<string | symbol, any>,
       }
       {...rest}
     />
+    <DescriptionsCreateModal<Entity>
+      data={createPopupData}
+      onClose={() => setCreatePopupData(undefined)}
+      onSubmit={async (data) => {
+        try {
+          await onCreate?.({
+            ...pathParams,
+            requestBody: entityToCreateDto({
+              ...pathParams,
+              ...data,
+            })
+          });
+          actionRef?.current?.reload();
+          setCreatePopupData(undefined);
+        }
+        catch (e) {
+          console.error(e);
+        }
+      }}
+      idColumnName={idColumnName}
+      columns={columns ?? []}
+      viewMode={descriptionsModalViewMode}
+      extra={
+        <ContentViewModeButton
+          contentViewMode={descriptionsModalViewMode}
+          setContentViewMode={setDescriptionsModalViewMode}
+        />
+      }
+    />
     <Modal
-        open={createPopupData !== undefined}
-        onCancel={() => setCreatePopupData(undefined)}
-        width='80%'
-        footer={null}
+      title={editPopupTitle}
+      open={updatePopupData !== undefined}
+      width='80%'
+      footer={null}
+      closeIcon={false}
+      onCancel={() => setUpdatePopupData(undefined)}
     >
-      <DescriptionsView<Entity>
-          data={createPopupData}
-          viewMode={descriptionsModalViewMode}
-          idColumnName={'id'}
-          columns={columns ?? []}
-          onSubmit={onSubmitCreateModal}
-          onCancel={() => setCreatePopupData(undefined)}
-      />
-    </Modal>
-    <Modal
-        open={updatePopupData !== undefined}
-        onCancel={() => setUpdatePopupData(undefined)}
-        width='80%'
-        footer={null}
-    >
-      <DescriptionsView<Entity>
-          data={updatePopupData}
-          viewMode={descriptionsModalViewMode}
-          idColumnName={'id'}
-          columns={columns ?? []}
-          onSubmit={onSubmitUpdateModal}
-          onCancel={() => setUpdatePopupData(undefined)}
+      <Descriptions<Entity>
+        mainTitle='Main'
+        columns={columns}
+        canEdit={true}
+        entity={updatePopupData}
+        viewMode={descriptionsModalViewMode}
+        extra={
+          <ContentViewModeButton
+            contentViewMode={descriptionsModalViewMode}
+            setContentViewMode={setDescriptionsModalViewMode}
+          />
+        }
       />
     </Modal>
     {contextHolder}

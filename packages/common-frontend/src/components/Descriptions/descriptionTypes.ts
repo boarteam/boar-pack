@@ -3,6 +3,8 @@ import { ActionType } from "@ant-design/pro-table";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { QueryJoin } from "@nestjsx/crud-request";
 import { ProColumns } from "@ant-design/pro-components";
+import { VIEW_MODE_TYPE } from "../Table/ContentViewModeButton";
+import { ProDescriptionsProps } from "@ant-design/pro-descriptions";
 
 export type TGetOneParams = {
   /**
@@ -38,4 +40,14 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
   params?: TDescriptionGetRequestParams,
   columns: ProColumns<Entity>[],
   onEntityChange?: (entity: Entity | null) => void;
+  viewMode?: VIEW_MODE_TYPE,
+}
+
+export type TDescriptionsCreateModalProps<Entity> = Omit<ProDescriptionsProps<Entity>, 'columns'> & {
+  idColumnName: string & keyof Entity | (string & keyof Entity)[],
+  columns: ProColumns<Entity>[],
+  data: Partial<Entity> | undefined,
+  onSubmit: (data: Entity) => Promise<void>,
+  onClose: () => void,
+  viewMode?: VIEW_MODE_TYPE,
 }
