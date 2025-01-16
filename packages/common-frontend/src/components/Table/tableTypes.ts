@@ -100,6 +100,7 @@ interface BaseProps<Entity,
   columnsState?: ColumnStateType;
   columnsSetSelect?: () => React.ReactNode;
   popupDataState?: [Partial<Entity>, React.Dispatch<React.SetStateAction<Partial<Entity>>>]
+  editPopupTitle?: string;
 }
 
 interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {

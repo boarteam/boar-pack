@@ -1,6 +1,5 @@
 import { Button, Tooltip } from "antd";
 import { AppstoreOutlined, UnorderedListOutlined } from "@ant-design/icons";
-// import React from "react";
 export enum VIEW_MODE_TYPE {
     TABS = 'tabs',
     GENERAL = 'general'
