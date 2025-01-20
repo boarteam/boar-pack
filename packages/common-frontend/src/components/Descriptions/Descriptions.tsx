@@ -13,6 +13,26 @@ import { buildJoinFields, collectFieldsFromColumns } from "../Table";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { useForm } from "antd/es/form/Form";
 import { VIEW_MODE_TYPE } from "../Table/ContentViewModeButton";
+import { createStyles } from "antd-style";
+
+const useStyles = createStyles(() => {
+  return {
+    antDescriptionsStyles: {
+      '.anticon-edit': {
+        opacity: 0,
+        transition: 'opacity 200ms'
+      },
+      '.ant-descriptions-item-content': {
+        width: '20%',
+      },
+      '.ant-descriptions-item-content:hover': {
+        '.anticon-edit': {
+          opacity: 1
+        },
+      }
+    }
+  }
+})
 
 const Descriptions = <Entity extends Record<string | symbol, any>,
   CreateDto = Entity,
@@ -41,6 +61,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     UpdateDto,
     TPathParams> & Omit<ProDescriptionsProps<Entity>, 'columns'>
 ) => {
+  const { styles } = useStyles();
   const [form] = useForm<Entity>();
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
@@ -151,8 +172,8 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
       loading={loading}
       style={{ marginBottom: 20 }}
       labelStyle={{ width: '15%' }}
-      contentStyle={{ width: '20%' }}
       dataSource={data as Entity}
+      className={styles.antDescriptionsStyles}
       editable={canEdit ? {
         type: 'multiple',
         onSave,
