@@ -1,24 +1,24 @@
 import ProTable, { ActionType } from "@ant-design/pro-table";
-import React, { useEffect, useRef, useState } from "react";
-import {Button, Popover, Space, Tooltip, message, Modal } from "antd";
-import {
-  DeleteOutlined,
-  PlusOutlined,
-  QuestionCircleTwoTone,
-  StopOutlined,
-} from "@ant-design/icons";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Button, message, Modal, Popover, Space, Tooltip } from "antd";
+import { DeleteOutlined, PlusOutlined, QuestionCircleTwoTone, StopOutlined, } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { flushSync } from "react-dom";
-import { applyKeywordToSearch, buildJoinFields, collectFieldsFromColumns, getFiltersSearch } from "./tableTools";
+import {
+  applyKeywordToSearch,
+  buildFieldsFromColumnsForDescriptionsDisplay,
+  buildJoinFields,
+  collectFieldsFromColumns,
+  getFiltersSearch
+} from "./tableTools";
 import { TFilterParams, TFilters, TGetAllParams, TSort, TTableProps } from "./tableTypes";
 import useColumnsSets from "./useColumnsSets";
 import BulkEditButton from "./BulkEditButton";
 import _ from "lodash";
 import BulkDeleteButton from "./BulkDeleteButton";
 import { createStyles } from "antd-style";
-import ContentViewModeButton, { VIEW_MODE_TYPE } from "./ContentViewModeButton";
 import { Descriptions } from "../Descriptions";
-import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
+import { useForm } from "antd/es/form/Form";
 
 let creatingRecordsCount = 0;
 
@@ -49,7 +49,7 @@ const Table = <Entity extends Record<string | symbol, any>,
   TEntityParams = {},
   TPathParams extends Record<string, string | number> = {},
   TKey = string,
-  >(
+>(
   {
     getAll,
     onCreate,
@@ -78,6 +78,8 @@ const Table = <Entity extends Record<string | symbol, any>,
     params,
     popupDataState,
     editPopupTitle,
+    createPopupTitle,
+    descriptionsMainTitle,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -95,7 +97,7 @@ const Table = <Entity extends Record<string | symbol, any>,
   const [allSelected, setAllSelected] = useState(false);
   const { styles } = useStyles();
   const [messageApi, contextHolder] = message.useMessage();
-  const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<VIEW_MODE_TYPE>(VIEW_MODE_TYPE.TABS);
+  const [form] = useForm();
 
   const intl = useIntl();
 
@@ -103,6 +105,10 @@ const Table = <Entity extends Record<string | symbol, any>,
     setUpdatePopupData(editableRecord);
     actionRef?.current?.reload();
   }, [editableRecord, JSON.stringify(pathParams), JSON.stringify(params)]);
+
+  useEffect(() => {
+    createPopupData ? form.setFieldsValue(createPopupData) : form.resetFields();
+  }, [createPopupData]);
 
   const {
     columnsSetSelect: localColumnsSetSelect,
@@ -296,7 +302,7 @@ const Table = <Entity extends Record<string | symbol, any>,
                       ...pathParams,
                       ...values,
                     }),
-                    (value, key) =>  _.has(values, key),
+                    (value, key) => _.has(values, key),
                   ),
                   records: allSelected ? [] : selectedRecords,
                 },
@@ -354,7 +360,7 @@ const Table = <Entity extends Record<string | symbol, any>,
                         Select ALL
                         <Popover
                           content={(
-                            <div style={{ width: '100%' }}>
+                            <div style={{width: '100%'}}>
                               This includes records from ALL pages of the table.
                             </div>
                           )}
@@ -362,7 +368,7 @@ const Table = <Entity extends Record<string | symbol, any>,
                           trigger={['hover', 'click']}
                           zIndex={1080}
                         >
-                          <QuestionCircleTwoTone />
+                          <QuestionCircleTwoTone/>
                         </Popover>
                       </Space>
                     ),
@@ -383,55 +389,77 @@ const Table = <Entity extends Record<string | symbol, any>,
       }
       {...rest}
     />
-    <DescriptionsCreateModal<Entity>
-      data={createPopupData}
-      onClose={() => setCreatePopupData(undefined)}
-      onSubmit={async (data) => {
-        try {
-          await onCreate?.({
-            ...pathParams,
-            requestBody: entityToCreateDto({
-              ...pathParams,
-              ...data,
-            })
-          });
-          actionRef?.current?.reload();
-          setCreatePopupData(undefined);
-        }
-        catch (e) {
-          console.error(e);
-        }
-      }}
-      idColumnName={idColumnName}
-      columns={columns ?? []}
-      viewMode={descriptionsModalViewMode}
-      extra={
-        <ContentViewModeButton
-          contentViewMode={descriptionsModalViewMode}
-          setContentViewMode={setDescriptionsModalViewMode}
-        />
-      }
-    />
+    {/*Create modal*/}
+    <Modal
+      title={createPopupTitle}
+      open={createPopupData !== undefined}
+      width='80%'
+      closeIcon={true}
+      footer={[
+        <Button key='submit' type="primary" onClick={async () => form.validateFields().then(
+          async (data) => {
+            try {
+              await onCreate?.({
+                ...pathParams,
+                requestBody: entityToCreateDto({
+                  ...pathParams,
+                  ...data,
+                })
+              });
+              actionRef?.current?.reload();
+              setCreatePopupData(undefined);
+            } catch (e) {
+              console.error(e);
+            }
+          }
+        )}>Create</Button>
+      ]}
+      onCancel={() => setCreatePopupData(undefined)}
+    >
+      <Descriptions<Entity>
+        descriptionsDefaultTitle={descriptionsMainTitle}
+        columns={columns ?? []}
+        entity={createPopupData}
+        size={"small"}
+        bordered
+        column={2}
+        style={{ marginBottom: 20 }}
+        labelStyle={{ width: '15%' }}
+        contentStyle={{ width: '25%' }}
+        canEdit={true}
+        editable={{
+          form,
+          editableKeys: useMemo(() => {
+            return [
+              ...buildFieldsFromColumnsForDescriptionsDisplay(
+                columns,
+                idColumnName,
+              ),
+            ];
+          }, [columns, idColumnName]),
+          actionRender: () => [],
+        }}
+      />
+    </Modal>
+    {/*Update modal*/}
     <Modal
       title={editPopupTitle}
       open={updatePopupData !== undefined}
       width='80%'
+      closeIcon={true}
       footer={null}
-      closeIcon={false}
-      onCancel={() => setUpdatePopupData(undefined)}
+      onCancel={() => {
+        actionRef?.current?.reload();
+        setUpdatePopupData(undefined);
+      }}
     >
       <Descriptions<Entity>
-        mainTitle='Main'
-        columns={columns}
-        canEdit={true}
+        descriptionsDefaultTitle={descriptionsMainTitle}
+        columns={columns ?? []}
         entity={updatePopupData}
-        viewMode={descriptionsModalViewMode}
-        extra={
-          <ContentViewModeButton
-            contentViewMode={descriptionsModalViewMode}
-            setContentViewMode={setDescriptionsModalViewMode}
-          />
-        }
+        canEdit={true}
+        onUpdate={onUpdate}
+        entityToUpdateDto={entityToUpdateDto}
       />
     </Modal>
     {contextHolder}
