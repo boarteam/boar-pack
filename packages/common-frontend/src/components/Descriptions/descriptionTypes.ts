@@ -3,7 +3,6 @@ import { ActionType } from "@ant-design/pro-table";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { QueryJoin } from "@nestjsx/crud-request";
 import { ProColumns } from "@ant-design/pro-components";
-import { VIEW_MODE_TYPE } from "../Table/ContentViewModeButton";
 import { ProDescriptionsProps } from "@ant-design/pro-descriptions";
 
 export type TGetOneParams = {
@@ -24,7 +23,7 @@ export type TDescriptionGetRequestParams = {
   join?: QueryJoin | QueryJoin[];
 };
 export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = object> = {
-  mainTitle?: ProColumns<Entity>['title'] | null,
+  descriptionsDefaultTitle?: ProColumns<Entity>['title'] | null,
   entity?: Partial<Entity>,
   getOne?: ({}: TGetOneParams & TPathParams) => Promise<Entity | null>,
   onUpdate?: ({}: Record<keyof Entity, string> & { requestBody: UpdateDto } & TPathParams) => Promise<Entity>,
@@ -40,14 +39,14 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
   params?: TDescriptionGetRequestParams,
   columns: ProColumns<Entity>[],
   onEntityChange?: (entity: Entity | null) => void;
-  viewMode?: VIEW_MODE_TYPE,
 }
 
 export type TDescriptionsCreateModalProps<Entity> = Omit<ProDescriptionsProps<Entity>, 'columns'> & {
+  modalTitle?: string,
+  descriptionsDefaultTitle?: ProColumns<Entity>['title'] | null,
   idColumnName: string & keyof Entity | (string & keyof Entity)[],
   columns: ProColumns<Entity>[],
   data: Partial<Entity> | undefined,
   onSubmit: (data: Entity) => Promise<void>,
   onClose: () => void,
-  viewMode?: VIEW_MODE_TYPE,
 }

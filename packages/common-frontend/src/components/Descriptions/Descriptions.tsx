@@ -12,7 +12,7 @@ import safetyRun from "../../tools/safetyRun";
 import { buildJoinFields, collectFieldsFromColumns } from "../Table";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { useForm } from "antd/es/form/Form";
-import { VIEW_MODE_TYPE } from "../Table/ContentViewModeButton";
+import ContentViewModeButton, { VIEW_MODE_TYPE } from "../Table/ContentViewModeButton";
 import { createStyles } from "antd-style";
 
 const useStyles = createStyles(() => {
@@ -40,7 +40,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
   TPathParams = object,
   >(
   {
-    mainTitle,
+    descriptionsDefaultTitle = 'General',
     entity,
     getOne,
     onUpdate,
@@ -54,7 +54,6 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     columns,
     params,
     onEntityChange,
-    viewMode = VIEW_MODE_TYPE.GENERAL,
     ...rest
   }: TDescriptionsProps<Entity,
     CreateDto,
@@ -68,8 +67,17 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
   const intl = useIntl();
   const [data, setData] = useState<Partial<Entity> | undefined>(entity);
   const [loading, setLoading] = useState(false);
+  const sections = columnsToDescriptionItemProps(columns, descriptionsDefaultTitle);
+  const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<VIEW_MODE_TYPE>(sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL);
 
-  const sections = columnsToDescriptionItemProps(columns, mainTitle);
+  if (sections.length > 1) {
+    rest.extra = (
+      <ContentViewModeButton
+        contentViewMode={descriptionsModalViewMode}
+        setContentViewMode={setDescriptionsModalViewMode}
+      />
+    )
+  }
 
   const queryParams = useMemo(() => {
     const join = params?.join;
@@ -157,7 +165,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
 
   const descriptions = sections.map((section, index) => {
     // In the general view mode we need to render extra elements only ones for the top one section
-    if (viewMode === VIEW_MODE_TYPE.GENERAL && rest.extra && index !== 0)  {
+    if (descriptionsModalViewMode === VIEW_MODE_TYPE.GENERAL && rest.extra && index !== 0)  {
       rest.extra = null;
     }
 
@@ -192,7 +200,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
   return (
     <>
       {
-        viewMode === VIEW_MODE_TYPE.TABS ?
+        descriptionsModalViewMode === VIEW_MODE_TYPE.TABS ?
           (<Tabs defaultActiveKey="0">
             {
               descriptions.map((description, index) => (
