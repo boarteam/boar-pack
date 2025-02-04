@@ -39,6 +39,7 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
   params?: TDescriptionGetRequestParams,
   columns: ProColumns<Entity>[],
   onEntityChange?: (entity: Entity | null) => void;
+  errorsPerTabInitialValue?: number[];
 }
 
 export type TDescriptionsCreateModalProps<Entity> = Omit<ProDescriptionsProps<Entity>, 'columns'> & {
