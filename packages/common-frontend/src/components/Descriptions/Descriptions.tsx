@@ -1,6 +1,6 @@
 import { ActionType } from "@ant-design/pro-table";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Badge, Button, Result, Tabs, Tooltip } from "antd";
+import React, { Key, useEffect, useMemo, useRef, useState } from "react";
+import { Badge, Button, Result, Tabs, TabsProps, Tooltip } from "antd";
 import { DeleteOutlined, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
@@ -15,6 +15,7 @@ import { useForm } from "antd/es/form/Form";
 import ContentViewModeButton, { VIEW_MODE_TYPE } from "../Table/ContentViewModeButton";
 import { createStyles } from "antd-style";
 import { debounce } from "lodash";
+import { NamePath } from "antd/lib/form/interface";
 
 const useStyles = createStyles(() => {
   return {
@@ -63,32 +64,33 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     TPathParams> & Omit<ProDescriptionsProps<Entity>, 'columns'>
 ) => {
   const { styles } = useStyles();
-  const form = editable?.form ? editable.form : useForm<Entity>()[0];
+
+  if (!editable?.form) {
+    editable = {
+      ...editable,
+      form: useForm<Entity>()[0],
+    }
+  }
+
+  const form = editable.form;
+
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
   const intl = useIntl();
   const [data, setData] = useState<Partial<Entity> | undefined>(entity);
   const [loading, setLoading] = useState(false);
-  const sections = columnsToDescriptionItemProps(columns, descriptionsDefaultTitle);
-  const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<VIEW_MODE_TYPE>(sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL);
-  const [errorsPerTab, setErrorsPerTab] = useState<number[]>(errorsPerTabInitialValue ?? sections.map(() => 0));
-
-  useEffect(() => {
-    if (errorsPerTabInitialValue) {
-      setErrorsPerTab(errorsPerTabInitialValue);
-    }
-  }, [errorsPerTabInitialValue]);
-
-  const fieldsToSectionsMap = sections.reduce((acc, section, index) => {
+  const sections = useMemo(() => columnsToDescriptionItemProps(columns, descriptionsDefaultTitle), []);
+  const fieldsToSectionsMap = useMemo(() => sections.reduce((acc, section, index) => {
     section.columns.forEach(column => {
-      acc[column.dataIndex] = index
+      acc.set(column.dataIndex, index);
     })
     return acc;
-  }, {});
-
-  const fieldsToSectionsArray = sections.map((section) => {
+  }, new Map<Key | Key[], number>), []);
+  const fieldsToSectionsArray = useMemo(() => sections.map((section) => {
     return section.columns.map(column => column.dataIndex)
-  });
+  }), []);
+  const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<VIEW_MODE_TYPE>(sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL);
+  const [errorsPerTab, setErrorsPerTab] = useState<number[]>(errorsPerTabInitialValue ?? sections.map(() => 0));
 
   const onValuesChange = useMemo(
     () =>
@@ -103,10 +105,10 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
 
         form.validateFields([key])
           .finally(() => {
-            const sectionIndex = fieldsToSectionsMap[key];
+            const sectionIndex = fieldsToSectionsMap.get(key);
             const keys = fieldsToSectionsArray[sectionIndex];
 
-            const errorsNumber = form.getFieldsError(keys).reduce((acc, field) => acc + field.errors.length, 0);
+            const errorsNumber = form.getFieldsError(keys.flat() as NamePath[]).reduce((acc, field) => acc + field.errors.length, 0);
 
             setErrorsPerTab((prev) => {
               const updated = [...prev];
@@ -196,6 +198,12 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     form.setFieldsValue(entity as Entity);
   }, [entity])
 
+  useEffect(() => {
+    if (errorsPerTabInitialValue) {
+      setErrorsPerTab(errorsPerTabInitialValue);
+    }
+  }, [errorsPerTabInitialValue]);
+
   if (loading) {
     return <PageLoading />;
   }
@@ -225,9 +233,6 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     }
 
     return <ProDescriptions<Entity>
-      // @ts-ignore-next-line
-      label='dasdsads'
-      form={form}
       key={getKey(index)}
       title={section.title as React.ReactNode}
       actionRef={actionRef}
@@ -253,31 +258,26 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     />
   })
 
+  const tabsItems: TabsProps['items'] = descriptions.map((description, index) => ({
+    key: getKey(index),
+    label: (
+      <Badge
+        size='small'
+        overflowCount={5}
+        count={errorsPerTab[index]}
+      >
+        { description.props.title }
+      </Badge>
+    ),
+    forceRender: true,
+    children: description,
+  }));
+
   return (
     <>
       {
         descriptionsModalViewMode === VIEW_MODE_TYPE.TABS ?
-          (<Tabs defaultActiveKey="0">
-            {
-              descriptions.map((description, index) => (
-                <Tabs.TabPane
-                  forceRender={true}
-                  tab={
-                    <Badge
-                      size='small'
-                      overflowCount={5}
-                      count={errorsPerTab[index]}
-                    >
-                      { description.props.title }
-                    </Badge>
-                  }
-                  key={getKey(index)}
-                >
-                  {description}
-                </Tabs.TabPane>
-              ))
-            }
-          </Tabs>)
+          (<Tabs defaultActiveKey="0" items={tabsItems} />)
           : descriptions
       }
     </>
