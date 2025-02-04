@@ -123,11 +123,14 @@ const Table = <Entity extends Record<string | symbol, any>,
       )
       .finally(() => {
         // Calculate validation errors by tabs
-        const keyedFields = keyBy(form.getFieldsError().filter(field => field.errors.length > 0), 'name[0]');
+        const keyedFields = keyBy(
+          form.getFieldsError().filter(field => field.errors.length > 0),
+          field => Array.isArray(field.name) ? field.name[0]?.toString() : field.name
+        );
         sections.forEach((section, index) => {
           errorsPerTab[index] = 0;
           section.columns.forEach((column) => {
-            if (keyedFields[column.dataIndex]) {
+            if (keyedFields[column.dataIndex?.toString()]) {
               errorsPerTab[index] += 1;
             }
           })
