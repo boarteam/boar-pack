@@ -1,6 +1,6 @@
 import { ActionType } from "@ant-design/pro-table";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Button, Result, Tabs, Tooltip } from "antd";
+import { Badge, Button, Result, Tabs, Tooltip } from "antd";
 import { DeleteOutlined, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
@@ -14,6 +14,7 @@ import { RowEditableConfig } from "@ant-design/pro-utils";
 import { useForm } from "antd/es/form/Form";
 import ContentViewModeButton, { VIEW_MODE_TYPE } from "../Table/ContentViewModeButton";
 import { createStyles } from "antd-style";
+import { debounce } from "lodash";
 
 const useStyles = createStyles(() => {
   return {
@@ -54,6 +55,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     columns,
     params,
     onEntityChange,
+    errorsPerTabInitialValue,
     ...rest
   }: TDescriptionsProps<Entity,
     CreateDto,
@@ -61,7 +63,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     TPathParams> & Omit<ProDescriptionsProps<Entity>, 'columns'>
 ) => {
   const { styles } = useStyles();
-  const [form] = useForm<Entity>();
+  const form = editable?.form ? editable.form : useForm<Entity>()[0];
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
   const intl = useIntl();
@@ -69,6 +71,52 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
   const [loading, setLoading] = useState(false);
   const sections = columnsToDescriptionItemProps(columns, descriptionsDefaultTitle);
   const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<VIEW_MODE_TYPE>(sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL);
+  const [errorsPerTab, setErrorsPerTab] = useState<number[]>(errorsPerTabInitialValue ?? sections.map(() => 0));
+
+  useEffect(() => {
+    if (errorsPerTabInitialValue) {
+      setErrorsPerTab(errorsPerTabInitialValue);
+    }
+  }, [errorsPerTabInitialValue]);
+
+  const fieldsToSectionsMap = sections.reduce((acc, section, index) => {
+    section.columns.forEach(column => {
+      acc[column.dataIndex] = index
+    })
+    return acc;
+  }, {});
+
+  const fieldsToSectionsArray = sections.map((section) => {
+    return section.columns.map(column => column.dataIndex)
+  });
+
+  const onValuesChange = useMemo(
+    () =>
+      debounce((changedValues, allValues) => {
+        let key = Object.keys(changedValues)[0];
+
+        // changedValues = {} if we clear select value
+        if (!key) {
+          const previousValues = form.getFieldsValue(true);
+          key = Object.keys(previousValues).find((field) => !(field in allValues));
+        }
+
+        form.validateFields([key])
+          .finally(() => {
+            const sectionIndex = fieldsToSectionsMap[key];
+            const keys = fieldsToSectionsArray[sectionIndex];
+
+            const errorsNumber = form.getFieldsError(keys).reduce((acc, field) => acc + field.errors.length, 0);
+
+            setErrorsPerTab((prev) => {
+              const updated = [...prev];
+              updated[sectionIndex] = errorsNumber;
+              return updated;
+            });
+          });
+      }, 500),
+    []
+  );
 
   if (sections.length > 1) {
     rest.extra = (
@@ -169,8 +217,16 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
       rest.extra = null;
     }
 
+    // In the tabs view mode we should also handle fields update and show number of validated errors
+    if (descriptionsModalViewMode === VIEW_MODE_TYPE.TABS) {
+      rest.formProps = {
+        onValuesChange,
+      }
+    }
+
     return <ProDescriptions<Entity>
       // @ts-ignore-next-line
+      label='dasdsads'
       form={form}
       key={getKey(index)}
       title={section.title as React.ReactNode}
@@ -205,7 +261,16 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
             {
               descriptions.map((description, index) => (
                 <Tabs.TabPane
-                  tab={description.props.title as React.ReactNode}
+                  forceRender={true}
+                  tab={
+                    <Badge
+                      size='small'
+                      overflowCount={5}
+                      count={errorsPerTab[index]}
+                    >
+                      { description.props.title }
+                    </Badge>
+                  }
                   key={getKey(index)}
                 >
                   {description}

@@ -14,10 +14,10 @@ import {
 import { TFilterParams, TFilters, TGetAllParams, TSort, TTableProps } from "./tableTypes";
 import useColumnsSets from "./useColumnsSets";
 import BulkEditButton from "./BulkEditButton";
-import _ from "lodash";
+import _, { keyBy } from "lodash";
 import BulkDeleteButton from "./BulkDeleteButton";
 import { createStyles } from "antd-style";
-import { Descriptions } from "../Descriptions";
+import { columnsToDescriptionItemProps, Descriptions } from "../Descriptions";
 import { useForm } from "antd/es/form/Form";
 
 let creatingRecordsCount = 0;
@@ -97,7 +97,43 @@ const Table = <Entity extends Record<string | symbol, any>,
   const [allSelected, setAllSelected] = useState(false);
   const { styles } = useStyles();
   const [messageApi, contextHolder] = message.useMessage();
+  const [errorsPerTab, setErrorsPerTab] = useState<number[]>(columns.map(() => 0));
   const [form] = useForm();
+
+  const sections = useMemo(() => columnsToDescriptionItemProps(columns, 'Main'), []);
+
+  const onCreateModalSubmit = async () =>
+    form.validateFields()
+      .then(
+        async (data) => {
+          try {
+            await onCreate?.({
+              ...pathParams,
+              requestBody: entityToCreateDto({
+                ...pathParams,
+                ...data,
+              })
+            });
+            actionRef?.current?.reload();
+            setCreatePopupData(undefined);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      )
+      .finally(() => {
+        // Calculate validation errors by tabs
+        const keyedFields = keyBy(form.getFieldsError().filter(field => field.errors.length > 0), 'name[0]');
+        sections.forEach((section, index) => {
+          errorsPerTab[index] = 0;
+          section.columns.forEach((column) => {
+            if (keyedFields[column.dataIndex]) {
+              errorsPerTab[index] += 1;
+            }
+          })
+        })
+        setErrorsPerTab([...errorsPerTab]);
+      })
 
   const intl = useIntl();
 
@@ -105,10 +141,6 @@ const Table = <Entity extends Record<string | symbol, any>,
     setUpdatePopupData(editableRecord);
     actionRef?.current?.reload();
   }, [editableRecord, JSON.stringify(pathParams), JSON.stringify(params)]);
-
-  useEffect(() => {
-    createPopupData ? form.setFieldsValue(createPopupData) : form.resetFields();
-  }, [createPopupData]);
 
   const {
     columnsSetSelect: localColumnsSetSelect,
@@ -396,25 +428,13 @@ const Table = <Entity extends Record<string | symbol, any>,
       width='80%'
       closeIcon={true}
       footer={[
-        <Button key='submit' type="primary" onClick={async () => form.validateFields().then(
-          async (data) => {
-            try {
-              await onCreate?.({
-                ...pathParams,
-                requestBody: entityToCreateDto({
-                  ...pathParams,
-                  ...data,
-                })
-              });
-              actionRef?.current?.reload();
-              setCreatePopupData(undefined);
-            } catch (e) {
-              console.error(e);
-            }
-          }
-        )}>Create</Button>
+        <Button key='submit' type="primary" onClick={onCreateModalSubmit}>Create</Button>
       ]}
-      onCancel={() => setCreatePopupData(undefined)}
+      onCancel={() => {
+        setErrorsPerTab(columns.map(() => 0));
+        form.resetFields();
+        setCreatePopupData(undefined);
+      }}
     >
       <Descriptions<Entity>
         descriptionsDefaultTitle={descriptionsMainTitle}
@@ -427,6 +447,7 @@ const Table = <Entity extends Record<string | symbol, any>,
         labelStyle={{ width: '15%' }}
         contentStyle={{ width: '25%' }}
         canEdit={true}
+        errorsPerTabInitialValue={errorsPerTab}
         editable={{
           form,
           editableKeys: useMemo(() => {
