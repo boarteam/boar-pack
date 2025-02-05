@@ -5,12 +5,16 @@ import { Injectable } from '@nestjs/common';
 import { PackRule, packRules } from '@casl/ability/extra';
 import { Permission } from '../users/entities/permissions';
 import { EventLog } from '../event-logs';
+import { Token } from "../tokens/entities/token.entity";
+import { MyToken } from "../tokens/policies/manage-my-tokens.policy";
 
 type AnyObject = Record<PropertyKey, unknown>;
 
 export interface TSubjects {
   User: typeof User;
   EventLog: typeof EventLog;
+  Token: typeof Token;
+  MyToken: typeof MyToken;
 }
 
 export type TTextSubjects = 'all';
