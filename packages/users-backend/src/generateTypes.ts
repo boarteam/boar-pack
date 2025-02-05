@@ -8,6 +8,7 @@ import { ConfigModule } from "@nestjs/config";
 import { generate } from "openapi-typescript-codegen";
 import { EventLogsModule } from './event-logs'
 import { UsersModule } from "./users";
+import { TokensModule } from "./tokens";
 
 @Module({
   imports: [
@@ -32,6 +33,9 @@ import { UsersModule } from "./users";
     }),
     EventLogsModule.forRoot({
       dataSourceName: 'tid_db'
+    }),
+    TokensModule.forRoot({
+      dataSourceName: 'tid_db',
     }),
   ],
 })
