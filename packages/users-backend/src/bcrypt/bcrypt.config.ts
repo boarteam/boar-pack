@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-export type TUsersConfig = {
+export type TBcryptConfig = {
   saltRounds: number;
 };
 
 @Injectable()
-export class UsersConfigService {
+export class BcryptConfigService {
   constructor(private configService: ConfigService) {
   }
 
-  get config(): TUsersConfig {
+  get config(): TBcryptConfig {
     const saltRounds = Number.parseInt(this.configService.get<string>('BCRYPT_SALT_ROUNDS', ''), 10);
 
     if (!Number.isInteger(saltRounds)) {
