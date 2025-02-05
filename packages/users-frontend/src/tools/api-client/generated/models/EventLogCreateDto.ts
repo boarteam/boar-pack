@@ -1,8 +1,7 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 export type EventLogCreateDto = {
     logType: EventLogCreateDto.logType;
     logLevel: EventLogCreateDto.logLevel;
@@ -19,21 +18,16 @@ export type EventLogCreateDto = {
     duration?: number;
     statusCode?: number;
 };
-
 export namespace EventLogCreateDto {
-
     export enum logType {
         AUDIT = 'Audit',
         OPERATIONAL = 'Operational',
         APPLICATION = 'Application',
     }
-
     export enum logLevel {
         INFO = 'Info',
         WARNING = 'Warning',
         ERROR = 'Error',
     }
-
-
 }
 

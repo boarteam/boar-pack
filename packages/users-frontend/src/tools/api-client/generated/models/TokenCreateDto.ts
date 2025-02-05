@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type PermissionDto = {
-    permissions: Array<string>;
+export type TokenCreateDto = {
+    name: string;
 };
 
