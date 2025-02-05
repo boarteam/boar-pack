@@ -3,11 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { User } from './User';
-export type GetManyUserResponseDto = {
-    data: Array<User>;
-    count: number;
-    total: number;
-    page: number;
-    pageCount: number;
+export type Token = {
+    id: string;
+    name: string;
+    hash: string;
+    userId: string;
+    user: User;
+    createdAt: string;
+    updatedAt: string;
 };
 

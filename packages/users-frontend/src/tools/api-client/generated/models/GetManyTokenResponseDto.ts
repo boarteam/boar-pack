@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { EventLog } from './EventLog';
-export type GetManyEventLogResponseDto = {
-    data: Array<EventLog>;
+import type { Token } from './Token';
+export type GetManyTokenResponseDto = {
+    data: Array<Token>;
     count: number;
     total: number;
     page: number;
