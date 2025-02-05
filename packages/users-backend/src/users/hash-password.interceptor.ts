@@ -1,5 +1,5 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
-import BcryptService from "./bcrypt.service";
+import BcryptService from "../bcrypt/bcrypt.service";
 
 @Injectable()
 export class HashPasswordInterceptor implements NestInterceptor {

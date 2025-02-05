@@ -5,12 +5,12 @@ import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
 import { EMAIL_UNIQUE_CONSTRAINT, Roles, User } from './entities/user.entity';
 import { MeController } from './me.controller';
 import { Action, CaslAbilityFactory, CaslModule } from '../casl';
-import { UsersConfigService } from "./users.config";
-import BcryptService from "./bcrypt.service";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { Tools } from "@boarteam/boar-pack-common-backend";
 import { VIEW_USERS } from "./users.constants";
 import { DataSource } from "typeorm";
+import { BcryptModule } from "../bcrypt/bcrypt.module";
+import BcryptService from "../bcrypt/bcrypt.service";
 
 @Module({})
 export class UsersModule implements OnModuleInit {
@@ -22,6 +22,7 @@ export class UsersModule implements OnModuleInit {
       module: UsersModule,
       imports: [
         ConfigModule,
+        BcryptModule,
         TypeOrmModule.forFeature([User], config.dataSourceName),
         CaslModule.forFeature(),
       ],
@@ -33,10 +34,8 @@ export class UsersModule implements OnModuleInit {
             return new UsersService(dataSource.getRepository(User));
           }
         },
-        UsersConfigService,
-        BcryptService,
       ],
-      exports: [UsersService, BcryptService],
+      exports: [UsersService],
     };
 
     if (config.withControllers) {
@@ -51,6 +50,7 @@ export class UsersModule implements OnModuleInit {
   constructor(
     private readonly usersService: UsersService,
     private readonly bcryptService: BcryptService,
+    private readonly configService: ConfigService,
   ) {
     Tools.TypeOrmExceptionFilter.setUniqueConstraintMessage(EMAIL_UNIQUE_CONSTRAINT, 'User with this email already exists');
     CaslAbilityFactory.addPermissionToAction({
@@ -61,6 +61,10 @@ export class UsersModule implements OnModuleInit {
   }
 
   async onModuleInit() {
+    if (this.configService.get('SWAGGER') === 'true') {
+      return;
+    }
+
     const usersCount = await this.usersService.count();
     if (!usersCount) {
       this.logger.log('Creating default admin user');

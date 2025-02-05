@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { TUsersConfig, UsersConfigService } from "./users.config";
+import { TBcryptConfig, BcryptConfigService } from "./bcrypt.config";
 import bcrypt from "bcrypt";
 
 @Injectable()
 export class BcryptService {
-  private config: TUsersConfig;
+  private config: TBcryptConfig;
 
   constructor(
-    private usersConfig: UsersConfigService,
+    private usersConfig: BcryptConfigService,
   ) {
     this.config = this.usersConfig.config;
   }
