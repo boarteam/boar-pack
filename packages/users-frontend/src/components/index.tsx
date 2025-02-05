@@ -4,4 +4,7 @@ export * from './EventLogs/EventLogsTable';
 export * from './EventLogs/EventLogsTimeline';
 export * from './EventLogs/getBrowserIcon';
 export * from './EventLogs/useEventLogsColumns';
+export * from './Tokens/TokensTable';
+export * from './Tokens/MyTokensTable';
+export * from './Tokens/useTokensColumns';
 export {default as UserAgentDisplay} from './EventLogs/UserAgentDisplay';
