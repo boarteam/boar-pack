@@ -76,7 +76,7 @@ export class MyTokensController implements CrudController<Token>{
 
     return {
       ...token,
-      value: rawValue,
+      value: `${token.id}.${rawValue}`,
     }
   }
 }
