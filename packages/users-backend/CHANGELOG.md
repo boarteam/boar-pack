@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.0.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@4.3.0...@boarteam/boar-pack-users-backend@5.0.0) (2025-02-06)
+
+
+### Bug Fixes
+
+* **users-backend:** Fixed ability to generate TS client for users-backend ([bc43cc9](https://github.com/boarteam/boar-pack/commit/bc43cc92ee6824c48aad39f4f8e30470302caad5))
+
+
+### Code Refactoring
+
+* **users-backend:** Bcrypt logic moved to separate module ([c86a63a](https://github.com/boarteam/boar-pack/commit/c86a63a09b8bef0c6061a6d569837ec8e124ab71))
+
+
+### Features
+
+* **users-backend:** Support for creating opaque tokens for further auth via tokens ([f3dc9c9](https://github.com/boarteam/boar-pack/commit/f3dc9c90095b2881576e0c79806d5cbdb7a67f21))
+* **users-backend:** Tokens auth guard and strategy ([de5c497](https://github.com/boarteam/boar-pack/commit/de5c4974eb42e2b932945297a9ca1ace683b38ed))
+
+
+### BREAKING CHANGES
+
+* **users-backend:** Users module does not export bcrypt service anymore
+
+
+
+
+
 # [4.3.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@4.2.0...@boarteam/boar-pack-users-backend@4.3.0) (2024-12-27)
 
 
