@@ -9,6 +9,9 @@ import { DataSource } from "typeorm";
 import { MyToken } from "./policies/manage-my-tokens.policy";
 import { MyTokensController } from "./my-tokens.controller";
 import { BcryptModule } from "../bcrypt/bcrypt.module";
+import { APP_GUARD } from "@nestjs/core";
+import { TokenAuthGuard } from "./tokens-auth.guard";
+import { TokensAuthStrategy } from "./tokens-auth.strategy";
 
 @Module({})
 export class TokensModule {
@@ -35,6 +38,31 @@ export class TokensModule {
         TokensController,
         MyTokensController,
       ]
+    };
+  }
+
+  static forAuth(config: { dataSourceName: string }) {
+    return {
+      module: TokensModule,
+      imports: [
+        TypeOrmModule.forFeature([Token], config.dataSourceName),
+        BcryptModule,
+      ],
+      providers: [
+        {
+          provide: TokensService,
+          inject: [getDataSourceToken(config.dataSourceName)],
+          useFactory: (dataSource: DataSource) => {
+            return new TokensService(dataSource.getRepository(Token));
+          }
+        },
+        TokensAuthStrategy,
+        {
+          provide: APP_GUARD,
+          useClass: TokenAuthGuard,
+        },
+      ],
+      exports: [],
     };
   }
 

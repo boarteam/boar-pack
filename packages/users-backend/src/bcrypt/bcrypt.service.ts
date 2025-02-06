@@ -7,13 +7,17 @@ export class BcryptService {
   private config: TBcryptConfig;
 
   constructor(
-    private usersConfig: BcryptConfigService,
+    private bcryptConfig: BcryptConfigService,
   ) {
-    this.config = this.usersConfig.config;
+    this.config = this.bcryptConfig.config;
   }
 
   hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, this.config.saltRounds);
+  }
+
+  compare(password: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(password, hash);
   }
 }
 
