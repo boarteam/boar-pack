@@ -38,6 +38,9 @@ export class TokensAuthStrategy extends PassportStrategy(Strategy, TOKENS_AUTH) 
     }
 
     const { pass, ...user } = tokenEntity.user;
-    return user;
+    return {
+      ...user,
+      tokenId: tokenEntity.id,
+    };
   }
 }

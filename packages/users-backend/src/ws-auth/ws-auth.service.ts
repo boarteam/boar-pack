@@ -1,13 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { WebSocket } from "ws";
 import { TUser } from "../users/entities/user.entity";
 import { IncomingMessage } from "http";
 import passport from "passport";
-import { JWT_AUTH } from "../auth/auth-strategies.constants";
 import { Interval } from "@nestjs/schedule";
+import { WS_AUTH_STRATEGY } from "./ws-auth.constants";
 
-export interface AuthSocket extends WebSocket {
-  user?: TUser;
+declare module 'ws' {
+  interface WebSocket {
+    user?: TUser;
+  }
 }
 
 export interface EventDto {
@@ -23,11 +25,16 @@ export class WsAuthService {
   private clients: Set<WebSocket> = new Set();
   private clientsToTerminate: Set<WebSocket> = new Set();
 
-  public handleConnection(socket: AuthSocket, req: IncomingMessage) {
+  constructor(
+    @Inject(WS_AUTH_STRATEGY) private readonly strategy: string,
+  ) {
+  }
+
+  public handleConnection(socket: WebSocket, req: IncomingMessage) {
     this.logger.debug(`Client connected`);
 
     this.socketsAuthenticators.set(socket, new Promise<TUser | null>((resolve) => {
-      passport.authenticate(JWT_AUTH, (err: Error, user: TUser) => {
+      passport.authenticate(this.strategy, (err: Error, user: TUser) => {
         this.logger.debug(`Authenticating user`);
 
         if (err) {
@@ -35,7 +42,7 @@ export class WsAuthService {
           return resolve(null);
         }
         if (!user) {
-          this.logger.warn(`User was not taken from JWT`);
+          this.logger.warn(`User was not taken by ${this.strategy} auth strategy`);
           return resolve(null);
         }
 
