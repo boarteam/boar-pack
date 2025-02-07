@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.0.0...@boarteam/boar-pack-users-backend@5.1.0) (2025-02-07)
+
+
+### Features
+
+* **ws-auth:** Ability to use custom auth strategy for WS Auth ([936c31a](https://github.com/boarteam/boar-pack/commit/936c31a42edd1c5e799dfd74b41e8b7d9eac59e8))
+
+
+
+
+
 # [5.0.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@4.3.0...@boarteam/boar-pack-users-backend@5.0.0) (2025-02-06)
 
 
