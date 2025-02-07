@@ -21,6 +21,7 @@ export const EMAIL_UNIQUE_CONSTRAINT = 'UQ_users_email';
 
 export type TUser = Omit<User, 'pass'> & {
   ability?: AppAbility;
+  tokenId?: string;
 };
 
 @Entity('users')
