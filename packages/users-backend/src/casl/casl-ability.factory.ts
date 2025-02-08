@@ -1,7 +1,7 @@
 import { AbilityBuilder, AbilityClass, ExtractSubjectType, InferSubjects, PureAbility, RawRule, } from '@casl/ability';
 import { Roles, User } from '../users/entities/user.entity';
 import { Action } from './action.enum';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PackRule, packRules } from '@casl/ability/extra';
 import { Permission } from '../users/entities/permissions';
 import { EventLog } from '../event-logs';
@@ -44,6 +44,7 @@ export class CaslAbilityFactory {
   } = {};
 
   private static abilitiesDefiners: Set<TAbilityDefiner> = new Set();
+  private logger = new Logger(CaslAbilityFactory.name);
 
   public static addPermissionToAction({
     permission, action, subject,
@@ -74,7 +75,8 @@ export class CaslAbilityFactory {
         user.permissions.forEach((permission) => {
           const actionAndSubject = CaslAbilityFactory.permissionsToActionsMap[permission];
           if (!actionAndSubject) {
-            throw new Error(`Unknown permission: ${permission}`);
+            this.logger.error(`Unknown permission: ${permission}`);
+            return;
           }
 
           const { action, subject } = actionAndSubject;
