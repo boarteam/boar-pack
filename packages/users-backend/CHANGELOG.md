@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.1.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.1.0...@boarteam/boar-pack-users-backend@5.1.1) (2025-02-08)
+
+
+### Bug Fixes
+
+* **casl:** Log an error instead of throwing when unknown permission has been met ([4899e10](https://github.com/boarteam/boar-pack/commit/4899e100e3f12ef4a76c870c2d942cf3c01d0aee))
+
+
+
+
+
 # [5.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.0.0...@boarteam/boar-pack-users-backend@5.1.0) (2025-02-07)
 
 
