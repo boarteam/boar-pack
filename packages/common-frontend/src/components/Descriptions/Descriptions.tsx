@@ -1,6 +1,6 @@
 import { ActionType } from "@ant-design/pro-table";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Button, Result, Tooltip } from "antd";
+import { Button, Result, Tabs, Tooltip } from "antd";
 import { DeleteOutlined, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
@@ -12,6 +12,27 @@ import safetyRun from "../../tools/safetyRun";
 import { buildJoinFields, collectFieldsFromColumns } from "../Table";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { useForm } from "antd/es/form/Form";
+import { VIEW_MODE_TYPE } from "../Table/ContentViewModeButton";
+import { createStyles } from "antd-style";
+
+const useStyles = createStyles(() => {
+  return {
+    antDescriptionsStyles: {
+      '.anticon-edit': {
+        opacity: 0,
+        transition: 'opacity 200ms'
+      },
+      '.ant-descriptions-item-content': {
+        width: '20%',
+      },
+      '.ant-descriptions-item-content:hover': {
+        '.anticon-edit': {
+          opacity: 1
+        },
+      }
+    }
+  }
+})
 
 const Descriptions = <Entity extends Record<string | symbol, any>,
   CreateDto = Entity,
@@ -33,12 +54,14 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     columns,
     params,
     onEntityChange,
+    viewMode = VIEW_MODE_TYPE.GENERAL,
     ...rest
   }: TDescriptionsProps<Entity,
     CreateDto,
     UpdateDto,
     TPathParams> & Omit<ProDescriptionsProps<Entity>, 'columns'>
 ) => {
+  const { styles } = useStyles();
   const [form] = useForm<Entity>();
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
@@ -64,6 +87,9 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
 
     return queryParams;
   }, [params, pathParams]);
+
+  const getKey = (index: number) =>
+    index + String(pathParams?.[idColumnName as keyof TPathParams])
 
   const requestData = async () => {
     if (!getOne) {
@@ -129,36 +155,58 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     );
   }
 
+  const descriptions = sections.map((section, index) => {
+    // In the general view mode we need to render extra elements only ones for the top one section
+    if (viewMode === VIEW_MODE_TYPE.GENERAL && rest.extra && index !== 0)  {
+      rest.extra = null;
+    }
+
+    return <ProDescriptions<Entity>
+      // @ts-ignore-next-line
+      form={form}
+      key={getKey(index)}
+      title={section.title as React.ReactNode}
+      actionRef={actionRef}
+      size={"small"}
+      bordered
+      loading={loading}
+      style={{ marginBottom: 20 }}
+      labelStyle={{ width: '15%' }}
+      dataSource={data as Entity}
+      className={styles.antDescriptionsStyles}
+      editable={canEdit ? {
+        type: 'multiple',
+        onSave,
+        deletePopconfirmMessage: intl.formatMessage({ id: 'table.deletePopconfirmMessage' }),
+        onlyAddOneLineAlertMessage: intl.formatMessage({ id: 'table.onlyAddOneLineAlertMessage' }),
+        cancelText: <Tooltip title={intl.formatMessage({ id: 'table.cancelText' })}><StopOutlined /></Tooltip>,
+        deleteText: <Tooltip title={intl.formatMessage({ id: 'table.deleteText' })}><DeleteOutlined /></Tooltip>,
+        saveText: <Button size={"small"} type={"primary"}><FormattedMessage id={'table.saveText'} /></Button>,
+        ...editable,
+      }: undefined}
+      columns={section.columns}
+      {...rest}
+    />
+  })
+
   return (
     <>
-      {sections.map((section, index) => (
-        <ProDescriptions<Entity>
-          // @ts-ignore-next-line
-          form={form}
-          key={index + String(pathParams?.[idColumnName as keyof TPathParams])}
-          title={section.title as React.ReactNode}
-          actionRef={actionRef}
-          size={"small"}
-          bordered
-          loading={loading}
-          style={{ marginBottom: 20 }}
-          labelStyle={{ width: '15%' }}
-          contentStyle={{ width: '20%' }}
-          dataSource={data as Entity}
-          editable={canEdit ? {
-            type: 'multiple',
-            onSave,
-            deletePopconfirmMessage: intl.formatMessage({ id: 'table.deletePopconfirmMessage' }),
-            onlyAddOneLineAlertMessage: intl.formatMessage({ id: 'table.onlyAddOneLineAlertMessage' }),
-            cancelText: <Tooltip title={intl.formatMessage({ id: 'table.cancelText' })}><StopOutlined /></Tooltip>,
-            deleteText: <Tooltip title={intl.formatMessage({ id: 'table.deleteText' })}><DeleteOutlined /></Tooltip>,
-            saveText: <Button size={"small"} type={"primary"}><FormattedMessage id={'table.saveText'} /></Button>,
-            ...editable,
-          }: undefined}
-          columns={section.columns}
-          {...rest}
-        />
-      ))}
+      {
+        viewMode === VIEW_MODE_TYPE.TABS ?
+          (<Tabs defaultActiveKey="0">
+            {
+              descriptions.map((description, index) => (
+                <Tabs.TabPane
+                  tab={description.props.title as React.ReactNode}
+                  key={getKey(index)}
+                >
+                  {description}
+                </Tabs.TabPane>
+              ))
+            }
+          </Tabs>)
+          : descriptions
+      }
     </>
   );
 };

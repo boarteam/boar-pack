@@ -1,17 +1,24 @@
 import ProTable, { ActionType } from "@ant-design/pro-table";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Popover, Space, Tooltip, message } from "antd";
-import { DeleteOutlined, PlusOutlined, QuestionCircleTwoTone, StopOutlined } from "@ant-design/icons";
+import {Button, Popover, Space, Tooltip, message, Modal } from "antd";
+import {
+  DeleteOutlined,
+  PlusOutlined,
+  QuestionCircleTwoTone,
+  StopOutlined,
+} from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { flushSync } from "react-dom";
 import { applyKeywordToSearch, buildJoinFields, collectFieldsFromColumns, getFiltersSearch } from "./tableTools";
 import { TFilterParams, TFilters, TGetAllParams, TSort, TTableProps } from "./tableTypes";
 import useColumnsSets from "./useColumnsSets";
-import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
 import BulkEditButton from "./BulkEditButton";
 import _ from "lodash";
 import BulkDeleteButton from "./BulkDeleteButton";
 import { createStyles } from "antd-style";
+import ContentViewModeButton, { VIEW_MODE_TYPE } from "./ContentViewModeButton";
+import { Descriptions } from "../Descriptions";
+import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
 
 let creatingRecordsCount = 0;
 
@@ -55,6 +62,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     entityToCreateDto,
     entityToUpdateDto,
     createNewDefaultParams,
+    editableRecord,
     afterSave,
     actionRef: actionRefProp,
     editable,
@@ -69,6 +77,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     toolBarRender,
     params,
     popupDataState,
+    editPopupTitle,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -79,18 +88,21 @@ const Table = <Entity extends Record<string | symbol, any>,
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
   const [createPopupData, setCreatePopupData] = popupDataState ?? useState<Partial<Entity> | undefined>();
+  const [updatePopupData, setUpdatePopupData] = useState<Partial<Entity> | undefined>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [selectedRecords, setSelectedRecords] = useState<Entity[]>([]);
   const [lastRequest, setLastRequest] = useState<[TGetAllParams & TPathParams, any] | []>([]);
   const [allSelected, setAllSelected] = useState(false);
   const { styles } = useStyles();
   const [messageApi, contextHolder] = message.useMessage();
+  const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<VIEW_MODE_TYPE>(VIEW_MODE_TYPE.TABS);
 
   const intl = useIntl();
 
   useEffect(() => {
+    setUpdatePopupData(editableRecord);
     actionRef?.current?.reload();
-  }, [JSON.stringify(pathParams), JSON.stringify(params)]);
+  }, [editableRecord, JSON.stringify(pathParams), JSON.stringify(params)]);
 
   const {
     columnsSetSelect: localColumnsSetSelect,
@@ -264,7 +276,6 @@ const Table = <Entity extends Record<string | symbol, any>,
         ...editable,
       }}
       toolBarRender={(...args) => [
-        ...toolBarRender && toolBarRender(...args) || [],
         columnsSetSelect?.() || null,
         !viewOnly && onUpdateMany
           ? (
@@ -323,6 +334,7 @@ const Table = <Entity extends Record<string | symbol, any>,
           )
           : <></>,
         !viewOnly && createButton || null,
+        ...toolBarRender && toolBarRender(...args) || [],
       ]}
       columns={columns}
       defaultSize='small'
@@ -392,7 +404,36 @@ const Table = <Entity extends Record<string | symbol, any>,
       }}
       idColumnName={idColumnName}
       columns={columns ?? []}
+      viewMode={descriptionsModalViewMode}
+      extra={
+        <ContentViewModeButton
+          contentViewMode={descriptionsModalViewMode}
+          setContentViewMode={setDescriptionsModalViewMode}
+        />
+      }
     />
+    <Modal
+      title={editPopupTitle}
+      open={updatePopupData !== undefined}
+      width='80%'
+      footer={null}
+      closeIcon={false}
+      onCancel={() => setUpdatePopupData(undefined)}
+    >
+      <Descriptions<Entity>
+        mainTitle='Main'
+        columns={columns}
+        canEdit={true}
+        entity={updatePopupData}
+        viewMode={descriptionsModalViewMode}
+        extra={
+          <ContentViewModeButton
+            contentViewMode={descriptionsModalViewMode}
+            setContentViewMode={setDescriptionsModalViewMode}
+          />
+        }
+      />
+    </Modal>
     {contextHolder}
   </>);
 };
