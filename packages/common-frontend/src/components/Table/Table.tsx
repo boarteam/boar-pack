@@ -440,7 +440,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       }}
     >
       <Descriptions<Entity>
-        descriptionsDefaultTitle={descriptionsMainTitle}
+        mainTitle={descriptionsMainTitle}
         columns={columns ?? []}
         entity={createPopupData}
         size={"small"}
@@ -478,7 +478,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       }}
     >
       <Descriptions<Entity>
-        descriptionsDefaultTitle={descriptionsMainTitle}
+        mainTitle={descriptionsMainTitle}
         columns={columns ?? []}
         entity={updatePopupData}
         canEdit={true}

@@ -42,7 +42,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
   TPathParams = object,
   >(
   {
-    descriptionsDefaultTitle = 'General',
+    mainTitle = 'General',
     entity,
     getOne,
     onUpdate,
@@ -79,7 +79,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
   const intl = useIntl();
   const [data, setData] = useState<Partial<Entity> | undefined>(entity);
   const [loading, setLoading] = useState(false);
-  const sections = useMemo(() => columnsToDescriptionItemProps(columns, descriptionsDefaultTitle), []);
+  const sections = useMemo(() => columnsToDescriptionItemProps(columns, mainTitle), []);
   const fieldsToSectionsMap = useMemo(() => sections.reduce((acc, section, index) => {
     section.columns.forEach(column => {
       acc.set(column.dataIndex, index);
