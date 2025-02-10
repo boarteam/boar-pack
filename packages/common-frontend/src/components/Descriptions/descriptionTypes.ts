@@ -23,7 +23,7 @@ export type TDescriptionGetRequestParams = {
   join?: QueryJoin | QueryJoin[];
 };
 export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = object> = {
-  descriptionsDefaultTitle?: ProColumns<Entity>['title'] | null,
+  mainTitle?: ProColumns<Entity>['title'] | null,
   entity?: Partial<Entity>,
   getOne?: ({}: TGetOneParams & TPathParams) => Promise<Entity | null>,
   onUpdate?: ({}: Record<keyof Entity, string> & { requestBody: UpdateDto } & TPathParams) => Promise<Entity>,
@@ -44,7 +44,7 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
 
 export type TDescriptionsCreateModalProps<Entity> = Omit<ProDescriptionsProps<Entity>, 'columns'> & {
   modalTitle?: string,
-  descriptionsDefaultTitle?: ProColumns<Entity>['title'] | null,
+  mainTitle?: ProColumns<Entity>['title'] | null,
   idColumnName: string & keyof Entity | (string & keyof Entity)[],
   columns: ProColumns<Entity>[],
   data: Partial<Entity> | undefined,
