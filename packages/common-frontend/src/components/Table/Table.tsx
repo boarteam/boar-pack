@@ -17,7 +17,7 @@ import BulkEditButton from "./BulkEditButton";
 import _, { keyBy } from "lodash";
 import BulkDeleteButton from "./BulkDeleteButton";
 import { createStyles } from "antd-style";
-import { columnsToDescriptionItemProps, Descriptions } from "../Descriptions";
+import { columnsToDescriptionItemProps, Descriptions, TDescriptionSection } from "../Descriptions";
 import { useForm } from "antd/es/form/Form";
 
 let creatingRecordsCount = 0;
@@ -97,10 +97,12 @@ const Table = <Entity extends Record<string | symbol, any>,
   const [allSelected, setAllSelected] = useState(false);
   const { styles } = useStyles();
   const [messageApi, contextHolder] = message.useMessage();
-  const [errorsPerTab, setErrorsPerTab] = useState<number[]>(columns.map(() => 0));
   const [form] = useForm();
 
-  const sections = useMemo(() => columnsToDescriptionItemProps(columns, 'Main'), []);
+  const sections = columnsToDescriptionItemProps(columns, 'Main');
+  const [errorsPerTab, setErrorsPerTab] = useState<Map<TDescriptionSection<Entity>['key'], number>>(
+    new Map(sections.map((s) => [s.key, 0])),
+  );
 
   const onCreateModalSubmit = async () =>
     form.validateFields()
@@ -122,20 +124,17 @@ const Table = <Entity extends Record<string | symbol, any>,
         }
       )
       .finally(() => {
-        // Calculate validation errors by tabs
-        const keyedFields = keyBy(
-          form.getFieldsError().filter(field => field.errors.length > 0),
-          field => Array.isArray(field.name) ? field.name[0]?.toString() : field.name
-        );
-        sections.forEach((section, index) => {
-          errorsPerTab[index] = 0;
+        const errorsPerTab = new Map<TDescriptionSection<Entity>['key'], number>();
+        sections.forEach((section) => {
+          let errorNumber = 0;
           section.columns.forEach((column) => {
-            if (keyedFields[column.dataIndex?.toString()]) {
-              errorsPerTab[index] += 1;
+            if (form.getFieldError(column.dataIndex).length > 0) {
+              errorNumber++;
             }
-          })
+          });
+          errorsPerTab.set(section.key, errorNumber);
         })
-        setErrorsPerTab([...errorsPerTab]);
+        setErrorsPerTab(errorsPerTab);
       })
 
   const intl = useIntl();
@@ -434,7 +433,7 @@ const Table = <Entity extends Record<string | symbol, any>,
         <Button key='submit' type="primary" onClick={onCreateModalSubmit}>Create</Button>
       ]}
       onCancel={() => {
-        setErrorsPerTab(columns.map(() => 0));
+        setErrorsPerTab(new Map(sections.map((s) => [s.key, 0])));
         form.resetFields();
         setCreatePopupData(undefined);
       }}

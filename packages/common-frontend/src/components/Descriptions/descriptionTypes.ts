@@ -4,6 +4,7 @@ import { RowEditableConfig } from "@ant-design/pro-utils";
 import { QueryJoin } from "@nestjsx/crud-request";
 import { ProColumns } from "@ant-design/pro-components";
 import { ProDescriptionsProps } from "@ant-design/pro-descriptions";
+import { TDescriptionSection } from "./useDescriptionColumns";
 
 export type TGetOneParams = {
   /**
@@ -39,7 +40,7 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
   params?: TDescriptionGetRequestParams,
   columns: ProColumns<Entity>[],
   onEntityChange?: (entity: Entity | null) => void;
-  errorsPerTabInitialValue?: number[];
+  errorsPerTabInitialValue?: Map<TDescriptionSection<Entity>['key'], number>;
 }
 
 export type TDescriptionsCreateModalProps<Entity> = Omit<ProDescriptionsProps<Entity>, 'columns'> & {
