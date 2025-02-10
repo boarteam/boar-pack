@@ -6,7 +6,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
 import { ProDescriptionsProps } from "@ant-design/pro-descriptions";
 import { PageLoading, ProDescriptions } from "@ant-design/pro-components";
-import { columnsToDescriptionItemProps } from "./useDescriptionColumns";
+import { columnsToDescriptionItemProps, TDescriptionSection } from "./useDescriptionColumns";
 import pick from "lodash/pick";
 import safetyRun from "../../tools/safetyRun";
 import { buildJoinFields, collectFieldsFromColumns } from "../Table";
@@ -15,7 +15,6 @@ import { useForm } from "antd/es/form/Form";
 import ContentViewModeButton, { VIEW_MODE_TYPE } from "../Table/ContentViewModeButton";
 import { createStyles } from "antd-style";
 import { debounce } from "lodash";
-import { NamePath } from "antd/lib/form/interface";
 
 const useStyles = createStyles(() => {
   return {
@@ -40,7 +39,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
   CreateDto = Entity,
   UpdateDto = Entity,
   TPathParams = object,
-  >(
+>(
   {
     mainTitle = 'General',
     entity,
@@ -79,46 +78,49 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
   const intl = useIntl();
   const [data, setData] = useState<Partial<Entity> | undefined>(entity);
   const [loading, setLoading] = useState(false);
-  const sections = useMemo(() => columnsToDescriptionItemProps(columns, mainTitle), []);
-  const fieldsToSectionsMap = useMemo(() => sections.reduce((acc, section, index) => {
+
+  const sections = columnsToDescriptionItemProps(columns, mainTitle);
+
+  const columnDataIndexToSection = sections.reduce((acc, section) => {
     section.columns.forEach(column => {
-      acc.set(column.dataIndex, index);
+      if (Array.isArray(column.dataIndex)) {
+        throw new Error('We only support simple dataIndex for now');
+      }
+
+      acc.set(column.dataIndex, section);
     })
     return acc;
-  }, new Map<Key | Key[], number>), []);
-  const fieldsToSectionsArray = useMemo(() => sections.map((section) => {
-    return section.columns.map(column => column.dataIndex)
-  }), []);
-  const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<VIEW_MODE_TYPE>(sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL);
-  const [errorsPerTab, setErrorsPerTab] = useState<number[]>(errorsPerTabInitialValue ?? sections.map(() => 0));
+  }, new Map<Key, TDescriptionSection<Entity>>());
 
-  const onValuesChange = useMemo(
-    () =>
-      debounce((changedValues, allValues) => {
-        let key = Object.keys(changedValues)[0];
-
-        // changedValues = {} if we clear select value
-        if (!key) {
-          const previousValues = form.getFieldsValue(true);
-          key = Object.keys(previousValues).find((field) => !(field in allValues));
-        }
-
-        form.validateFields([key])
-          .finally(() => {
-            const sectionIndex = fieldsToSectionsMap.get(key);
-            const keys = fieldsToSectionsArray[sectionIndex];
-
-            const errorsNumber = form.getFieldsError(keys.flat() as NamePath[]).reduce((acc, field) => acc + field.errors.length, 0);
-
-            setErrorsPerTab((prev) => {
-              const updated = [...prev];
-              updated[sectionIndex] = errorsNumber;
-              return updated;
-            });
-          });
-      }, 500),
-    []
+  const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<VIEW_MODE_TYPE>(
+    sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL
   );
+  const [errorsPerSection, setErrorsPerSection] = useState<Map<TDescriptionSection<Entity>['key'], number>>(
+    errorsPerTabInitialValue ?? new Map(sections.map(section => [section.key, 0]))
+  );
+
+  const onValuesChange = debounce((changedValues, allValues) => {
+    let key = Object.keys(changedValues)[0];
+
+    // changedValues = {} if we clear select value
+    if (!key) {
+      const previousValues = form.getFieldsValue(true);
+      key = Object.keys(previousValues).find((field) => !(field in allValues));
+    }
+
+    form.validateFields([key])
+      .finally(() => {
+        const section = columnDataIndexToSection.get(key);
+        const dataIndexes = section.columns.map(column => column.dataIndex);
+
+        const errorsNumber = form.getFieldsError(dataIndexes).reduce((acc, field) => acc + field.errors.length, 0);
+        setErrorsPerSection((prev) => {
+          const updated = new Map(prev);
+          updated.set(section.key, errorsNumber);
+          return updated;
+        });
+      });
+  }, 500);
 
   if (sections.length > 1) {
     rest.extra = (
@@ -200,7 +202,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
 
   useEffect(() => {
     if (errorsPerTabInitialValue) {
-      setErrorsPerTab(errorsPerTabInitialValue);
+      setErrorsPerSection(errorsPerTabInitialValue);
     }
   }, [errorsPerTabInitialValue]);
 
@@ -219,9 +221,11 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     );
   }
 
+  const tabsItems: TabsProps['items'] = [];
+
   const descriptions = sections.map((section, index) => {
     // In the general view mode we need to render extra elements only ones for the top one section
-    if (descriptionsModalViewMode === VIEW_MODE_TYPE.GENERAL && rest.extra && index !== 0)  {
+    if (descriptionsModalViewMode === VIEW_MODE_TYPE.GENERAL && rest.extra && index !== 0) {
       rest.extra = null;
     }
 
@@ -232,7 +236,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
       }
     }
 
-    return <ProDescriptions<Entity>
+    const description = <ProDescriptions<Entity>
       key={getKey(index)}
       title={section.title as React.ReactNode}
       actionRef={actionRef}
@@ -252,26 +256,28 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
         deleteText: <Tooltip title={intl.formatMessage({ id: 'table.deleteText' })}><DeleteOutlined /></Tooltip>,
         saveText: <Button size={"small"} type={"primary"}><FormattedMessage id={'table.saveText'} /></Button>,
         ...editable,
-      }: undefined}
+      } : undefined}
       columns={section.columns}
       {...rest}
-    />
-  })
+    />;
 
-  const tabsItems: TabsProps['items'] = descriptions.map((description, index) => ({
-    key: getKey(index),
-    label: (
-      <Badge
-        size='small'
-        overflowCount={5}
-        count={errorsPerTab[index]}
-      >
-        { description.props.title }
-      </Badge>
-    ),
-    forceRender: true,
-    children: description,
-  }));
+    tabsItems.push({
+      key: getKey(index),
+      label: (
+        <Badge
+          size='small'
+          overflowCount={5}
+          count={errorsPerSection.get(section.key)}
+        >
+          {description.props.title}
+        </Badge>
+      ),
+      forceRender: true,
+      children: description,
+    });
+
+    return description;
+  })
 
   return (
     <>
