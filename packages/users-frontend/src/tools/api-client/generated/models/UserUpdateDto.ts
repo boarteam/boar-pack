@@ -1,8 +1,7 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 export type UserUpdateDto = {
     name?: string;
     email?: string;
@@ -10,14 +9,10 @@ export type UserUpdateDto = {
     pass?: string | null;
     permissions?: Array<string>;
 };
-
 export namespace UserUpdateDto {
-
     export enum role {
         ADMIN = 'admin',
         USER = 'user',
     }
-
-
 }
 
