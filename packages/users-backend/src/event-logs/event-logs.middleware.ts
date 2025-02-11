@@ -50,9 +50,7 @@ export class EventLogMiddleware implements NestMiddleware {
             ? LogLevel.WARNING
             : LogLevel.INFO;
 
-      this.eventLogService.audit(logEntry, req).catch((error) => {
-        this.logger.error(`Failed to log event: ${error.message}`);
-      });
+      this.eventLogService.audit(logEntry, req);
     });
 
     next();

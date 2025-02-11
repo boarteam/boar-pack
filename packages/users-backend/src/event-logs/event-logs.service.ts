@@ -5,6 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Request } from 'express';
 import { Roles } from "../users";
 import { EventLogTimelineDto } from "./dto/event-log-timeline.dto";
+import { Cron, CronExpression } from "@nestjs/schedule";
 import moment from "moment";
 import 'moment-timezone';
 
@@ -13,6 +14,7 @@ type TInterval = 'second' | 'minute' | 'hour' | 'day' | 'week';
 @Injectable()
 export class EventLogsService extends TypeOrmCrudService<EventLog> {
   private static requestHandled = Symbol('requestHandled');
+  private logsStore: Partial<EventLog>[] = [];
 
   private readonly logger = new Logger(EventLogsService.name);
 
@@ -28,7 +30,37 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     super(repo);
   }
 
-  async audit(eventLog: Partial<EventLog>, request?: Request): Promise<void> {
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  private async saveAccumulatedLogs(): Promise<void> {
+    if (this.logsStore.length > 0) {
+      const logs = [...this.logsStore];
+      this.logger.debug('Reset event logs store variable');
+      this.logsStore = [];
+
+      await this.repo.save(logs).catch(e => {
+        // DO NOT USE LOGGER HERE - it will cause infinite loop
+        console.error('Error while saving logs');
+        console.error(e);
+      });
+    }
+  }
+
+  @Cron(CronExpression.EVERY_WEEK)
+  private async deleteOldEventLogs() {
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 2);
+
+    const result = await this.repo
+      .createQueryBuilder()
+      .delete()
+      .from(EventLog)
+      .where('created_at <= :threeMonthsAgo', { threeMonthsAgo })
+      .execute();
+
+    this.logger.debug(`Removed ${result.affected} expired records from event_logs table.`);
+  }
+
+  audit(eventLog: Partial<EventLog>, request?: Request): void {
     // @ts-ignore
     if (request?.[EventLogsService.requestHandled]) {
       this.logger.debug('Request already handled');
@@ -54,7 +86,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       request[EventLogsService.requestHandled] = true;
     }
 
-    await this.repo.save({
+    this.logsStore.push({
       ...logPartial,
       ...eventLog,
       logType: LogType.AUDIT,
@@ -66,8 +98,8 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     return request?.[EventLogsService.requestHandled];
   }
 
-  async operationalLog(eventLog: Partial<EventLog>): Promise<void> {
-    await this.repo.save({
+  operationalLog(eventLog: Partial<EventLog>): void {
+    this.logsStore.push({
       logLevel: LogLevel.INFO,
       userRole: UserRole.SYSTEM,
       ...eventLog,
@@ -76,15 +108,11 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
   }
 
   public applicationLog(eventLog: Partial<EventLog>): void {
-    this.repo.save({
+    this.logsStore.push({
       logLevel: LogLevel.INFO,
       userRole: UserRole.SYSTEM,
       ...eventLog,
       logType: LogType.APPLICATION,
-    }).catch(e => {
-      // DO NOT USE LOGGER HERE - it will cause infinite loop
-      console.error('Error while saving application log');
-      console.error(e);
     });
   }
 
