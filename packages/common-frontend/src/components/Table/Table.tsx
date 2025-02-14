@@ -1,24 +1,18 @@
 import ProTable, { ActionType } from "@ant-design/pro-table";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, message, Modal, Popover, Space, Tooltip } from "antd";
 import { DeleteOutlined, PlusOutlined, QuestionCircleTwoTone, StopOutlined, } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { flushSync } from "react-dom";
-import {
-  applyKeywordToSearch,
-  buildFieldsFromColumnsForDescriptionsDisplay,
-  buildJoinFields,
-  collectFieldsFromColumns,
-  getFiltersSearch
-} from "./tableTools";
+import { applyKeywordToSearch, buildJoinFields, collectFieldsFromColumns, getFiltersSearch } from "./tableTools";
 import { TFilterParams, TFilters, TGetAllParams, TSort, TTableProps } from "./tableTypes";
 import useColumnsSets from "./useColumnsSets";
 import BulkEditButton from "./BulkEditButton";
-import _, { keyBy } from "lodash";
+import _ from "lodash";
 import BulkDeleteButton from "./BulkDeleteButton";
 import { createStyles } from "antd-style";
-import { columnsToDescriptionItemProps, Descriptions, TDescriptionSection } from "../Descriptions";
-import { useForm } from "antd/es/form/Form";
+import { Descriptions } from "../Descriptions";
+import CreateEntityModal from "./CreateEntityModal";
 
 let creatingRecordsCount = 0;
 
@@ -97,45 +91,22 @@ const Table = <Entity extends Record<string | symbol, any>,
   const [allSelected, setAllSelected] = useState(false);
   const { styles } = useStyles();
   const [messageApi, contextHolder] = message.useMessage();
-  const [form] = useForm();
 
-  const sections = columnsToDescriptionItemProps(columns, 'Main');
-  const [errorsPerTab, setErrorsPerTab] = useState<Map<TDescriptionSection<Entity>['key'], number>>(
-    new Map(sections.map((s) => [s.key, 0])),
-  );
-
-  const onCreateModalSubmit = async () =>
-    form.validateFields()
-      .then(
-        async (data) => {
-          try {
-            await onCreate?.({
-              ...pathParams,
-              requestBody: entityToCreateDto({
-                ...pathParams,
-                ...data,
-              })
-            });
-            actionRef?.current?.reload();
-            setCreatePopupData(undefined);
-          } catch (e) {
-            console.error(e);
-          }
-        }
-      )
-      .finally(() => {
-        const errorsPerTab = new Map<TDescriptionSection<Entity>['key'], number>();
-        sections.forEach((section) => {
-          let errorNumber = 0;
-          section.columns.forEach((column) => {
-            if (form.getFieldError(column.dataIndex).length > 0) {
-              errorNumber++;
-            }
-          });
-          errorsPerTab.set(section.key, errorNumber);
+  const onCreateSubmit = async (data: any) => {
+    try {
+      await onCreate?.({
+        ...pathParams,
+        requestBody: entityToCreateDto({
+          ...pathParams,
+          ...data,
         })
-        setErrorsPerTab(errorsPerTab);
-      })
+      });
+      setCreatePopupData(undefined);
+      await actionRef?.current?.reload();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const intl = useIntl();
 
@@ -423,47 +394,19 @@ const Table = <Entity extends Record<string | symbol, any>,
       }
       {...rest}
     />
-    {/*Create modal*/}
-    <Modal
+
+    <CreateEntityModal<Entity>
+      entity={createPopupData}
       title={createPopupTitle}
-      open={createPopupData !== undefined}
-      width='80%'
-      closeIcon={true}
-      footer={[
-        <Button key='submit' type="primary" onClick={onCreateModalSubmit}>Create</Button>
-      ]}
+      mainTitle={descriptionsMainTitle}
+      columns={columns}
+      idColumnName={idColumnName}
       onCancel={() => {
-        setErrorsPerTab(new Map(sections.map((s) => [s.key, 0])));
-        form.resetFields();
         setCreatePopupData(undefined);
       }}
-    >
-      <Descriptions<Entity>
-        mainTitle={descriptionsMainTitle}
-        columns={columns ?? []}
-        entity={createPopupData}
-        size={"small"}
-        bordered
-        column={2}
-        style={{ marginBottom: 20 }}
-        labelStyle={{ width: '15%' }}
-        contentStyle={{ width: '25%' }}
-        canEdit={true}
-        errorsPerTabInitialValue={errorsPerTab}
-        editable={{
-          form,
-          editableKeys: useMemo(() => {
-            return [
-              ...buildFieldsFromColumnsForDescriptionsDisplay(
-                columns,
-                idColumnName,
-              ),
-            ];
-          }, [columns, idColumnName]),
-          actionRender: () => [],
-        }}
-      />
-    </Modal>
+      onSubmit={onCreateSubmit}
+    />
+
     {/*Update modal*/}
     <Modal
       title={editPopupTitle}
