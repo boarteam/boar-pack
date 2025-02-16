@@ -14,7 +14,7 @@ const useStyles = createStyles(() => {
   }
 })
 
-const BulkDeleteButton = <Entity extends Record<string | symbol, any>>(
+const BulkDeleteButton = <Entity extends Record<string | symbol, any>, TPathParams>(
   {
     selectedRecords,
     lastRequest,
@@ -23,7 +23,7 @@ const BulkDeleteButton = <Entity extends Record<string | symbol, any>>(
   } : {
     selectedRecords: Entity[],
     allSelected: boolean,
-    lastRequest: [TGetAllParams & Record<string, string | number>, any] | [],
+    lastRequest: [TGetAllParams & TPathParams, any] | [],
     onDelete: () => Promise<void>
   }) => {
   const { styles } = useStyles();

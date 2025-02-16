@@ -90,9 +90,6 @@ interface BaseProps<Entity,
   idColumnName?: string & keyof Entity | (string & keyof Entity)[];
   createNewDefaultParams?: Partial<Entity>;
   editableRecord?: Partial<Entity>;
-  afterSave?: (record: Entity) => Promise<void>;
-  actionRef?: MutableRefObject<ActionType | undefined>;
-  editable?: RowEditableConfig<Entity>;
   defaultSort?: QuerySortArr;
   searchableColumns?: TSearchableColumn[];
   viewOnly?: boolean;
@@ -100,20 +97,25 @@ interface BaseProps<Entity,
   popupCreation?: boolean;
   columnsState?: ColumnStateType;
   columnsSetSelect?: () => React.ReactNode;
-  popupDataState?: [Partial<Entity>, React.Dispatch<React.SetStateAction<Partial<Entity>>>]
   editPopupTitle?: string;
   createPopupTitle?: string;
   descriptionsMainTitle?: ProColumns<Entity>['title'] | null;
 }
 
-interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {
+export interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {
+  actionRef?: MutableRefObject<ActionType | undefined>;
+  editable?: RowEditableConfig<Entity>;
+  afterSave?: (record: Entity) => Promise<void>;
   onCreate?: ({}: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
-  onUpdate: ({}: Record<keyof Entity, string> & { requestBody: UpdateDto } & TPathParams) => Promise<Entity>;
-  onDelete: ({}: Record<keyof Entity, string> & TPathParams) => Promise<void>;
+  onUpdate: ({}: Partial<Entity> & {
+    requestBody: UpdateDto,
+    index?: number,
+  } & TPathParams) => Promise<Entity>;
+  onDelete: ({}: Partial<Entity> & TPathParams) => Promise<void>;
   entityToCreateDto: (entity: Entity) => CreateDto;
   entityToUpdateDto: (entity: Entity) => UpdateDto;
-  onUpdateMany: ({}: Record<keyof Entity, string> & { requestBody: { updateValues: Partial<UpdateDto>[], records: Entity[] } } & TPathParams) => Promise<void>,
-  onDeleteMany: ({}: Record<keyof Entity, string> & { requestBody: { records: Entity[] } } & TPathParams) => Promise<void>,
+  onUpdateMany: ({}: Partial<Entity> & { requestBody: { updateValues: Partial<UpdateDto>[], records: Entity[] } } & TPathParams) => Promise<void>,
+  onDeleteMany: ({}: Partial<Entity> & { requestBody: { records: Entity[] } } & TPathParams) => Promise<void>,
 }
 
 // Conditional type to merge base and editable props conditionally

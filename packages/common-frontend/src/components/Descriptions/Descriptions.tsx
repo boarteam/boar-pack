@@ -176,9 +176,8 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
       if (onUpdate && entityToUpdateDto) {
         await onUpdate({
           ...queryParams,
-          ...{} as Record<keyof Entity, string>, // todo: fix this
-          // @ts-ignore
-          requestBody: entityToUpdateDto(pick(record, [propName])),
+          ...{} as Partial<Entity>,
+          requestBody: entityToUpdateDto(pick(record, [propName as keyof Entity])),
         });
       }
 

@@ -117,7 +117,7 @@ const BulkEditDialog =  <Entity extends Record<string | symbol, any>>(
   );
 }
 
-const BulkEditButton = <Entity extends Record<string | symbol, any>>(
+const BulkEditButton = <Entity extends Record<string | symbol, any>, TPathParams>(
   {
     selectedRecords,
     lastRequest,
@@ -127,7 +127,7 @@ const BulkEditButton = <Entity extends Record<string | symbol, any>>(
     onSubmit,
   } : {
     selectedRecords: Entity[],
-    lastRequest: [TGetAllParams & Record<string, string | number>, any] | [],
+    lastRequest: [TGetAllParams & TPathParams, any] | [],
     idColumnName: string & keyof Entity | (string & keyof Entity)[],
     allSelected: boolean,
     columns: ProColumns<Entity>[],

@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Button, Form, Modal } from 'antd';
-import { columnsToDescriptionItemProps, Descriptions } from '../Descriptions';
-import { buildFieldsFromColumnsForDescriptionsDisplay, } from './tableTools';
 import { ProColumns } from "@ant-design/pro-components";
+import { Button, Form, Modal } from "antd";
+import { useState } from "react";
+import { columnsToDescriptionItemProps, Descriptions } from "../Descriptions";
+import { buildFieldsFromColumnsForDescriptionsDisplay } from "./tableTools";
 
 export interface CreateEntityModalProps<Entity> {
   /** Whether the modal is visible */
@@ -107,5 +107,3 @@ export function CreateEntityModal<Entity>({
     </Modal>
   );
 }
-
-export default CreateEntityModal;
