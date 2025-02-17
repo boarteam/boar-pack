@@ -246,14 +246,13 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     );
   }
 
-  const tabsItems: TabsProps['items'] = [];
   const formProps = contentViewMode === VIEW_MODE_TYPE.TABS ? {
     onValuesChange,
   } : undefined;
 
   const contentViewSwitcher = sections.length > 1 ? contentViewModeButton : undefined;
   const descriptions = sections.map((section, index) => {
-    const description = <ProDescriptions<Entity>
+    return <ProDescriptions<Entity>
       key={getKey(index)}
       title={section.title as React.ReactNode}
       actionRef={actionRef}
@@ -279,8 +278,14 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
       formProps={formProps}
       {...rest}
     />;
+  });
 
-    tabsItems.push({
+  if (contentViewMode === VIEW_MODE_TYPE.GENERAL) {
+    return descriptions;
+  }
+
+  const tabsItems: TabsProps['items'] = sections.map((section, index) => {
+    return {
       key: getKey(index),
       label: (
         <Badge
@@ -288,29 +293,19 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
           overflowCount={5}
           count={errorsPerSection.get(section.key)}
         >
-          {description.props.title}
+          {section.title as React.ReactNode}
         </Badge>
       ),
       forceRender: true,
-      children: description,
-    });
+      children: descriptions[index],
+    }
+  });
 
-    return description;
-  })
-
-  return (
-    <>
-      {
-        contentViewMode === VIEW_MODE_TYPE.TABS ?
-          (<Tabs
-            defaultActiveKey="0"
-            items={tabsItems}
-            tabBarExtraContent={contentViewModeButton}
-          />)
-          : descriptions
-      }
-    </>
-  );
+  return <Tabs
+    defaultActiveKey="0"
+    items={tabsItems}
+    tabBarExtraContent={contentViewModeButton}
+  />;
 };
 
 const Descriptions = React.forwardRef(DescriptionsComponent) as <Entity extends Record<string | symbol, any>,
