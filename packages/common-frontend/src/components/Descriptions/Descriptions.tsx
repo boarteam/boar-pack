@@ -11,7 +11,7 @@ import safetyRun from "../../tools/safetyRun";
 import { buildJoinFields, collectFieldsFromColumns } from "../Table";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { useForm } from "antd/es/form/Form";
-import ContentViewModeButton, { VIEW_MODE_TYPE } from "../Table/ContentViewModeButton";
+import useContentViewMode, { VIEW_MODE_TYPE } from "./useContentViewMode";
 import { createStyles } from "antd-style";
 import { debounce } from "lodash";
 import { NamePath } from "antd/lib/form/interface";
@@ -96,9 +96,12 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     return acc;
   }, new Map<Key, TDescriptionSection<Entity>>());
 
-  const [descriptionsModalViewMode, setDescriptionsModalViewMode] = useState<VIEW_MODE_TYPE>(
-    sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL
-  );
+  const {
+    contentViewModeButton,
+    contentViewMode
+  } = useContentViewMode({
+    mode: sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL
+  });
   const [errorsPerSection, setErrorsPerSection] = useState<Map<TDescriptionSection<Entity>['key'], number>>(
     new Map(sections.map(section => [section.key, 0]))
   );
@@ -116,8 +119,8 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
       const newErrorsPerSection = new Map<string, number>();
       sections.forEach((section) => {
         let errorCount = 0;
-        section.columns.forEach((column: any) => {
-          if (form.getFieldError(column.dataIndex)?.length > 0) {
+        section.columns.forEach((column) => {
+          if (form.getFieldError(column.dataIndex as NamePath<Entity>)?.length > 0) {
             errorCount++;
           }
         });
@@ -159,15 +162,6 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
         });
       });
   }, 500);
-
-  if (sections.length > 1) {
-    rest.extra = (
-      <ContentViewModeButton
-        contentViewMode={descriptionsModalViewMode}
-        setContentViewMode={setDescriptionsModalViewMode}
-      />
-    )
-  }
 
   const queryParams = useMemo(() => {
     const join = params?.join;
@@ -234,7 +228,7 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
 
   useEffect(() => {
     setData(entity);
-    form.setFieldsValue(entity as Entity);
+    form.setFieldsValue(entity);
   }, [entity])
 
   if (loading) {
@@ -253,20 +247,12 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
   }
 
   const tabsItems: TabsProps['items'] = [];
+  const formProps = contentViewMode === VIEW_MODE_TYPE.TABS ? {
+    onValuesChange,
+  } : undefined;
 
+  const contentViewSwitcher = sections.length > 1 ? contentViewModeButton : undefined;
   const descriptions = sections.map((section, index) => {
-    // In the general view mode we need to render extra elements only ones for the top one section
-    if (descriptionsModalViewMode === VIEW_MODE_TYPE.GENERAL && rest.extra && index !== 0) {
-      rest.extra = null;
-    }
-
-    // In the tabs view mode we should also handle fields update and show number of validated errors
-    if (descriptionsModalViewMode === VIEW_MODE_TYPE.TABS) {
-      rest.formProps = {
-        onValuesChange,
-      }
-    }
-
     const description = <ProDescriptions<Entity>
       key={getKey(index)}
       title={section.title as React.ReactNode}
@@ -289,6 +275,8 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
         ...editable,
       } : undefined}
       columns={section.columns}
+      extra={contentViewMode === VIEW_MODE_TYPE.GENERAL && index === 0 ? contentViewSwitcher : undefined}
+      formProps={formProps}
       {...rest}
     />;
 
@@ -313,8 +301,12 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
   return (
     <>
       {
-        descriptionsModalViewMode === VIEW_MODE_TYPE.TABS ?
-          (<Tabs defaultActiveKey="0" items={tabsItems} />)
+        contentViewMode === VIEW_MODE_TYPE.TABS ?
+          (<Tabs
+            defaultActiveKey="0"
+            items={tabsItems}
+            tabBarExtraContent={contentViewModeButton}
+          />)
           : descriptions
       }
     </>
