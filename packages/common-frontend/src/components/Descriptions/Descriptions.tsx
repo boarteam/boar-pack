@@ -1,10 +1,9 @@
 import { ActionType } from "@ant-design/pro-table";
-import React, { Key, useEffect, useMemo, useRef, useState } from "react";
+import React, { Key, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Badge, Button, Result, Tabs, TabsProps, Tooltip } from "antd";
 import { DeleteOutlined, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
-import { TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
-import { ProDescriptionsProps } from "@ant-design/pro-descriptions";
+import { DescriptionsRefType, TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
 import { PageLoading, ProDescriptions } from "@ant-design/pro-components";
 import { columnsToDescriptionItemProps, TDescriptionSection } from "./useDescriptionColumns";
 import pick from "lodash/pick";
@@ -15,9 +14,13 @@ import { useForm } from "antd/es/form/Form";
 import ContentViewModeButton, { VIEW_MODE_TYPE } from "../Table/ContentViewModeButton";
 import { createStyles } from "antd-style";
 import { debounce } from "lodash";
+import { NamePath } from "antd/lib/form/interface";
 
 const useStyles = createStyles(() => {
   return {
+    /**
+     * Styles for the ant-descriptions component to show edit icon on hover
+     */
     antDescriptionsStyles: {
       '.anticon-edit': {
         opacity: 0,
@@ -35,7 +38,7 @@ const useStyles = createStyles(() => {
   }
 })
 
-const Descriptions = <Entity extends Record<string | symbol, any>,
+const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
   CreateDto = Entity,
   UpdateDto = Entity,
   TPathParams = object,
@@ -45,6 +48,7 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     entity,
     getOne,
     onUpdate,
+    onCreate,
     pathParams,
     idColumnName = 'id',
     entityToUpdateDto,
@@ -55,23 +59,23 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     columns,
     params,
     onEntityChange,
-    errorsPerTabInitialValue,
     ...rest
   }: TDescriptionsProps<Entity,
     CreateDto,
     UpdateDto,
-    TPathParams> & Omit<ProDescriptionsProps<Entity>, 'columns'>
+    TPathParams>,
+  ref: React.Ref<DescriptionsRefType>,
 ) => {
   const { styles } = useStyles();
 
+  let [form] = useForm<Entity>();
   if (!editable?.form) {
     editable = {
       ...editable,
-      form: useForm<Entity>()[0],
+      form,
     }
   }
-
-  const form = editable.form;
+  form = editable.form;
 
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
@@ -96,8 +100,40 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL
   );
   const [errorsPerSection, setErrorsPerSection] = useState<Map<TDescriptionSection<Entity>['key'], number>>(
-    errorsPerTabInitialValue ?? new Map(sections.map(section => [section.key, 0]))
+    new Map(sections.map(section => [section.key, 0]))
   );
+
+  const handleSubmit = async () => {
+    try {
+      // Validate all fields in the form
+      const data = await form.validateFields();
+      // Let the parent component handle the submit logic
+      await onCreate(data);
+    } catch (error) {
+      console.error('Validation or submission failed:', error);
+    } finally {
+      // Recalculate the error count per section (tab) after validation
+      const newErrorsPerSection = new Map<string, number>();
+      sections.forEach((section) => {
+        let errorCount = 0;
+        section.columns.forEach((column: any) => {
+          if (form.getFieldError(column.dataIndex)?.length > 0) {
+            errorCount++;
+          }
+        });
+        newErrorsPerSection.set(section.key, errorCount);
+      });
+      setErrorsPerSection(newErrorsPerSection);
+    }
+  };
+
+  useImperativeHandle(ref, () => ({
+    reset: () => {
+      setErrorsPerSection(new Map(sections.map(section => [section.key, 0])));
+      form.resetFields();
+    },
+    submit: () => handleSubmit(),
+  }));
 
   const onValuesChange = debounce((changedValues, allValues) => {
     let key = Object.keys(changedValues)[0];
@@ -111,9 +147,11 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     form.validateFields([key])
       .finally(() => {
         const section = columnDataIndexToSection.get(key);
-        const dataIndexes = section.columns.map(column => column.dataIndex);
+        const dataIndexes = section.columns.map(column => {
+          return Array.isArray(column.dataIndex) ? column.dataIndex.join('.') : column.dataIndex;
+        });
 
-        const errorsNumber = form.getFieldsError(dataIndexes).reduce((acc, field) => acc + field.errors.length, 0);
+        const errorsNumber = form.getFieldsError(dataIndexes as NamePath<Entity>[]).reduce((acc, field) => acc + field.errors.length, 0);
         setErrorsPerSection((prev) => {
           const updated = new Map(prev);
           updated.set(section.key, errorsNumber);
@@ -199,12 +237,6 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     form.setFieldsValue(entity as Entity);
   }, [entity])
 
-  useEffect(() => {
-    if (errorsPerTabInitialValue) {
-      setErrorsPerSection(errorsPerTabInitialValue);
-    }
-  }, [errorsPerTabInitialValue]);
-
   if (loading) {
     return <PageLoading />;
   }
@@ -288,5 +320,12 @@ const Descriptions = <Entity extends Record<string | symbol, any>,
     </>
   );
 };
+
+const Descriptions = React.forwardRef(DescriptionsComponent) as <Entity extends Record<string | symbol, any>,
+  CreateDto = Entity,
+  UpdateDto = Entity,
+  TPathParams = object>(
+  props: TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams>
+) => React.ReactElement;
 
 export default Descriptions;

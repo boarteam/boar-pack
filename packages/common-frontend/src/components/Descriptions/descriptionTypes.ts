@@ -1,10 +1,9 @@
-import { MutableRefObject } from "react";
+import React, { MutableRefObject } from "react";
 import { ActionType } from "@ant-design/pro-table";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { QueryJoin } from "@nestjsx/crud-request";
 import { ProColumns } from "@ant-design/pro-components";
 import { ProDescriptionsProps } from "@ant-design/pro-descriptions";
-import { TDescriptionSection } from "./useDescriptionColumns";
 
 export type TGetOneParams = {
   /**
@@ -23,6 +22,12 @@ export type TGetOneParams = {
 export type TDescriptionGetRequestParams = {
   join?: QueryJoin | QueryJoin[];
 };
+
+export type DescriptionsRefType = {
+  reset: () => void;
+  submit: () => void;
+};
+
 export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = object> = {
   mainTitle?: ProColumns<Entity>['title'] | null,
   entity?: Partial<Entity>,
@@ -31,6 +36,7 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
     requestBody: UpdateDto,
     index?: number,
   } & TPathParams) => Promise<Entity>,
+  onCreate: (data: Partial<Entity>) => Promise<void>;
   onDelete?: ({}: Partial<Entity> & TPathParams) => Promise<void>,
   pathParams?: TPathParams,
   idColumnName?: string & keyof Entity,
@@ -43,8 +49,8 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
   params?: TDescriptionGetRequestParams,
   columns: ProColumns<Entity>[],
   onEntityChange?: (entity: Entity | null) => void;
-  errorsPerTabInitialValue?: Map<TDescriptionSection<Entity>['key'], number>;
-}
+  ref?: React.Ref<DescriptionsRefType>,
+} & Omit<ProDescriptionsProps<Entity>, 'columns'>;
 
 export type TDescriptionsCreateModalProps<Entity> = Omit<ProDescriptionsProps<Entity>, 'columns'> & {
   modalTitle?: string,

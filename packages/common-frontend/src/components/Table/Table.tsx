@@ -114,6 +114,8 @@ const Table = <Entity extends Record<string | symbol, any>,
     entityToCreateDto,
     actionRef,
     createButtonSize: rest.size,
+    popupCreation,
+    createNewDefaultParams,
   });
 
   useEffect(() => {

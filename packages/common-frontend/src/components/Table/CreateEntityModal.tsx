@@ -1,7 +1,7 @@
 import { ProColumns } from "@ant-design/pro-components";
-import { Button, Form, Modal } from "antd";
-import { useState } from "react";
-import { columnsToDescriptionItemProps, Descriptions } from "../Descriptions";
+import { Button, Modal } from "antd";
+import { useRef } from "react";
+import { Descriptions, DescriptionsRefType } from "../Descriptions";
 import { buildFieldsFromColumnsForDescriptionsDisplay } from "./tableTools";
 
 export interface CreateEntityModalProps<Entity> {
@@ -26,7 +26,12 @@ export interface CreateEntityModalProps<Entity> {
   onSubmit: (data: any) => Promise<void>;
 }
 
-export function CreateEntityModal<Entity>({
+export function CreateEntityModal<
+  Entity,
+  CreateDto = Entity,
+  UpdateDto = Entity,
+  TPathParams = object
+>({
   entity,
   open = entity !== undefined,
   title,
@@ -36,38 +41,10 @@ export function CreateEntityModal<Entity>({
   onCancel,
   onSubmit,
 }: CreateEntityModalProps<Entity>) {
-  const [form] = Form.useForm();
-  const [errorsPerTab, setErrorsPerTab] = useState<Map<string, number>>(new Map());
-
-  // Build description sections (grouping of fields) based on the columns
-  const sections = columnsToDescriptionItemProps<Entity>(columns, 'Main');
+  const descriptionsRef = useRef<DescriptionsRefType>(null);
 
   // Calculate the editable keys from the columns and idColumnName
   const editableKeys = [...buildFieldsFromColumnsForDescriptionsDisplay(columns, idColumnName)];
-
-  const handleSubmit = async () => {
-    try {
-      // Validate all fields in the form
-      const data = await form.validateFields();
-      // Let the parent component handle the submit logic
-      await onSubmit(data);
-    } catch (error) {
-      console.error('Validation or submission failed:', error);
-    } finally {
-      // Recalculate the error count per section (tab) after validation
-      const newErrorsPerTab = new Map<string, number>();
-      sections.forEach((section) => {
-        let errorCount = 0;
-        section.columns.forEach((column: any) => {
-          if (form.getFieldError(column.dataIndex)?.length > 0) {
-            errorCount++;
-          }
-        });
-        newErrorsPerTab.set(section.key, errorCount);
-      });
-      setErrorsPerTab(newErrorsPerTab);
-    }
-  };
 
   return (
     <Modal
@@ -76,17 +53,17 @@ export function CreateEntityModal<Entity>({
       width="80%"
       closeIcon={true}
       footer={[
-        <Button key="submit" type="primary" onClick={handleSubmit}>
+        <Button key="submit" type="primary" onClick={() => descriptionsRef.current?.submit()}>
           Create
         </Button>,
       ]}
       onCancel={() => {
-        setErrorsPerTab(new Map(sections.map((s) => [s.key, 0])));
-        form.resetFields();
+        descriptionsRef.current?.reset();
         onCancel();
       }}
     >
-      <Descriptions
+      <Descriptions<Entity, CreateDto, UpdateDto, TPathParams>
+        ref={descriptionsRef}
         mainTitle={mainTitle}
         columns={columns ?? []}
         entity={entity}
@@ -97,9 +74,8 @@ export function CreateEntityModal<Entity>({
         labelStyle={{ width: '15%' }}
         contentStyle={{ width: '25%' }}
         canEdit={true}
-        errorsPerTabInitialValue={errorsPerTab}
+        onCreate={onSubmit}
         editable={{
-          form,
           editableKeys,
           actionRender: () => [],
         }}

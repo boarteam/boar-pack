@@ -33,7 +33,7 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
 }: {
   actionRef?: MutableRefObject<ActionType | undefined>;
   pathParams: TPathParams;
-  entityToCreateDto: (entity: Entity) => CreateDto;
+  entityToCreateDto: (entity: Partial<Entity>) => CreateDto;
   onCreate?: ({}: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
   createButtonSize: SizeType;
   popupCreation?: boolean;
@@ -41,7 +41,7 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
 } & Omit<CreateEntityModalProps<Entity>, 'onSubmit' | 'onCancel' | 'entity'>) {
   const [createPopupData, setCreatePopupData] = useState<Partial<Entity> | undefined>();
 
-  const onCreateSubmit = async (data: any) => {
+  const onCreateSubmit = async (data: Partial<Entity>) => {
     try {
       await onCreate?.({
         ...pathParams,
@@ -77,17 +77,17 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
     <PlusOutlined /> <FormattedMessage id={'table.newButton'} />
   </Button>;
 
-  const modal = CreateEntityModal({
-    entity: createPopupData,
-    title,
-    mainTitle,
-    columns,
-    idColumnName,
-    onCancel: () => {
+  const modal = <CreateEntityModal<Entity, CreateDto, Entity, TPathParams>
+    entity={createPopupData}
+    title={title}
+    mainTitle={mainTitle}
+    columns={columns}
+    idColumnName={idColumnName}
+    onCancel={() => {
       setCreatePopupData(undefined);
-    },
-    onSubmit: onCreateSubmit,
-  });
+    }}
+    onSubmit={onCreateSubmit}
+  />;
 
   return {
     creationModal: modal,
