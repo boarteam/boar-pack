@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.4.0...@boarteam/boar-pack-common-frontend@2.5.0) (2025-02-17)
+
+
+### Features
+
+* **Table, Descriptions:** Creating records in modals with tabs ([#41](https://github.com/boarteam/boar-pack/issues/41)) ([45a676d](https://github.com/boarteam/boar-pack/commit/45a676da993df37b9486691f9479c1539aa3234d))
+
+
+
+
+
 # [2.4.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.3.0...@boarteam/boar-pack-common-frontend@2.4.0) (2025-01-13)
 
 
