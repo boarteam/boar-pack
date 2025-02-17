@@ -169,11 +169,12 @@ export function buildFieldsFromColumns<T>(
     // skip id column because it is always included by backend
     // and join fields because they are included by join
 
-    if (!col.dataIndex || (Array.isArray(idColumnName) ? idColumnName.includes(col.dataIndex) : col.dataIndex === idColumnName) || joinFields.has(col.dataIndex as string)) {
+    const dataIndex = String(Array.isArray(col.dataIndex) ? col.dataIndex[0] : col.dataIndex);
+    if (!dataIndex || (Array.isArray(idColumnName) ? idColumnName.includes(dataIndex) : dataIndex === idColumnName) || joinFields.has(dataIndex)) {
       return;
     }
 
-    fields.add(String(Array.isArray(col.dataIndex) ? col.dataIndex[0] : col.dataIndex));
+    fields.add(dataIndex);
   });
 
   return fields;
