@@ -1,8 +1,9 @@
-import { MutableRefObject } from "react";
+import React, { MutableRefObject } from "react";
 import { ActionType } from "@ant-design/pro-table";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { QueryJoin } from "@nestjsx/crud-request";
-import { ProColumns, ProDescriptionsProps } from "@ant-design/pro-components";
+import { ProColumns } from "@ant-design/pro-components";
+import { ProDescriptionsProps } from "@ant-design/pro-descriptions";
 
 export type TGetOneParams = {
   /**
@@ -21,15 +22,25 @@ export type TGetOneParams = {
 export type TDescriptionGetRequestParams = {
   join?: QueryJoin | QueryJoin[];
 };
+
+export type DescriptionsRefType = {
+  reset: () => void;
+  submit: () => void;
+};
+
 export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = object> = {
   mainTitle?: ProColumns<Entity>['title'] | null,
   entity?: Partial<Entity>,
   getOne?: ({}: TGetOneParams & TPathParams) => Promise<Entity | null>,
-  onUpdate?: ({}: Record<keyof Entity, string> & { requestBody: UpdateDto } & TPathParams) => Promise<Entity>,
-  onDelete?: ({}: Record<keyof Entity, string> & TPathParams) => Promise<void>,
+  onUpdate?: ({}: Partial<Entity> & {
+    requestBody: UpdateDto,
+    index?: number,
+  } & TPathParams) => Promise<Entity>,
+  onCreate: (data: Partial<Entity>) => Promise<void>;
+  onDelete?: ({}: Partial<Entity> & TPathParams) => Promise<void>,
   pathParams?: TPathParams,
   idColumnName?: string & keyof Entity,
-  entityToUpdateDto?: (entity: Partial<Entity>) => UpdateDto,
+  entityToUpdateDto?: (entity: Entity) => UpdateDto,
   createNewDefaultParams?: Partial<Entity>,
   afterSave?: (record: Entity) => Promise<void>,
   actionRef?: MutableRefObject<ActionType | undefined>,
@@ -38,9 +49,12 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
   params?: TDescriptionGetRequestParams,
   columns: ProColumns<Entity>[],
   onEntityChange?: (entity: Entity | null) => void;
-}
+  ref?: React.Ref<DescriptionsRefType>,
+} & Omit<ProDescriptionsProps<Entity>, 'columns'>;
 
 export type TDescriptionsCreateModalProps<Entity> = Omit<ProDescriptionsProps<Entity>, 'columns'> & {
+  modalTitle?: string,
+  mainTitle?: ProColumns<Entity>['title'] | null,
   idColumnName: string & keyof Entity | (string & keyof Entity)[],
   columns: ProColumns<Entity>[],
   data: Partial<Entity> | undefined,

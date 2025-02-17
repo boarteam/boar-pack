@@ -58,8 +58,10 @@ export class User {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
 
   policies: PackRule<SubjectRawRule<Action, TSubjectsNames, unknown>>[];
+
+  experimentalFeatures: string[];
 }

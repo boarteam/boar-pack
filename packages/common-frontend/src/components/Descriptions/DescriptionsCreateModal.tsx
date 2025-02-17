@@ -12,7 +12,7 @@ const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
   data,
   onClose,
   onSubmit,
-  ...rest
+...rest
 }: TDescriptionsCreateModalProps<Entity>) => {
   const sections = columnsToDescriptionItemProps(columns, 'General');
   const [form] = useForm();

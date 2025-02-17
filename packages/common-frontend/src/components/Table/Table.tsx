@@ -1,30 +1,14 @@
 import ProTable, { ActionType } from "@ant-design/pro-table";
-import React, { useEffect, useRef, useState } from "react";
-import { Button, Popover, Space, Tooltip, message } from "antd";
-import { DeleteOutlined, PlusOutlined, QuestionCircleTwoTone, StopOutlined } from "@ant-design/icons";
-import { FormattedMessage, useIntl } from "react-intl";
-import { flushSync } from "react-dom";
-import { applyKeywordToSearch, buildJoinFields, collectFieldsFromColumns, getFiltersSearch } from "./tableTools";
-import { TFilterParams, TFilters, TGetAllParams, TSort, TTableProps } from "./tableTypes";
+import { useEffect, useRef, useState } from "react";
+import { Modal } from "antd";
+import { TFilterParams, TFilters, TSort, TTableProps } from "./tableTypes";
 import useColumnsSets from "./useColumnsSets";
-import DescriptionsCreateModal from "../Descriptions/DescriptionsCreateModal";
-import BulkEditButton from "./BulkEditButton";
-import _ from "lodash";
-import BulkDeleteButton from "./BulkDeleteButton";
 import { createStyles } from "antd-style";
-
-let creatingRecordsCount = 0;
-
-export const KEY_SYMBOL = Symbol('key');
-const NEW_RECORD = 'NEW_RECORD';
-
-export function getNewId(): string {
-  return NEW_RECORD + creatingRecordsCount++;
-}
-
-export function isRecordNew(record: Record<string | symbol, any>): boolean {
-  return record[KEY_SYMBOL]?.startsWith?.(NEW_RECORD) || record.id?.startsWith?.(NEW_RECORD) || false;
-}
+import { Descriptions } from "../Descriptions";
+import { KEY_SYMBOL, useCreation } from "./useCreation";
+import { getTableDataQueryParams } from "./getTableDataQueryParams";
+import { useEditableTable } from "./useEditableTable";
+import { useBulkEditing } from "./useBulkEditing";
 
 const useStyles = createStyles(() => {
   return {
@@ -42,7 +26,7 @@ const Table = <Entity extends Record<string | symbol, any>,
   TEntityParams = {},
   TPathParams extends Record<string, string | number> = {},
   TKey = string,
-  >(
+>(
   {
     getAll,
     onCreate,
@@ -55,6 +39,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     entityToCreateDto,
     entityToUpdateDto,
     createNewDefaultParams,
+    editableRecord,
     afterSave,
     actionRef: actionRefProp,
     editable,
@@ -68,7 +53,9 @@ const Table = <Entity extends Record<string | symbol, any>,
     popupCreation = false,
     toolBarRender,
     params,
-    popupDataState,
+    editPopupTitle,
+    createPopupTitle,
+    descriptionsMainTitle,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -78,19 +65,63 @@ const Table = <Entity extends Record<string | symbol, any>,
 ) => {
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
-  const [createPopupData, setCreatePopupData] = popupDataState ?? useState<Partial<Entity> | undefined>();
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [selectedRecords, setSelectedRecords] = useState<Entity[]>([]);
-  const [lastRequest, setLastRequest] = useState<[TGetAllParams & TPathParams, any] | []>([]);
-  const [allSelected, setAllSelected] = useState(false);
+  const [updatePopupData, setUpdatePopupData] = useState<Partial<Entity> | undefined>();
   const { styles } = useStyles();
-  const [messageApi, contextHolder] = message.useMessage();
 
-  const intl = useIntl();
+  const {
+    editableConfig,
+  } = useEditableTable<Entity, CreateDto, UpdateDto, TPathParams>({
+    actionRef,
+    pathParams,
+    onCreate,
+    onUpdate,
+    onDelete,
+    entityToCreateDto,
+    entityToUpdateDto,
+    afterSave,
+    editable,
+    onDeleteMany,
+    onUpdateMany,
+  });
+
+  const {
+    rowSelection,
+    setSelectedRecords,
+    setLastRequest,
+    bulkEditButton,
+    bulkDeleteButton,
+    messagesContext,
+  } = useBulkEditing<Entity, TPathParams, UpdateDto, TEntityParams & TFilterParams>({
+    actionRef,
+    columns,
+    idColumnName,
+    onDeleteMany,
+    onUpdateMany,
+    entityToUpdateDto,
+    pathParams,
+  });
+
+  const {
+    creationModal,
+    createButton,
+  } = useCreation<Entity, CreateDto, TPathParams>({
+    title: createPopupTitle,
+    mainTitle: descriptionsMainTitle,
+    columns: columns,
+    idColumnName: idColumnName,
+    onCreate,
+    pathParams,
+    entityToCreateDto,
+    actionRef,
+    createButtonSize: rest.size,
+    popupCreation,
+    createNewDefaultParams,
+  });
 
   useEffect(() => {
+    setUpdatePopupData(editableRecord);
     actionRef?.current?.reload();
-  }, [JSON.stringify(pathParams), JSON.stringify(params)]);
+  }, [editableRecord, JSON.stringify(pathParams), JSON.stringify(params)]);
 
   const {
     columnsSetSelect: localColumnsSetSelect,
@@ -108,55 +139,17 @@ const Table = <Entity extends Record<string | symbol, any>,
     sort: TSort = {},
     filters: TFilters = {},
   ) => {
-    const {
-      current,
-      pageSize,
-      keyword,
-      baseFilters,
-      join,
-      sortMap,
-      ...filtersFromSearchForm
-    } = params;
-
-    const queryParams: TGetAllParams & TPathParams = {
-      ...pathParams,
-      page: current,
-      limit: pageSize,
-    };
-
-    const sortBy = Object
-      .entries(sort)
-      .reduce<string[]>(
-        (data: string[], [key, direction]) => {
-          data.push(`${sortMap?.[key] || key},${direction === 'ascend' ? 'ASC' : 'DESC'}`);
-          return data;
-        },
-        []
-      );
-    if (!sortBy.length && defaultSort) {
-      sortBy.push(defaultSort.join(','));
-    }
-    queryParams.sort = sortBy;
-
-    let search = getFiltersSearch({
-      baseFilters,
-      filters: {
-        ...filters,
-        ...filtersFromSearchForm,
-      },
+    const queryParams = getTableDataQueryParams({
+      params,
+      sort,
+      filters,
+      pathParams,
+      defaultSort,
       searchableColumns,
-    });
-    search = applyKeywordToSearch(search, searchableColumns!, columnsState.value!, keyword);
-    queryParams.s = JSON.stringify(search);
-
-    const { joinSelect, joinFields } = buildJoinFields(join);
-    queryParams.join = joinSelect;
-
-    queryParams.fields = columns && collectFieldsFromColumns(
       columns,
       idColumnName,
-      joinFields,
-    ) || [];
+      columnsState,
+    });
 
     const result = await getAll(queryParams);
 
@@ -167,26 +160,6 @@ const Table = <Entity extends Record<string | symbol, any>,
     ]);
     return result;
   }
-
-  const createButton = <Button
-    size={rest.size}
-    type="primary"
-    key="create"
-    onClick={() => {
-      if (popupCreation) {
-        setCreatePopupData(createNewDefaultParams);
-      } else {
-        actionRef?.current?.addEditRecord({
-          [KEY_SYMBOL]: getNewId(),
-          ...createNewDefaultParams,
-        }, {
-          position: 'top',
-        });
-      }
-    }}
-  >
-    <PlusOutlined /> <FormattedMessage id={'table.newButton'} />
-  </Button>;
 
   return (<>
     <ProTable<Entity, TEntityParams & TFilterParams>
@@ -210,119 +183,17 @@ const Table = <Entity extends Record<string | symbol, any>,
       }}
       bordered
       search={false}
-      editable={{
-        type: 'multiple',
-        editableKeys,
-        onChange: setEditableRowKeys,
-        async onSave(
-          id,
-          record,
-          origin,
-          newLine,
-        ) {
-          if (newLine) {
-            await onCreate?.({
-              ...pathParams,
-              requestBody: entityToCreateDto(record),
-            });
-          } else {
-            await onUpdate({
-              ...pathParams,
-              ...record,
-              requestBody: entityToUpdateDto({
-                ...pathParams,
-                ...record,
-              }),
-            })
-          }
-
-          if (typeof afterSave === 'function') {
-            await afterSave(record);
-          }
-
-          flushSync(() => {
-            actionRef?.current?.reload();
-          });
-        },
-        async onCancel(
-          id,
-          record,
-          origin,
-        ) {
-          if (record) {
-            Object.assign(record, origin);
-          }
-        },
-        async onDelete(id, row) {
-          await onDelete({ ...row, ...pathParams });
-        },
-        deletePopconfirmMessage: intl.formatMessage({ id: 'table.deletePopconfirmMessage' }),
-        onlyAddOneLineAlertMessage: intl.formatMessage({ id: 'table.onlyAddOneLineAlertMessage' }),
-        cancelText: <Tooltip title={intl.formatMessage({ id: 'table.cancelText' })}><StopOutlined /></Tooltip>,
-        deleteText: <Tooltip title={intl.formatMessage({ id: 'table.deleteText' })}><DeleteOutlined /></Tooltip>,
-        saveText: <Button size={"small"} type={"primary"}><FormattedMessage id={'table.saveText'} /></Button>,
-        ...editable,
-      }}
+      editable={editableConfig}
       toolBarRender={(...args) => [
-        ...toolBarRender && toolBarRender(...args) || [],
         columnsSetSelect?.() || null,
         !viewOnly && onUpdateMany
-          ? (
-            <BulkEditButton
-              selectedRecords={selectedRecords}
-              lastRequest={lastRequest}
-              allSelected={allSelected}
-              columns={columns}
-              idColumnName={idColumnName}
-              // @ts-ignore
-              onSubmit={values => onUpdateMany({
-                ...pathParams,
-                ...lastRequest[0],
-                requestBody: {
-                  updateValues: _.pickBy(
-                    // @ts-ignore
-                    entityToUpdateDto({
-                      ...pathParams,
-                      ...values,
-                    }),
-                    (value, key) =>  _.has(values, key),
-                  ),
-                  records: allSelected ? [] : selectedRecords,
-                },
-              }).then(() => {
-                messageApi.open({
-                  type: 'success',
-                  content: 'Operation Successful',
-                });
-                actionRef?.current?.reload();
-              })}
-            />
-          )
-          : <></>,
+          ? bulkEditButton
+          : null,
         !viewOnly && onDeleteMany
-          ? (
-            <BulkDeleteButton
-              selectedRecords={selectedRecords}
-              lastRequest={lastRequest}
-              allSelected={allSelected}
-              // @ts-ignore
-              onDelete={() => onDeleteMany({
-                ...pathParams,
-                ...lastRequest[0],
-                requestBody: {
-                  records: allSelected ? [] : selectedRecords,
-                },
-              }).then(() => {
-                messageApi.open({
-                  type: 'success',
-                  content: 'Operation Successful',
-                });
-                actionRef?.current?.reload();
-              })}
-            />
-          )
-          : <></>,
+          ? bulkDeleteButton
+          : null,
         !viewOnly && createButton || null,
+        ...toolBarRender && toolBarRender(...args) || [],
       ]}
       columns={columns}
       defaultSize='small'
@@ -331,71 +202,37 @@ const Table = <Entity extends Record<string | symbol, any>,
       {
         ...(
           !viewOnly && (onUpdateMany || onDeleteMany)
-            ? {
-              rowSelection: {
-                selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]),
-                selections: [
-                  {
-                    key: 'all',
-                    text: (
-                      <Space>
-                        Select ALL
-                        <Popover
-                          content={(
-                            <div style={{ width: '100%' }}>
-                              This includes records from ALL pages of the table.
-                            </div>
-                          )}
-                          title={'Select All'}
-                          trigger={['hover', 'click']}
-                          zIndex={1080}
-                        >
-                          <QuestionCircleTwoTone />
-                        </Popover>
-                      </Space>
-                    ),
-                    onSelect: () => {
-                      setSelectedRecords(lastRequest[1].data);
-                      setAllSelected(true);
-                    },
-                  },
-                ],
-                onChange: (rowKeys, records) => {
-                  setSelectedRecords(records);
-                  allSelected && setAllSelected(false);
-                },
-              }
-            }
+            ? { rowSelection }
             : {}
         )
       }
       {...rest}
     />
-    <DescriptionsCreateModal<Entity>
-      data={createPopupData}
-      onClose={() => setCreatePopupData(undefined)}
-      onSubmit={async (data) => {
-        try {
-          await onCreate?.({
-            ...pathParams,
-            requestBody: entityToCreateDto({
-              ...pathParams,
-              ...data,
-            })
-          });
-          actionRef?.current?.reload();
-          setCreatePopupData(undefined);
-        }
-        catch (e) {
-          console.error(e);
-        }
+
+    {creationModal}
+
+    <Modal
+      title={editPopupTitle}
+      open={updatePopupData !== undefined}
+      width='80%'
+      closeIcon={true}
+      footer={null}
+      onCancel={() => {
+        actionRef?.current?.reload();
+        setUpdatePopupData(undefined);
       }}
-      idColumnName={idColumnName}
-      columns={columns ?? []}
-    />
-    {contextHolder}
+    >
+      <Descriptions<Entity, CreateDto, UpdateDto, TPathParams>
+        mainTitle={descriptionsMainTitle}
+        columns={columns ?? []}
+        entity={updatePopupData}
+        canEdit={true}
+        onUpdate={onUpdate}
+        entityToUpdateDto={entityToUpdateDto}
+      />
+    </Modal>
+    {messagesContext}
   </>);
 };
 
 export default Table;
-

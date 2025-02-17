@@ -3,9 +3,10 @@ import { TUser, User } from './entities/user.entity';
 import { Controller, Req } from '@nestjs/common';
 import type { Request } from 'express';
 import { UsersService } from './users.service';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
-import { SkipPoliciesGuard } from '../casl/policies.guard';
+import { CaslAbilityFactory } from '../casl';
+import { SkipPoliciesGuard } from '../casl';
 import { ApiTags } from '@nestjs/swagger';
+import { TUsersConfig, UsersConfigService } from "./users.config";
 
 @Crud({
   model: {
@@ -34,10 +35,14 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('Users')
 @Controller('me')
 export class MeController implements CrudController<User> {
+  private config: TUsersConfig;
   constructor(
     public service: UsersService,
     private caslAbilityFactory: CaslAbilityFactory,
-  ) {}
+    private usersConfig: UsersConfigService,
+  ) {
+    this.config = this.usersConfig.config;
+  }
 
   get base(): CrudController<User> {
     return this;
@@ -51,6 +56,7 @@ export class MeController implements CrudController<User> {
     const user = await this.base.getOneBase!(req);
     const ability = await this.caslAbilityFactory.createForUser(user);
     user.policies = this.caslAbilityFactory.packAbility(ability);
+    user.experimentalFeatures = this.config.experimentalFeatures;
 
     return user;
   }
