@@ -11,6 +11,7 @@ import { VIEW_USERS } from "./users.constants";
 import { DataSource } from "typeorm";
 import { BcryptModule } from "../bcrypt/bcrypt.module";
 import BcryptService from "../bcrypt/bcrypt.service";
+import { UsersConfigService } from "./users.config";
 
 @Module({})
 export class UsersModule implements OnModuleInit {
@@ -34,6 +35,7 @@ export class UsersModule implements OnModuleInit {
             return new UsersService(dataSource.getRepository(User));
           }
         },
+        UsersConfigService,
       ],
       exports: [UsersService],
     };
