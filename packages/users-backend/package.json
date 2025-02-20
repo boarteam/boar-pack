@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-users-backend",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
   "main": "src/index",
   "files": [
