@@ -16,6 +16,8 @@
   "dependencies": {
     "@boarteam/boar-pack-common-backend": "^2.3.0",
     "@casl/ability": "^6.7.3",
+    "@dataui/crud": "^5.3.4",
+    "@dataui/crud-typeorm": "^5.3.4",
     "@nestjs/common": "^11.0.10",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.10",
