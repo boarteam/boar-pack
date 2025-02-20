@@ -1853,6 +1853,36 @@
   resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.6.1.tgz#b6c75a56a1947cc916ea058772d666a2c8932f31"
   integrity sha512-SITSV6aIXsuVNV3f3O0f2n/cgyEDWoSqtZMYiAmcsYHydcKrOz3gUxB/iXd/Qf08+IZX4KpgNbvUdMBmWz+kcA==
 
+"@dataui/crud-request@^5.3.4":
+  version "5.3.4"
+  resolved "https://registry.yarnpkg.com/@dataui/crud-request/-/crud-request-5.3.4.tgz#9bc4913f10683667ac32ad2cc4ca1c27e08f1913"
+  integrity sha512-Q8hvGQppeWtKZdCe6h414M7jgvuX4cNplnQRlWCCR4rOnSYjWcQV5aJlbEaSC3oNCzb5WZJs7SSf7fF/JV9KMA==
+  dependencies:
+    "@dataui/crud-util" "^5.3.4"
+    qs "^6.8.0"
+
+"@dataui/crud-typeorm@^5.3.4":
+  version "5.3.4"
+  resolved "https://registry.yarnpkg.com/@dataui/crud-typeorm/-/crud-typeorm-5.3.4.tgz#f40580ef37433801f0bfba3c5bd2812d7c12c772"
+  integrity sha512-rFIop8t2K/Y4YuifjWbuiSybAm+4s8jSlcGkn/f2Q2GmPKGt0xDkg56UBJ9m0kvqejYtT4lUcUz4d5cG6/RgpA==
+  dependencies:
+    "@zmotivat0r/o0" "^1.0.2"
+
+"@dataui/crud-util@^5.3.4":
+  version "5.3.4"
+  resolved "https://registry.yarnpkg.com/@dataui/crud-util/-/crud-util-5.3.4.tgz#d4bd10070525b6ee43136bb6b6f6139208e6cfcd"
+  integrity sha512-NAJ/KQshpttB/k8V72tpOIcfgZ/KINivfLq5T3Wyy7BKU6cARYzuE4gHSWjSM5WcyavHr9tBaodTAoNd7j+KiA==
+
+"@dataui/crud@^5.3.4":
+  version "5.3.4"
+  resolved "https://registry.yarnpkg.com/@dataui/crud/-/crud-5.3.4.tgz#77af05e9c292fb986745d8d81b1b30f9a310e2c9"
+  integrity sha512-Klw0/fiBvbuZoswPbfhlNhfwDizIhg1WgSxD/rlZ9E08e+L5iU/KwgIHQsP+kKhv0nF+z6H97XLgzrJRGcuhnA==
+  dependencies:
+    "@dataui/crud-request" "^5.3.4"
+    "@dataui/crud-util" "^5.3.4"
+    deepmerge "^3.2.0"
+    pluralize "^8.0.0"
+
 "@dnd-kit/accessibility@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@dnd-kit/accessibility/-/accessibility-3.1.0.tgz#1054e19be276b5f1154ced7947fc0cb5d99192e0"
