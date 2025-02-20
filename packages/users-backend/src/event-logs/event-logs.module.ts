@@ -12,6 +12,7 @@ import { CONFIGURE_EVENTS_MIDDLEWARE, SERVICE_CONFIG_TOKEN } from "./event-logs.
 import { TEventLogServiceConfig } from "./event-logs.types";
 import { EventLogsLogger } from "./event-logs.logger";
 import { EventLogMiddleware } from "./event-logs.middleware";
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({})
 export class EventLogsModule implements NestModule {
@@ -49,6 +50,7 @@ export class EventLogsModule implements NestModule {
       module: EventLogsModule,
       imports: [
         CaslModule.forFeature(),
+        ScheduleModule.forRoot(),
         TypeOrmModule.forFeature([EventLog], config.dataSourceName),
       ],
       providers: [
