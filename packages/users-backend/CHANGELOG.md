@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.2.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.2.0...@boarteam/boar-pack-users-backend@5.2.1) (2025-02-20)
+
+
+### Bug Fixes
+
+* **users-backend:** Added missed users config service ([#43](https://github.com/boarteam/boar-pack/issues/43)) ([5a8b444](https://github.com/boarteam/boar-pack/commit/5a8b4442931fc64a60ba408783e5af478dcb6419))
+
+
+
+
+
 # [5.2.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.1.1...@boarteam/boar-pack-users-backend@5.2.0) (2025-02-17)
 
 
