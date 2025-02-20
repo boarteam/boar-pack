@@ -1,6 +1,6 @@
 import { Body, Controller, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Crud, CrudAuth, CrudController, type CrudRequest, Override, ParsedRequest } from '@nestjsx/crud';
+import { Crud, CrudAuth, CrudController, type CrudRequest, Override, ParsedRequest } from '@dataui/crud';
 import { TokensService } from './tokens.service';
 import { Token } from './entities/token.entity';
 import { ManageMyTokensPolicy } from "./policies/manage-my-tokens.policy";
