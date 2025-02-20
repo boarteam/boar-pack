@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { getAction } from "@nestjsx/crud";
+import { getAction } from "@dataui/crud";
 import { isEqual } from 'lodash';
 
 @Injectable()

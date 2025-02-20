@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { TypeOrmCrudService } from '@dataui/crud-typeorm';
 import { EventLog, LogLevel, LogType, UserRole } from './entities/event-log.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Request } from 'express';
