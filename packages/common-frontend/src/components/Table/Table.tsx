@@ -9,6 +9,7 @@ import { KEY_SYMBOL, useCreation } from "./useCreation";
 import { getTableDataQueryParams } from "./getTableDataQueryParams";
 import { useEditableTable } from "./useEditableTable";
 import { useBulkEditing } from "./useBulkEditing";
+import { useImportExport } from "./useImportExport";
 
 const useStyles = createStyles(() => {
   return {
@@ -34,6 +35,9 @@ const Table = <Entity extends Record<string | symbol, any>,
     onUpdateMany,
     onDelete,
     onDeleteMany,
+    onExport,
+    exportFileName,
+    onImport,
     pathParams,
     idColumnName = 'id',
     entityToCreateDto,
@@ -118,6 +122,12 @@ const Table = <Entity extends Record<string | symbol, any>,
     createNewDefaultParams,
   });
 
+  const { exportButton, importButton, setLastQueryParams } = useImportExport<TPathParams>({
+    onExport,
+    fileName: exportFileName,
+    onImport,
+  })
+
   useEffect(() => {
     setUpdatePopupData(editableRecord);
     actionRef?.current?.reload();
@@ -158,6 +168,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       queryParams,
       result,
     ]);
+    setLastQueryParams(queryParams);
     return result;
   }
 
@@ -193,6 +204,8 @@ const Table = <Entity extends Record<string | symbol, any>,
           ? bulkDeleteButton
           : null,
         !viewOnly && createButton || null,
+        !viewOnly && importButton || null,
+        onExport && exportButton || null,
         ...toolBarRender && toolBarRender(...args) || [],
       ]}
       columns={columns}
