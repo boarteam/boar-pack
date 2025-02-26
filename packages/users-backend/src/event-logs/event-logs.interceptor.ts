@@ -57,17 +57,13 @@ export class EventLogInterceptor implements NestInterceptor {
         logEntry.duration = Date.now() - now;
         logEntry.statusCode = response.statusCode;
         logEntry.logLevel = response.statusCode >= 500 ? LogLevel.ERROR : (response.statusCode >= 400 ? LogLevel.WARNING : LogLevel.INFO);
-        this.eventLogService.audit(logEntry, request).catch((error) => {
-          this.logger.error(`Failed to log event: ${error.message}`);
-        });
+        this.eventLogService.audit(logEntry, request);
       }),
       catchError((error: HttpException) => {
         logEntry.duration = Date.now() - now;
         logEntry.statusCode = error?.getStatus?.() || 500;
         logEntry.logLevel = logEntry.statusCode >= 500 ? LogLevel.ERROR : LogLevel.WARNING;
-        this.eventLogService.audit(logEntry, request).catch((error) => {
-          this.logger.error(`Failed to log event: ${error.message}`);
-        });
+        this.eventLogService.audit(logEntry, request);
         return throwError(() => error);
       }),
     );
