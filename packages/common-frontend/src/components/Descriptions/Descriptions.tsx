@@ -16,25 +16,26 @@ import { createStyles } from "antd-style";
 import { debounce } from "lodash";
 import { NamePath } from "antd/lib/form/interface";
 
-const useStyles = createStyles(() => {
+const useStyles = createStyles(({css}) => {
   return {
-    /**
-     * Styles for the ant-descriptions component to show edit icon on hover
-     */
-    antDescriptionsStyles: {
-      '.anticon-edit': {
-        opacity: 0,
-        transition: 'opacity 200ms'
+    antDescriptionsStyles: css`
+      .ant-form-item-control-input-content {
+          flex: 0 1 auto;
       },
-      '.ant-descriptions-item-content': {
-        width: '20%',
-      },
-      '.ant-descriptions-item-content:hover': {
-        '.anticon-edit': {
-          opacity: 1
-        },
+        
+      .ant-descriptions-item-content {
+        .anticon-edit {
+          opacity: 0;
+          transition: opacity 200ms;
+        }
+
+        &:hover {
+          .anticon-edit {
+              opacity: 1;
+          }
+        }
       }
-    }
+    `
   }
 })
 
