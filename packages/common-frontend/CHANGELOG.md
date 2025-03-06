@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.5.0...@boarteam/boar-pack-common-frontend@2.6.0) (2025-03-06)
+
+
+### Features
+
+* **Tables:** support for null values in table filters ([4b0c8e9](https://github.com/boarteam/boar-pack/commit/4b0c8e9030ba0478033efc8268f896afa9da8a00))
+
+
+
+
+
 # [2.5.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.4.0...@boarteam/boar-pack-common-frontend@2.5.0) (2025-02-17)
 
 
