@@ -58,6 +58,22 @@ export function getFiltersSearch({
           value = true;
         }
         break;
+
+      case Operators.in:
+      case Operators.inLow:
+        if (Array.isArray(value) && value.length === 1 && value[0] === null) {
+          operator = Operators.isNull;
+          value = true;
+        }
+        break;
+
+      case Operators.equals:
+        if (Array.isArray(value) && value.length === 1 && value[0] === null || value === null) {
+          operator = Operators.isNull;
+          value = true;
+        }
+        break;
+
     }
 
     search.$and?.push({ [field]: { [operator]: value } });
