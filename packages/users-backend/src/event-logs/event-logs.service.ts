@@ -34,7 +34,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
   private async saveAccumulatedLogs(): Promise<void> {
     if (this.logsStore.length > 0) {
       const logs = [...this.logsStore];
-      this.logger.debug('Reset event logs store variable');
+      this.logger.verbose('Reset event logs store variable');
       this.logsStore = [];
 
       await this.repo.save(logs).catch(e => {
