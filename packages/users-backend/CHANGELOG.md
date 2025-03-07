@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.3.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.2.1...@boarteam/boar-pack-users-backend@5.3.0) (2025-03-07)
+
+
+### Features
+
+* **users-backend:** PLA-17 Batch saving for logs ([#42](https://github.com/boarteam/boar-pack/issues/42)) ([8a8266f](https://github.com/boarteam/boar-pack/commit/8a8266f663395980fdcd1b87886ac184ffe71695))
+
+
+
+
+
 ## [5.2.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.2.0...@boarteam/boar-pack-users-backend@5.2.1) (2025-02-20)
 
 
