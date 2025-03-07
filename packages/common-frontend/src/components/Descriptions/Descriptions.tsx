@@ -19,10 +19,6 @@ import { NamePath } from "antd/lib/form/interface";
 const useStyles = createStyles(({css}) => {
   return {
     antDescriptionsStyles: css`
-      .ant-form-item-control-input-content {
-          flex: 0 1 auto;
-      },
-        
       .ant-descriptions-item-content {
         .anticon-edit {
           opacity: 0;
