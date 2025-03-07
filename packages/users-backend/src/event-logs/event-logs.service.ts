@@ -98,7 +98,8 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     return request?.[EventLogsService.requestHandled];
   }
 
-  operationalLog(eventLog: Partial<EventLog>): void {
+  // TODO: Remove async in the next major version (breaking change)
+  async operationalLog(eventLog: Partial<EventLog>): Promise<void> {
     this.logsStore.push({
       logLevel: LogLevel.INFO,
       userRole: UserRole.SYSTEM,
