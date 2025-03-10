@@ -35,7 +35,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     onUpdateMany,
     onDelete,
     onDeleteMany,
-    onExport,
+    exportUrl,
     exportFileName,
     onImport,
     pathParams,
@@ -123,7 +123,7 @@ const Table = <Entity extends Record<string | symbol, any>,
   });
 
   const { exportButton, importButton, setLastQueryParams } = useImportExport<TPathParams>({
-    onExport,
+    exportUrl,
     fileName: exportFileName,
     onImport,
   })
@@ -205,7 +205,7 @@ const Table = <Entity extends Record<string | symbol, any>,
           : null,
         !viewOnly && createButton || null,
         !viewOnly && importButton || null,
-        onExport && exportButton || null,
+        exportUrl && exportButton || null,
         ...toolBarRender && toolBarRender(...args) || [],
       ]}
       columns={columns}

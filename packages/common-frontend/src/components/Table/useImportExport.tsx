@@ -2,37 +2,19 @@ import { Button, Tooltip } from 'antd';
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { TGetAllParams } from "./tableTypes";
+import { Link } from "react-router-dom";
 
 export function useImportExport<TPathParams = {}>({
-                                                    onExport,
-                                                    fileName = 'download',
-                                                    onImport
-                                                  }: {
-  onExport?: ({}: TGetAllParams & TPathParams) => Promise<any>;
+  exportUrl,
+  onImport
+}: {
   fileName?: string;
+  exportUrl?: string;
   onImport?: (event: React.ChangeEvent<HTMLInputElement>) => Promise<any>;
-
 }) {
   const [isLoadingImport, setIsLoadingImport] = useState(false);
-  const [isLoadingExport, setIsLoadingExport] = useState(false);
   const [lastQueryParams, setLastQueryParams] = useState<TGetAllParams & TPathParams>();
 
-  const onExportClick = async () => {
-    setIsLoadingExport(true);
-    await onExport?.(lastQueryParams)
-      .then((blob: Blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${fileName}_${Math.round(Date.now() / 1000)}.xlsx`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      })
-      .finally(() => {
-        setIsLoadingExport(false);
-      });
-  };
 
   const onImportChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsLoadingImport(true);
@@ -45,20 +27,26 @@ export function useImportExport<TPathParams = {}>({
       });
   }
 
+  const url = exportUrl + (lastQueryParams  ? '?' + new URLSearchParams({
+    s: lastQueryParams.s,
+    sort: lastQueryParams.sort?.[0],
+  }).toString() : '');
   const exportButton = <Tooltip title="Export">
-    <Button loading={isLoadingExport} icon={<DownloadOutlined/>} onClick={onExportClick}/>
+    <Link to={url} target={'_blank'}>
+      <DownloadOutlined />
+    </Link>
   </Tooltip>;
 
   const importButton = <>
     <Tooltip title="Import">
       <label htmlFor="import-input">
-        <Button loading={isLoadingImport} icon={<UploadOutlined/>}/>
+        <Button loading={isLoadingImport} icon={<UploadOutlined />} type={'link'} />
       </label>
     </Tooltip>
     <input
       type="file"
       id="import-input"
-      style={{display: "none"}}
+      style={{ display: "none" }}
       accept=".xlsx, .xls"
       onChange={onImportChange}
     />

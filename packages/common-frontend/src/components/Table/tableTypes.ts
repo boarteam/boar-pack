@@ -107,7 +107,7 @@ export interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {
   editable?: RowEditableConfig<Entity>;
   afterSave?: (record: Entity) => Promise<void>;
   onCreate?: ({}: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
-  onExport?: ({}: TPathParams) => Promise<any>;
+  exportUrl?: string;
   exportFileName?: string;
   onImport?: (event: React.ChangeEvent<HTMLInputElement>) => Promise<any>;
   onUpdate: ({}: Partial<Entity> & {
