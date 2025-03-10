@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type TokenUpdateDto = {
-    name?: string;
+export type LocalAuthTokenDto = {
+    accessToken: string;
 };
 

@@ -2,54 +2,31 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { EventLog } from '../models/EventLog';
-import type { EventLogCreateDto } from '../models/EventLogCreateDto';
-import type { EventLogTimelineDto } from '../models/EventLogTimelineDto';
-import type { EventLogUpdateDto } from '../models/EventLogUpdateDto';
-import type { GetManyEventLogResponseDto } from '../models/GetManyEventLogResponseDto';
+import type { GetManyPlatformResponseDto } from '../models/GetManyPlatformResponseDto';
+import type { Platform } from '../models/Platform';
+import type { PlatformBasicInfoDto } from '../models/PlatformBasicInfoDto';
+import type { PlatformCreateDto } from '../models/PlatformCreateDto';
+import type { PlatformUpdateDto } from '../models/PlatformUpdateDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-export class EventLogsService {
+export class PlatformsService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * @returns EventLogTimelineDto
+     * @returns PlatformBasicInfoDto
      * @throws ApiError
      */
-    public getTimeline({
-        startTime,
-        endTime,
-        timezone,
-    }: {
-        startTime?: string,
-        endTime?: string,
-        timezone?: string,
-    }): CancelablePromise<Array<EventLogTimelineDto>> {
+    public getBasicInfo(): CancelablePromise<Array<PlatformBasicInfoDto>> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/event-logs/timeline',
-            query: {
-                'startTime': startTime,
-                'endTime': endTime,
-                'timezone': timezone,
-            },
+            url: '/platforms/basic-info',
         });
     }
     /**
-     * @returns string
+     * Retrieve multiple Platforms
+     * @returns GetManyPlatformResponseDto Get paginated response
      * @throws ApiError
      */
-    public getServiceNames(): CancelablePromise<Array<string>> {
-        return this.httpRequest.request({
-            method: 'GET',
-            url: '/event-logs/service-names',
-        });
-    }
-    /**
-     * Retrieve multiple EventLogs
-     * @returns GetManyEventLogResponseDto Get paginated response
-     * @throws ApiError
-     */
-    public getManyBaseEventLogsControllerEventLog({
+    public getManyBasePlatformsControllerPlatform({
         fields,
         s,
         filter,
@@ -101,10 +78,10 @@ export class EventLogsService {
          * Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache" target="_blank">Docs</a>
          */
         cache?: number,
-    }): CancelablePromise<GetManyEventLogResponseDto> {
+    }): CancelablePromise<GetManyPlatformResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/event-logs',
+            url: '/platforms',
             query: {
                 'fields': fields,
                 's': s,
@@ -120,37 +97,37 @@ export class EventLogsService {
         });
     }
     /**
-     * Create a single EventLog
-     * @returns EventLog Get create one base response
+     * Create a single Platform
+     * @returns Platform Get create one base response
      * @throws ApiError
      */
-    public createOneBaseEventLogsControllerEventLog({
+    public createOneBasePlatformsControllerPlatform({
         requestBody,
     }: {
-        requestBody: EventLogCreateDto,
-    }): CancelablePromise<EventLog> {
+        requestBody: PlatformCreateDto,
+    }): CancelablePromise<Platform> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/event-logs',
+            url: '/platforms',
             body: requestBody,
             mediaType: 'application/json',
         });
     }
     /**
-     * Update a single EventLog
-     * @returns EventLog Response
+     * Update a single Platform
+     * @returns Platform Response
      * @throws ApiError
      */
-    public updateOneBaseEventLogsControllerEventLog({
+    public updateOneBasePlatformsControllerPlatform({
         id,
         requestBody,
     }: {
         id: string,
-        requestBody: EventLogUpdateDto,
-    }): CancelablePromise<EventLog> {
+        requestBody: PlatformUpdateDto,
+    }): CancelablePromise<Platform> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/event-logs/{id}',
+            url: '/platforms/{id}',
             path: {
                 'id': id,
             },
@@ -159,18 +136,18 @@ export class EventLogsService {
         });
     }
     /**
-     * Delete a single EventLog
+     * Delete a single Platform
      * @returns any Delete one base response
      * @throws ApiError
      */
-    public deleteOneBaseEventLogsControllerEventLog({
+    public deleteOneBasePlatformsControllerPlatform({
         id,
     }: {
         id: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/event-logs/{id}',
+            url: '/platforms/{id}',
             path: {
                 'id': id,
             },
