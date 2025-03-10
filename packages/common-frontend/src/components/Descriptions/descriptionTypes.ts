@@ -36,7 +36,7 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
     requestBody: UpdateDto,
     index?: number,
   } & TPathParams) => Promise<Entity>,
-  onCreate: (data: Partial<Entity>) => Promise<void>;
+  onCreate?: (data: Partial<Entity>) => Promise<void>;
   onDelete?: ({}: Partial<Entity> & TPathParams) => Promise<void>,
   pathParams?: TPathParams,
   idColumnName?: string & keyof Entity,
