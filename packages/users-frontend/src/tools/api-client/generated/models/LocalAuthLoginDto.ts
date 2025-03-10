@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type TokenCreateDto = {
-    name: string;
+export type LocalAuthLoginDto = {
+    email: string;
+    password: string;
 };
 

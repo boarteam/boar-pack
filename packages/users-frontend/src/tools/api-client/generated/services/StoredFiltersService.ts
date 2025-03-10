@@ -2,21 +2,20 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { GetManyTokenResponseDto } from '../models/GetManyTokenResponseDto';
-import type { Token } from '../models/Token';
-import type { TokenCreateDto } from '../models/TokenCreateDto';
-import type { TokenUpdateDto } from '../models/TokenUpdateDto';
-import type { TokenWithValueDto } from '../models/TokenWithValueDto';
+import type { PaginatedStoredFiltersResponse } from '../models/PaginatedStoredFiltersResponse';
+import type { StoredFilter } from '../models/StoredFilter';
+import type { StoredFilterCreateDto } from '../models/StoredFilterCreateDto';
+import type { StoredFilterUpdateDto } from '../models/StoredFilterUpdateDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-export class TokensService {
+export class StoredFiltersService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * Retrieve multiple Tokens
-     * @returns GetManyTokenResponseDto Get paginated response
+     * Retrieve multiple StoredFilters
+     * @returns PaginatedStoredFiltersResponse
      * @throws ApiError
      */
-    public getManyBaseTokensControllerToken({
+    public getManyBaseStoredFilterControllerStoredFilter({
         fields,
         s,
         filter,
@@ -68,10 +67,10 @@ export class TokensService {
          * Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache" target="_blank">Docs</a>
          */
         cache?: number,
-    }): CancelablePromise<GetManyTokenResponseDto> {
+    }): CancelablePromise<PaginatedStoredFiltersResponse> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/tokens',
+            url: '/filters',
             query: {
                 'fields': fields,
                 's': s,
@@ -87,173 +86,97 @@ export class TokensService {
         });
     }
     /**
-     * Update a single Token
-     * @returns Token Response
+     * Create a single StoredFilter
+     * @returns StoredFilter Get create one base response
      * @throws ApiError
      */
-    public updateOneBaseTokensControllerToken({
-        id,
+    public createOneBaseStoredFilterControllerStoredFilter({
         requestBody,
+        fields,
+        join,
+        cache,
     }: {
-        id: string,
-        requestBody: TokenUpdateDto,
-    }): CancelablePromise<Token> {
-        return this.httpRequest.request({
-            method: 'PATCH',
-            url: '/tokens/{id}',
-            path: {
-                'id': id,
-            },
-            body: requestBody,
-            mediaType: 'application/json',
-        });
-    }
-    /**
-     * Delete a single Token
-     * @returns any Delete one base response
-     * @throws ApiError
-     */
-    public deleteOneBaseTokensControllerToken({
-        id,
-    }: {
-        id: string,
-    }): CancelablePromise<any> {
-        return this.httpRequest.request({
-            method: 'DELETE',
-            url: '/tokens/{id}',
-            path: {
-                'id': id,
-            },
-        });
-    }
-    /**
-     * Create a single Token
-     * @returns TokenWithValueDto
-     * @returns Token Get create one base response
-     * @throws ApiError
-     */
-    public createOneBaseMyTokensControllerToken({
-        requestBody,
-    }: {
-        requestBody: TokenCreateDto,
-    }): CancelablePromise<TokenWithValueDto | Token> {
+        requestBody: StoredFilterCreateDto,
+        /**
+         * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
+         */
+        fields?: Array<string>,
+        /**
+         * Adds relational resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#join" target="_blank">Docs</a>
+         */
+        join?: Array<string>,
+        /**
+         * Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache" target="_blank">Docs</a>
+         */
+        cache?: number,
+    }): CancelablePromise<StoredFilter> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/my/tokens',
+            url: '/filters',
+            query: {
+                'fields': fields,
+                'join': join,
+                'cache': cache,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
     }
     /**
-     * Retrieve multiple Tokens
-     * @returns GetManyTokenResponseDto Get paginated response
+     * Update a single StoredFilter
+     * @returns StoredFilter Response
      * @throws ApiError
      */
-    public getManyBaseMyTokensControllerToken({
+    public updateOneBaseStoredFilterControllerStoredFilter({
+        id,
+        requestBody,
         fields,
-        s,
-        filter,
-        or,
-        sort,
         join,
-        limit,
-        offset,
-        page,
         cache,
     }: {
+        id: string,
+        requestBody: StoredFilterUpdateDto,
         /**
          * Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#select" target="_blank">Docs</a>
          */
         fields?: Array<string>,
         /**
-         * Adds search condition. <a href="https://github.com/nestjsx/crud/wiki/Requests#search" target="_blank">Docs</a>
-         */
-        s?: string,
-        /**
-         * Adds filter condition. <a href="https://github.com/nestjsx/crud/wiki/Requests#filter" target="_blank">Docs</a>
-         */
-        filter?: Array<string>,
-        /**
-         * Adds OR condition. <a href="https://github.com/nestjsx/crud/wiki/Requests#or" target="_blank">Docs</a>
-         */
-        or?: Array<string>,
-        /**
-         * Adds sort by field. <a href="https://github.com/nestjsx/crud/wiki/Requests#sort" target="_blank">Docs</a>
-         */
-        sort?: Array<string>,
-        /**
          * Adds relational resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#join" target="_blank">Docs</a>
          */
         join?: Array<string>,
         /**
-         * Limit amount of resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#limit" target="_blank">Docs</a>
-         */
-        limit?: number,
-        /**
-         * Offset amount of resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#offset" target="_blank">Docs</a>
-         */
-        offset?: number,
-        /**
-         * Page portion of resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#page" target="_blank">Docs</a>
-         */
-        page?: number,
-        /**
          * Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache" target="_blank">Docs</a>
          */
         cache?: number,
-    }): CancelablePromise<GetManyTokenResponseDto> {
-        return this.httpRequest.request({
-            method: 'GET',
-            url: '/my/tokens',
-            query: {
-                'fields': fields,
-                's': s,
-                'filter': filter,
-                'or': or,
-                'sort': sort,
-                'join': join,
-                'limit': limit,
-                'offset': offset,
-                'page': page,
-                'cache': cache,
-            },
-        });
-    }
-    /**
-     * Update a single Token
-     * @returns Token Response
-     * @throws ApiError
-     */
-    public updateOneBaseMyTokensControllerToken({
-        id,
-        requestBody,
-    }: {
-        id: string,
-        requestBody: TokenUpdateDto,
-    }): CancelablePromise<Token> {
+    }): CancelablePromise<StoredFilter> {
         return this.httpRequest.request({
             method: 'PATCH',
-            url: '/my/tokens/{id}',
+            url: '/filters/{id}',
             path: {
                 'id': id,
+            },
+            query: {
+                'fields': fields,
+                'join': join,
+                'cache': cache,
             },
             body: requestBody,
             mediaType: 'application/json',
         });
     }
     /**
-     * Delete a single Token
+     * Delete a single StoredFilter
      * @returns any Delete one base response
      * @throws ApiError
      */
-    public deleteOneBaseMyTokensControllerToken({
+    public deleteOneBaseStoredFilterControllerStoredFilter({
         id,
     }: {
         id: string,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/my/tokens/{id}',
+            url: '/filters/{id}',
             path: {
                 'id': id,
             },

@@ -32,7 +32,8 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "yalc:push": "yalc push"
+    "yalc:push": "yalc push",
+    "generate-api-client": "openapi --input http://localhost:3335/docs-json --output ./src/tools/api-client/generated --client node --name ApiClient --useOptions"
   },
   "gitHead": "c56c90047b5cb4e4d719890553e61f8d7e6ff25f"
 }
