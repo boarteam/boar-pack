@@ -26,6 +26,12 @@ const serviceNameToAbbreviation: Record<string, string> = {
   'Manager Panel - Main': 'MNG',
   'Admin RealTimeData': 'ARTD',
   'Manager RealTimeData': 'MRTD',
+  'Boar Trading Main App': 'BTM',
+  'Fix Collectors': 'FC',
+  'Fix Providers': 'FPS',
+  'Fix Proxies': 'FPX',
+  'HTTP Server': 'HS',
+  'Quotes Receiver': 'QR',
 } as const;
 
 const logTypes = {
@@ -69,6 +75,7 @@ export const useEventLogsColumns = ({
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
 }): ProColumns<EventLog>[] => {
   const [users, setUsers] = useState<{ text: string, value: string }[]>([]);
+  const [serviceNames, setServiceNames] = useState<string[]>([]);
 
   useEffect(() => {
     apiClient.users.getManyBaseUsersControllerUser({
@@ -76,6 +83,11 @@ export const useEventLogsColumns = ({
     }).then((users) => {
       setUsers(users.data.map((item) => ({ text: item.name, value: item.id })));
     });
+
+    apiClient.eventLogs.getServiceNames()
+      .then((names) => {
+        setServiceNames(names)
+      });
   }, []);
 
   return [
@@ -109,10 +121,10 @@ export const useEventLogsColumns = ({
       },
       width: 10,
       valueEnum: Object.fromEntries(
-        Object.entries(serviceNameToAbbreviation).map(([key, value]) => [
-          key,
+        serviceNames.map((value) => [
+          value,
           {
-            text: key,
+            text: serviceNameToAbbreviation[value] ?? value
           }
         ])
       ),
