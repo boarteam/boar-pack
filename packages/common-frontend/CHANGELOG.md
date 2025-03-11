@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.6.0...@boarteam/boar-pack-common-frontend@2.7.0) (2025-03-11)
+
+
+### Bug Fixes
+
+* **Descriptions:** ADM-274 Removed width limitation for item content. Removed input grow up to the error hint ([#45](https://github.com/boarteam/boar-pack/issues/45)) ([812b043](https://github.com/boarteam/boar-pack/commit/812b0438fa9c89270d8d6f354694bfe2c75f2e7d))
+
+
+### Features
+
+* **Table:** ADM-271 Added useImportExport hook (import in progress) ([#44](https://github.com/boarteam/boar-pack/issues/44)) ([7ce0b48](https://github.com/boarteam/boar-pack/commit/7ce0b4850f328ef977eb96e16c594b833d6d47d8))
+
+
+
+
+
 # [2.6.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.5.0...@boarteam/boar-pack-common-frontend@2.6.0) (2025-03-06)
 
 
