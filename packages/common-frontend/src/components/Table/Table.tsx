@@ -9,6 +9,7 @@ import { KEY_SYMBOL, useCreation } from "./useCreation";
 import { getTableDataQueryParams } from "./getTableDataQueryParams";
 import { useEditableTable } from "./useEditableTable";
 import { useBulkEditing } from "./useBulkEditing";
+import { useImportExport } from "./useImportExport";
 
 const useStyles = createStyles(() => {
   return {
@@ -34,6 +35,8 @@ const Table = <Entity extends Record<string | symbol, any>,
     onUpdateMany,
     onDelete,
     onDeleteMany,
+    exportUrl,
+    onImport,
     pathParams,
     idColumnName = 'id',
     entityToCreateDto,
@@ -118,6 +121,11 @@ const Table = <Entity extends Record<string | symbol, any>,
     createNewDefaultParams,
   });
 
+  const { exportButton, importButton, setLastQueryParams } = useImportExport<TPathParams>({
+    exportUrl,
+    onImport,
+  })
+
   useEffect(() => {
     setUpdatePopupData(editableRecord);
     actionRef?.current?.reload();
@@ -158,6 +166,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       queryParams,
       result,
     ]);
+    setLastQueryParams(queryParams);
     return result;
   }
 
@@ -181,6 +190,9 @@ const Table = <Entity extends Record<string | symbol, any>,
           listsHeight: 500,
         },
       }}
+      scroll={{
+        x: 'max-content',
+      }}
       bordered
       search={false}
       editable={editableConfig}
@@ -193,6 +205,8 @@ const Table = <Entity extends Record<string | symbol, any>,
           ? bulkDeleteButton
           : null,
         !viewOnly && createButton || null,
+        !viewOnly && importButton || null,
+        exportUrl && exportButton || null,
         ...toolBarRender && toolBarRender(...args) || [],
       ]}
       columns={columns}
