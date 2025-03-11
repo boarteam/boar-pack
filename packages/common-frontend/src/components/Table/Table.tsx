@@ -36,7 +36,6 @@ const Table = <Entity extends Record<string | symbol, any>,
     onDelete,
     onDeleteMany,
     exportUrl,
-    exportFileName,
     onImport,
     pathParams,
     idColumnName = 'id',
@@ -124,7 +123,6 @@ const Table = <Entity extends Record<string | symbol, any>,
 
   const { exportButton, importButton, setLastQueryParams } = useImportExport<TPathParams>({
     exportUrl,
-    fileName: exportFileName,
     onImport,
   })
 
@@ -191,6 +189,9 @@ const Table = <Entity extends Record<string | symbol, any>,
           checkedReset: true,
           listsHeight: 500,
         },
+      }}
+      scroll={{
+        x: 'max-content',
       }}
       bordered
       search={false}

@@ -8,13 +8,11 @@ export function useImportExport<TPathParams = {}>({
   exportUrl,
   onImport
 }: {
-  fileName?: string;
   exportUrl?: string;
   onImport?: (event: React.ChangeEvent<HTMLInputElement>) => Promise<any>;
 }) {
   const [isLoadingImport, setIsLoadingImport] = useState(false);
   const [lastQueryParams, setLastQueryParams] = useState<TGetAllParams & TPathParams>();
-
 
   const onImportChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsLoadingImport(true);
@@ -27,20 +25,20 @@ export function useImportExport<TPathParams = {}>({
       });
   }
 
-  const url = exportUrl + (lastQueryParams  ? '?' + new URLSearchParams({
+  const url = exportUrl + (lastQueryParams ? '?' + new URLSearchParams({
     s: lastQueryParams.s,
     sort: lastQueryParams.sort?.[0],
   }).toString() : '');
   const exportButton = <Tooltip title="Export">
     <Link to={url} target={'_blank'}>
-      <DownloadOutlined />
+      <Button icon={<DownloadOutlined />}/>
     </Link>
   </Tooltip>;
 
   const importButton = <>
     <Tooltip title="Import">
       <label htmlFor="import-input">
-        <Button loading={isLoadingImport} icon={<UploadOutlined />} type={'link'} />
+        <Button loading={isLoadingImport} icon={<UploadOutlined />} />
       </label>
     </Tooltip>
     <input
