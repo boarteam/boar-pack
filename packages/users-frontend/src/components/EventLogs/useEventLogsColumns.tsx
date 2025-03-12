@@ -9,24 +9,14 @@ import {
   UserOutlined,
   WarningOutlined
 } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserAgentDisplay from "./UserAgentDisplay";
 import apiClient from "@@api/apiClient";
 import { getUserRoleIcon } from "./EventLogExplanation";
-
+import { EventLogsContext } from "./eventLogsContext";
 import { DateRange } from "@boarteam/boar-pack-common-frontend";
 
 const { Text } = Typography;
-
-const serviceNameToAbbreviation: Record<string, string> = {
-  'TID Main App': 'TID',
-  'Liquidity Manager': 'LM',
-  'Quotes Monitor': 'QM',
-  'Admin Panel - Main': 'ADM',
-  'Manager Panel - Main': 'MNG',
-  'Admin RealTimeData': 'ARTD',
-  'Manager RealTimeData': 'MRTD',
-} as const;
 
 const logTypes = {
   [EventLog.logType.AUDIT]: {
@@ -69,6 +59,8 @@ export const useEventLogsColumns = ({
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
 }): ProColumns<EventLog>[] => {
   const [users, setUsers] = useState<{ text: string, value: string }[]>([]);
+  const [serviceNames, setServiceNames] = useState<string[]>([]);
+  const eventLogsContext = useContext(EventLogsContext);
 
   useEffect(() => {
     apiClient.users.getManyBaseUsersControllerUser({
@@ -76,6 +68,11 @@ export const useEventLogsColumns = ({
     }).then((users) => {
       setUsers(users.data.map((item) => ({ text: item.name, value: item.id })));
     });
+
+    apiClient.eventLogs.getServiceNames()
+      .then((names) => {
+        setServiceNames(names)
+      });
   }, []);
 
   return [
@@ -103,16 +100,16 @@ export const useEventLogsColumns = ({
       title: 'Service',
       dataIndex: 'service',
       render(dom, record) {
-        return serviceNameToAbbreviation[record.service]
-          ? <Tooltip title={record.service}>{serviceNameToAbbreviation[record.service]}</Tooltip>
+        return eventLogsContext?.serviceNameToAbbreviation?.[record.service]
+          ? <Tooltip title={record.service}>{eventLogsContext.serviceNameToAbbreviation[record.service]}</Tooltip>
           : record.service;
       },
       width: 10,
       valueEnum: Object.fromEntries(
-        Object.entries(serviceNameToAbbreviation).map(([key, value]) => [
-          key,
+        serviceNames.map((value) => [
+          value,
           {
-            text: key,
+            text: eventLogsContext?.serviceNameToAbbreviation?.[value] ?? value
           }
         ])
       ),

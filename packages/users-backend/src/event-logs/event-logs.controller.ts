@@ -65,4 +65,16 @@ export class EventLogsController implements CrudController<EventLog>{
     const end = query.endTime ? new Date(query.endTime) : undefined;
     return this.service.getTimeline(start, end, query.timezone);
   }
+
+  @CheckPolicies(new ViewEventLogsPolicy())
+  @Get('service-names')
+  @ApiOkResponse({
+    schema: {
+      type: 'array',
+      items: { type: 'string' },
+    },
+  })
+  async getServiceNames(): Promise<string[]> {
+    return this.service.getServiceNames();
+  }
 }

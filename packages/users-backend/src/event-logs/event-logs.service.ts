@@ -163,6 +163,15 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     ]);
   }
 
+  async getServiceNames(): Promise<string[]> {
+    const result = await this.repo
+      .createQueryBuilder('event_logs')
+      .select('event_logs.service')
+      .distinctOn(['service'])
+      .getMany();
+    return result.map((data) => data.service);
+  }
+
   private async getOldestLogDate(): Promise<Date> {
     const oldestLog = await this.repo.createQueryBuilder('event_log')
       .select('MIN(event_log.createdAt)', 'min')

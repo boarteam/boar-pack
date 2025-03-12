@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
 import { User } from "../../users";
 
 export enum LogType {
@@ -113,6 +113,7 @@ export class EventLog {
   })
   statusCode: number | null;
 
+  @Index()
   @Column({
     default: 'main'
   })
