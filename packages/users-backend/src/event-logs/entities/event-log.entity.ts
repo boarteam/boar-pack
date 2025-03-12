@@ -113,7 +113,7 @@ export class EventLog {
   })
   statusCode: number | null;
 
-  @Index()
+  @Index('event_logs_service_index')
   @Column({
     default: 'main'
   })
