@@ -35,6 +35,16 @@ export class EventLogsService {
         });
     }
     /**
+     * @returns string
+     * @throws ApiError
+     */
+    public getServiceNames(): CancelablePromise<Array<string>> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/event-logs/service-names',
+        });
+    }
+    /**
      * Retrieve multiple EventLogs
      * @returns GetManyEventLogResponseDto Get paginated response
      * @throws ApiError
