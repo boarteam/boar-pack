@@ -1,15 +1,15 @@
 import { Body, Controller, Get, Post, Req, Res, UnauthorizedException, UseFilters, UseGuards, } from '@nestjs/common';
-import { LocalAuthGuard } from './local-auth.guard';
+import { LocalAuthGuard } from './password/local-auth.guard';
 import { AuthService } from './auth.service';
 import { tokenName } from './auth.constants';
 import { JwtAuthGuard, SkipJWTGuard } from '../jwt-auth/jwt-auth.guard';
 import { SkipPoliciesGuard } from '../casl/policies.guard';
-import { GoogleAuthGuard } from './google-auth.guard';
-import { AuthExceptionFilter } from './google-auth.filter';
+import { GoogleAuthGuard } from './google/google-auth.guard';
+import { AuthExceptionFilter } from './google/google-auth.filter';
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
-import { LocalAuthLoginDto, LocalAuthTokenDto } from "./local-auth.dto";
-import { MSAuthGuard } from "./ms-auth.guard";
+import { LocalAuthLoginDto, LocalAuthTokenDto } from "./password/local-auth.dto";
+import { MSAuthGuard } from "./microsoft/ms-auth.guard";
 
 @SkipPoliciesGuard()
 @ApiTags('Authentication')

@@ -1,9 +1,9 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, InternalServerErrorException, Logger, UnauthorizedException, } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { MS_AUTH } from './auth-strategies.constants';
+import { AuthService } from '../auth.service';
+import { MS_AUTH } from '../auth-strategies.constants';
 import { MSAuthConfigService } from "./ms-auth.config";
-import { JWTAuthService } from "../jwt-auth/jwt-auth.service";
+import { JWTAuthService } from "../../jwt-auth/jwt-auth.service";
 
 // @ts-ignore-next-line There are no types for this package
 import { Strategy, VerifyCallback } from 'passport-azure-ad-oauth2';

@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { tokenName } from './auth.constants';
 import { ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
-import { LocalAuthTokenDto } from "./local-auth.dto";
+import { LocalAuthTokenDto } from "./password/local-auth.dto";
 import { CheckPolicies, ManageAllPolicy } from "../casl";
 import { UsersService } from "../users";
 
