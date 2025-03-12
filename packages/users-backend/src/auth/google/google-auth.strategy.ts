@@ -6,8 +6,8 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { GOOGLE_AUTH } from './auth-strategies.constants';
+import { AuthService } from '../auth.service';
+import { GOOGLE_AUTH } from '../auth-strategies.constants';
 import { GoogleAuthConfigService } from "./google-auth.config";
 
 @Injectable()
