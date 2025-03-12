@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.4.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.3.1...@boarteam/boar-pack-users-backend@5.4.0) (2025-03-12)
+
+
+### Features
+
+* **EventLogs:** PLA-21 Service names are fetched from DB for event logs table filters ([9f02a3c](https://github.com/boarteam/boar-pack/commit/9f02a3cd934cc1d69e2b25ad45743fc29ba8a731))
+
+
+
+
+
 ## [5.3.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.3.0...@boarteam/boar-pack-users-backend@5.3.1) (2025-03-09)
 
 **Note:** Version bump only for package @boarteam/boar-pack-users-backend
