@@ -17,3 +17,5 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 * **Descriptions:** ADM-283 add setFieldErrors method to Descriptions ([#50](https://github.com/boarteam/boar-pack/issues/50)) ([aa04917](https://github.com/boarteam/boar-pack/commit/aa04917082aabc31bdeb741a1a3a2b78da8e9f40))
+
+
