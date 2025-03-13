@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.1-alpha.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.5.0...@boarteam/boar-pack-common-frontend@2.5.1-alpha.0) (2025-03-13)
+
+
+### Bug Fixes
+
+* **Descriptions:** fix types ([f8f3d43](https://github.com/boarteam/boar-pack/commit/f8f3d4395122961074ab26be43e0541b9ef9ccca))
+
+
+
+
+
 ## [2.8.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.8.0...@boarteam/boar-pack-common-frontend@2.8.1) (2025-04-18)
 
 
