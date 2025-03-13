@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0-alpha.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.2.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.0) (2025-03-13)
+
+
+### Bug Fixes
+
+* **users-backend:** Added missed users config service ([#43](https://github.com/boarteam/boar-pack/issues/43)) ([5a8b444](https://github.com/boarteam/boar-pack/commit/5a8b4442931fc64a60ba408783e5af478dcb6419))
+
+
+### chore
+
+* **backend:** upgrade dependencies versions ([8b4b2c7](https://github.com/boarteam/boar-pack/commit/8b4b2c73b8386b0f13448a374f163afb06cef07f))
+
+
+### BREAKING CHANGES
+
+* **backend:** Nest js upgraded v9 -> v11
+
+
+
+
+
 # [5.2.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.1.1...@boarteam/boar-pack-users-backend@5.2.0) (2025-02-17)
 
 
