@@ -14,26 +14,10 @@ export class MSAuthConfigService {
   }
 
   get config(): TMSAuthConfig {
-    const clientId = this.configService.get<string>('MICROSOFT_CLIENT_ID');
-    const tenantId = this.configService.get<string>('MICROSOFT_TENANT_ID');
-    const clientSecret = this.configService.get<string>('MICROSOFT_SECRET_ID');
-    const callbackURL = this.configService.get<string>('MICROSOFT_CALLBACK_URL');
-
-    if (!clientId) {
-      throw new Error('MICROSOFT_CLIENT_ID is not defined');
-    }
-
-    if (!tenantId) {
-      throw new Error('MICROSOFT_TENANT_ID is not defined');
-    }
-
-    if (!clientSecret) {
-      throw new Error('MICROSOFT_SECRET_ID is not defined');
-    }
-
-    if (!callbackURL) {
-      throw new Error('MICROSOFT_CALLBACK_URL is not defined');
-    }
+    const clientId = this.configService.getOrThrow<string>('MICROSOFT_CLIENT_ID');
+    const tenantId = this.configService.getOrThrow<string>('MICROSOFT_TENANT_ID');
+    const clientSecret = this.configService.getOrThrow<string>('MICROSOFT_SECRET_ID');
+    const callbackURL = this.configService.getOrThrow<string>('MICROSOFT_CALLBACK_URL');
 
     return {
       clientId,

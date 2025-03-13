@@ -16,14 +16,18 @@ import AuthManageController from "./auth-manage.controller";
 import GoogleAuthController from "./google/google-auth.controller";
 import MsAuthController from "./microsoft/ms-auth.controller";
 import LocalAuthController from "./local-auth/local-auth.controller";
+import { YandexAuthStrategy } from "./yandex/yandex-auth.strategy";
+import { YandexAuthConfigService } from "./yandex/yandex-auth.config";
+import YandexAuthController from "./yandex/yandex-auth.controller";
 
 @Module({})
 export class AuthModule {
   static forRoot(config: {
-    googleAuth: boolean,
-    msAuth: boolean,
-    localAuth: boolean,
-    withControllers: boolean,
+    googleAuth?: boolean,
+    msAuth?: boolean,
+    yandexAuth?: boolean,
+    localAuth?: boolean,
+    withControllers?: boolean,
     dataSourceName?: string;
   }): DynamicModule {
     const dynamicModule: DynamicModule = {
@@ -59,6 +63,11 @@ export class AuthModule {
     if (config.msAuth) {
       dynamicModule.providers!.push(MSAuthConfigService, MSAuthStrategy);
       controllers.push(MsAuthController);
+    }
+
+    if (config.yandexAuth) {
+      dynamicModule.providers!.push(YandexAuthConfigService, YandexAuthStrategy);
+      controllers.push(YandexAuthController);
     }
 
     if (config.localAuth) {

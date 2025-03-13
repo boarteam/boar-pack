@@ -13,21 +13,9 @@ export class GoogleAuthConfigService {
   }
 
   get config(): TGoogleAuthConfig {
-    const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
-    const clientSecret = this.configService.get<string>('GOOGLE_SECRET_ID');
-    const callbackURL = this.configService.get<string>('GOOGLE_CALLBACK_URL');
-
-    if (!clientId) {
-      throw new Error('GOOGLE_CLIENT_ID is not defined');
-    }
-
-    if (!clientSecret) {
-      throw new Error('GOOGLE_SECRET_ID is not defined');
-    }
-
-    if (!callbackURL) {
-      throw new Error('GOOGLE_CALLBACK_URL is not defined');
-    }
+    const clientId = this.configService.getOrThrow<string>('GOOGLE_CLIENT_ID');
+    const clientSecret = this.configService.getOrThrow<string>('GOOGLE_SECRET_ID');
+    const callbackURL = this.configService.getOrThrow<string>('GOOGLE_CALLBACK_URL');
 
     return {
       clientId,
