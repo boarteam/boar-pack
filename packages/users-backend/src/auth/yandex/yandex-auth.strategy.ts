@@ -27,7 +27,6 @@ export class YandexAuthStrategy extends PassportStrategy(
       clientID: config.clientId,
       clientSecret: config.clientSecret,
       callbackURL: config.callbackURL,
-      scope: ['email', 'profile'],
     });
   }
 
