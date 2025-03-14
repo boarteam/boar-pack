@@ -237,8 +237,7 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
       <Result
         status="404"
         title="404"
-        subTitle="The instrument is not found."
-        extra={<Button type="primary" href={'/liquidity/ecn-instruments'}>See list of instruments</Button>}
+        subTitle="The entity is not found."
       />
     );
   }
