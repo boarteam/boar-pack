@@ -1,6 +1,5 @@
-import { ProFormSelectProps } from "@ant-design/pro-form/lib/components/Select";
+import { ProFormSelect, ProFormSelectProps } from "@ant-design/pro-components";
 import { useState } from "react";
-import { ProFormSelect } from "@ant-design/pro-form";
 
 type RelationSelectProps<T> = ProFormSelectProps & {
   selectedItem: T | null | undefined,
@@ -44,10 +43,8 @@ export const RelationSelect = function<T>({
       showSearch
       mode={'single'}
       request={request}
+      className='relational-select'
       formItemProps={{
-        // correct color for invalid relational fields (#64)
-        // @ts-ignore-next-line
-        validateStatus: rest['aria-invalid'] === 'true' ? 'error' : 'success',
         style: {
           margin: 0,
           display: 'inline-block',
