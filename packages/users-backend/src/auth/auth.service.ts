@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { TUser, UsersService } from '../users';
 import { JWTAuthService, TJWTPayload } from '../jwt-auth';
 import bcrypt from 'bcrypt';
-import { LocalAuthTokenDto } from "./local-auth.dto";
+import { LocalAuthTokenDto } from "./local-auth/local-auth.dto";
 
 declare global {
   namespace Express {
