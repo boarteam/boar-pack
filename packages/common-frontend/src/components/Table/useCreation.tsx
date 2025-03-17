@@ -5,6 +5,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { FormattedMessage } from "react-intl";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
 import { CreateEntityModal, CreateEntityModalProps } from "./CreateEntityModal";
+import { DescriptionsRefType } from "../Descriptions";
 
 let creatingRecordsCount = 0;
 export const KEY_SYMBOL = Symbol('key');
@@ -41,7 +42,7 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
 } & Omit<CreateEntityModalProps<Entity>, 'onSubmit' | 'onCancel' | 'entity'>) {
   const [createPopupData, setCreatePopupData] = useState<Partial<Entity> | undefined>();
 
-  const onCreateSubmit = async (data: Partial<Entity>) => {
+  const onCreateSubmit = async (data: Partial<Entity>, descriptionsRef: MutableRefObject<DescriptionsRefType<Entity>>) => {
     try {
       await onCreate?.({
         ...pathParams,
@@ -54,6 +55,27 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
       await actionRef?.current?.reload();
     } catch (e) {
       console.error(e);
+
+      // TODO: How to import ApiError?
+      // import { ApiError } from "@boarteam/boar-pack-users-frontend/dist/src/tools/api-client";
+      // if (e instanceof ApiError) {}
+      if (!e.body?.statusCode || !e.body?.message) {
+        return;
+      }
+
+      const { statusCode, message } = e.body;
+      if (statusCode === 400) {
+        // Example: Error from MDM server: "base_symbol" String should have at least 1 character
+        const fieldName = message.match(/"([^"]+)"/)?.[1];
+        if (fieldName) {
+          descriptionsRef.current.setFieldErrors([
+            {
+              name: fieldName,
+              errors: [message],
+            }
+          ]);
+        }
+      }
     }
   };
 

@@ -1,6 +1,6 @@
 import { ProColumns } from "@ant-design/pro-components";
 import { Button, Modal } from "antd";
-import { useRef } from "react";
+import { MutableRefObject, useRef } from "react";
 import { Descriptions, DescriptionsRefType } from "../Descriptions";
 import { buildFieldsFromColumnsForDescriptionsDisplay } from "./tableTools";
 
@@ -23,7 +23,7 @@ export interface CreateEntityModalProps<Entity> {
    * Called when the form is submitted.
    * Receives the validated form data.
    */
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: any, descriptionsRef: MutableRefObject<DescriptionsRefType<Entity>>) => Promise<void>;
 }
 
 export function CreateEntityModal<
@@ -41,7 +41,7 @@ export function CreateEntityModal<
   onCancel,
   onSubmit,
 }: CreateEntityModalProps<Entity>) {
-  const descriptionsRef = useRef<DescriptionsRefType>(null);
+  const descriptionsRef = useRef<DescriptionsRefType<Entity>>(null);
 
   // Calculate the editable keys from the columns and idColumnName
   const editableKeys = [...buildFieldsFromColumnsForDescriptionsDisplay(columns, idColumnName)];
@@ -74,7 +74,7 @@ export function CreateEntityModal<
         labelStyle={{ width: '15%' }}
         contentStyle={{ width: '25%' }}
         canEdit={true}
-        onCreate={onSubmit}
+        onCreate={(data) => onSubmit(data, descriptionsRef)}
         editable={{
           editableKeys,
           actionRender: () => [],
