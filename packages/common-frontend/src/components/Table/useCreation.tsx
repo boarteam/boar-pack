@@ -6,6 +6,7 @@ import { FormattedMessage } from "react-intl";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
 import { CreateEntityModal, CreateEntityModalProps } from "./CreateEntityModal";
 import { DescriptionsRefType } from "../Descriptions";
+import { ApiError } from '../../tools'
 
 let creatingRecordsCount = 0;
 export const KEY_SYMBOL = Symbol('key');
@@ -56,24 +57,19 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
     } catch (e) {
       console.error(e);
 
-      // TODO: How to import ApiError?
-      // import { ApiError } from "@boarteam/boar-pack-users-frontend/dist/src/tools/api-client";
-      // if (e instanceof ApiError) {}
-      if (!e.body?.statusCode || !e.body?.message) {
-        return;
-      }
+      // Handle common error
+      if (e.body && e.body.statusCode && e.body.errors) {
+        const error = e as ApiError;
+        const { statusCode, errors } = error.body;
+        // Validation error. Highlight corresponding form fields
+        if (statusCode === 400) {
+          const formErrors = errors.map(error => ({
+            name: error.field,
+            errors: [error.message],
+          }));
 
-      const { statusCode, message } = e.body;
-      if (statusCode === 400) {
-        // Example: Error from MDM server: "base_symbol" String should have at least 1 character
-        const fieldName = message.match(/"([^"]+)"/)?.[1];
-        if (fieldName) {
-          descriptionsRef.current.setFieldErrors([
-            {
-              name: fieldName,
-              errors: [message],
-            }
-          ]);
+          // @ts-ignore
+          descriptionsRef.current.setFieldErrors(formErrors);
         }
       }
     }
