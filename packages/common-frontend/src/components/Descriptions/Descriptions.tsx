@@ -15,6 +15,7 @@ import useContentViewMode, { VIEW_MODE_TYPE } from "./useContentViewMode";
 import { createStyles } from "antd-style";
 import { debounce } from "lodash";
 import { NamePath } from "antd/lib/form/interface";
+import { FieldData } from "rc-field-form/lib/interface";
 
 const useStyles = createStyles(({css}) => {
   return {
@@ -61,7 +62,7 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     CreateDto,
     UpdateDto,
     TPathParams>,
-  ref: React.Ref<DescriptionsRefType>,
+  ref: React.Ref<DescriptionsRefType<Entity>>,
 ) => {
   const { styles } = useStyles();
 
@@ -133,6 +134,9 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
       form.resetFields();
     },
     submit: () => handleSubmit(),
+    setFieldErrors: (fields: FieldData<Entity>[]) => {
+      form.setFields(fields)
+    }
   }));
 
   const onValuesChange = debounce((changedValues, allValues) => {
