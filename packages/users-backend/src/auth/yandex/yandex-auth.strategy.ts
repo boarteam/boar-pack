@@ -1,4 +1,4 @@
-import { Strategy, VerifyCallback } from 'passport-google-oauth20';
+import { Strategy } from 'passport-yandex';
 import { PassportStrategy } from '@nestjs/passport';
 import {
   Injectable,
@@ -6,27 +6,27 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { GOOGLE_AUTH } from './auth-strategies.constants';
-import { GoogleAuthConfigService } from "./google-auth.config";
+import { AuthService } from '../auth.service';
+import { YANDEX_AUTH } from '../auth-strategies.constants';
+import { YandexAuthConfigService } from "./yandex-auth.config";
+import { TUser } from "../../users";
 
 @Injectable()
-export class GoogleAuthStrategy extends PassportStrategy(
+export class YandexAuthStrategy extends PassportStrategy(
   Strategy,
-  GOOGLE_AUTH,
+  YANDEX_AUTH,
 ) {
-  private readonly logger = new Logger(GoogleAuthStrategy.name);
+  private readonly logger = new Logger(YandexAuthStrategy.name);
 
   constructor(
     private authService: AuthService,
-    private googleAuthConfigService: GoogleAuthConfigService,
+    private yandexAuthConfigService: YandexAuthConfigService,
   ) {
-    const config = googleAuthConfigService.config;
+    const config = yandexAuthConfigService.config;
     super({
       clientID: config.clientId,
       clientSecret: config.clientSecret,
       callbackURL: config.callbackURL,
-      scope: ['email', 'profile'],
     });
   }
 
@@ -34,7 +34,7 @@ export class GoogleAuthStrategy extends PassportStrategy(
     accessToken: string,
     refreshToken: string,
     profile: { emails: { value: string; verified: boolean }[] },
-    callback: VerifyCallback,
+    callback: (error: Error | null, user?: TUser | null) => void,
   ): Promise<any> {
     try {
       const user = await this.authService.validateUserByEmail(
@@ -51,7 +51,7 @@ export class GoogleAuthStrategy extends PassportStrategy(
       this.logger.error(e, e.stack);
       callback(
         new InternalServerErrorException(
-          'Impossible to log in user via google',
+          'Impossible to log in user via yandex',
         ),
       );
     }
