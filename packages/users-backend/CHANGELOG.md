@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0-alpha.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.1) (2025-03-14)
+
+
+### Bug Fixes
+
+* **auth:** remove unnecessary scope from Yandex authentication configuration ([7fdb51d](https://github.com/boarteam/boar-pack/commit/7fdb51dd7fd80ae4d032a149427f7f98b0f0df9f))
+
+
+### Features
+
+* **auth:** add Yandex authentication support with config and controller ([fa8ae75](https://github.com/boarteam/boar-pack/commit/fa8ae7556851aced34d16a2e86b260146fb521a6))
+* **auth:** implement Google and Microsoft authentication controllers ([bf452f6](https://github.com/boarteam/boar-pack/commit/bf452f6f5ef612b975312a43124fa3e82aa5c646))
+
+
+
+
+
 # [6.0.0-alpha.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.2.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.0) (2025-03-13)
 
 
