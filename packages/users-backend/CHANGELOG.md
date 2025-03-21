@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0-alpha.2](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.2) (2025-03-21)
+
+
+### Features
+
+* **auth:** Yandex auth ([#49](https://github.com/boarteam/boar-pack/issues/49)) ([aa21d76](https://github.com/boarteam/boar-pack/commit/aa21d76e74b25c25decc4f9c369dce8f420e1356))
+* **casl:** add fieldMatcher function to improve field validation ([38f657f](https://github.com/boarteam/boar-pack/commit/38f657ff4f49227b2bd6ee88fd0160abd69f47a8))
+
+
+
+
+
 # [6.0.0-alpha.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.1) (2025-03-14)
 
 

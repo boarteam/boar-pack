@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.1-alpha.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.5.1-alpha.0...@boarteam/boar-pack-common-frontend@2.5.1-alpha.1) (2025-03-21)
+
+
+### Bug Fixes
+
+* **tableTools:** prevent editing non-editable fields while creation ([996dca3](https://github.com/boarteam/boar-pack/commit/996dca3535d0bd75052c1ed3dc0526abd4f54425))
+
+
+
+
+
 ## [2.5.1-alpha.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.5.0...@boarteam/boar-pack-common-frontend@2.5.1-alpha.0) (2025-03-13)
 
 
