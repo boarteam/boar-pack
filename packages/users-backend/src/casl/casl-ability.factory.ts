@@ -103,6 +103,11 @@ export class CaslAbilityFactory {
           );
         };
       },
+      fieldMatcher(fields) {
+        return (field) => {
+          return fields.includes(field);
+        }
+      }
     });
   }
 
