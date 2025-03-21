@@ -129,6 +129,7 @@ export function applyKeywordToSearch(
 export type TIndexableRecord = {
   dataIndex?: Key | Key[];
   children?: TIndexableRecord[] | React.ReactNode;
+  editable?: false;
 };
 
 export function collectFieldsFromColumns<T>(
@@ -149,7 +150,9 @@ export function buildFieldsFromColumnsForDescriptionsDisplay<T>(
     if ('children' in col && Array.isArray(col.children)) {
       buildFieldsFromColumnsForDescriptionsDisplay(col.children, idColumnName, fields);
     }
-    fields.add(String(Array.isArray(col.dataIndex) ? col.dataIndex[0] : col.dataIndex));
+    if (col.editable !== false) {
+      fields.add(String(Array.isArray(col.dataIndex) ? col.dataIndex[0] : col.dataIndex));
+    }
   });
 
   return fields;
