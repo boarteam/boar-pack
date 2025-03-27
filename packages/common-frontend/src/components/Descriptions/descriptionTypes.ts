@@ -4,6 +4,7 @@ import { RowEditableConfig } from "@ant-design/pro-utils";
 import { QueryJoin } from "@nestjsx/crud-request";
 import { ProColumns } from "@ant-design/pro-components";
 import { ProDescriptionsProps } from "@ant-design/pro-descriptions";
+import { FieldData } from "rc-field-form/lib/interface";
 
 export type TGetOneParams = {
   /**
@@ -23,9 +24,10 @@ export type TDescriptionGetRequestParams = {
   join?: QueryJoin | QueryJoin[];
 };
 
-export type DescriptionsRefType = {
+export type DescriptionsRefType<Entity> = {
   reset: () => void;
   submit: () => void;
+  setFieldErrors: (fields: FieldData<Entity>[]) => void;
 };
 
 export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = object> = {
@@ -49,7 +51,7 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
   params?: TDescriptionGetRequestParams,
   columns: ProColumns<Entity>[],
   onEntityChange?: (entity: Entity | null) => void;
-  ref?: React.Ref<DescriptionsRefType>,
+  ref?: React.Ref<DescriptionsRefType<Entity>>,
 } & Omit<ProDescriptionsProps<Entity>, 'columns'>;
 
 export type TDescriptionsCreateModalProps<Entity> = Omit<ProDescriptionsProps<Entity>, 'columns'> & {

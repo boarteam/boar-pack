@@ -5,6 +5,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import { FormattedMessage } from "react-intl";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
 import { CreateEntityModal, CreateEntityModalProps } from "./CreateEntityModal";
+import { DescriptionsRefType } from "../Descriptions";
+import { ApiError } from '../../tools'
 
 let creatingRecordsCount = 0;
 export const KEY_SYMBOL = Symbol('key');
@@ -41,7 +43,7 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
 } & Omit<CreateEntityModalProps<Entity>, 'onSubmit' | 'onCancel' | 'entity'>) {
   const [createPopupData, setCreatePopupData] = useState<Partial<Entity> | undefined>();
 
-  const onCreateSubmit = async (data: Partial<Entity>) => {
+  const onCreateSubmit = async (data: Partial<Entity>, descriptionsRef: MutableRefObject<DescriptionsRefType<Entity>>) => {
     try {
       await onCreate?.({
         ...pathParams,
@@ -54,6 +56,22 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
       await actionRef?.current?.reload();
     } catch (e) {
       console.error(e);
+
+      // Handle common error
+      if (e.body && e.body.statusCode && e.body.errors) {
+        const error = e as ApiError;
+        const { statusCode, errors } = error.body;
+        // Validation error. Highlight corresponding form fields
+        if (statusCode === 400) {
+          const formErrors = errors.map(error => ({
+            name: error.field,
+            errors: [error.message],
+          }));
+
+          // @ts-ignore
+          descriptionsRef.current.setFieldErrors(formErrors);
+        }
+      }
     }
   };
 
