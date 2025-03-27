@@ -205,7 +205,7 @@ const Table = <Entity extends Record<string | symbol, any>,
           ? bulkDeleteButton
           : null,
         !viewOnly && createButton || null,
-        !viewOnly && importButton || null,
+        !viewOnly && onImport && importButton || null,
         exportUrl && exportButton || null,
         ...toolBarRender && toolBarRender(...args) || [],
       ]}
