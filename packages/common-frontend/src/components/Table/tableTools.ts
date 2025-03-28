@@ -97,6 +97,7 @@ export const Operators = {
   lowerOrEquals: CondOperator.LOWER_THAN_EQUALS,
   isNull: CondOperator.IS_NULL,
   notNull: CondOperator.NOT_NULL,
+  starts: CondOperator.STARTS,
 } as const;
 
 export function applyKeywordToSearch(

@@ -196,7 +196,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       bordered
       search={false}
       editable={editableConfig}
-      toolBarRender={(...args) => [
+      toolBarRender={toolBarRender === false ? false : (...args) => [
         columnsSetSelect?.() || null,
         !viewOnly && onUpdateMany
           ? bulkEditButton
