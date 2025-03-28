@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.4.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.4.0...@boarteam/boar-pack-users-backend@5.4.1) (2025-03-28)
+
+
+### Bug Fixes
+
+* **EventLogs:** update index name for service in event log entity ([0eab782](https://github.com/boarteam/boar-pack/commit/0eab782e0dbddca7bbc6f72a57ecf471a2b8f962))
+* **users:** update admin email address to new domain ([3d7ad1b](https://github.com/boarteam/boar-pack/commit/3d7ad1ba3bab88cc1b30f3c39efe59c1123d0bb7))
+
+
+
+
+
 # [5.4.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.3.1...@boarteam/boar-pack-users-backend@5.4.0) (2025-03-12)
 
 

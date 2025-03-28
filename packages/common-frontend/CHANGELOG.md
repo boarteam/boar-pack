@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.7.0...@boarteam/boar-pack-common-frontend@2.8.0) (2025-03-28)
+
+
+### Bug Fixes
+
+* **common-frontend:** Use ProFormSelect from pro-components. Added own css class ([#48](https://github.com/boarteam/boar-pack/issues/48)) ([4295f31](https://github.com/boarteam/boar-pack/commit/4295f31ad91594947d32f8826e442ff8375f1194))
+
+
+### Features
+
+* **Descriptions:** ADM-283 add setFieldErrors method to Descriptions ([#50](https://github.com/boarteam/boar-pack/issues/50)) ([aa04917](https://github.com/boarteam/boar-pack/commit/aa04917082aabc31bdeb741a1a3a2b78da8e9f40))
+* **Table:** update toolBarRender logic and add new search condition ([701d886](https://github.com/boarteam/boar-pack/commit/701d886a7dc0c76e07eb2a17dd6f63eeac1b65c6))
+
+
+
+
+
 # [2.7.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.6.0...@boarteam/boar-pack-common-frontend@2.7.0) (2025-03-11)
 
 
