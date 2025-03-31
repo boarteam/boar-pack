@@ -35,7 +35,7 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
 }: {
   actionRef?: MutableRefObject<ActionType | undefined>;
   pathParams: TPathParams;
-  entityToCreateDto: (entity: Partial<Entity>) => CreateDto;
+  entityToCreateDto: (entity: Entity) => CreateDto;
   onCreate?: ({}: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
   createButtonSize: SizeType;
   popupCreation?: boolean;
@@ -43,7 +43,7 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
 } & Omit<CreateEntityModalProps<Entity>, 'onSubmit' | 'onCancel' | 'entity'>) {
   const [createPopupData, setCreatePopupData] = useState<Partial<Entity> | undefined>();
 
-  const onCreateSubmit = async (data: Partial<Entity>, descriptionsRef: MutableRefObject<DescriptionsRefType<Entity>>) => {
+  const onCreateSubmit = async (data: Entity, descriptionsRef: MutableRefObject<DescriptionsRefType<Entity>>) => {
     try {
       await onCreate?.({
         ...pathParams,
