@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0-alpha.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.5.1-alpha.1...@boarteam/boar-pack-common-frontend@2.6.0-alpha.0) (2025-04-06)
+
+
+### Bug Fixes
+
+* **useCreation:** update entityToCreateDto and onCreateSubmit to require full entity type ([827b361](https://github.com/boarteam/boar-pack/commit/827b361057e8c782d5914454e9d639d7d538cc21))
+
+
+### Features
+
+* **Comments components:** JUI-7 Added components for working with comments ([#52](https://github.com/boarteam/boar-pack/issues/52)) ([9f90436](https://github.com/boarteam/boar-pack/commit/9f90436462d4766df8a667f362dc074618113af8))
+
+
+
+
+
 ## [2.5.1-alpha.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.5.1-alpha.0...@boarteam/boar-pack-common-frontend@2.5.1-alpha.1) (2025-03-21)
 
 
