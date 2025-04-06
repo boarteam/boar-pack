@@ -1,4 +1,11 @@
-import { AbilityBuilder, AbilityClass, ExtractSubjectType, InferSubjects, PureAbility, RawRule, } from '@casl/ability';
+import {
+  AbilityBuilder,
+  createMongoAbility,
+  ExtractSubjectType,
+  InferSubjects,
+  MongoAbility,
+  RawRule,
+} from '@casl/ability';
 import { Roles, User } from '../users/entities/user.entity';
 import { Action } from './action.enum';
 import { Injectable, Logger } from '@nestjs/common';
@@ -26,7 +33,7 @@ type Subjects =
   | InferSubjects<TSubjects[keyof TSubjects]>
   | TTextSubjects;
 
-export type AppAbility = PureAbility<[Action, Subjects], AnyObject>;
+export type AppAbility = MongoAbility<[Action, Subjects], AnyObject>;
 
 type TAbilityDefiner = (
   user: Pick<User, 'id' | 'role' | 'permissions'>,
@@ -64,7 +71,7 @@ export class CaslAbilityFactory {
   }
 
   public async createForUser(user: Pick<User, 'id' | 'role' | 'permissions'>) {
-    const { can, cannot, build } = new AbilityBuilder<AppAbility>(PureAbility as AbilityClass<AppAbility>);
+    const { can, cannot, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
     switch (user.role) {
       case Roles.ADMIN:
@@ -94,18 +101,6 @@ export class CaslAbilityFactory {
       // Read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details
       detectSubjectType: (item) =>
         item.constructor as ExtractSubjectType<Subjects>,
-      conditionsMatcher: (conditions) => {
-        return (obj) => {
-          return Object.keys(conditions).every(
-            (prop) => conditions[prop] === obj[prop],
-          );
-        };
-      },
-      fieldMatcher(fields) {
-        return (field) => {
-          return fields.includes(field);
-        }
-      }
     });
   }
 
