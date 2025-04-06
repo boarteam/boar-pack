@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0-alpha.3](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.2...@boarteam/boar-pack-users-backend@6.0.0-alpha.3) (2025-04-06)
+
+
+### Bug Fixes
+
+* **casl:** switch to MongoAbility and update ability builder ([03f9dbb](https://github.com/boarteam/boar-pack/commit/03f9dbb29347b949f9e3215fcef7b483503af3f3))
+
+
+
+
+
 # [6.0.0-alpha.2](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.2) (2025-03-21)
 
 
