@@ -74,7 +74,7 @@ export class UsersModule implements OnModuleInit {
         name: 'Admin',
         email: 'test-admin@test.test',
         role: Roles.ADMIN,
-        pass: await this.bcryptService.hashPassword('pass'),
+        pass: await this.bcryptService.hashPassword('test'),
       });
     }
   }
