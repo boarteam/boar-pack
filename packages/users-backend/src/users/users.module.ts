@@ -72,7 +72,7 @@ export class UsersModule implements OnModuleInit {
       this.logger.log('Creating default admin user');
       await this.usersService.create({
         name: 'Admin',
-        email: 'admin@admirals.com',
+        email: 'test-admin@test.test',
         role: Roles.ADMIN,
         pass: await this.bcryptService.hashPassword('pass'),
       });
