@@ -172,7 +172,11 @@ export function buildFieldsFromColumns<T>(
     // skip id column because it is always included by backend
     // and join fields because they are included by join
 
-    const dataIndex = String(Array.isArray(col.dataIndex) ? col.dataIndex[0] : col.dataIndex);
+    const dataIndex = Array.isArray(col.dataIndex) ? col.dataIndex[0] : col.dataIndex;
+    if (typeof dataIndex !== 'string') {
+      return;
+    }
+
     if (!dataIndex || (Array.isArray(idColumnName) ? idColumnName.includes(dataIndex) : dataIndex === idColumnName) || joinFields.has(dataIndex)) {
       return;
     }
