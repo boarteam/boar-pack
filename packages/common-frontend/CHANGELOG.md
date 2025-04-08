@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0-alpha.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.6.0-alpha.0...@boarteam/boar-pack-common-frontend@2.6.0-alpha.1) (2025-04-08)
+
+
+### Bug Fixes
+
+* **tableTools:** ensure dataIndex is a string before processing ([7cbe8bb](https://github.com/boarteam/boar-pack/commit/7cbe8bbac4c48fd45dfbe151af2bec1871797936))
+
+
+
+
+
 # [2.6.0-alpha.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.5.1-alpha.1...@boarteam/boar-pack-common-frontend@2.6.0-alpha.0) (2025-04-06)
 
 
