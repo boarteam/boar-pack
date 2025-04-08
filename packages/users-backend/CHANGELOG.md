@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0-alpha.4](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.3...@boarteam/boar-pack-users-backend@6.0.0-alpha.4) (2025-04-08)
+
+
+### Bug Fixes
+
+* **users:** update default admin email to test-admin@test.test ([66453a2](https://github.com/boarteam/boar-pack/commit/66453a2075d670e15132e36f09e3643842e465dc))
+* **users:** update default admin password to 'test' ([f956ce3](https://github.com/boarteam/boar-pack/commit/f956ce3f04a74fbf175bda26c6edf8d6d14436f6))
+
+
+
+
+
 # [6.0.0-alpha.3](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.2...@boarteam/boar-pack-users-backend@6.0.0-alpha.3) (2025-04-06)
 
 
