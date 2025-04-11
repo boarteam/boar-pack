@@ -26,9 +26,10 @@
     "pub": "lerna publish from-package",
     "watch:common-fontend": "chokidar 'packages/common-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/common-frontend'",
     "watch:common-backend": "chokidar 'packages/common-backend/src/**/*' -c 'npm run yalc:push --prefix packages/common-backend'",
-    "watch:users-backend": "chokidar 'packages/users-backend/src/**/*' -c 'npm run yalc:push --prefix packages/users-backend'",
     "watch:users-frontend": "chokidar 'packages/users-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/users-frontend'",
-    "watch:liquidity-manager-frontend": "chokidar 'packages/liquidity-manager-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/liquidity-manager-frontend'",
+    "watch:users-backend": "chokidar 'packages/users-backend/src/**/*' -c 'npm run yalc:push --prefix packages/users-backend'",
+    "watch:liquidity-monitor-frontend": "chokidar 'packages/liquidity-monitor-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/liquidity-monitor-frontend'",
+    "watch:liquidity-monitor-backend": "chokidar 'packages/liquidity-monitor-backend/src/**/*' -c 'npm run yalc:push --prefix packages/liquidity-monitor-backend'",
     "watch": "npm run push && npm-run-all --parallel watch:*",
     "gen:module": "ts-node scripts/new-module.ts",
     "gen:page": "ts-node scripts/new-table-page.ts"

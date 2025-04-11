@@ -1,0 +1,42 @@
+{
+  "name": "@boarteam/boar-pack-liquidity-monitor-frontend",
+  "version": "2.8.0",
+  "description": "Frontend for Liquidity Monitor",
+  "repository": "git@github.com:boarteam/boar-pack.git",
+  "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
+  "license": "MIT",
+  "main": "src/index",
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@ant-design/icons": "^4.8.3",
+    "@ant-design/pro-components": "^2.6.52",
+    "@ant-design/pro-table": "^3.15.1",
+    "@ant-design/pro-utils": "^2.15.5",
+    "antd": "^5.15.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intl": "^6.6.2"
+  },
+  "dependencies": {
+    "@ant-design/plots": "^2.3.2",
+    "@ant-design/pro-layout": "^7.17.19",
+    "antd-style": "^3.6.2",
+    "lodash": "^4.17.21",
+    "moment": "^2.30.1",
+    "@umijs/max": "^4.1.10",
+    "umi": "^4.1.10"
+  },
+  "devDependencies": {
+    "@umijs/plugin-model": "^2.6.2"
+  },
+  "scripts": {
+    "yalc:push": "yalc push"
+  },
+  "gitHead": "c56c90047b5cb4e4d719890553e61f8d7e6ff25f"
+}

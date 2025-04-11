@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "preserveSymlinks": true,
+    "paths": {}
+  },
+  "include": [
+    "src",
+    "node_modules/@boarteam/boar-pack-users-backend/src",
+    "node_modules/@boarteam/boar-pack-users-backend/package.json",
+    "node_modules/@boarteam/boar-pack-common-backend/src",
+    "node_modules/@boarteam/boar-pack-common-backend/package.json"
+  ],
+  "exclude": [
+    "test",
+    "**/dist*",
+    "**/*spec.ts",
+    ".yalc/**/*"
+  ]
+}
