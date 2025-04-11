@@ -22,7 +22,7 @@ import { TokensModule } from "./tokens";
       port: 5951,
       username: 'app',
       password: 'password',
-      database: 'amts_manager_panel',
+      database: 'boar_pack',
       entities: [
         resolve(__dirname, './*/entities/*.entity.{ts,js}'),
       ],
