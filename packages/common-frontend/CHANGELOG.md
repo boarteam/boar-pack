@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0-alpha.2](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.6.0-alpha.1...@boarteam/boar-pack-common-frontend@2.6.0-alpha.2) (2025-04-14)
+
+
+### Bug Fixes
+
+* **tableTypes:** update TFilters type to allow boolean arrays ([508935e](https://github.com/boarteam/boar-pack/commit/508935e09b8a4fb694dfc762ff1ec6300c2a578f))
+
+
+
+
+
 # [2.6.0-alpha.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.6.0-alpha.0...@boarteam/boar-pack-common-frontend@2.6.0-alpha.1) (2025-04-08)
 
 
