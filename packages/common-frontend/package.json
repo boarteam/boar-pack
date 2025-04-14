@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-common-frontend",
-  "version": "2.6.0-alpha.1",
+  "version": "2.6.0-alpha.2",
   "description": "Common frontend package for Boar Pack",
   "repository": "git@github.com:boarteam/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
