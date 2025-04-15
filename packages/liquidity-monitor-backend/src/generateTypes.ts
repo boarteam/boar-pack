@@ -6,9 +6,7 @@ import { resolve } from "path";
 import { ConfigModule } from "@nestjs/config";
 // @ts-ignore-next-line - Ignore the error because the package on project level
 import { generate } from "openapi-typescript-codegen";
-import { EventLogsModule } from './event-logs'
-import { UsersModule } from "./users";
-import { TokensModule } from "./tokens";
+import { QuotesStatisticModule } from "./quotes-statistic";
 
 @Module({
   imports: [
@@ -16,7 +14,6 @@ import { TokensModule } from "./tokens";
       envFilePath: resolve(__dirname, '../../.env'),
     }),
     TypeOrmModule.forRoot({
-      name: 'tid_db',
       type: 'postgres',
       host: 'localhost',
       port: 5951,
@@ -27,16 +24,7 @@ import { TokensModule } from "./tokens";
         resolve(__dirname, './*/entities/*.entity.{ts,js}'),
       ],
     }),
-    UsersModule.register({
-      withControllers: true,
-      dataSourceName: 'tid_db',
-    }),
-    EventLogsModule.forRoot({
-      dataSourceName: 'tid_db'
-    }),
-    TokensModule.forRoot({
-      dataSourceName: 'tid_db',
-    }),
+    QuotesStatisticModule.forRoot(),
   ],
 })
 class Swagger {
@@ -61,7 +49,7 @@ async function bootstrap() {
     await app.listen(3335);
     await generate({
       input: 'http://localhost:3335/docs-json',
-      output: resolve(__dirname, '../../../users-frontend/src/tools/api-client/generated'),
+      output: resolve(__dirname, '../../../liquidity-monitor-frontend/src/tools/api-client/generated'),
       httpClient: 'node',
       clientName: 'ApiClient',
       useOptions: true,

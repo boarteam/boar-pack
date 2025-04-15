@@ -1,0 +1,18 @@
+version: '3'
+services:
+  db:
+    image: postgres:13
+    ports:
+      - '5951:5432'
+    environment:
+      POSTGRES_PASSWORD: password
+      ADMIN_ROLE_NAME: admin
+      ADMIN_PASSWORD: password
+      APP_ROLE_NAME: app
+      APP_PASSWORD: password
+      DB_NAME: boar_pack
+      SCHEMA_NAME: public
+      PRIVATE_SCHEMA_NAME: public
+      EXTENSIONS: pgcrypto,"uuid-ossp"
+    volumes:
+      - ./packages/db/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
