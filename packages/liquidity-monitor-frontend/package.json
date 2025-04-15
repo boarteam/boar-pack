@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-liquidity-monitor-frontend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Frontend for Liquidity Monitor",
   "repository": "git@github.com:boarteam/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
@@ -26,10 +26,10 @@
   "dependencies": {
     "@ant-design/plots": "^2.3.2",
     "@ant-design/pro-layout": "^7.17.19",
+    "@umijs/max": "^4.1.10",
     "antd-style": "^3.6.2",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
-    "@umijs/max": "^4.1.10",
     "umi": "^4.1.10"
   },
   "devDependencies": {
