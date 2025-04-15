@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.4.2](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.4.1...@boarteam/boar-pack-users-backend@5.4.2) (2025-04-15)
+
+**Note:** Version bump only for package @boarteam/boar-pack-users-backend
+
+
+
+
+
 ## [5.4.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.4.0...@boarteam/boar-pack-users-backend@5.4.1) (2025-03-28)
 
 
