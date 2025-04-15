@@ -3,12 +3,16 @@ import React, { Key, useEffect, useImperativeHandle, useMemo, useRef, useState }
 import { Badge, Button, Result, Tabs, TabsProps, Tooltip } from "antd";
 import { DeleteOutlined, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
-import { DescriptionsRefType, TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
+import { DescriptionsRefType, FieldsEdit, TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
 import { PageLoading, ProDescriptions } from "@ant-design/pro-components";
 import { columnsToDescriptionItemProps, TDescriptionSection } from "./useDescriptionColumns";
 import pick from "lodash/pick";
 import safetyRun from "../../tools/safetyRun";
-import { buildJoinFields, collectFieldsFromColumns } from "../Table";
+import {
+  buildFieldsFromColumnsForDescriptionsDisplay,
+  buildJoinFields,
+  collectFieldsFromColumns,
+} from "../Table";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { useForm } from "antd/es/form/Form";
 import useContentViewMode, { VIEW_MODE_TYPE } from "./useContentViewMode";
@@ -54,6 +58,7 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     actionRef: actionRefProp,
     editable,
     canEdit = false,
+    fieldsEditType = FieldsEdit.Single,
     columns,
     params,
     onEntityChange,
@@ -271,6 +276,10 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
         cancelText: <Tooltip title={intl.formatMessage({ id: 'table.cancelText' })}><StopOutlined /></Tooltip>,
         deleteText: <Tooltip title={intl.formatMessage({ id: 'table.deleteText' })}><DeleteOutlined /></Tooltip>,
         saveText: <Button size={"small"} type={"primary"}><FormattedMessage id={'table.saveText'} /></Button>,
+        ...(fieldsEditType === FieldsEdit.All && {
+          editableKeys: [...buildFieldsFromColumnsForDescriptionsDisplay(columns, idColumnName)],
+          actionRender: () => [],
+        }),
         ...editable,
       } : undefined}
       columns={section.columns}
