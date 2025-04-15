@@ -3,7 +3,6 @@ import { PageLoading } from "@ant-design/pro-layout";
 import { QuotesStatisticDto, QuotesStatisticQueryDto } from "../../tools/api-client";
 import { Column, ColumnConfig } from "@ant-design/plots";
 import moment from "moment";
-import { quotesColors } from "./QuotesColors";
 import apiClient from "../../tools/api-client/apiClient";
 import { TStatisticProvider } from "./index";
 // @ts-ignore
@@ -35,13 +34,13 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
     }).then(setData);
   }, [startTime, endTime]);
 
-  if (!data || !providers) {
+  if (!data) {
     return <PageLoading />;
   }
 
   const config: ColumnConfig = {
     data,
-    xField: 'startTime',
+    xField: 'time',
     yField: 'records',
     colorField: (record: QuotesStatisticDto) => {
       return providers[record.providerName]?.name || record.providerName;
@@ -49,13 +48,7 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
     stack: true,
     height: 300,
     theme: navTheme === 'realDark' ? 'dark' : 'light',
-    legend: {},
     axis: {
-      x: {
-        labelFormatter: (v: string, i: number) => {
-          return data[i * Object.values(providers).length]?.time
-        },
-      },
       y: {
         gridLineWidth: 1,
       }
@@ -71,8 +64,7 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
     },
     scale: {
       color: {
-        domain: Object.values(providers).map(p => p.name),
-        range: Object.values(quotesColors),
+        palette: 'rainbow'
       },
     },
     onReady: ({ chart }) => {
