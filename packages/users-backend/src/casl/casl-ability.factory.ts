@@ -7,6 +7,7 @@ import { Permission } from '../users/entities/permissions';
 import { EventLog } from '../event-logs';
 import { Token } from "../tokens/entities/token.entity";
 import { MyToken } from "../tokens/policies/manage-my-tokens.policy";
+import { Setting } from "../settings/entities/setting.entity";
 
 type AnyObject = Record<PropertyKey, unknown>;
 
@@ -15,6 +16,7 @@ export interface TSubjects {
   EventLog: typeof EventLog;
   Token: typeof Token;
   MyToken: typeof MyToken;
+  Setting: typeof Setting;
 }
 
 export type TTextSubjects = 'all';
