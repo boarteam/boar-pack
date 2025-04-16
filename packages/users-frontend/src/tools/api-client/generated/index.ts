@@ -19,6 +19,8 @@ export type { GetManyEventLogResponseDto } from './models/GetManyEventLogRespons
 export type { GetManyTokenResponseDto } from './models/GetManyTokenResponseDto';
 export type { GetManyUserResponseDto } from './models/GetManyUserResponseDto';
 export type { PermissionDto } from './models/PermissionDto';
+export type { TelegramSettingsDto } from './models/TelegramSettingsDto';
+export type { TelegramSettingsUpdateDto } from './models/TelegramSettingsUpdateDto';
 export type { Token } from './models/Token';
 export type { TokenCreateDto } from './models/TokenCreateDto';
 export type { TokenUpdateDto } from './models/TokenUpdateDto';
@@ -28,5 +30,7 @@ export { UserCreateDto } from './models/UserCreateDto';
 export { UserUpdateDto } from './models/UserUpdateDto';
 
 export { EventLogsService } from './services/EventLogsService';
+export { SettingsService } from './services/SettingsService';
+export { TelegrafService } from './services/TelegrafService';
 export { TokensService } from './services/TokensService';
 export { UsersService } from './services/UsersService';
