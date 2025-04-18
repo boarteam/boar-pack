@@ -12,6 +12,7 @@ const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
   data,
   onClose,
   onSubmit,
+  modalProps,
   ...rest
 }: TDescriptionsCreateModalProps<Entity>) => {
   const sections = columnsToDescriptionItemProps(columns, 'General');
@@ -38,6 +39,7 @@ const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
       footer={[
         <Button key='submit' type="primary" onClick={async () => form.validateFields().then(onSubmit)}>Create</Button>
       ]}
+      {...modalProps}
     >
       {sections.map((section, index) => (
         <ProDescriptions<Entity>

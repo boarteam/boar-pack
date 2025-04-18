@@ -5,6 +5,7 @@ import { Operators } from "./tableTools";
 import { TColumnsSet } from "./useColumnsSets";
 import { ColumnStateType } from "@ant-design/pro-table/es/typing";
 import { RowEditableConfig } from "@ant-design/pro-utils";
+import { TDescriptionsCreateModalProps } from "../Descriptions";
 
 export type IWithId = {
   id: string | number,
@@ -99,6 +100,7 @@ interface BaseProps<Entity,
   columnsState?: ColumnStateType;
   columnsSetSelect?: () => React.ReactNode;
   popupDataState?: [Partial<Entity>, React.Dispatch<React.SetStateAction<Partial<Entity>>>]
+  popupProps?: TDescriptionsCreateModalProps<Entity>;
 }
 
 interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {
