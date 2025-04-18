@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.8.0...@boarteam/boar-pack-common-frontend@2.8.1) (2025-04-18)
+
+
+### Bug Fixes
+
+* **common-frontend:** prevent onDelete if record is never created ([#56](https://github.com/boarteam/boar-pack/issues/56)) ([1e2edac](https://github.com/boarteam/boar-pack/commit/1e2edace7e30d576b845f95189c7091ad9b8a9cd))
+
+
+
+
+
 # [2.8.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.7.0...@boarteam/boar-pack-common-frontend@2.8.0) (2025-03-28)
 
 
