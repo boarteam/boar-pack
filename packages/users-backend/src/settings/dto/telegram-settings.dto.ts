@@ -4,4 +4,5 @@ export class TelegramSettingsDto {
   chatId: string | null;
   notifyAboutInstruments: boolean;
   notifyAboutPlatforms: boolean;
+  notifyAboutQuotesByProvider: boolean;
 }

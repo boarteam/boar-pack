@@ -7,4 +7,5 @@ export const Telegram = {
 export enum Notifications {
   InstrumentsStatus = 'notifications.instruments_status',
   PlatformStatus = 'notifications.platform_status',
+  QuotesByProviderStatus = 'notifications.quotes_by_provider_status',
 }

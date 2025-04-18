@@ -16,4 +16,7 @@ export class TelegramSettingsUpdateDto {
 
   @JoiSchema(Joi.boolean().optional())
   notifyAboutPlatforms?: boolean;
+
+  @JoiSchema(Joi.boolean().optional())
+  notifyAboutQuotesByProvider?: boolean;
 }
