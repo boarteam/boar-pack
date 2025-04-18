@@ -6,3 +6,5 @@ export * from './bcrypt';
 export * from './tokens';
 export * from './ws-auth';
 export * from './event-logs';
+export * from './settings';
+export * from './telegraf';

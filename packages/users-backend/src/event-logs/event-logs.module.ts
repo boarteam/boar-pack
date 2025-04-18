@@ -46,11 +46,13 @@ export class EventLogsModule implements NestModule {
     service?: TEventLogServiceConfig,
     eventLogsServiceClass?: new (...args: any[]) => EventLogsService,
   }) {
+    const scheduleModule = process.env.SWAGGER ? [] : [ScheduleModule.forRoot()];
+
     return {
       module: EventLogsModule,
       imports: [
         CaslModule.forFeature(),
-        ScheduleModule.forRoot(),
+        ...scheduleModule,
         TypeOrmModule.forFeature([EventLog], config.dataSourceName),
       ],
       providers: [
