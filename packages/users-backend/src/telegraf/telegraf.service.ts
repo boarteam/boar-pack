@@ -1,8 +1,9 @@
 import { BadRequestException, Injectable, Logger } from "@nestjs/common";
 import { SettingsService, settingsToDtoPropMap } from "../settings/settings.service";
 import { Notifications } from "../settings/settings.constants";
+import { FmtString } from "telegraf/format";
 
-const { Telegraf } = require('telegraf');
+import { Telegraf } from "telegraf";
 
 @Injectable()
 export class TelegrafService {
@@ -13,7 +14,7 @@ export class TelegrafService {
   ) {
   }
 
-  async sendMessage(message: string, type: Notifications | null): Promise<void> {
+  async sendMessage(message: string | FmtString, type: Notifications | null): Promise<void> {
     const config = await this.settingsService.getTelegramSettings();
     if (!config.enabled) {
       this.logger.log('Suppressed telegram message because it is disabled');
@@ -25,11 +26,14 @@ export class TelegrafService {
       return;
     }
 
+    if (!config.botToken || !config.chatId) {
+      this.logger.log('Suppressed telegram message because bot token or chat id is not set');
+      return;
+    }
+
     const bot = new Telegraf(config.botToken);
 
-
     try {
-      // @ts-ignore
       await bot.telegram.sendMessage(config.chatId, message);
     } catch (e) {
       this.logger.error('Failed to send telegram message');
