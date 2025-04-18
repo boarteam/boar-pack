@@ -1,8 +1,8 @@
-import { PageContainer } from "@ant-design/pro-components";
 import React from "react";
 import { useIntl } from "@umijs/max";
 import useTabs from "../../tools/useTabs";
 import { NotificationsSettings } from "../../components/Settings/NotificationsSettings";
+import { PageContainer } from "@ant-design/pro-components";
 
 enum Tabs {
   notifications = 'notifications',
@@ -23,7 +23,9 @@ const Settings: React.FC = () => {
     <PageContainer
       tabList={tabList}
       tabActiveKey={activeTab}
-      onTabChange={setActiveTab}
+      onTabChange={(key) => {
+        setActiveTab(key as Tabs);
+      }}
     >
       {activeTab === Tabs.notifications ? <NotificationsSettings /> : null}
     </PageContainer>
