@@ -11,6 +11,7 @@ export const settingsToDtoPropMap = {
   [Telegram.ChatId]: 'chatId',
   [Notifications.InstrumentsStatus]: 'notifyAboutInstruments',
   [Notifications.PlatformStatus]: 'notifyAboutPlatforms',
+  [Notifications.QuotesByProviderStatus]: 'notifyAboutQuotesByProvider',
 } as const;
 
 @Injectable()
@@ -41,6 +42,7 @@ export class SettingsService {
           Telegram.ChatId,
           Notifications.InstrumentsStatus,
           Notifications.PlatformStatus,
+          Notifications.QuotesByProviderStatus,
         ]),
       }
     });
@@ -51,12 +53,14 @@ export class SettingsService {
       chatId: '',
       notifyAboutInstruments: false,
       notifyAboutPlatforms: false,
+      notifyAboutQuotesByProvider: false,
     };
     settings.forEach((setting) => {
       switch (setting.key) {
         case Telegram.Enabled:
         case Notifications.InstrumentsStatus:
         case Notifications.PlatformStatus:
+        case Notifications.QuotesByProviderStatus:
           telegramSettings[settingsToDtoPropMap[setting.key]] = setting.value === 'yes';
           break;
 
@@ -77,6 +81,7 @@ export class SettingsService {
       Telegram.Enabled,
       Notifications.InstrumentsStatus,
       Notifications.PlatformStatus,
+      Notifications.QuotesByProviderStatus,
     ].forEach((key) => {
       const dtoKey = settingsToDtoPropMap[key];
       if (dtoKey in updateDto) {
