@@ -69,6 +69,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     toolBarRender,
     params,
     popupDataState,
+    popupProps,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -393,6 +394,7 @@ const Table = <Entity extends Record<string | symbol, any>,
       }}
       idColumnName={idColumnName}
       columns={columns ?? []}
+      {...popupProps}
     />
     {contextHolder}
   </>);
