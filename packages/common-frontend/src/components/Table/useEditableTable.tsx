@@ -5,6 +5,7 @@ import { Button, Tooltip } from "antd";
 import { DeleteOutlined, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import React, { useState } from "react";
+import { isRecordNew } from "./useCreation";
 
 export function useEditableTable<Entity, CreateDto, UpdateDto, TPathParams = {}>(
   {
@@ -68,6 +69,7 @@ export function useEditableTable<Entity, CreateDto, UpdateDto, TPathParams = {}>
       }
     },
     async onDelete(id, row) {
+      if (isRecordNew(row)) return;
       await onDelete({ ...row, ...pathParams });
     },
     deletePopconfirmMessage: intl.formatMessage({ id: 'table.deletePopconfirmMessage' }),
