@@ -254,6 +254,7 @@ const Table = <Entity extends Record<string | symbol, any>,
           }
         },
         async onDelete(id, row) {
+          if (isRecordNew(row)) return;
           await onDelete({ ...row, ...pathParams });
         },
         deletePopconfirmMessage: intl.formatMessage({ id: 'table.deletePopconfirmMessage' }),
