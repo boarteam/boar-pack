@@ -20,6 +20,7 @@ const booleanSettings = [
   'enabled',
   'notifyAboutInstruments',
   'notifyAboutPlatforms',
+  'notifyAboutQuotesByProvider',
 ];
 
 export const NotificationsSettings: React.FC = () => {
