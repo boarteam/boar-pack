@@ -64,11 +64,9 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     }
   }
 
-  async enableMonitoring() {
+  async toggleMonitoring() {
     const setting = await this.getSetting();
-    if (setting === 'yes') {
-      this.startMonitoring();
-    }
+    setting === 'no' ? this.stopMonitoring() : this.startMonitoring();
   }
 
   private async checkProviderActivity() {

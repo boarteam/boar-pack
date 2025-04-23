@@ -14,10 +14,7 @@ export const settingsToDtoPropMap = {
 
 @Injectable()
 export class SettingsService {
-  constructor(
-    readonly repo: Repository<Setting>,
-    // private readonly providerMonitoringService: ProviderMonitoringService,
-  ) {
+  constructor(readonly repo: Repository<Setting>) {
   }
 
   public getSettings(settingsNames: string[]): Promise<Setting[]> {
@@ -117,12 +114,5 @@ export class SettingsService {
     }
 
     await this.repo.upsert(settings, ['key']);
-
-    // Toggle provider activity monitoring
-    /*if (updateDto.quotesByProviderStatus !== undefined) {
-      updateDto.quotesByProviderStatus
-        ? this.providerMonitoringService.enableMonitoring()
-        : this.providerMonitoringService.stopMonitoring();
-    }*/
   }
 }
