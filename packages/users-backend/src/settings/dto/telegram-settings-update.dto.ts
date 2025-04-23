@@ -10,13 +10,4 @@ export class TelegramSettingsUpdateDto {
 
   @JoiSchema(Joi.string().trim().optional().allow(''))
   chatId?: string;
-
-  @JoiSchema(Joi.boolean().optional())
-  notifyAboutInstruments?: boolean;
-
-  @JoiSchema(Joi.boolean().optional())
-  notifyAboutPlatforms?: boolean;
-
-  @JoiSchema(Joi.boolean().optional())
-  notifyAboutQuotesByProvider?: boolean;
 }

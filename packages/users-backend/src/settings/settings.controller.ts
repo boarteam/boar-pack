@@ -5,6 +5,7 @@ import { TelegramSettingsDto } from "./dto/telegram-settings.dto";
 import { TelegramSettingsUpdateDto } from "./dto/telegram-settings-update.dto";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { CheckPolicies, ManageAllPolicy } from "../casl";
+import { EventSettingsDto } from "./dto/event-settings.dto";
 
 @CheckPolicies(new ManageAllPolicy())
 @ApiTags('Settings')
@@ -29,5 +30,22 @@ export class SettingsController {
     @Body() telegram: TelegramSettingsUpdateDto,
   ) {
     return this.settingsService.setTelegramSettings(telegram);
+  }
+
+  @CheckPolicies(new ManageSettingsPolicy())
+  @Get('events')
+  @ApiOkResponse({
+    type: EventSettingsDto,
+  })
+  getEventSettings(): Promise<EventSettingsDto> {
+    return this.settingsService.getEventSettings();
+  }
+
+  @CheckPolicies(new ManageSettingsPolicy())
+  @Patch('events')
+  setEventSettings(
+    @Body() events: EventSettingsDto,
+  ) {
+    return this.settingsService.setEventSettings(events);
   }
 }
