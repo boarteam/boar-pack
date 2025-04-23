@@ -1,5 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { Notifications, TelegrafService } from "@boarteam/boar-pack-users-backend";
@@ -12,7 +11,7 @@ type TProviderActivity = {
 }
 
 @Injectable()
-export class ProviderMonitoringService {
+export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(ProviderMonitoringService.name);
   // We'll store here notification attempts and retry attempts with exponential backoff (seconds)
   // { providerName: { attempts: 0 - 4, lastNotification: Date }}
@@ -21,6 +20,7 @@ export class ProviderMonitoringService {
     lastNotification: Date
   }>();
   private readonly exponentialBackoff = [299, 599, 1799, 3599];
+  private providerActivityInterval: NodeJS.Timeout | null = null;
 
   constructor(
     @InjectDataSource()
@@ -29,7 +29,48 @@ export class ProviderMonitoringService {
   ) {
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  async onModuleInit() {
+    const setting = await this.getSetting();
+    if (setting === 'yes') {
+      this.startMonitoring();
+    }
+  }
+
+  onModuleDestroy() {
+    this.stopMonitoring();
+  }
+
+  private async getSetting(): Promise<string> {
+    const result = await this.dataSource.query(`
+      select value from settings where key = '${Notifications.QuotesByProviderStatus}'
+    `);
+    return result?.[0]?.value || 'no';
+  }
+
+  private startMonitoring() {
+    if (this.providerActivityInterval) {
+      return;
+    }
+
+    this.logger.log('Starting provider activity monitoring...');
+    this.providerActivityInterval = setInterval(() => this.checkProviderActivity(), 10000);
+  }
+
+  stopMonitoring() {
+    if (this.providerActivityInterval) {
+      clearInterval(this.providerActivityInterval);
+      this.providerActivityInterval = null;
+      this.logger.log('Stopped provider activity monitoring.');
+    }
+  }
+
+  async enableMonitoring() {
+    const setting = await this.getSetting();
+    if (setting === 'yes') {
+      this.startMonitoring();
+    }
+  }
+
   private async checkProviderActivity() {
     const result: TProviderActivity[] = await this.dataSource.query(`
         select max(qs.created_at) as "latestQuoteDate", fp.name, fp.threshold

@@ -41,7 +41,6 @@ export class SettingsModule {
       permission: SettingsPermissions.MANAGE,
       action: Action.Manage,
       subject: Setting,
-    },);
-
+    });
   }
 }

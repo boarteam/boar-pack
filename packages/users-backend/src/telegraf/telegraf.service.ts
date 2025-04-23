@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, Logger } from "@nestjs/common";
-import { SettingsService, settingsToDtoPropMap } from "../settings/settings.service";
+import { SettingsService } from "../settings/settings.service";
 import { Notifications } from "../settings/settings.constants";
 import { FmtString } from "telegraf/format";
 
@@ -18,11 +18,6 @@ export class TelegrafService {
     const config = await this.settingsService.getTelegramSettings();
     if (!config.enabled) {
       this.logger.log('Suppressed telegram message because it is disabled');
-      return;
-    }
-
-    if (type && !config[settingsToDtoPropMap[type]]) {
-      this.logger.log(`Suppressed telegram message because ${type} notifications are disabled`);
       return;
     }
 

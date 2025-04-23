@@ -15,6 +15,7 @@ export { EventLogCreateDto } from './models/EventLogCreateDto';
 export { EventLogTimelineDto } from './models/EventLogTimelineDto';
 export type { EventLogTimelineQueryDto } from './models/EventLogTimelineQueryDto';
 export { EventLogUpdateDto } from './models/EventLogUpdateDto';
+export type { EventSettingsDto } from './models/EventSettingsDto';
 export type { GetManyEventLogResponseDto } from './models/GetManyEventLogResponseDto';
 export type { GetManyTokenResponseDto } from './models/GetManyTokenResponseDto';
 export type { GetManyUserResponseDto } from './models/GetManyUserResponseDto';

@@ -6,7 +6,5 @@ export type TelegramSettingsUpdateDto = {
     enabled?: boolean;
     botToken?: string;
     chatId?: string;
-    notifyAboutInstruments?: boolean;
-    notifyAboutPlatforms?: boolean;
 };
 

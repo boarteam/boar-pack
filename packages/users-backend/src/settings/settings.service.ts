@@ -1,23 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { TelegramSettingsUpdateDto } from "./dto/telegram-settings-update.dto";
 import { TelegramSettingsDto } from "./dto/telegram-settings.dto";
-import { In, Repository } from "typeorm";
+import { In, Like, Repository } from "typeorm";
 import { Setting } from "./entities/setting.entity";
-import { Notifications, Telegram } from "./settings.constants";
+import { Telegram } from "./settings.constants";
+import { EventSettingsDto } from "./dto/event-settings.dto";
 
 export const settingsToDtoPropMap = {
   [Telegram.Enabled]: 'enabled',
   [Telegram.BotToken]: 'botToken',
   [Telegram.ChatId]: 'chatId',
-  [Notifications.InstrumentsStatus]: 'notifyAboutInstruments',
-  [Notifications.PlatformStatus]: 'notifyAboutPlatforms',
-  [Notifications.QuotesByProviderStatus]: 'notifyAboutQuotesByProvider',
 } as const;
 
 @Injectable()
 export class SettingsService {
   constructor(
     readonly repo: Repository<Setting>,
+    // private readonly providerMonitoringService: ProviderMonitoringService,
   ) {
   }
 
@@ -40,9 +39,6 @@ export class SettingsService {
           Telegram.Enabled,
           Telegram.BotToken,
           Telegram.ChatId,
-          Notifications.InstrumentsStatus,
-          Notifications.PlatformStatus,
-          Notifications.QuotesByProviderStatus,
         ]),
       }
     });
@@ -51,16 +47,10 @@ export class SettingsService {
       enabled: false,
       botToken: '',
       chatId: '',
-      notifyAboutInstruments: false,
-      notifyAboutPlatforms: false,
-      notifyAboutQuotesByProvider: false,
     };
     settings.forEach((setting) => {
       switch (setting.key) {
         case Telegram.Enabled:
-        case Notifications.InstrumentsStatus:
-        case Notifications.PlatformStatus:
-        case Notifications.QuotesByProviderStatus:
           telegramSettings[settingsToDtoPropMap[setting.key]] = setting.value === 'yes';
           break;
 
@@ -77,20 +67,12 @@ export class SettingsService {
   async setTelegramSettings(updateDto: TelegramSettingsUpdateDto): Promise<void> {
     const settings: Pick<Setting, 'key' | 'value'>[] = [];
 
-    [
-      Telegram.Enabled,
-      Notifications.InstrumentsStatus,
-      Notifications.PlatformStatus,
-      Notifications.QuotesByProviderStatus,
-    ].forEach((key) => {
-      const dtoKey = settingsToDtoPropMap[key];
-      if (dtoKey in updateDto) {
-        settings.push({
-          key,
-          value: updateDto[dtoKey] ? 'yes' : 'no',
-        });
-      }
-    });
+    if (updateDto.enabled) {
+      settings.push({
+        key: Telegram.Enabled,
+        value: updateDto.enabled ? 'yes' : 'no',
+      });
+    }
 
     if (updateDto.botToken) {
       settings.push({
@@ -107,5 +89,40 @@ export class SettingsService {
     }
 
     await this.repo.upsert(settings, ['key']);
+  }
+
+  async getEventSettings(): Promise<EventSettingsDto> {
+    const settings = await this.repo.find({
+      where: {
+        key: Like('notifications.%'),
+      }
+    });
+
+    const eventSettings = new EventSettingsDto();
+    settings.forEach(setting => {
+      eventSettings[setting.key] = setting.value === 'yes'
+    });
+
+    return eventSettings;
+  }
+
+  async setEventSettings(updateDto: EventSettingsDto): Promise<void> {
+    const settings: Pick<Setting, 'key' | 'value'>[] = [];
+
+    for (const key in updateDto) {
+      settings.push({
+        key: key,
+        value: updateDto[key] ? 'yes' : 'no',
+      });
+    }
+
+    await this.repo.upsert(settings, ['key']);
+
+    // Toggle provider activity monitoring
+    /*if (updateDto.quotesByProviderStatus !== undefined) {
+      updateDto.quotesByProviderStatus
+        ? this.providerMonitoringService.enableMonitoring()
+        : this.providerMonitoringService.stopMonitoring();
+    }*/
   }
 }

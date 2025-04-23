@@ -3,12 +3,16 @@ import { Button, Card, message, Space, Typography } from "antd";
 import React, { useContext } from "react";
 import { useIntl } from "umi";
 import apiClient from "@@api/apiClient";
-import { TelegramSettingsUpdateDto } from "@@api/generated";
+import { EventSettingsDto, TelegramSettingsUpdateDto } from "@@api/generated";
 import { SettingsContext } from "../../components/Settings/settingsContext";
 
 const { Title, Text, Paragraph } = Typography;
 
-async function onSave(row: TelegramSettingsUpdateDto) {
+const isBoolean = (value: any) => {
+  return [true, false].includes(value)
+}
+
+async function onSaveTelegramSettings(row: TelegramSettingsUpdateDto) {
   apiClient.settings.setTelegramSettings({
     requestBody: row,
   }).catch(e => {
@@ -16,19 +20,19 @@ async function onSave(row: TelegramSettingsUpdateDto) {
   });
 }
 
-const booleanSettings = [
-  'enabled',
-  'notifyAboutInstruments',
-  'notifyAboutPlatforms',
-  'notifyAboutQuotesByProvider',
-];
+async function onSaveEventSettings(row: EventSettingsDto) {
+  apiClient.settings.setEventSettings({
+    requestBody: row,
+  }).catch(e => {
+    console.error(e);
+  });
+}
 
 export const NotificationsSettings: React.FC = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [settingsChanging, setSettingsChanging] = React.useState<boolean>(false);
   const [messageApi, contextHolder] = message.useMessage();
   const intl = useIntl();
-  const actionRef = React.useRef<ProDescriptionsActionType>();
   const settingsContext = useContext(SettingsContext);
 
   const testSettings = async () => {
@@ -93,14 +97,13 @@ export const NotificationsSettings: React.FC = () => {
 
       <Space direction={'vertical'} size={"middle"}>
         <ProDescriptions<TelegramSettingsUpdateDto>
-          actionRef={actionRef}
           bordered={true}
           size={'small'}
           formProps={{
             onValuesChange: async (changedValues) => {
-              if (booleanSettings.some(key => key in changedValues)) {
+              if (Object.keys(changedValues).some(key => isBoolean(changedValues[key]))) {
                 setSettingsChanging(true);
-                await onSave(changedValues);
+                await onSaveTelegramSettings(changedValues);
                 setSettingsChanging(false);
               }
             }
@@ -128,13 +131,6 @@ export const NotificationsSettings: React.FC = () => {
               valueType: 'text',
               span: 4,
             },
-            ...settingsContext.columns.map(column => ({
-              ...column,
-              fieldProps: {
-                loading: settingsChanging,
-                ...column.fieldProps,
-              },
-            })),
           ]}
           request={async () => {
             return {
@@ -145,11 +141,11 @@ export const NotificationsSettings: React.FC = () => {
           editable={{
             onSave: async (key, row) => {
               setSettingsChanging(true);
-              await onSave(row);
+              await onSaveTelegramSettings(row);
               setSettingsChanging(false);
             },
             actionRender: (row, config, dom) => {
-              if (booleanSettings.includes(String(config.recordKey))) {
+              if (config.recordKey === 'enabled') {
                 return [];
               }
 
@@ -157,6 +153,47 @@ export const NotificationsSettings: React.FC = () => {
             }
           }}
         />
+        {settingsContext.columns.length > 0 && (
+          <ProDescriptions<EventSettingsDto>
+            title='Events'
+            bordered={true}
+            size={'small'}
+            formProps={{
+              onValuesChange: async (changedValues) => {
+                if (Object.keys(changedValues).some(key => isBoolean(changedValues[key]))) {
+                  setSettingsChanging(true);
+                  await onSaveEventSettings(changedValues);
+                  setSettingsChanging(false);
+                }
+              }
+            }}
+            columns={[
+              ...settingsContext.columns.map(column => ({
+                ...column,
+                fieldProps: {
+                  loading: settingsChanging,
+                  ...column.fieldProps,
+                },
+              })),
+            ]}
+            request={async () => {
+              return {
+                success: true,
+                data: await apiClient.settings.getEventSettings()
+              }
+            }}
+            editable={{
+              onSave: async (key, row) => {
+                setSettingsChanging(true);
+                await onSaveEventSettings(row);
+                setSettingsChanging(false);
+              },
+              actionRender: () => {
+                return [];
+              }
+            }}
+          />
+        )}
         <Button
           type="primary"
           loading={loading}
