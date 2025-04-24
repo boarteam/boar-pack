@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0-alpha.3](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.8.1...@boarteam/boar-pack-common-frontend@2.6.0-alpha.3) (2025-04-24)
+
+
+### Bug Fixes
+
+* **tableTools:** ensure dataIndex is a string before processing ([caed7ac](https://github.com/boarteam/boar-pack/commit/caed7ac047e0083cdce78b008688cddaf4a6cb61))
+* **tableTools:** prevent editing non-editable fields while creation ([b0101f4](https://github.com/boarteam/boar-pack/commit/b0101f4c75ca7e9a5011f04e642f01673d465469))
+* **tableTypes:** update TFilters type to allow boolean arrays ([5488333](https://github.com/boarteam/boar-pack/commit/548833310a2300cab64cdaee56fbafb53554fc12))
+* **useColumnsSets:** enhance getColumnsStates to return visibility status of columns ([8a60367](https://github.com/boarteam/boar-pack/commit/8a60367cbce56836cddec60553ae727595d727a5))
+* **useCreation:** update entityToCreateDto and onCreateSubmit to require full entity type ([c260b1a](https://github.com/boarteam/boar-pack/commit/c260b1a337a0e5cc239401f585c0b9f0f2759b8f))
+
+
+### Features
+
+* **Comments components:** JUI-7 Added components for working with comments ([#52](https://github.com/boarteam/boar-pack/issues/52)) ([d9ac901](https://github.com/boarteam/boar-pack/commit/d9ac901e12c4261810b5bc301d97def5a4f504d3))
+
+
+
+
+
 # [2.6.0-alpha.2](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.6.0-alpha.1...@boarteam/boar-pack-common-frontend@2.6.0-alpha.2) (2025-04-14)
 
 

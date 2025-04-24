@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1-alpha.5](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@2.4.2...@boarteam/boar-pack-users-frontend@2.3.1-alpha.5) (2025-04-24)
+
+**Note:** Version bump only for package @boarteam/boar-pack-users-frontend
+
+
+
+
+
 ## [2.3.1-alpha.4](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@2.3.1-alpha.3...@boarteam/boar-pack-users-frontend@2.3.1-alpha.4) (2025-04-14)
 
 **Note:** Version bump only for package @boarteam/boar-pack-users-frontend
