@@ -47,7 +47,6 @@ function getColumnsStates<T>(
 
     if (idx) {
       if (shownCols.has(idx as keyof T) || childrenColumnsShown) {
-        state[idx as string] = { show: true };
         someColumnsShown = true;
       } else {
         state[idx as string] = { show: false };
