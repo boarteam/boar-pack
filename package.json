@@ -21,7 +21,7 @@
     "push": "lerna run yalc:push",
     "clean": "lerna clean",
     "build": "lerna run build",
-    "ver:pre": "lerna version prerelease --no-git-tag-version --no-push",
+    "ver:pre": "lerna publish --conventional-commits --conventional-prerelease",
     "ver": "lerna version",
     "pub": "lerna publish from-package",
     "watch:common-fontend": "chokidar 'packages/common-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/common-frontend'",

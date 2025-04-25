@@ -3,6 +3,108 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0-alpha.5](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.4.2...@boarteam/boar-pack-users-backend@6.0.0-alpha.5) (2025-04-24)
+
+
+### Bug Fixes
+
+* **casl:** switch to MongoAbility and update ability builder ([1f8c40a](https://github.com/boarteam/boar-pack/commit/1f8c40ae17265dea05a3840248868fffe07bf1f3))
+* **users:** update default admin email to test-admin@test.test ([b868366](https://github.com/boarteam/boar-pack/commit/b8683663d69a0f46954cb490a090c2e74c364934))
+* **users:** update default admin password to 'test' ([9d0f48b](https://github.com/boarteam/boar-pack/commit/9d0f48b8fd222a5ceee8d64fc03129e8c8f36cbf))
+
+
+### chore
+
+* **backend:** upgrade dependencies versions ([249eeed](https://github.com/boarteam/boar-pack/commit/249eeed325dcc19aa31166e211756bc6136b8149))
+
+
+### Features
+
+* **auth:** Yandex auth ([#49](https://github.com/boarteam/boar-pack/issues/49)) ([6b41c71](https://github.com/boarteam/boar-pack/commit/6b41c712c48158da05e8b253d4dbefb0960169cd))
+* **casl:** add fieldMatcher function to improve field validation ([268bad5](https://github.com/boarteam/boar-pack/commit/268bad538c6b0dc2d839f7f931c3abf1c4cc315a))
+
+
+### BREAKING CHANGES
+
+* **backend:** Nest js upgraded v9 -> v11
+
+
+
+
+
+# [6.0.0-alpha.4](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.3...@boarteam/boar-pack-users-backend@6.0.0-alpha.4) (2025-04-08)
+
+
+### Bug Fixes
+
+* **users:** update default admin email to test-admin@test.test ([66453a2](https://github.com/boarteam/boar-pack/commit/66453a2075d670e15132e36f09e3643842e465dc))
+* **users:** update default admin password to 'test' ([f956ce3](https://github.com/boarteam/boar-pack/commit/f956ce3f04a74fbf175bda26c6edf8d6d14436f6))
+
+
+
+
+
+# [6.0.0-alpha.3](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.2...@boarteam/boar-pack-users-backend@6.0.0-alpha.3) (2025-04-06)
+
+
+### Bug Fixes
+
+* **casl:** switch to MongoAbility and update ability builder ([03f9dbb](https://github.com/boarteam/boar-pack/commit/03f9dbb29347b949f9e3215fcef7b483503af3f3))
+
+
+
+
+
+# [6.0.0-alpha.2](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.2) (2025-03-21)
+
+
+### Features
+
+* **auth:** Yandex auth ([#49](https://github.com/boarteam/boar-pack/issues/49)) ([aa21d76](https://github.com/boarteam/boar-pack/commit/aa21d76e74b25c25decc4f9c369dce8f420e1356))
+* **casl:** add fieldMatcher function to improve field validation ([38f657f](https://github.com/boarteam/boar-pack/commit/38f657ff4f49227b2bd6ee88fd0160abd69f47a8))
+
+
+
+
+
+# [6.0.0-alpha.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.1) (2025-03-14)
+
+
+### Bug Fixes
+
+* **auth:** remove unnecessary scope from Yandex authentication configuration ([7fdb51d](https://github.com/boarteam/boar-pack/commit/7fdb51dd7fd80ae4d032a149427f7f98b0f0df9f))
+
+
+### Features
+
+* **auth:** add Yandex authentication support with config and controller ([fa8ae75](https://github.com/boarteam/boar-pack/commit/fa8ae7556851aced34d16a2e86b260146fb521a6))
+* **auth:** implement Google and Microsoft authentication controllers ([bf452f6](https://github.com/boarteam/boar-pack/commit/bf452f6f5ef612b975312a43124fa3e82aa5c646))
+
+
+
+
+
+# [6.0.0-alpha.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.2.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.0) (2025-03-13)
+
+
+### Bug Fixes
+
+* **users-backend:** Added missed users config service ([#43](https://github.com/boarteam/boar-pack/issues/43)) ([5a8b444](https://github.com/boarteam/boar-pack/commit/5a8b4442931fc64a60ba408783e5af478dcb6419))
+
+
+### chore
+
+* **backend:** upgrade dependencies versions ([8b4b2c7](https://github.com/boarteam/boar-pack/commit/8b4b2c73b8386b0f13448a374f163afb06cef07f))
+
+
+### BREAKING CHANGES
+
+* **backend:** Nest js upgraded v9 -> v11
+
+
+
+
+
 ## [5.4.2](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.4.1...@boarteam/boar-pack-users-backend@5.4.2) (2025-04-15)
 
 **Note:** Version bump only for package @boarteam/boar-pack-users-backend

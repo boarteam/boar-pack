@@ -53,7 +53,7 @@ export type TGetAllParams = {
   cache?: number,
 }
 export type TFilters = {
-  [key: string]: number | string | boolean | (string | number)[] | null;
+  [key: string]: number | string | boolean | (string | number | boolean)[] | null;
 }
 
 export type TGetRequestParams = {
