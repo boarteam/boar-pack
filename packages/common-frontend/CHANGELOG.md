@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0-alpha.4](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.6.0-alpha.3...@boarteam/boar-pack-common-frontend@2.6.0-alpha.4) (2025-04-25)
+
+
+### Bug Fixes
+
+* **useColumnsSets:** remove redundant state assignment for shown columns ([8006d0f](https://github.com/boarteam/boar-pack/commit/8006d0f24bb30d279ceee3a4e6453850ae951e4b))
+
+
+
+
+
 # [2.6.0-alpha.3](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.8.1...@boarteam/boar-pack-common-frontend@2.6.0-alpha.3) (2025-04-24)
 
 
