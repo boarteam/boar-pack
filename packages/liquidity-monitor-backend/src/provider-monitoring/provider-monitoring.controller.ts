@@ -1,8 +1,7 @@
 import { Controller, Patch } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ProviderMonitoringService } from "./provider-monitoring.service";
-import { CheckPolicies } from "@boarteam/boar-pack-users-backend";
-import { ManageAllPolicy } from "./policies/manage-all.policy";
+import { CheckPolicies, ManageAllPolicy } from "@boarteam/boar-pack-users-backend";
 
 @ApiTags('ProviderMonitoring')
 @CheckPolicies(new ManageAllPolicy())
