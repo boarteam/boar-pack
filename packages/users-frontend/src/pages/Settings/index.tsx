@@ -1,8 +1,8 @@
 import React from "react";
 import { useIntl } from "@umijs/max";
-import useTabs from "../../tools/useTabs";
 import { NotificationsSettings } from "../../components/Settings/NotificationsSettings";
 import { PageContainer } from "@ant-design/pro-components";
+import { useTabs } from "@boarteam/boar-pack-common-frontend";
 
 enum Tabs {
   notifications = 'notifications',
