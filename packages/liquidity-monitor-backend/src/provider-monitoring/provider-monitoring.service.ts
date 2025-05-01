@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
-import { Notifications, TelegrafService } from "@boarteam/boar-pack-users-backend";
+import { Notifications, TelegrafService, SettingsService, SettingsValues } from "@boarteam/boar-pack-users-backend";
 import { fmt, bold } from "telegraf/format";
 
 type TProviderActivity = {
@@ -26,12 +26,13 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     @InjectDataSource()
     private readonly dataSource: DataSource,
     private readonly telegrafService: TelegrafService,
+    private readonly settingsService: SettingsService,
   ) {
   }
 
   async onModuleInit() {
     const setting = await this.getSetting();
-    if (setting === 'yes') {
+    if (setting === SettingsValues.YES) {
       this.startMonitoring();
     }
   }
@@ -41,10 +42,8 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
   }
 
   private async getSetting(): Promise<string> {
-    const result = await this.dataSource.query(`
-      select value from settings where key = '${Notifications.QuotesByProviderStatus}'
-    `);
-    return result?.[0]?.value || 'no';
+    const result = await this.settingsService.getSettings([Notifications.QuotesByProviderStatus]);
+    return result?.[0]?.value || SettingsValues.NO;
   }
 
   private startMonitoring() {
@@ -66,7 +65,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
 
   async toggleMonitoring() {
     const setting = await this.getSetting();
-    setting === 'no' ? this.stopMonitoring() : this.startMonitoring();
+    setting === SettingsValues.NO ? this.stopMonitoring() : this.startMonitoring();
   }
 
   private async checkProviderActivity() {

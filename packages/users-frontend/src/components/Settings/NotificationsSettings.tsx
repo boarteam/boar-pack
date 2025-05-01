@@ -1,4 +1,4 @@
-import { ProDescriptions, ProDescriptionsActionType } from "@ant-design/pro-components";
+import { ProDescriptions } from "@ant-design/pro-components";
 import { Button, Card, message, Space, Typography } from "antd";
 import React, { useContext } from "react";
 import { useIntl } from "umi";
@@ -13,7 +13,7 @@ const isBoolean = (value: any) => {
 }
 
 async function onSaveTelegramSettings(row: TelegramSettingsUpdateDto) {
-  apiClient.settings.setTelegramSettings({
+  apiClient.telegraf.setTelegramSettings({
     requestBody: row,
   }).catch(e => {
     console.error(e);
@@ -135,7 +135,7 @@ export const NotificationsSettings: React.FC = () => {
           request={async () => {
             return {
               success: true,
-              data: await apiClient.settings.getTelegramSettings()
+              data: await apiClient.telegraf.getTelegramSettings()
             }
           }}
           editable={{
