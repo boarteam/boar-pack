@@ -14,9 +14,7 @@ export class QuotesStatisticService {
   private quotesNumberByProvider: Map<string, number> = new Map();
 
   constructor(
-    @InjectRepository(QuotesStatistic)
     private readonly repo: Repository<QuotesStatistic>,
-    @InjectDataSource()
     private readonly dataSource: DataSource,
   ) {
   }
