@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-users-backend",
-  "version": "5.4.2",
+  "version": "5.5.0",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
   "main": "src/index",
   "files": [
@@ -39,9 +39,9 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.13.1",
+    "telegraf": "^4.12.2",
     "typeorm": "^0.3.20",
-    "ws": "^8.16.0",
-    "telegraf": "^4.12.2"
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "@nestjs/platform-express": "^10.4.15",
