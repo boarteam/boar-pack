@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.5.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.4.2...@boarteam/boar-pack-users-backend@5.5.0) (2025-05-02)
+
+
+### Bug Fixes
+
+* **quotes and event logs:** PLA-25 conditionally import ScheduleModule based on SWAGGER environment variable ([810e668](https://github.com/boarteam/boar-pack/commit/810e668ebd1aec90c618792c0c5269edc912b286))
+
+
+### Features
+
+* **backend settings and telegraf modules:** PLA-25 integrate Settings and Telegraf modules ([7a1681a](https://github.com/boarteam/boar-pack/commit/7a1681a0416a6b78849921ce2908a76b258a5d36))
+* **provider monitoring:** PLA-25 add controller and refactor monitoring toggle logic ([cd3bc53](https://github.com/boarteam/boar-pack/commit/cd3bc5388f22d5ac51e60801d8a62a55cd3251b3))
+* **settings:** PLA-25 split telegram and events configuration ([7a217ea](https://github.com/boarteam/boar-pack/commit/7a217ea74dbd86e0cee574e7d27fa912c3dad55c))
+* **telegraf service:** PLA-25 update sendMessage to support formatted strings and add validation for bot token and chat ID ([bc03726](https://github.com/boarteam/boar-pack/commit/bc03726d704237b8b1f83597bd730992faa94d9d))
+* **telegram settings:** PLA-25 notifyAboutQuotesByProvider option for telegram settings ([e07a751](https://github.com/boarteam/boar-pack/commit/e07a751b869d23b2ed369740e6c625298b7a8e31))
+
+
+
+
+
 ## [5.4.2](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.4.1...@boarteam/boar-pack-users-backend@5.4.2) (2025-04-15)
 
 **Note:** Version bump only for package @boarteam/boar-pack-users-backend

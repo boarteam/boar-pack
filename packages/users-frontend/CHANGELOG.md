@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@2.4.2...@boarteam/boar-pack-users-frontend@2.5.0) (2025-05-02)
+
+
+### Features
+
+* **frontend settings and telegraf modules:** PLA-25 added NotificationSettings page with settings context ([ac5fe74](https://github.com/boarteam/boar-pack/commit/ac5fe7406c7508276018fb096849c84892f34ef3))
+* **notifications settings:** PLA-25 add notifyAboutQuotesByProvider to notifications settings ([57d321d](https://github.com/boarteam/boar-pack/commit/57d321d1cea6f356d2acd9d01950e35ae03dc142))
+* **settings:** PLA-25 split telegram and events configuration ([7a217ea](https://github.com/boarteam/boar-pack/commit/7a217ea74dbd86e0cee574e7d27fa912c3dad55c))
+* **telegraf service:** PLA-25 update sendMessage to support formatted strings and add validation for bot token and chat ID ([bc03726](https://github.com/boarteam/boar-pack/commit/bc03726d704237b8b1f83597bd730992faa94d9d))
+
+
+
+
+
 ## [2.4.2](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@2.4.1...@boarteam/boar-pack-users-frontend@2.4.2) (2025-04-18)
 
 **Note:** Version bump only for package @boarteam/boar-pack-users-frontend
