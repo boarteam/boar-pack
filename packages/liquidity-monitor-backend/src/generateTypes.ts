@@ -24,7 +24,9 @@ import { QuotesStatisticModule } from "./quotes-statistic";
         resolve(__dirname, './*/entities/*.entity.{ts,js}'),
       ],
     }),
-    QuotesStatisticModule.forRoot(),
+    QuotesStatisticModule.forRoot({
+      dataSourceName: 'boar_pack_db',
+    }),
   ],
 })
 class Swagger {

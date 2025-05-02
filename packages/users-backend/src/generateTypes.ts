@@ -9,6 +9,8 @@ import { generate } from "openapi-typescript-codegen";
 import { EventLogsModule } from './event-logs'
 import { UsersModule } from "./users";
 import { TokensModule } from "./tokens";
+import { SettingsModule } from "./settings";
+import { TelegrafModule } from "./telegraf";
 
 @Module({
   imports: [
@@ -16,7 +18,7 @@ import { TokensModule } from "./tokens";
       envFilePath: resolve(__dirname, '../../.env'),
     }),
     TypeOrmModule.forRoot({
-      name: 'tid_db',
+      name: 'boar_pack_db',
       type: 'postgres',
       host: 'localhost',
       port: 5951,
@@ -29,13 +31,21 @@ import { TokensModule } from "./tokens";
     }),
     UsersModule.register({
       withControllers: true,
-      dataSourceName: 'tid_db',
+      dataSourceName: 'boar_pack_db',
     }),
     EventLogsModule.forRoot({
-      dataSourceName: 'tid_db'
+      dataSourceName: 'boar_pack_db'
     }),
     TokensModule.forRoot({
-      dataSourceName: 'tid_db',
+      dataSourceName: 'boar_pack_db',
+    }),
+    SettingsModule.register({
+      withControllers: true,
+      dataSourceName: 'boar_pack_db',
+    }),
+    TelegrafModule.register({
+      withControllers: true,
+      dataSourceName: 'boar_pack_db',
     }),
   ],
 })
