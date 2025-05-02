@@ -5,7 +5,6 @@ import { Line } from "@ant-design/plots";
 import { StatisticCard } from "@ant-design/pro-components";
 import { groupBy } from "lodash";
 import { createStyles } from "antd-style";
-import { quotesColors } from "./QuotesColors";
 import { QuotesStatisticDto } from "../../tools/api-client";
 import apiClient from "../../tools/api-client/apiClient";
 import { TStatisticProvider } from "./index";
@@ -109,12 +108,12 @@ export const QuotesStatisticCards = ({
                   },
                   area: {
                     style: {
-                      fill: `linear-gradient(-90deg, white 0%, ${provider.enabled ? quotesColors[i] : token.colorTextDisabled} 100%)`
+                      fill: `linear-gradient(-90deg, white 0%, ${provider.enabled ? token.colorPrimary : token.colorTextDisabled} 100%)`
                     },
                   },
                   line: {
                     style: {
-                      stroke: provider.enabled ? quotesColors[i] : token.colorTextDisabled,
+                      stroke: provider.enabled ? token.colorPrimary : token.colorTextDisabled,
                       lineWidth: 2
                     }
                   },
