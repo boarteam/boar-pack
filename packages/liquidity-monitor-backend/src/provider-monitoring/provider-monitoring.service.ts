@@ -6,13 +6,7 @@ import { fmt, bold } from "telegraf/format";
 import { FETCH_PROVIDERS } from "./provider-monitoring.constants";
 import { keyBy } from "lodash";
 import { QuotesStatistic } from "../quotes-statistic";
-
-// All providers should have at least these fields
-type TProvider = {
-  id: string,
-  name: string,
-  threshold: number
-}
+import { TProvider } from "./provider-monitoring.module";
 
 @Injectable()
 export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy {
