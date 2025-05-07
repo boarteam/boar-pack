@@ -3,20 +3,18 @@ import { QuotesStatisticService } from "./quotes-statistic.service";
 import { getDataSourceToken, TypeOrmModule } from "@nestjs/typeorm";
 import { QuotesStatistic } from "./entities/quotes-statistic.entity";
 import { QuotesStatisticsController } from "./quotes-statistic.controller";
-import { ScheduleModule } from "@nestjs/schedule";
 import { DataSource } from "typeorm";
+import { ScheduleModule } from "@boarteam/boar-pack-common-backend";
 
 @Module({})
 export class QuotesStatisticModule {
   static forRoot(config: {
     dataSourceName?: string
   }) {
-    const scheduleModule = process.env.SWAGGER ? [] : [ScheduleModule.forRoot()];
-
     return {
       module: QuotesStatisticModule,
       imports: [
-        ...scheduleModule,
+        ScheduleModule,
         TypeOrmModule.forFeature([QuotesStatistic], config.dataSourceName),
       ],
       providers: [
@@ -40,12 +38,10 @@ export class QuotesStatisticModule {
   static forFeature(config: {
     dataSourceName?: string
   }) {
-    const scheduleModule = process.env.SWAGGER ? [] : [ScheduleModule.forRoot()];
-
     return {
       module: QuotesStatisticModule,
       imports: [
-        ...scheduleModule,
+        ScheduleModule,
         TypeOrmModule.forFeature([QuotesStatistic], config.dataSourceName),
       ],
       providers: [

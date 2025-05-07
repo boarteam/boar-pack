@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { QuotesStatistic } from './entities/quotes-statistic.entity';
 import { QuotesStatisticDto } from "./dto/quotes-statistic.dto";
