@@ -10,4 +10,7 @@ export class QuotesStatisticQueryDto {
 
   @JoiSchema(Joi.string().optional())
   timezone?: string;
+
+  @JoiSchema(Joi.boolean().optional())
+  upcoming?: boolean;
 }

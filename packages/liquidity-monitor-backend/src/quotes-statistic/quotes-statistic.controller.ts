@@ -25,6 +25,6 @@ export class QuotesStatisticsController {
   ): Promise<QuotesStatisticDto[]> {
     const start = query.startTime ? new Date(query.startTime) : undefined;
     const end = query.endTime ? new Date(query.endTime) : undefined;
-    return this.service.getTimeline(start, end, query.timezone);
+    return this.service.getTimeline(start, end, query.timezone, query.upcoming);
   }
 }
