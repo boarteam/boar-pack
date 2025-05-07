@@ -1,17 +1,18 @@
-import { Injectable, OnModuleInit } from "@nestjs/common";
+import { Injectable, OnApplicationBootstrap } from "@nestjs/common";
 import { SchedulerRegistry } from "@nestjs/schedule";
 
 @Injectable()
-export class ScheduleService implements OnModuleInit {
-  constructor(private schedulerRegistry: SchedulerRegistry) {}
+export class ScheduleService implements OnApplicationBootstrap {
+  constructor(private schedulerRegistry: SchedulerRegistry) {
+  }
 
-  onModuleInit() {
-    const isDisabled = process.env.SWAGGER;
+  onApplicationBootstrap() {
+    const isDisabled = process.env.SWAGGER === 'true';
     // Disable all cron jobs, intervals and timeouts
     if (isDisabled) {
-      setTimeout(() => this.stopAllCronJobs(), 0);
-      setTimeout(() => this.deleteAllIntervals(), 0);
-      setTimeout(() => this.deleteAllTimeouts(), 0);
+      this.stopAllCronJobs();
+      this.deleteAllIntervals();
+      this.deleteAllTimeouts();
     }
   }
 
