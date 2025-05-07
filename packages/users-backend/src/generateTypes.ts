@@ -11,6 +11,7 @@ import { UsersModule } from "./users";
 import { TokensModule } from "./tokens";
 import { SettingsModule } from "./settings";
 import { TelegrafModule } from "./telegraf";
+import { AuthModule } from "./auth";
 
 @Module({
   imports: [
@@ -28,6 +29,13 @@ import { TelegrafModule } from "./telegraf";
       entities: [
         resolve(__dirname, './*/entities/*.entity.{ts,js}'),
       ],
+    }),
+    AuthModule.forRoot({
+      googleAuth: false,
+      msAuth: false,
+      localAuth: false,
+      withControllers: true,
+      dataSourceName: 'boar_pack_db',
     }),
     UsersModule.register({
       withControllers: true,
