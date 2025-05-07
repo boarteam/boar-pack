@@ -30,6 +30,11 @@ export type DescriptionsRefType<Entity> = {
   setFieldErrors: (fields: FieldData<Entity>[]) => void;
 };
 
+export enum FieldsEdit {
+  Single = 'single',
+  All = 'all'
+}
+
 export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = object> = {
   mainTitle?: ProColumns<Entity>['title'] | null,
   entity?: Partial<Entity>,
@@ -48,6 +53,7 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
   actionRef?: MutableRefObject<ActionType | undefined>,
   editable?: RowEditableConfig<Entity>,
   canEdit?: boolean,
+  fieldsEditType?: FieldsEdit,
   params?: TDescriptionGetRequestParams,
   columns: ProColumns<Entity>[],
   onEntityChange?: (entity: Entity | null) => void;
