@@ -1,14 +1,12 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { Notifications, TelegrafService, SettingsService, SettingsValues } from "@boarteam/boar-pack-users-backend";
 import { fmt, bold } from "telegraf/format";
-
-type TProviderActivity = {
-  latestQuoteDate: string,
-  name: string,
-  threshold: number
-}
+import { FETCH_PROVIDERS } from "./provider-monitoring.constants";
+import { keyBy } from "lodash";
+import { QuotesStatistic } from "../quotes-statistic";
+import { TProvider } from "./provider-monitoring.module";
 
 @Injectable()
 export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy {
@@ -27,6 +25,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     private readonly dataSource: DataSource,
     private readonly telegrafService: TelegrafService,
     private readonly settingsService: SettingsService,
+    @Inject(FETCH_PROVIDERS) private readonly fetchProviders: () => Promise<TProvider[]>,
   ) {
   }
 
@@ -69,27 +68,42 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
   }
 
   private async checkProviderActivity() {
-    const result: TProviderActivity[] = await this.dataSource.query(`
-        select max(qs.created_at) as "latestQuoteDate", fp.name, fp.threshold
-        from "fix-providers" fp
-                 left join quotes_statistic qs on fp.id = qs.quotes_provider_name::uuid
-    and qs.created_at > (now() - fp.threshold * interval '1 second')
-        where fp.enabled
-        group by fp.name, fp.threshold;
-    `);
+    const providers = await this.fetchProviders();
 
+    if (!providers.length) {
+      return;
+    }
+
+    const result = await this.dataSource
+      .getRepository(QuotesStatistic)
+      .createQueryBuilder('qs')
+      .select('qs.quotes_provider_name as name')
+      .addSelect('max(qs.created_at) as "latestQuoteDate"')
+      .where('qs.quotes_provider_name IN (:...names)', {
+        names: providers.map(provider => provider.id),
+        upcoming: true,
+      })
+      .groupBy('qs.quotes_provider_name')
+      .getRawMany();
+
+    const quotesByProviders = keyBy(result, 'name');
     const notifications: Promise<void>[] = [];
-    result.forEach(row => {
-      if (!row.latestQuoteDate) {
-        this.logger.warn(`Provider ${row.name} has no quotes in the last ${row.threshold} seconds`);
+
+    providers.map(provider => {
+      const latestQuote = quotesByProviders[provider.id];
+
+      const isProblematic = !latestQuote || new Date().getTime() - new Date(latestQuote.latestQuoteDate).getTime() > provider.threshold * 1000;
+
+      if (isProblematic) {
+        this.logger.warn(`Provider ${provider.name} has no quotes in the last ${provider.threshold} seconds`);
 
         // Exponential backoff strategy
-        const previousNotification = this.notificationsJournal.get(row.name);
+        const previousNotification = this.notificationsJournal.get(provider.name);
         if (previousNotification) {
           const now = new Date();
           const diff = (now.getTime() - previousNotification.lastNotification.getTime()) / 1000;
           if (diff < this.exponentialBackoff[previousNotification.attempts]) {
-            this.logger.warn(`Skipping notification for ${row.name} due to exponential backoff`);
+            this.logger.warn(`Skipping notification for ${provider.name} due to exponential backoff`);
             return;
           }
           previousNotification.attempts++;
@@ -100,12 +114,12 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
           }
         }
 
-        const message = fmt`❗️${bold('Provider')} ${bold(row.name)} has no quotes in the last ${bold(row.threshold.toString())} seconds.`;
+        const message = fmt`❗️${bold('Provider')} ${bold(provider.name)} has no quotes in the last ${bold(provider.threshold.toString())} seconds.`;
         notifications.push(
           this.telegrafService.sendMessage(message, Notifications.QuotesByProviderStatus)
         );
 
-        this.notificationsJournal.set(row.name, previousNotification || {
+        this.notificationsJournal.set(provider.name, previousNotification || {
           attempts: 0,
           lastNotification: new Date(),
         });
