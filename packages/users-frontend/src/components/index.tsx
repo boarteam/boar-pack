@@ -7,4 +7,7 @@ export * from './EventLogs/useEventLogsColumns';
 export * from './Tokens/TokensTable';
 export * from './Tokens/MyTokensTable';
 export * from './Tokens/useTokensColumns';
+export * from './Users/UsersTable';
+export * from './Users/useUsersColumns';
+export * from './Users/PermissionsList';
 export {default as UserAgentDisplay} from './EventLogs/UserAgentDisplay';

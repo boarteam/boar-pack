@@ -19,6 +19,8 @@ export type { EventSettingsDto } from './models/EventSettingsDto';
 export type { GetManyEventLogResponseDto } from './models/GetManyEventLogResponseDto';
 export type { GetManyTokenResponseDto } from './models/GetManyTokenResponseDto';
 export type { GetManyUserResponseDto } from './models/GetManyUserResponseDto';
+export type { LocalAuthLoginDto } from './models/LocalAuthLoginDto';
+export type { LocalAuthTokenDto } from './models/LocalAuthTokenDto';
 export type { PermissionDto } from './models/PermissionDto';
 export type { TelegramSettingsDto } from './models/TelegramSettingsDto';
 export type { TelegramSettingsUpdateDto } from './models/TelegramSettingsUpdateDto';
@@ -30,6 +32,7 @@ export { User } from './models/User';
 export { UserCreateDto } from './models/UserCreateDto';
 export { UserUpdateDto } from './models/UserUpdateDto';
 
+export { AuthenticationService } from './services/AuthenticationService';
 export { EventLogsService } from './services/EventLogsService';
 export { SettingsService } from './services/SettingsService';
 export { TelegrafService } from './services/TelegrafService';
