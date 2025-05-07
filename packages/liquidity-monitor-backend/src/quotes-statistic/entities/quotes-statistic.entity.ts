@@ -12,7 +12,12 @@ export class QuotesStatistic {
   quotesNumber: number;
 
   // Upcoming for providers, outcoming for user connections
-  @Column({ type: 'boolean', name: 'upcoming', nullable: false })
+  @Column({
+    type: 'boolean',
+    name: 'upcoming',
+    nullable: false,
+    default: false
+  })
   upcoming: boolean;
 
   @CreateDateColumn({
