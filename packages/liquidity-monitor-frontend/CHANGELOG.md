@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-frontend@1.1.0...@boarteam/boar-pack-liquidity-monitor-frontend@1.1.1) (2025-05-08)
+
+
+### Bug Fixes
+
+* **QuotesStatisticCards:** handle null and undefined states for providers and data to work better for users with lack of permissions ([8d62aa6](https://github.com/boarteam/boar-pack/commit/8d62aa6c3ca33f44d31878d9acf6acb405f52aa5))
+
+
+
+
+
 # [1.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-frontend@1.0.3...@boarteam/boar-pack-liquidity-monitor-frontend@1.1.0) (2025-05-08)
 
 
