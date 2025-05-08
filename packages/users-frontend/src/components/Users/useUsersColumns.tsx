@@ -8,7 +8,11 @@ import { User } from "@@api/generated";
 import safetyRun from "@boarteam/boar-pack-common-frontend/src/tools/safetyRun";
 import apiClient from "@@api/apiClient";
 
-export const useUsersColumns = (): ProColumns<User>[] => {
+export const useUsersColumns = ({
+  userPageUrlPrefix = '/admin/users',
+}: {
+  userPageUrlPrefix?: string | null;
+}): ProColumns<User>[] => {
   const intl = useIntl();
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
@@ -39,7 +43,7 @@ export const useUsersColumns = (): ProColumns<User>[] => {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
       render(text, record) {
-        return <Link to={`/admin/users/${record.id}`}>{text}</Link>;
+        return userPageUrlPrefix ? <Link to={`${userPageUrlPrefix}/${record.id}`}>{text}</Link> : text;
       }
     },
     {
