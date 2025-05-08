@@ -15,12 +15,10 @@ export class QuotesStatisticsService {
         startTime,
         endTime,
         timezone,
-        upcoming,
     }: {
         startTime?: string,
         endTime?: string,
         timezone?: string,
-        upcoming?: boolean,
     }): CancelablePromise<Array<QuotesStatisticDto>> {
         return this.httpRequest.request({
             method: 'GET',
@@ -29,7 +27,6 @@ export class QuotesStatisticsService {
                 'startTime': startTime,
                 'endTime': endTime,
                 'timezone': timezone,
-                'upcoming': upcoming,
             },
         });
     }

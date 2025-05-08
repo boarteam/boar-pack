@@ -6,6 +6,5 @@ export type QuotesStatisticQueryDto = {
     startTime?: string;
     endTime?: string;
     timezone?: string;
-    upcoming?: boolean;
 };
 

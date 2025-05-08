@@ -24,7 +24,6 @@ export class QuotesStatisticService {
       const stats = Array.from(this.quotesNumberByProvider.entries()).map(([quotesProviderName, quotesNumber]) => ({
         quotesProviderName,
         quotesNumber,
-        upcoming: true,
       }));
 
       this.logger.debug('Reset quotes number variable');
@@ -54,9 +53,9 @@ export class QuotesStatisticService {
     this.quotesNumberByProvider.set(provider, currentNumber + n);
   }
 
-  async getTimeline(startTime?: Date, endTime?: Date, timezone: string = 'UTC', upcoming: boolean = true): Promise<QuotesStatisticDto[]> {
+  async getTimeline(startTime?: Date, endTime?: Date, timezone: string = 'UTC'): Promise<QuotesStatisticDto[]> {
     if (!startTime) {
-      startTime = await this.getOldestStatsDate(upcoming);
+      startTime = await this.getOldestStatsDate();
     }
 
     if (!endTime) {
@@ -86,7 +85,6 @@ export class QuotesStatisticService {
         cross join providers p
         left join quotes_statistic qs on date_trunc('${interval}', qs.created_at, $5) = ts.time
         and qs.quotes_provider_name = p.name
-        and qs.upcoming = $6                                     
         and qs.created_at between $3 and $4
       group by ts.time,
         p.name
@@ -98,16 +96,12 @@ export class QuotesStatisticService {
       startMoment.toDate(),
       endMoment.toDate(),
       timezone,
-      upcoming
     ]);
   }
 
-  private async getOldestStatsDate(upcoming: boolean): Promise<Date> {
+  private async getOldestStatsDate(): Promise<Date> {
     const oldestStat = await this.repo.createQueryBuilder('quotes_statistic')
       .select('MIN(quotes_statistic.createdAt)', 'min')
-      .where('quotes_statistic.upcoming = :upcoming', {
-        upcoming,
-      })
       .getRawOne();
     return new Date(oldestStat.min);
   }

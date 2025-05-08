@@ -20,7 +20,6 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
   endTime,
   onDateRangeChange,
   providers,
-  upcoming,
 }) => {
   const [data, setData] = useState<QuotesStatisticDto[] | null>(null);
 
@@ -32,7 +31,6 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
       startTime,
       endTime,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      upcoming,
     }).then(setData);
   }, [startTime, endTime]);
 
