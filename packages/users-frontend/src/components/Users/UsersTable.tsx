@@ -23,10 +23,14 @@ type TUserFilterParams = {
 
 export const UsersTable = ({
   permissionsConfig = [],
+  userPageUrlPrefix = '/admin/users',
 }: {
   permissionsConfig?: PermissionsConfig;
+  userPageUrlPrefix?: string | null;
 }) => {
-  const columns = useUsersColumns();
+  const columns = useUsersColumns({
+    userPageUrlPrefix,
+  });
   const { canManageAll } = useAccess() || {};
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
