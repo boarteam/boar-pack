@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-backend@1.1.0...@boarteam/boar-pack-liquidity-monitor-backend@1.2.0) (2025-05-08)
+
+
+### Bug Fixes
+
+* **QuotesStatistic:** set default value for upcoming column to false ([b5d26dd](https://github.com/boarteam/boar-pack/commit/b5d26dd22525c455ac6d0c5cc1d2f9195691acc4))
+
+
+### Features
+
+* **liquidity monitor:** PLA-26 Add quotes-statistic upcoming flag ([3a11bfc](https://github.com/boarteam/boar-pack/commit/3a11bfcfdcd64d83c50b848a362ef47dfcd39cd0))
+
+
+
+
+
 # [1.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-backend@1.0.1...@boarteam/boar-pack-liquidity-monitor-backend@1.1.0) (2025-05-02)
 
 

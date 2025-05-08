@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.6.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.5.0...@boarteam/boar-pack-users-backend@5.6.0) (2025-05-08)
+
+
+### Features
+
+* **Authentication:** add users management components ([c92086a](https://github.com/boarteam/boar-pack/commit/c92086ad9dd4bc89f5ec4341984e200762da2085))
+* **liquidity monitor:** PLA-26 Add quotes-statistic upcoming flag ([3a11bfc](https://github.com/boarteam/boar-pack/commit/3a11bfcfdcd64d83c50b848a362ef47dfcd39cd0))
+
+
+
+
+
 # [5.5.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.4.2...@boarteam/boar-pack-users-backend@5.5.0) (2025-05-02)
 
 

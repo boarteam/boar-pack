@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@2.5.0...@boarteam/boar-pack-users-frontend@2.6.0) (2025-05-08)
+
+
+### Features
+
+* **Authentication:** add users management components ([c92086a](https://github.com/boarteam/boar-pack/commit/c92086ad9dd4bc89f5ec4341984e200762da2085))
+* **UsersTable:** add userPageUrlPrefix prop to customize user links ([b32a3a4](https://github.com/boarteam/boar-pack/commit/b32a3a4ef057d6a92544aa64931ff072a6740ca8))
+
+
+
+
+
 # [2.5.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@2.4.2...@boarteam/boar-pack-users-frontend@2.5.0) (2025-05-02)
 
 

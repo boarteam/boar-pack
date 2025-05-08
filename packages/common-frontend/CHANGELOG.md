@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.9.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.8.1...@boarteam/boar-pack-common-frontend@2.9.0) (2025-05-08)
+
+
+### Features
+
+* **Descriptions:** ADM-285 Added option to edit all fields instead of one by one ([#54](https://github.com/boarteam/boar-pack/issues/54)) ([4d602c8](https://github.com/boarteam/boar-pack/commit/4d602c86122c5085464a2c4f04344d6129407e0c))
+
+
+
+
+
 ## [2.8.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.8.0...@boarteam/boar-pack-common-frontend@2.8.1) (2025-04-18)
 
 
