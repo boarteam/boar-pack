@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Col, Empty, Row, Space, Tag, theme } from "antd";
+import { Col, Empty, Result, Row, Space, Tag, theme } from "antd";
 import { PageLoading } from "@ant-design/pro-layout";
 import { Line } from "@ant-design/plots";
 import { StatisticCard } from "@ant-design/pro-components";
@@ -10,7 +10,7 @@ import apiClient from "../../tools/api-client/apiClient";
 import { TStatisticProvider } from "./index";
 
 type TQuotesStatisticCardsProps = {
-  providers: TStatisticProvider[],
+  providers: TStatisticProvider[] | null | undefined,
   updateInterval?: number;
 }
 
@@ -36,36 +36,53 @@ export const QuotesStatisticCards = ({
 
   const [startTime, setStartTime] = useState<string | undefined>(startTimeInitial.toISOString());
   const [endTime, setEndTime] = useState<string | undefined>(new Date().toISOString());
-  const [data, setData] = useState<QuotesStatisticDto[] | null>(null);
+  const [data, setData] = useState<QuotesStatisticDto[] | null | undefined>(undefined);
 
-  const getQuotesStatistic = () => {
+  const requestQuotesStatistic = () => {
     apiClient.quotesStatistics.getTimeline({
       startTime,
       endTime,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    }).then(setData);
+    })
+      .then(setData)
+      .catch((e) => {
+        console.error(e);
+        console.error('Quotes statistic request failed');
+        setData(null);
+      });
   }
 
   useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
     if (updateInterval) {
-      setInterval(() => {
+      intervalId = setInterval(() => {
         startTimeInitial = new Date();
         startTimeInitial.setHours(startTimeInitial.getHours() - 1);
         setStartTime(startTimeInitial.toISOString());
         setEndTime(new Date().toISOString());
       }, updateInterval);
     }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, []);
 
   useEffect(() => {
-    getQuotesStatistic();
+    requestQuotesStatistic();
   }, [startTime, endTime]);
 
   const { styles } = useStyles();
   const { token } = theme.useToken();
 
-  if (!data || !providers) {
+  if (data === undefined || providers === undefined) {
     return <PageLoading />;
+  }
+
+  if (data === null || providers === null) {
+    return <Result status="error" title="Quotes statistic request failed" />;
   }
 
   const dataByProvider = groupBy(data, 'providerName');
