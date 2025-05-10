@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type QuotesStatisticQueryDto = {
+export type UsersConnectionsStatisticQueryDto = {
     startTime?: string;
     endTime?: string;
     timezone?: string;

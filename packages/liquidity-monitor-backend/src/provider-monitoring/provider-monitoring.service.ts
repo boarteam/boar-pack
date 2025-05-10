@@ -81,7 +81,6 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
       .addSelect('max(qs.created_at) as "latestQuoteDate"')
       .where('qs.quotes_provider_name IN (:...names)', {
         names: providers.map(provider => provider.id),
-        upcoming: true,
       })
       .groupBy('qs.quotes_provider_name')
       .getRawMany();

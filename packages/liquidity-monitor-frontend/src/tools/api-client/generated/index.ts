@@ -12,5 +12,8 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { QuotesStatisticDto } from './models/QuotesStatisticDto';
 export type { QuotesStatisticQueryDto } from './models/QuotesStatisticQueryDto';
+export type { UsersConnectionsStatisticDto } from './models/UsersConnectionsStatisticDto';
+export type { UsersConnectionsStatisticQueryDto } from './models/UsersConnectionsStatisticQueryDto';
 
 export { QuotesStatisticsService } from './services/QuotesStatisticsService';
+export { UsersConnectionsStatisticService } from './services/UsersConnectionsStatisticService';
