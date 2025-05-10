@@ -7,6 +7,7 @@ import apiClient from "../../tools/api-client/apiClient";
 import { TStatisticProvider } from "./index";
 // @ts-ignore
 import { useModel } from "umi";
+import { Empty } from "antd";
 
 type TQuotesStatisticTimelineProps = QuotesStatisticQueryDto & {
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
@@ -36,6 +37,10 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
 
   if (!data) {
     return <PageLoading />;
+  }
+
+  if (data.length === 0) {
+    return <Empty />
   }
 
   const config: ColumnConfig = {
