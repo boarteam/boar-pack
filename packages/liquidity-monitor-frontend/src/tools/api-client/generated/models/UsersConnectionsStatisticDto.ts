@@ -6,8 +6,14 @@ export type UsersConnectionsStatisticDto = {
     time: string;
     records: number;
     userId: string;
-    source: string;
+    target: UsersConnectionsStatisticDto.target;
     startTime: string;
     endTime: string;
 };
+export namespace UsersConnectionsStatisticDto {
+    export enum target {
+        FIX_SERVER = 'fix-server',
+        WEBSOCKET_SERVER = 'websocket-server',
+    }
+}
 

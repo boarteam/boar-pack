@@ -5,10 +5,12 @@
 import type { BaseHttpRequest } from './core/BaseHttpRequest';
 import type { OpenAPIConfig } from './core/OpenAPI';
 import { NodeHttpRequest } from './core/NodeHttpRequest';
+import { ProviderMonitoringService } from './services/ProviderMonitoringService';
 import { QuotesStatisticsService } from './services/QuotesStatisticsService';
 import { UsersConnectionsStatisticService } from './services/UsersConnectionsStatisticService';
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 export class ApiClient {
+    public readonly providerMonitoring: ProviderMonitoringService;
     public readonly quotesStatistics: QuotesStatisticsService;
     public readonly usersConnectionsStatistic: UsersConnectionsStatisticService;
     public readonly request: BaseHttpRequest;
@@ -24,6 +26,7 @@ export class ApiClient {
             HEADERS: config?.HEADERS,
             ENCODE_PATH: config?.ENCODE_PATH,
         });
+        this.providerMonitoring = new ProviderMonitoringService(this.request);
         this.quotesStatistics = new QuotesStatisticsService(this.request);
         this.usersConnectionsStatistic = new UsersConnectionsStatisticService(this.request);
     }
