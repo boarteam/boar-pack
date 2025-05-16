@@ -1,8 +1,8 @@
-import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit, Optional } from '@nestjs/common';
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
-import { Notifications, TelegrafService, SettingsService, SettingsValues } from "@boarteam/boar-pack-users-backend";
-import { fmt, bold } from "telegraf/format";
+import { Notifications, SettingsService, SettingsValues, TelegrafService } from "@boarteam/boar-pack-users-backend";
+import { bold, fmt } from "telegraf/format";
 import { FETCH_PROVIDERS } from "./provider-monitoring.constants";
 import { keyBy } from "lodash";
 import { QuotesStatistic } from "../quotes-statistic";
@@ -25,11 +25,16 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     private readonly dataSource: DataSource,
     private readonly telegrafService: TelegrafService,
     private readonly settingsService: SettingsService,
-    @Inject(FETCH_PROVIDERS) private readonly fetchProviders: () => Promise<TProvider[]>,
+    @Optional()
+    @Inject(FETCH_PROVIDERS) private readonly fetchProviders?: () => Promise<TProvider[]>,
   ) {
   }
 
   async onModuleInit() {
+    if (process.env.SWAGGER === 'true') {
+      return;
+    }
+
     const setting = await this.getSetting();
     if (setting === SettingsValues.YES) {
       this.startMonitoring();
@@ -37,6 +42,10 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
   }
 
   onModuleDestroy() {
+    if (process.env.SWAGGER === 'true') {
+      return;
+    }
+
     this.stopMonitoring();
   }
 
@@ -68,6 +77,10 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
   }
 
   private async checkProviderActivity() {
+    if (!this.fetchProviders) {
+      return;
+    }
+
     const providers = await this.fetchProviders();
 
     if (!providers.length) {
