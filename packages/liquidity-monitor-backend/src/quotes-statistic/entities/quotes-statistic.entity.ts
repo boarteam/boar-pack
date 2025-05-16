@@ -11,15 +11,6 @@ export class QuotesStatistic {
   @Column({ type: 'int', name: 'quotes_number' })
   quotesNumber: number;
 
-  // Upcoming for providers, outcoming for user connections
-  @Column({
-    type: 'boolean',
-    name: 'upcoming',
-    nullable: false,
-    default: false
-  })
-  upcoming: boolean;
-
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'created_at'
