@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit, Optional } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { Notifications, SettingsService, SettingsValues, TelegrafService } from "@boarteam/boar-pack-users-backend";
@@ -25,8 +25,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     private readonly dataSource: DataSource,
     private readonly telegrafService: TelegrafService,
     private readonly settingsService: SettingsService,
-    @Optional()
-    @Inject(FETCH_PROVIDERS) private readonly fetchProviders?: () => Promise<TProvider[]>,
+    @Inject(FETCH_PROVIDERS) private readonly fetchProviders: () => Promise<TProvider[]>,
   ) {
   }
 
@@ -77,10 +76,6 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
   }
 
   private async checkProviderActivity() {
-    if (!this.fetchProviders) {
-      return;
-    }
-
     const providers = await this.fetchProviders();
 
     if (!providers.length) {

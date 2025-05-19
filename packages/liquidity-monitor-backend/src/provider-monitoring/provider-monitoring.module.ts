@@ -41,28 +41,31 @@ export class ProviderMonitoringModule {
       ],
       providers: [
         {
+          provide: FETCH_PROVIDERS,
+          inject: config.inject,
+          useFactory: config.useFactory ?? (() => []),
+        },
+        {
           provide: ProviderMonitoringService,
           inject: [
             getDataSourceToken(config.dataSourceName),
             TelegrafService,
             SettingsService,
+            FETCH_PROVIDERS,
           ],
           useFactory: (
             dataSource: DataSource,
             telegrafService: TelegrafService,
             settingsService: SettingsService,
+            fetchProviders: () => Promise<TProvider[]>,
           ) => {
             return new ProviderMonitoringService(
               dataSource,
               telegrafService,
               settingsService,
+              fetchProviders
             );
           },
-        },
-        {
-          provide: FETCH_PROVIDERS,
-          inject: config.inject,
-          useFactory: config.useFactory ?? (() => []),
         },
       ],
       exports: [
