@@ -42,9 +42,8 @@ export const UsersConnectionsStatisticTimeline: React.FC<TUsersConnectionsStatis
     data,
     xField: 'time',
     yField: 'records',
-    seriesField: 'target',
     colorField: 'target',
-    stack: false,
+    stack: true,
     height: 300,
     theme: navTheme === 'realDark' ? 'dark' : 'light',
     axis: {
@@ -66,7 +65,12 @@ export const UsersConnectionsStatisticTimeline: React.FC<TUsersConnectionsStatis
         palette: 'category10'
       },
     },
-    transform : [ { type : "group" , channels : [ 'x', 'series' ] , y : "sum" } ] ,
+    transform: [
+      {
+        type: 'group',
+        channels: ['x', 'color'],
+      },
+    ],
     onReady: ({ chart }) => {
       chart.on('interval:click', (event: any) => {
         const { data } = event?.data || {};
