@@ -89,7 +89,12 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     const quotesByProviders = keyBy(result, 'name');
     const notifications: Promise<void>[] = [];
 
-    providers.map(provider => {
+    providers.forEach(provider => {
+      if (!provider.threshold) {
+        this.logger.warn(`Provider ${provider.name} has no threshold set, skipping...`);
+        return;
+      }
+
       const latestQuote = quotesByProviders[provider.id];
 
       const isProblematic = !latestQuote || new Date().getTime() - new Date(latestQuote.latestQuoteDate).getTime() > provider.threshold * 1000;
@@ -125,6 +130,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
         });
       }
     });
+
     await Promise.all(notifications);
   }
 }

@@ -11,7 +11,7 @@ import { ForwardReference } from "@nestjs/common/interfaces/modules/forward-refe
 export type TProvider = {
   id: string,
   name: string,
-  threshold: number
+  threshold: number | null,
 }
 
 @Module({})
