@@ -1,34 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { PageLoading } from "@ant-design/pro-layout";
-import { QuotesStatisticDto, QuotesStatisticQueryDto } from "../../tools/api-client";
+import { UsersConnectionsStatisticDto, UsersConnectionsStatisticQueryDto } from "../../tools/api-client";
 import { Column, ColumnConfig } from "@ant-design/plots";
 import moment from "moment";
 import apiClient from "../../tools/api-client/apiClient";
-import { TStatisticProvider } from "./index";
 // @ts-ignore
 import { useModel } from "umi";
 import { Empty } from "antd";
 
-type TQuotesStatisticTimelineProps = QuotesStatisticQueryDto & {
+type TUsersConnectionsStatisticTimelineProps = UsersConnectionsStatisticQueryDto & {
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
-  providers: {
-    [key: string]: TStatisticProvider
-  },
 }
 
-export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = ({
+export const UsersConnectionsStatisticTimeline: React.FC<TUsersConnectionsStatisticTimelineProps> = ({
   startTime,
   endTime,
   onDateRangeChange,
-  providers,
 }) => {
-  const [data, setData] = useState<QuotesStatisticDto[] | null>(null);
+  const [data, setData] = useState<UsersConnectionsStatisticDto[] | null>(null);
 
   const { initialState } = useModel('@@initialState');
   const { navTheme } = initialState?.settings || {};
 
   useEffect(() => {
-    apiClient.quotesStatistics.getTimeline({
+    apiClient.usersConnectionsStatistic.getTimeline({
       startTime,
       endTime,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -47,9 +42,7 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
     data,
     xField: 'time',
     yField: 'records',
-    colorField: (record: QuotesStatisticDto) => {
-      return providers[record.providerName]?.name || record.providerName;
-    },
+    colorField: 'target',
     stack: true,
     height: 300,
     theme: navTheme === 'realDark' ? 'dark' : 'light',
@@ -69,9 +62,15 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
     },
     scale: {
       color: {
-        palette: 'rainbow'
+        palette: 'category10'
       },
     },
+    transform: [
+      {
+        type: 'group',
+        channels: ['x', 'color'],
+      },
+    ],
     onReady: ({ chart }) => {
       chart.on('interval:click', (event: any) => {
         const { data } = event?.data || {};
