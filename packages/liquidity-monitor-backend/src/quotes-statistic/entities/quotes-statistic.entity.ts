@@ -1,6 +1,9 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('quotes_statistic')
+@Index('idx_quotes_statistic_provider_created', ['quotesProviderName', 'createdAt'], {
+  unique: false,
+})
 export class QuotesStatistic {
   @PrimaryGeneratedColumn('uuid')
   id: string;
