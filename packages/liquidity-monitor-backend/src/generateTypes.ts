@@ -10,6 +10,7 @@ import { QuotesStatisticModule } from "./quotes-statistic";
 import { UsersConnectionsStatisticModule } from "./users-connections-statistic";
 import { ProviderMonitoringModule } from "./provider-monitoring";
 import { Setting } from "@boarteam/boar-pack-users-backend";
+import { InstrumentsHistoryModule } from "./instruments-history";
 
 @Module({
   imports: [
@@ -36,6 +37,9 @@ import { Setting } from "@boarteam/boar-pack-users-backend";
       dataSourceName: 'boar_pack_db'
     }),
     ProviderMonitoringModule.forRootAsync({
+      dataSourceName: 'boar_pack_db',
+    }),
+    InstrumentsHistoryModule.forRoot({
       dataSourceName: 'boar_pack_db',
     })
   ],

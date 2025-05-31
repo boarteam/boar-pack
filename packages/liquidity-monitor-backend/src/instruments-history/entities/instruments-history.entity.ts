@@ -19,8 +19,8 @@ export class InstrumentsHistory {
   @Column({ type: 'varchar', name: 'symbol_name' })
   symbolName: string;
 
-  @Column({ type: 'uuid', name: 'instrument_group_id' })
-  instrumentGroupId: string;
+  @Column({ type: 'uuid', name: 'instruments_group_id' })
+  instrumentsGroupId: string;
 
   @Column({ type: 'uuid', name: 'provider_id' })
   providerId: string;
