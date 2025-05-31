@@ -10,7 +10,11 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { InstrumentsHistoryDto } from './models/InstrumentsHistoryDto';
+export type { InstrumentsHistoryQueryDto } from './models/InstrumentsHistoryQueryDto';
+export type { InstrumentsHistoryResponseDto } from './models/InstrumentsHistoryResponseDto';
 export type { QuotesStatisticDto } from './models/QuotesStatisticDto';
 export type { QuotesStatisticQueryDto } from './models/QuotesStatisticQueryDto';
 
+export { InstrumentsHistoryService } from './services/InstrumentsHistoryService';
 export { QuotesStatisticsService } from './services/QuotesStatisticsService';
