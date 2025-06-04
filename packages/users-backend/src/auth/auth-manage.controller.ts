@@ -30,7 +30,7 @@ export default class AuthManageController {
     }
 
     const loginResult = await this.authService.login(user);
-    res.cookie(tokenName, loginResult.accessToken);
+    this.authService.setCookie(res, loginResult.accessToken);
     return loginResult;
   }
 }
