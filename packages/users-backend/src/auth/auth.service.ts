@@ -7,6 +7,9 @@ import { LocalAuthTokenDto } from "./local-auth/local-auth.dto";
 declare global {
   namespace Express {
     interface User extends TUser {}
+    interface Request {
+      jwt?: TJWTPayload;
+    }
   }
 }
 
@@ -51,5 +54,15 @@ export class AuthService {
     return {
       accessToken: this.jwtAuthService.sign(payload),
     };
+  }
+
+  async logout(jwt: TJWTPayload): Promise<void> {
+    if (!jwt.jti || !jwt.exp) {
+      this.logger.warn('JWT does not have JTI or exp, cannot log out');
+      return;
+    }
+
+    await this.jwtAuthService.revokeToken(jwt.jti, new Date(jwt.exp * 1000));
+    this.logger.log(`User with id ${jwt.sub} has been logged out and token revoked`);
   }
 }
