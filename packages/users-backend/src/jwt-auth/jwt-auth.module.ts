@@ -8,6 +8,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JWTAuthConfigService } from "./jwt-auth.config";
 import { PassportModule } from "@nestjs/passport";
 import { JWTAuthService } from "./jwt-auth.service";
+import { RevokedTokensModule } from '../revoked-tokens';
 
 @Module({})
 export class JwtAuthModule {
@@ -29,6 +30,9 @@ export class JwtAuthModule {
           useFactory: async (jwtAuthConfigService: JWTAuthConfigService) => ({
             secret: jwtAuthConfigService.config.jwtSecret,
           }),
+        }),
+        RevokedTokensModule.register({
+          dataSourceName: config.dataSourceName,
         }),
       ],
       providers: [
