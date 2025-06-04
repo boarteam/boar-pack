@@ -25,11 +25,15 @@ export default class AuthController {
     return this.authService.login(req.user);
   }
 
-  @SkipJWTGuard()
   @Post('logout')
   async logout(
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
+    if (req.jwt) {
+      await this.authService.logout(req.jwt);
+    }
+
     res.cookie(tokenName, '');
   }
 }
