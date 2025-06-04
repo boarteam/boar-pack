@@ -2,7 +2,6 @@ import { Controller, Get, Req, Res, UnauthorizedException, UseFilters, UseGuards
 import { ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { AuthService } from '../auth.service';
-import { tokenName } from '../auth.constants';
 import { SkipJWTGuard } from '../../jwt-auth/jwt-auth.guard';
 import { SkipPoliciesGuard } from '../../casl/policies.guard';
 import { GoogleAuthGuard } from './google-auth.guard';
@@ -34,7 +33,7 @@ export default class GoogleAuthController {
     }
 
     const loginResult = await this.authService.login(req.user);
-    res.cookie(tokenName, loginResult.accessToken);
+    this.authService.setCookie(res, loginResult.accessToken);
     res.redirect('/');
   }
 }
