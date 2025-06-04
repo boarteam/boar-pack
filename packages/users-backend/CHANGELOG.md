@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0-alpha.6](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.5...@boarteam/boar-pack-users-backend@6.0.0-alpha.6) (2025-06-04)
+
+
+### Features
+
+* **auth:** implement JWT revocation while logout ([c6028b6](https://github.com/boarteam/boar-pack/commit/c6028b63b81e701e5315b2e4bc73e380bac60f5b))
+
+
+### BREAKING CHANGES
+
+* **auth:** By default token is issued with expiration now
+
+
+
+
+
 # [6.0.0-alpha.5](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.4.2...@boarteam/boar-pack-users-backend@6.0.0-alpha.5) (2025-04-24)
 
 
