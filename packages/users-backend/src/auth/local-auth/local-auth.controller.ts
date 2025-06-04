@@ -3,7 +3,6 @@ import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from '../auth.service';
-import { tokenName } from '../auth.constants';
 import { SkipJWTGuard } from '../../jwt-auth/jwt-auth.guard';
 import { SkipPoliciesGuard } from '../../casl/policies.guard';
 import { LocalAuthLoginDto, LocalAuthTokenDto } from "./local-auth.dto";
@@ -28,7 +27,7 @@ export default class LocalAuthController {
       throw new UnauthorizedException(`User is not authorized`);
     }
     const loginResult = await this.authService.login(req.user);
-    res.cookie(tokenName, loginResult.accessToken);
+    this.authService.setCookie(res, loginResult.accessToken);
     return loginResult;
   }
 }

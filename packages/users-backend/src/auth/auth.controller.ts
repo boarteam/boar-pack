@@ -2,8 +2,7 @@ import { Controller, Post, Req, Res, UnauthorizedException, UseGuards } from '@n
 import { ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import { tokenName } from './auth.constants';
-import { JwtAuthGuard, SkipJWTGuard } from '../jwt-auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../jwt-auth/jwt-auth.guard';
 import { SkipPoliciesGuard } from '../casl/policies.guard';
 import { LocalAuthTokenDto } from "./local-auth/local-auth.dto";
 
@@ -34,6 +33,6 @@ export default class AuthController {
       await this.authService.logout(req.jwt);
     }
 
-    res.cookie(tokenName, '');
+    this.authService.setCookie(res, '');
   }
 }

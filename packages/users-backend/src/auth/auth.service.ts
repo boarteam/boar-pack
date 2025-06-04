@@ -3,6 +3,8 @@ import { TUser, UsersService } from '../users';
 import { JWTAuthService, TJWTPayload } from '../jwt-auth';
 import bcrypt from 'bcrypt';
 import { LocalAuthTokenDto } from "./local-auth/local-auth.dto";
+import { Response } from 'express';
+import { tokenName } from "./auth.constants";
 
 declare global {
   namespace Express {
@@ -64,5 +66,13 @@ export class AuthService {
 
     await this.jwtAuthService.revokeToken(jwt.jti, new Date(jwt.exp * 1000));
     this.logger.log(`User with id ${jwt.sub} has been logged out and token revoked`);
+  }
+
+  public setCookie(res: Response, token: string): void {
+    res.cookie(tokenName, token, {
+      httpOnly: true,
+      secure: process.env.SECURE_COOKIE === 'true',
+      sameSite: 'lax',
+    });
   }
 }
