@@ -34,7 +34,7 @@ export default class MsAuthController {
     }
 
     const loginResult = await this.authService.login(req.user);
-    res.cookie(tokenName, loginResult.accessToken);
+    this.authService.setCookie(res, loginResult.accessToken);
     res.redirect('/');
   }
 }
