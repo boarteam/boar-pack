@@ -15,6 +15,8 @@ type TSourceForInstrumentsHistory = {
   state: InstrumentsHistoryState;
   created_at: Date;
 }
+import { InstrumentsHistoryQueryDto } from "./dto/instruments-history-query.dto";
+import { InstrumentsHistoryResponseDto } from './dto/instruments-history-response.dto';
 
 @Injectable()
 export class InstrumentsHistoryService implements OnModuleInit {
@@ -169,24 +171,12 @@ export class InstrumentsHistoryService implements OnModuleInit {
   }
 
   async getAvailabilityReport(query: InstrumentsHistoryQueryDto): Promise<InstrumentsHistoryResponseDto> {
-    const { start, end } = query;
+    const { start, end, groupId, platformId } = query;
 
     const allowedSortColumns = ['symbolName', 'availabilityPercent'];
     const allowedDirections = ['ASC', 'DESC'];
 
     const sort = query.sort?.split(',');
-    let [groupIds, platformIds] = [[], []];
-    if (query.s) {
-      const parsed = JSON.parse(query.s);
-      for (const item of parsed['$and']) {
-        if (item.groupName) {
-          groupIds = item.groupName.$in;
-        }
-        if (item.platformName) {
-          platformIds = item.platformName.$in;
-        }
-      }
-    }
 
     const sortColumn = allowedSortColumns.includes(sort?.[0] || '') ? sort![0] : 'availabilityPercent';
     const sortDirection = allowedDirections.includes(sort?.[1].toUpperCase() || '') ? sort![1].toUpperCase() : 'ASC';
@@ -211,8 +201,8 @@ export class InstrumentsHistoryService implements OnModuleInit {
             where
               (created_at >= $1 or $1 is null)
               and (created_at <= $2 or $2 is null)
-              and (instruments_group_id = any($3) or $3 is null)
-              and (provider_id = any($4) or $4 is null)
+              and (instruments_group_id = $3 or $3 is null)
+              and (provider_id = $4 or $4 is null)
         ),
              grouped as (
                  select *,
@@ -273,8 +263,8 @@ export class InstrumentsHistoryService implements OnModuleInit {
     const data = await this.repo.query(sql, [
       start || null,
       end || null,
-      groupIds && groupIds.length ? groupIds : null,
-      platformIds && platformIds.length ? platformIds : null]
+      groupId || null,
+      platformId || null]
     );
 
     return {
