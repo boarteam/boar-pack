@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0-alpha.7](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.6...@boarteam/boar-pack-users-backend@6.0.0-alpha.7) (2025-06-05)
+
+
+### Code Refactoring
+
+* **entity:** change date columns to use timestamptz type ([b611797](https://github.com/boarteam/boar-pack/commit/b611797b137825b1d6a3775a6620638561bdae7c))
+
+
+### BREAKING CHANGES
+
+* **entity:** All dates will be handled differently from previous behavior
+
+
+
+
+
 # [6.0.0-alpha.6](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.5...@boarteam/boar-pack-users-backend@6.0.0-alpha.6) (2025-06-04)
 
 
