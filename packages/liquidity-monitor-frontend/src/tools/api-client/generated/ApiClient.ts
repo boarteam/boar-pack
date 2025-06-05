@@ -5,11 +5,9 @@
 import type { BaseHttpRequest } from './core/BaseHttpRequest';
 import type { OpenAPIConfig } from './core/OpenAPI';
 import { NodeHttpRequest } from './core/NodeHttpRequest';
-import { InstrumentsHistoryService } from './services/InstrumentsHistoryService';
 import { QuotesStatisticsService } from './services/QuotesStatisticsService';
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 export class ApiClient {
-    public readonly instrumentsHistory: InstrumentsHistoryService;
     public readonly quotesStatistics: QuotesStatisticsService;
     public readonly request: BaseHttpRequest;
     constructor(config?: Partial<OpenAPIConfig>, HttpRequest: HttpRequestConstructor = NodeHttpRequest) {
@@ -24,7 +22,6 @@ export class ApiClient {
             HEADERS: config?.HEADERS,
             ENCODE_PATH: config?.ENCODE_PATH,
         });
-        this.instrumentsHistory = new InstrumentsHistoryService(this.request);
         this.quotesStatistics = new QuotesStatisticsService(this.request);
     }
 }
