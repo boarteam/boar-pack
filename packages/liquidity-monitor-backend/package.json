@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-liquidity-monitor-backend",
-  "version": "1.2.2",
+  "version": "1.2.1",
   "description": "Backend for Liquidity Monitor",
   "main": "src/index",
   "files": [
