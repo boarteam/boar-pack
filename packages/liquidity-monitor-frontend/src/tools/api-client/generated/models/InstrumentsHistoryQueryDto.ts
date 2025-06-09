@@ -6,7 +6,6 @@ export type InstrumentsHistoryQueryDto = {
     sort?: string;
     start?: string;
     end?: string;
-    groupId?: string;
-    platformId?: string;
+    's'?: string;
 };
 

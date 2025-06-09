@@ -12,9 +12,6 @@ export class InstrumentsHistoryQueryDto {
   @JoiSchema(Joi.string().isoDate().optional())
   end?: string;
 
-  @JoiSchema(Joi.string().uuid().optional())
-  groupId?: string;
-
-  @JoiSchema(Joi.string().uuid().optional())
-  platformId?: string;
+  @JoiSchema(Joi.string().optional())
+  s?: string;
 }
