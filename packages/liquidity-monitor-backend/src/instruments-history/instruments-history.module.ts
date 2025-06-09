@@ -4,6 +4,9 @@ import { InstrumentsHistoryController } from "./instruments-history.controller";
 import { getDataSourceToken, TypeOrmModule } from "@nestjs/typeorm";
 import { InstrumentsHistory } from "./entities/instruments-history.entity";
 import { DataSource } from "typeorm";
+import { ScheduleModule } from "@boarteam/boar-pack-common-backend";
+import { SchedulerRegistry } from "@nestjs/schedule";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
 @Module({})
 export class InstrumentsHistoryModule {
@@ -13,6 +16,8 @@ export class InstrumentsHistoryModule {
     return {
       module: InstrumentsHistoryModule,
       imports: [
+        ConfigModule,
+        ScheduleModule,
         TypeOrmModule.forFeature([InstrumentsHistory], config.dataSourceName)
       ],
       controllers: [
@@ -21,9 +26,21 @@ export class InstrumentsHistoryModule {
       providers: [
         {
           provide: InstrumentsHistoryService,
-          inject: [getDataSourceToken(config.dataSourceName)],
-          useFactory: (dataSource: DataSource) => {
-            return new InstrumentsHistoryService(dataSource.getRepository(InstrumentsHistory));
+          inject: [
+            getDataSourceToken(config.dataSourceName),
+            SchedulerRegistry,
+            ConfigService
+          ],
+          useFactory: (
+            dataSource: DataSource,
+            schedulerRegistry: SchedulerRegistry,
+            configService: ConfigService
+          ) => {
+            return new InstrumentsHistoryService(
+              dataSource.getRepository(InstrumentsHistory),
+              schedulerRegistry,
+              configService
+            );
           },
         },
       ],
