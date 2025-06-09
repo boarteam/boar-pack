@@ -38,7 +38,9 @@ export class InstrumentsHistoryService implements OnModuleInit {
     // Cron schedule every day at 00:00:06 by default
     const cronSchedule = this.configService.get<string>('INSTRUMENTS_HISTORY_UPDATE_CRON_SCHEDULE', '0 6 * * * *');
 
-    const job = new CronJob(cronSchedule, this.updateInstrumentHistory);
+    const job = new CronJob(cronSchedule, () => {
+      return this.updateInstrumentHistory();
+    });
 
     this.schedulerRegistry.addCronJob(jobName, job);
     job.start();
