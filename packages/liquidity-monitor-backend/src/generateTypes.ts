@@ -7,6 +7,8 @@ import { ConfigModule } from "@nestjs/config";
 // @ts-ignore-next-line - Ignore the error because the package on project level
 import { generate } from "openapi-typescript-codegen";
 import { QuotesStatisticModule } from "./quotes-statistic";
+import { InstrumentsHistoryModule } from "./instruments-history";
+import { ApiStatisticModule } from "./api-statistic";
 
 @Module({
   imports: [
@@ -14,6 +16,7 @@ import { QuotesStatisticModule } from "./quotes-statistic";
       envFilePath: resolve(__dirname, '../../.env'),
     }),
     TypeOrmModule.forRoot({
+      name: 'boar_pack_db',
       type: 'postgres',
       host: 'localhost',
       port: 5951,
@@ -27,6 +30,12 @@ import { QuotesStatisticModule } from "./quotes-statistic";
     QuotesStatisticModule.forRoot({
       dataSourceName: 'boar_pack_db',
     }),
+    InstrumentsHistoryModule.forRoot({
+      dataSourceName: 'boar_pack_db',
+    }),
+    ApiStatisticModule.forRoot({
+      dataSourceName: 'boar_pack_db',
+    })
   ],
 })
 class Swagger {
