@@ -8,6 +8,7 @@ import { ConfigModule } from "@nestjs/config";
 import { generate } from "openapi-typescript-codegen";
 import { QuotesStatisticModule } from "./quotes-statistic";
 import { InstrumentsHistoryModule } from "./instruments-history";
+import { ApiStatisticModule } from "./api-statistic";
 
 @Module({
   imports: [
@@ -30,6 +31,9 @@ import { InstrumentsHistoryModule } from "./instruments-history";
       dataSourceName: 'boar_pack_db',
     }),
     InstrumentsHistoryModule.forRoot({
+      dataSourceName: 'boar_pack_db',
+    }),
+    ApiStatisticModule.forRoot({
       dataSourceName: 'boar_pack_db',
     })
   ],
