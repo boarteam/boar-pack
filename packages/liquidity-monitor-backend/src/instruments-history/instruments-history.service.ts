@@ -7,6 +7,7 @@ import { Cron, CronExpression, SchedulerRegistry } from "@nestjs/schedule";
 import { CronJob } from 'cron';
 import { ConfigService } from '@nestjs/config';
 import { SERVICES } from "../api-statistic";
+import { QuotesStatistic } from "../quotes-statistic";
 
 type TSourceForInstrumentsHistory = {
   symbol_name: string;
