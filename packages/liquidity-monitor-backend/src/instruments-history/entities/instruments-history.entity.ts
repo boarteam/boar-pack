@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum InstrumentsHistoryState {
   TID_DOWN = 'tid down',
@@ -9,9 +9,12 @@ export enum InstrumentsHistoryState {
 }
 
 @Entity('instruments_history')
-/*@Index('idx_quotes_statistic_provider_created', ['quotesProviderName', 'createdAt'], {
+@Index('idx_instruments_history_filtering', ['createdAt', 'providerId', 'instrumentsGroupId'], {
   unique: false,
-})*/
+})
+@Index('idx_created', ['createdAt'], {
+  unique: false,
+})
 export class InstrumentsHistory {
   @PrimaryGeneratedColumn('uuid')
   id: string;
