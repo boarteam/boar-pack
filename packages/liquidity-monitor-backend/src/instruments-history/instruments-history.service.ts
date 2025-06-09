@@ -15,8 +15,6 @@ type TSourceForInstrumentsHistory = {
   state: InstrumentsHistoryState;
   created_at: Date;
 }
-import { InstrumentsHistoryQueryDto } from "./dto/instruments-history-query.dto";
-import { InstrumentsHistoryResponseDto } from './dto/instruments-history-response.dto';
 
 @Injectable()
 export class InstrumentsHistoryService implements OnModuleInit {
@@ -199,7 +197,7 @@ export class InstrumentsHistoryService implements OnModuleInit {
                     ) as seq_state
             from instruments_history
             where
-              (created_at >= $1 or $1 is null)
+                (created_at >= $1 or $1 is null)
               and (created_at <= $2 or $2 is null)
               and (instruments_group_id = $3 or $3 is null)
               and (provider_id = $4 or $4 is null)
