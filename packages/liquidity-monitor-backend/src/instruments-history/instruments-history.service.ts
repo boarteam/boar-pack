@@ -3,7 +3,7 @@ import { InstrumentsHistory, InstrumentsHistoryState } from "./entities/instrume
 import { Repository } from "typeorm";
 import { InstrumentsHistoryQueryDto } from "./dto/instruments-history-query.dto";
 import { InstrumentsHistoryResponseDto } from './dto/instruments-history-response.dto';
-import { SchedulerRegistry } from "@nestjs/schedule";
+import { Cron, CronExpression, SchedulerRegistry } from "@nestjs/schedule";
 import { CronJob } from 'cron';
 import { ConfigService } from '@nestjs/config';
 import { SERVICES } from "../api-statistic";
@@ -28,6 +28,21 @@ export class InstrumentsHistoryService implements OnModuleInit {
 
   onModuleInit() {
     this.runUpdateInstrumentHistoryJob();
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  private async deleteOldInstrumentsHistory() {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setHours(oneWeekAgo.getHours() - 24 * 7);
+
+    const result = await this.repo
+      .createQueryBuilder()
+      .delete()
+      .from(InstrumentsHistory)
+      .where('created_at <= :oneWeekAgo', { oneWeekAgo })
+      .execute();
+
+    this.logger.debug(`Removed ${result.affected} expired records from instruments_history table.`);
   }
 
   runUpdateInstrumentHistoryJob() {
