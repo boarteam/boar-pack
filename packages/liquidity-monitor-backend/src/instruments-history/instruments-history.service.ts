@@ -3,7 +3,7 @@ import { InstrumentsHistory, InstrumentsHistoryState } from "./entities/instrume
 import { Repository } from "typeorm";
 import { InstrumentsHistoryQueryDto } from "./dto/instruments-history-query.dto";
 import { InstrumentsHistoryResponseDto } from './dto/instruments-history-response.dto';
-import { SchedulerRegistry } from "@nestjs/schedule";
+import { Cron, CronExpression, SchedulerRegistry } from "@nestjs/schedule";
 import { CronJob } from 'cron';
 import { ConfigService } from '@nestjs/config';
 import { SERVICES } from "../api-statistic";
@@ -30,6 +30,21 @@ export class InstrumentsHistoryService implements OnModuleInit {
     this.runUpdateInstrumentHistoryJob();
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  private async deleteOldInstrumentsHistory() {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setHours(oneWeekAgo.getHours() - 24 * 7);
+
+    const result = await this.repo
+      .createQueryBuilder()
+      .delete()
+      .from(InstrumentsHistory)
+      .where('created_at <= :oneWeekAgo', { oneWeekAgo })
+      .execute();
+
+    this.logger.debug(`Removed ${result.affected} expired records from instruments_history table.`);
+  }
+
   runUpdateInstrumentHistoryJob() {
     this.logger.log('InstrumentsHistoryService initialized, starting history update interval');
 
@@ -38,7 +53,9 @@ export class InstrumentsHistoryService implements OnModuleInit {
     // Cron schedule every day at 00:00:06 by default
     const cronSchedule = this.configService.get<string>('INSTRUMENTS_HISTORY_UPDATE_CRON_SCHEDULE', '0 6 * * * *');
 
-    const job = new CronJob(cronSchedule, this.updateInstrumentHistory);
+    const job = new CronJob(cronSchedule, () => {
+      return this.updateInstrumentHistory();
+    });
 
     this.schedulerRegistry.addCronJob(jobName, job);
     job.start();
@@ -169,12 +186,24 @@ export class InstrumentsHistoryService implements OnModuleInit {
   }
 
   async getAvailabilityReport(query: InstrumentsHistoryQueryDto): Promise<InstrumentsHistoryResponseDto> {
-    const { start, end, groupId, platformId } = query;
+    const { start, end } = query;
 
     const allowedSortColumns = ['symbolName', 'availabilityPercent'];
     const allowedDirections = ['ASC', 'DESC'];
 
     const sort = query.sort?.split(',');
+    let [groupIds, platformIds] = [[], []];
+    if (query.s) {
+      const parsed = JSON.parse(query.s);
+      for (const item of parsed['$and']) {
+        if (item.groupName) {
+          groupIds = item.groupName.$in;
+        }
+        if (item.platformName) {
+          platformIds = item.platformName.$in;
+        }
+      }
+    }
 
     const sortColumn = allowedSortColumns.includes(sort?.[0] || '') ? sort![0] : 'availabilityPercent';
     const sortDirection = allowedDirections.includes(sort?.[1].toUpperCase() || '') ? sort![1].toUpperCase() : 'ASC';
@@ -199,8 +228,8 @@ export class InstrumentsHistoryService implements OnModuleInit {
             where
                 (created_at >= $1 or $1 is null)
               and (created_at <= $2 or $2 is null)
-              and (instruments_group_id = $3 or $3 is null)
-              and (provider_id = $4 or $4 is null)
+              and (instruments_group_id = any($3) or $3 is null)
+              and (provider_id = any($4) or $4 is null)
         ),
              grouped as (
                  select *,
@@ -261,8 +290,8 @@ export class InstrumentsHistoryService implements OnModuleInit {
     const data = await this.repo.query(sql, [
       start || null,
       end || null,
-      groupId || null,
-      platformId || null]
+      groupIds && groupIds.length ? groupIds : null,
+      platformIds && platformIds.length ? platformIds : null]
     );
 
     return {

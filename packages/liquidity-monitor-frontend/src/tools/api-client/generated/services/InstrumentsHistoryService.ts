@@ -15,14 +15,12 @@ export class InstrumentsHistoryService {
         sort,
         start,
         end,
-        groupId,
-        platformId,
+        s,
     }: {
         sort?: string,
         start?: string,
         end?: string,
-        groupId?: string,
-        platformId?: string,
+        s?: string,
     }): CancelablePromise<InstrumentsHistoryResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
@@ -31,8 +29,7 @@ export class InstrumentsHistoryService {
                 'sort': sort,
                 'start': start,
                 'end': end,
-                'groupId': groupId,
-                'platformId': platformId,
+                's': s,
             },
         });
     }
