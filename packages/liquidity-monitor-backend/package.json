@@ -14,8 +14,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boarteam/boar-pack-common-backend": "^2.3.1",
-    "@boarteam/boar-pack-users-backend": "^5.6.1",
+    "@boarteam/boar-pack-common-backend": "^3.0.0-alpha.2",
+    "@boarteam/boar-pack-users-backend": "^6.0.0-alpha.8",
     "@nestjs/common": "^11.0.10",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.10",
