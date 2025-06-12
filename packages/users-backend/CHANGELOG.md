@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0-alpha.8](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.6.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.8) (2025-06-12)
+
+
+### Bug Fixes
+
+* **casl:** switch to MongoAbility and update ability builder ([888cffe](https://github.com/boarteam/boar-pack/commit/888cffe85c70f31abe7476d66e6ab2d27f3d4a5e))
+* **users:** update default admin email to test-admin@test.test ([8fde05a](https://github.com/boarteam/boar-pack/commit/8fde05aecfb7c10a61eb3ae6ec15aab614ac2680))
+* **users:** update default admin password to 'test' ([7995c92](https://github.com/boarteam/boar-pack/commit/7995c92f6a80a3cd7fd1ef0e75025aeeb057e24a))
+
+
+### chore
+
+* **backend:** upgrade dependencies versions ([e95abe9](https://github.com/boarteam/boar-pack/commit/e95abe918e69b0d5d3e3676603b8d42379918a54))
+
+
+### Code Refactoring
+
+* **entity:** change date columns to use timestamptz type ([1d29036](https://github.com/boarteam/boar-pack/commit/1d2903685ce4460580e5862ce21e358de6f4a8b4))
+
+
+### Features
+
+* **auth:** implement JWT revocation while logout ([00df029](https://github.com/boarteam/boar-pack/commit/00df02929e9cf7bf28e9cb6ce924c92cd63db32d))
+* **auth:** Yandex auth ([#49](https://github.com/boarteam/boar-pack/issues/49)) ([ede1039](https://github.com/boarteam/boar-pack/commit/ede1039926826c4fe41dcf6a1604265b9a834f37))
+* **casl:** add fieldMatcher function to improve field validation ([d0a57a9](https://github.com/boarteam/boar-pack/commit/d0a57a9ebb8f7caec5c17f588552649eebe6c7c4))
+
+
+### BREAKING CHANGES
+
+* **entity:** All dates will be handled differently from previous behavior
+* **auth:** By default token is issued with expiration now
+* **backend:** Nest js upgraded v9 -> v11
+
+
+
+
+
 # [5.6.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.5.0...@boarteam/boar-pack-users-backend@5.6.0) (2025-05-08)
 
 
