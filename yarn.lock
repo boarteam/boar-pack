@@ -1811,7 +1811,7 @@
   resolved "https://registry.yarnpkg.com/@bloomberg/record-tuple-polyfill/-/record-tuple-polyfill-0.0.4.tgz#9ef3df44e472ceb9a0a2010d858a526f2021fefa"
   integrity sha512-h0OYmPR3A5Dfbetra/GzxBAzQk8sH7LhRkRUTdagX6nrtlUgJGYCTv4bBK33jsTQw9HDd8PE2x1Ma+iRKEDUsw==
 
-"@boarteam/boar-pack-common-backend@^2.3.0", "@boarteam/boar-pack-common-backend@^2.3.1":
+"@boarteam/boar-pack-common-backend@^2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@boarteam/boar-pack-common-backend/-/boar-pack-common-backend-2.3.1.tgz#493bc45f8d4729c936a8b3419b6b91dfa2a04514"
   integrity sha512-ZKAs61GdceGakRuUWrvlZ3cNP7391Mqa5oaY8cAsIQBTOCm9lWUWY2MMAxBVUx0b3kSqdi9+5h03rLzYdbz/iQ==
@@ -1819,7 +1819,7 @@
     "@nestjs/websockets" "^10.3.9"
     lossless-json "^4.0.2"
 
-"@boarteam/boar-pack-users-backend@^5.4.2":
+"@boarteam/boar-pack-users-backend@^5.6.0":
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/@boarteam/boar-pack-users-backend/-/boar-pack-users-backend-5.6.0.tgz#a92e0b4f5e0038a48e2aaae877df2c6d7195eec7"
   integrity sha512-7DrGBNf5pGUnFom1N16I4kGdZBUhFC8le3Mxhml0lwqPUMddIOEoR6MCqLVVcF1AgxYBvC1tCARv3xfOhthpHQ==
