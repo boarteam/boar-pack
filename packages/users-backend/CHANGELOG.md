@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0-alpha.9](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.8...@boarteam/boar-pack-users-backend@6.0.0-alpha.9) (2025-06-12)
+
+**Note:** Version bump only for package @boarteam/boar-pack-users-backend
+
+
+
+
+
 # [6.0.0-alpha.8](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.6.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.8) (2025-06-12)
 
 
