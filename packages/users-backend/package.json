@@ -27,8 +27,6 @@
     "@nestjs/schedule": "^5.0.1",
     "@nestjs/swagger": "^11.0.4",
     "@nestjs/typeorm": "^11.0.0",
-    "@nestjsx/crud": "^5.0.0-alpha.3",
-    "@nestjsx/crud-typeorm": "^5.0.0-alpha.3",
     "bcrypt": "^5.1.1",
     "joi": "^17.13.3",
     "lodash": "^4.17.21",
