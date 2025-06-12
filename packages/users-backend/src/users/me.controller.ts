@@ -1,4 +1,4 @@
-import { Crud, CrudAuth, CrudController, type CrudRequest, Override, ParsedRequest, } from '@nestjsx/crud';
+import { Crud, CrudAuth, CrudController, type CrudRequest, Override, ParsedRequest, } from '@dataui/crud';
 import { TUser, User } from './entities/user.entity';
 import { Controller, Req } from '@nestjs/common';
 import type { Request } from 'express';

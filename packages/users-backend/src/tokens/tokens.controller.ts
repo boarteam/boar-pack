@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Crud, CrudController } from '@nestjsx/crud';
+import { Crud, CrudController } from '@dataui/crud';
 import { TokensService } from './tokens.service';
 import { Token } from './entities/token.entity';
 import { TokenUpdateDto } from "./dto/token-update.dto";

@@ -1,26 +1,33 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
-import { LocalAuthStrategy } from './local-auth.strategy';
+import { LocalAuthStrategy } from './local-auth/local-auth.strategy';
 import { PassportModule } from '@nestjs/passport';
 import AuthController from './auth.controller';
 import { ConfigModule } from '@nestjs/config';
-import { GoogleAuthStrategy } from './google-auth.strategy';
-import { GoogleAuthConfigService } from "./google-auth.config";
-import { MSAuthStrategy } from './ms-auth.strategy';
-import { MSAuthConfigService } from "./ms-auth.config";
+import { GoogleAuthStrategy } from './google/google-auth.strategy';
+import { GoogleAuthConfigService } from "./google/google-auth.config";
+import { MSAuthStrategy } from './microsoft/ms-auth.strategy';
+import { MSAuthConfigService } from "./microsoft/ms-auth.config";
 import { JwtAuthModule } from "../jwt-auth/jwt-auth.module";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtAuthGuard } from "../jwt-auth/jwt-auth.guard";
 import AuthManageController from "./auth-manage.controller";
+import GoogleAuthController from "./google/google-auth.controller";
+import MsAuthController from "./microsoft/ms-auth.controller";
+import LocalAuthController from "./local-auth/local-auth.controller";
+import { YandexAuthStrategy } from "./yandex/yandex-auth.strategy";
+import { YandexAuthConfigService } from "./yandex/yandex-auth.config";
+import YandexAuthController from "./yandex/yandex-auth.controller";
 
 @Module({})
 export class AuthModule {
   static forRoot(config: {
-    googleAuth: boolean,
-    msAuth: boolean,
-    localAuth: boolean,
-    withControllers: boolean,
+    googleAuth?: boolean,
+    msAuth?: boolean,
+    yandexAuth?: boolean,
+    localAuth?: boolean,
+    withControllers?: boolean,
     dataSourceName?: string;
   }): DynamicModule {
     const dynamicModule: DynamicModule = {
@@ -47,20 +54,30 @@ export class AuthModule {
       exports: [],
     };
 
+    const controllers = [];
     if (config.googleAuth) {
       dynamicModule.providers!.push(GoogleAuthConfigService, GoogleAuthStrategy);
+      controllers.push(GoogleAuthController);
     }
 
     if (config.msAuth) {
       dynamicModule.providers!.push(MSAuthConfigService, MSAuthStrategy);
+      controllers.push(MsAuthController);
+    }
+
+    if (config.yandexAuth) {
+      dynamicModule.providers!.push(YandexAuthConfigService, YandexAuthStrategy);
+      controllers.push(YandexAuthController);
     }
 
     if (config.localAuth) {
       dynamicModule.providers!.push(LocalAuthStrategy);
+      controllers.push(LocalAuthController);
     }
 
     if (config.withControllers) {
       dynamicModule.controllers = [
+        ...controllers,
         AuthController,
         AuthManageController,
       ];
