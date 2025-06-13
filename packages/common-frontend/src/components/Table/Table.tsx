@@ -36,6 +36,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     onDelete,
     onDeleteMany,
     exportUrl,
+    exportParams,
     onImport,
     pathParams,
     idColumnName = 'id',
@@ -123,6 +124,7 @@ const Table = <Entity extends Record<string | symbol, any>,
 
   const { exportButton, importButton, setLastQueryParams } = useImportExport<TPathParams>({
     exportUrl,
+    exportParams,
     onImport,
   })
 
