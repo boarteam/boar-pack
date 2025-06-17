@@ -102,6 +102,12 @@ export class QuotesStatisticService {
     ]);
   }
 
+  /**
+   * Get the oldest date from the quotes_statistic table for a given upcoming status.
+   * If no records are found, it returns a current date minus 7 days.
+   * @param upcoming
+   * @private
+   */
   private async getOldestStatsDate(upcoming: boolean): Promise<Date> {
     const oldestStat = await this.repo.createQueryBuilder('quotes_statistic')
       .select('MIN(quotes_statistic.createdAt)', 'min')
@@ -109,7 +115,7 @@ export class QuotesStatisticService {
         upcoming,
       })
       .getRawOne();
-    return new Date(oldestStat.min);
+    return oldestStat.min ? new Date(oldestStat.min) : moment().subtract(7, 'days').toDate();
   }
 
   private determineInterval(startTime: moment.Moment, endTime: moment.Moment): TInterval {
