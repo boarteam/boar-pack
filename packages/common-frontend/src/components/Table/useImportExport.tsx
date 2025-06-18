@@ -6,9 +6,13 @@ import { Link } from "react-router-dom";
 
 export function useImportExport<TPathParams = {}>({
   exportUrl,
+  exportParams,
   onImport
 }: {
   exportUrl?: string;
+  exportParams?: {
+    [key: string]: string | number
+  }
   onImport?: (event: React.ChangeEvent<HTMLInputElement>) => Promise<any>;
 }) {
   const [isLoadingImport, setIsLoadingImport] = useState(false);
@@ -25,10 +29,15 @@ export function useImportExport<TPathParams = {}>({
       });
   }
 
-  const url = exportUrl + (lastQueryParams ? '?' + new URLSearchParams({
-    s: lastQueryParams.s,
-    sort: lastQueryParams.sort?.[0],
-  }).toString() : '');
+  const params = {
+    ...(lastQueryParams && {
+      s: lastQueryParams.s,
+      sort: lastQueryParams.sort?.[0],
+    }),
+    ...exportParams
+  }
+
+  const url = exportUrl + (Object.keys(params).length ? '?' + new URLSearchParams(params).toString() : '');
   const exportButton = <Tooltip title="Export">
     <Link to={url} target={'_blank'}>
       <Button icon={<DownloadOutlined />}/>
