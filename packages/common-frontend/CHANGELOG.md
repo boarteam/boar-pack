@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.10.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.9.0...@boarteam/boar-pack-common-frontend@2.10.0) (2025-06-18)
+
+
+### Features
+
+* **table:** ADM-298 Ability to pass extra export params ([#63](https://github.com/boarteam/boar-pack/issues/63)) ([7f285e5](https://github.com/boarteam/boar-pack/commit/7f285e58bf8469c0c74566de42e99876e4dd41ad))
+
+
+
+
+
 # [2.9.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.8.1...@boarteam/boar-pack-common-frontend@2.9.0) (2025-05-08)
 
 
