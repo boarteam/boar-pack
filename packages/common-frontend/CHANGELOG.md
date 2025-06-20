@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0-alpha.6](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.6.0-alpha.5...@boarteam/boar-pack-common-frontend@2.6.0-alpha.6) (2025-06-20)
+
+
+### Features
+
+* **table:** add UUID validation to filters and extend tableTypes for UUID support ([f9aade8](https://github.com/boarteam/boar-pack/commit/f9aade83efe33506b150948431c26f4bc9d656b5))
+
+
+
+
+
 # [2.6.0-alpha.5](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.9.0...@boarteam/boar-pack-common-frontend@2.6.0-alpha.5) (2025-06-12)
 
 
