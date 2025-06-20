@@ -78,6 +78,7 @@ export type TSearchableColumn = {
   filterField?: string,
   filterOperator?: typeof Operators[keyof typeof Operators],
   numeric?: boolean,
+  uuid?: boolean,
 }
 
 interface BaseProps<Entity,

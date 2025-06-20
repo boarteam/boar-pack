@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "@nestjsx/crud-request": "^5.0.0-alpha.3",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@ant-design/icons": "^4.8.3",
