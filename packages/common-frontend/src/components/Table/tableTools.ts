@@ -1,4 +1,5 @@
 import { CondOperator, QueryJoin, SCondition } from "@nestjsx/crud-request";
+import { validate as uuidValidate } from 'uuid';
 import { IWithId, TFilters, TSearchableColumn } from "./tableTypes";
 import React, { Key } from "react";
 import { TColumnsStates } from "./useColumnsSets";
@@ -20,7 +21,12 @@ export function getFiltersSearch({
     let operator = col.filterOperator || col.operator;
     let value = filters[colDataIndex] || baseFilters[colDataIndex];
     filterKeys.delete(colDataIndex);
-    if (value === '' || value === undefined || col.numeric && !Number.isFinite(Number(value))) {
+    if (
+      value === '' ||
+      value === undefined ||
+      col.numeric && !Number.isFinite(Number(value)) ||
+      col.uuid && (typeof value !== 'string' || !uuidValidate(value))
+    ) {
       return;
     }
 
@@ -126,7 +132,10 @@ export function applyKeywordToSearch(
       const field = col.searchField || (Array.isArray(col.field) ? col.field.join('.') : col.field);
       const operator = col.operator;
 
-      if (!col.numeric || Number.isFinite(Number(word))) {
+      const wrongNumeric = col.numeric && !Number.isFinite(Number(word));
+      const wrongUuid = col.uuid && (typeof word !== 'string' || !uuidValidate(word));
+
+      if (!wrongNumeric && !wrongUuid) {
         keywordSearch.$or.push({ [field]: { [operator]: word } });
       }
     });
