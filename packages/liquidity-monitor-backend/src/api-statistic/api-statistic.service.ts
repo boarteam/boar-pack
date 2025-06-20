@@ -1,11 +1,11 @@
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { ApiStatistic } from "./entities/api-statistic.entity";
-import { Cron, CronExpression } from "@nestjs/schedule";
 import { SERVICES } from "./api-statistic.constants";
+import { Cron, CronExpression } from "@nestjs/schedule";
 
 @Injectable()
-export class ApiStatisticService implements OnModuleInit {
+export class ApiStatisticService implements OnModuleInit, OnModuleDestroy {
   private lastInsertedId: string
   private logger = new Logger(ApiStatisticService.name);
 
@@ -22,20 +22,35 @@ export class ApiStatisticService implements OnModuleInit {
 
     const apiStatistic = new ApiStatistic();
     apiStatistic.serviceName = SERVICES.TID_API;
-    apiStatistic.lastCheckedAt = new Date();
+    apiStatistic.uptimePeriod = `[${new Date().toISOString()},)`;
 
-    if (!this.lastInsertedId) {
-      const savedRecord = await this.repo.save(apiStatistic);
-      this.lastInsertedId = savedRecord.id;
-    }
+    const savedRecord = await this.repo.save(apiStatistic);
+    this.lastInsertedId = savedRecord.id;
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
-  async checkService(): Promise<void> {
-    await this.repo.update({
-      id: this.lastInsertedId,
-    }, {
-      lastCheckedAt: new Date(),
-    })
+  async update() {
+    const now = new Date();
+
+    // Set the uptime period for the last record
+    await this.repo.createQueryBuilder("as")
+      .update(ApiStatistic)
+      .set({
+        uptimePeriod: () => `tstzrange(lower(uptime_period), '${now.toISOString()}', '[)')`,
+      })
+      .where("id = :id", { id: this.lastInsertedId })
+      .execute();
+  }
+
+  @Cron(CronExpression.EVERY_5_SECONDS)
+  async updateUptimeStatistic() {
+    await this.update();
+  }
+
+  async onModuleDestroy() {
+    if (!this.serviceName) {
+      return;
+    }
+
+    await this.update();
   }
 }
