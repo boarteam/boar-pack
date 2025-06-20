@@ -1,12 +1,11 @@
-import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { InjectDataSource } from "@nestjs/typeorm";
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { DataSource } from "typeorm";
 import { Notifications, SettingsService, SettingsValues, TelegrafService } from "@boarteam/boar-pack-users-backend";
 import { bold, fmt } from "telegraf/format";
-import { FETCH_PROVIDERS } from "./provider-monitoring.constants";
 import { keyBy } from "lodash";
 import { QuotesStatistic } from "../quotes-statistic";
 import { TProvider } from "./provider-monitoring.module";
+import { ProvidersProblematicPeriod } from "./entities/providers-problematic-period.entity";
 
 @Injectable()
 export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy {
@@ -21,11 +20,10 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
   private providerActivityInterval: NodeJS.Timeout | null = null;
 
   constructor(
-    @InjectDataSource()
     private readonly dataSource: DataSource,
     private readonly telegrafService: TelegrafService,
     private readonly settingsService: SettingsService,
-    @Inject(FETCH_PROVIDERS) private readonly fetchProviders: () => Promise<TProvider[]>,
+    private readonly fetchProviders: () => Promise<TProvider[]>,
   ) {
   }
 
@@ -34,7 +32,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
       return;
     }
 
-    const setting = await this.getSetting();
+    const setting = await this.getSetting(Notifications.QuotesByProviderStatus);
     if (setting === SettingsValues.YES) {
       this.startMonitoring();
     }
@@ -48,8 +46,8 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     this.stopMonitoring();
   }
 
-  private async getSetting(): Promise<string> {
-    const result = await this.settingsService.getSettings([Notifications.QuotesByProviderStatus]);
+  private async getSetting(settingName: string): Promise<string> {
+    const result = await this.settingsService.getSettings([settingName]);
     return result?.[0]?.value || SettingsValues.NO;
   }
 
@@ -70,11 +68,6 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     }
   }
 
-  async toggleMonitoring() {
-    const setting = await this.getSetting();
-    setting === SettingsValues.NO ? this.stopMonitoring() : this.startMonitoring();
-  }
-
   private async checkProviderActivity() {
     const providers = await this.fetchProviders();
 
@@ -85,59 +78,99 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     const result = await this.dataSource
       .getRepository(QuotesStatistic)
       .createQueryBuilder('qs')
-      .select('qs.quotes_provider_name as name')
-      .addSelect('max(qs.created_at) as "latestQuoteDate"')
-      .where('qs.quotes_provider_name IN (:...names)', {
-        names: providers.map(provider => provider.id),
+      .select('qs.quotes_provider_name', 'name')
+      .addSelect('max(qs.created_at)',  'latestQuoteDate')
+      .addSelect('ppp.id', 'problematicPeriodId')
+      .addSelect('ppp.period', 'problematicPeriod')
+      .addSelect('lower(ppp.period)', 'problematicPeriodStart')
+      .leftJoin(ProvidersProblematicPeriod, 'ppp', 'ppp.providerId = qs.quotes_provider_name::uuid and upper(ppp.period) is null')
+      .andWhere('qs.quotes_provider_name IN (:...names)', {
+        names: providers
+          .filter(provider => provider.threshold) // Skip providers without a threshold
+          .map(provider => provider.id),
       })
       .groupBy('qs.quotes_provider_name')
+      .addGroupBy('ppp.id')
+      .addGroupBy('ppp.period')
       .getRawMany();
 
     const quotesByProviders = keyBy(result, 'name');
     const notifications: Promise<void>[] = [];
+    const problematicPeriods: Partial<ProvidersProblematicPeriod>[] = [];
+    const telegramNotificationsEnabled = await this.getSetting(Notifications.QuotesByProviderStatus);
 
-    providers.forEach(provider => {
-      if (!provider.threshold) {
-        this.logger.warn(`Provider ${provider.name} has no threshold set, skipping...`);
-        return;
-      }
-
+    providers.forEach((provider: TProvider & { threshold: number }) => {
       const latestQuote = quotesByProviders[provider.id];
-
-      const isProblematic = !latestQuote || new Date().getTime() - new Date(latestQuote.latestQuoteDate).getTime() > provider.threshold * 1000;
+      const diff = new Date().getTime() - new Date(latestQuote.latestQuoteDate).getTime();
+      const isProblematic = !latestQuote || diff > provider.threshold * 1000;
 
       if (isProblematic) {
         this.logger.warn(`Provider ${provider.name} has no quotes in the last ${provider.threshold} seconds`);
 
-        // Exponential backoff strategy
-        const previousNotification = this.notificationsJournal.get(provider.name);
-        if (previousNotification) {
-          const now = new Date();
-          const diff = (now.getTime() - previousNotification.lastNotification.getTime()) / 1000;
-          if (diff < this.exponentialBackoff[previousNotification.attempts]) {
-            this.logger.warn(`Skipping notification for ${provider.name} due to exponential backoff`);
-            return;
-          }
-          previousNotification.attempts++;
-          previousNotification.lastNotification = now;
-
-          if (previousNotification.attempts >= this.exponentialBackoff.length) {
-            previousNotification.attempts = 0;
-          }
+        // Update or create problematic period
+        if (!latestQuote.problematicPeriodId) {
+          problematicPeriods.push({
+            providerId: latestQuote.name,
+            period: `[${new Date().toISOString()},)`,
+          })
         }
 
-        const message = fmt`❗️${bold('Provider')} ${bold(provider.name)} has no quotes in the last ${bold(provider.threshold.toString())} seconds.`;
-        notifications.push(
-          this.telegrafService.sendMessage(message, Notifications.QuotesByProviderStatus)
-        );
+        // Collect telegram notifications
+        if (telegramNotificationsEnabled === SettingsValues.YES) {
+          // Exponential backoff strategy
+          const previousNotification = this.notificationsJournal.get(provider.name);
+          if (previousNotification) {
+            const now = new Date();
+            const diff = (now.getTime() - previousNotification.lastNotification.getTime()) / 1000;
+            if (diff < this.exponentialBackoff[previousNotification.attempts]) {
+              this.logger.warn(`Skipping notification for ${provider.name} due to exponential backoff`);
+              return;
+            }
+            previousNotification.attempts++;
+            previousNotification.lastNotification = now;
 
-        this.notificationsJournal.set(provider.name, previousNotification || {
-          attempts: 0,
-          lastNotification: new Date(),
-        });
+            if (previousNotification.attempts >= this.exponentialBackoff.length) {
+              previousNotification.attempts = 0;
+            }
+          }
+
+          const message = fmt`❗️${bold('Provider')} ${bold(provider.name)} has no quotes in the last ${bold(provider.threshold.toString())} seconds.`;
+          notifications.push(
+            this.telegrafService.sendMessage(message, Notifications.QuotesByProviderStatus)
+          );
+
+          this.notificationsJournal.set(provider.name, previousNotification || {
+            attempts: 0,
+            lastNotification: new Date(),
+          });
+        }
+      } else {
+        this.logger.log(`Provider ${provider.name} is active, last quote: ${latestQuote.latestQuoteDate}`);
+
+        // Close a problematic period if it exists
+        if (latestQuote.problematicPeriodId) {
+          problematicPeriods.push({
+            id: latestQuote.problematicPeriodId,
+            providerId: latestQuote.name,
+            period: `[${latestQuote.problematicPeriodStart.toISOString()}, '${new Date().toISOString()}]`,
+          });
+        }
+
+        // Reset notification attempts
+        this.notificationsJournal.delete(provider.name);
       }
     });
 
+    // Save problematic periods to the database
+    if (problematicPeriods.length > 0) {
+      const repository = this.dataSource.getRepository(ProvidersProblematicPeriod);
+      await repository.upsert(problematicPeriods, ['id']);
+      this.logger.log(`Saved ${problematicPeriods.length} problematic periods.`);
+    } else {
+      this.logger.log('No problematic periods to save.');
+    }
+
+    // Send telegram notifications
     await Promise.all(notifications);
   }
 }

@@ -37,14 +37,15 @@ import { ApiStatisticModule } from "./api-statistic";
     UsersConnectionsStatisticModule.forRoot({
       dataSourceName: 'boar_pack_db'
     }),
-    ProviderMonitoringModule.forRootAsync({
-      dataSourceName: 'boar_pack_db',
-    }),
     InstrumentsHistoryModule.forRoot({
       dataSourceName: 'boar_pack_db',
     }),
     ApiStatisticModule.forRoot({
       dataSourceName: 'boar_pack_db',
+    }),
+    ProviderMonitoringModule.forRootAsync({
+      dataSourceName: 'boar_pack_db',
+      fetchProviders: () => Promise.resolve([]),
     })
   ],
 })
