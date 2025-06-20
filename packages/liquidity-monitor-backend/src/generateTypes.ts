@@ -9,6 +9,7 @@ import { generate } from "openapi-typescript-codegen";
 import { QuotesStatisticModule } from "./quotes-statistic";
 import { InstrumentsHistoryModule } from "./instruments-history";
 import { ApiStatisticModule } from "./api-statistic";
+import { ProviderMonitoringModule } from "./provider-monitoring";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ApiStatisticModule } from "./api-statistic";
       database: 'boar_pack',
       entities: [
         resolve(__dirname, './*/entities/*.entity.{ts,js}'),
+        resolve(__dirname, '../node_modules/@boarteam/boar-pack-users-backend/src/settings/entities/*.entity.{ts,js}'),
       ],
     }),
     QuotesStatisticModule.forRoot({
@@ -35,6 +37,10 @@ import { ApiStatisticModule } from "./api-statistic";
     }),
     ApiStatisticModule.forRoot({
       dataSourceName: 'boar_pack_db',
+    }),
+    ProviderMonitoringModule.forRootAsync({
+      dataSourceName: 'boar_pack_db',
+      fetchProviders: () => Promise.resolve([]),
     })
   ],
 })
