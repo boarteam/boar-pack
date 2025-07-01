@@ -44,7 +44,6 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
-    "@nestjs/platform-express": "^10.4.15",
     "@types/bcrypt": "^5.0.2",
     "@types/passport-google-oauth20": "^2.0.14",
     "@types/passport-http-bearer": "^1.0.41",
