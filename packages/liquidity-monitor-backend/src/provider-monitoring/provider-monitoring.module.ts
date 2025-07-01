@@ -1,10 +1,8 @@
-import { DynamicModule, InjectionToken, Module, OptionalFactoryDependency } from "@nestjs/common";
+import { DynamicModule, Module } from "@nestjs/common";
 import { ProviderMonitoringService } from "./provider-monitoring.service";
 import { SettingsModule, SettingsService, TelegrafModule, TelegrafService } from "@boarteam/boar-pack-users-backend";
 import { ProviderMonitoringController } from "./provider-monitoring.controller";
 import { FETCH_PROVIDERS } from "./provider-monitoring.constants";
-import { Type } from "@nestjs/common/interfaces/type.interface";
-import { ForwardReference } from "@nestjs/common/interfaces/modules/forward-reference.interface";
 import { getDataSourceToken, TypeOrmModule } from "@nestjs/typeorm";
 import { ProvidersProblematicPeriod } from "./entities/providers-problematic-period.entity";
 import { DataSource } from "typeorm";
@@ -20,14 +18,14 @@ export type TProvider = {
 export class ProviderMonitoringModule {
   static forRootAsync<TLocalProvider extends TProvider, TLocalService>(config: {
     dataSourceName: string,
-    fetchProviders: (service: TLocalService) => Promise<TLocalProvider[]>,
-    inject?: (InjectionToken | OptionalFactoryDependency)[],
-    imports?: Array<Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference>,
+    inject?: any[],
+    imports?: any[],
+    useFactory: (...args: any[]) => () => Promise<TLocalProvider[]>,
   }): DynamicModule {
     return {
       module: ProviderMonitoringModule,
       imports: [
-        ...(Array.isArray(config.imports) ? config.imports : []),
+        ...(config.imports || []),
         TypeOrmModule.forFeature([ProvidersProblematicPeriod], config.dataSourceName),
         TelegrafModule.register({
           withControllers: false,
@@ -44,10 +42,8 @@ export class ProviderMonitoringModule {
       providers: [
         {
           provide: FETCH_PROVIDERS,
-          inject: config.inject,
-          useFactory: (providersService) => {
-            return () => config.fetchProviders(providersService);
-          },
+          inject: config.inject ?? [],
+          useFactory: config.useFactory,
         },
         {
           provide: ProviderMonitoringService,

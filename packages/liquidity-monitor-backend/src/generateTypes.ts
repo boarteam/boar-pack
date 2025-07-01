@@ -45,7 +45,7 @@ import { ApiStatisticModule } from "./api-statistic";
     }),
     ProviderMonitoringModule.forRootAsync({
       dataSourceName: 'boar_pack_db',
-      fetchProviders: () => Promise.resolve([]),
+      useFactory: () => async () => Promise.resolve([]),
     })
   ],
 })
