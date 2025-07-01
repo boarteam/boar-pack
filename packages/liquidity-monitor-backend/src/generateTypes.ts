@@ -40,7 +40,7 @@ import { ProviderMonitoringModule } from "./provider-monitoring";
     }),
     ProviderMonitoringModule.forRootAsync({
       dataSourceName: 'boar_pack_db',
-      fetchProviders: () => Promise.resolve([]),
+      useFactory: () => async () => Promise.resolve([]),
     })
   ],
 })
