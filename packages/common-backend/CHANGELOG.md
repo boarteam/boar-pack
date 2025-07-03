@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0-alpha.3](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-backend@2.3.1...@boarteam/boar-pack-common-backend@3.0.0-alpha.3) (2025-07-03)
+
+
+### chore
+
+* **backend:** upgrade dependencies versions ([46548fb](https://github.com/boarteam/boar-pack/commit/46548fb536b647a575066ff8bbb83968c34d1b48))
+
+
+### BREAKING CHANGES
+
+* **backend:** Nest js upgraded v9 -> v11
+
+
+
+
+
 # [3.0.0-alpha.2](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-backend@2.3.1...@boarteam/boar-pack-common-backend@3.0.0-alpha.2) (2025-06-12)
 
 
