@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0-alpha.10](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@5.6.0...@boarteam/boar-pack-users-backend@6.0.0-alpha.10) (2025-07-03)
+
+
+### Bug Fixes
+
+* **casl:** switch to MongoAbility and update ability builder ([152b3b9](https://github.com/boarteam/boar-pack/commit/152b3b92d43cf5871bde1f11f3cf1e2665b0d3a2))
+* **users:** update default admin email to test-admin@test.test ([2973603](https://github.com/boarteam/boar-pack/commit/2973603e15982e8a4b0ec37af10c806e38ff610e))
+* **users:** update default admin password to 'test' ([c961f3d](https://github.com/boarteam/boar-pack/commit/c961f3da6958aab549ad4c11be0a31a61e9057d8))
+
+
+### chore
+
+* **backend:** upgrade dependencies versions ([46548fb](https://github.com/boarteam/boar-pack/commit/46548fb536b647a575066ff8bbb83968c34d1b48))
+
+
+### Code Refactoring
+
+* **entity:** change date columns to use timestamptz type ([eac3364](https://github.com/boarteam/boar-pack/commit/eac3364681e1ba10fe4cde90ce743e46e418d4fd))
+
+
+### Features
+
+* **auth:** implement JWT revocation while logout ([7d926a7](https://github.com/boarteam/boar-pack/commit/7d926a711b2c56e86a3e0fe47548b13c62cb7ef6))
+* **auth:** Yandex auth ([#49](https://github.com/boarteam/boar-pack/issues/49)) ([fc9255d](https://github.com/boarteam/boar-pack/commit/fc9255d75d9fc72b5491d2086795f8262e93b352))
+* **casl:** add fieldMatcher function to improve field validation ([7473029](https://github.com/boarteam/boar-pack/commit/7473029a624bc9f035ba6273a44eeaadaf932237))
+* **tokens-auth:** add logging for invalid token format ([06e3274](https://github.com/boarteam/boar-pack/commit/06e3274ef93a32d814f4b34cb3b0404d2289c528))
+
+
+### BREAKING CHANGES
+
+* **entity:** All dates will be handled differently from previous behavior
+* **auth:** By default token is issued with expiration now
+* **backend:** Nest js upgraded v9 -> v11
+
+
+
+
+
 # [6.0.0-alpha.9](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.0-alpha.8...@boarteam/boar-pack-users-backend@6.0.0-alpha.9) (2025-06-12)
 
 **Note:** Version bump only for package @boarteam/boar-pack-users-backend
