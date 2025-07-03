@@ -1,59 +1,82 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { DataSource, Repository } from 'typeorm';
-import { QuotesStatistic } from './entities/quotes-statistic.entity';
-import { QuotesStatisticDto } from "./dto/quotes-statistic.dto";
+import { UsersConnectionsStatisticDto } from "./dto/users-connections-statistic.dto";
 import moment from "moment";
+import { UserConnectionTarget, UsersConnectionsStatistic } from "./entities/users-connections-statistic.entity";
 
 type TInterval = 'second' | 'minute' | 'hour' | 'day' | 'week';
 
+type IUserQuotesNumber = { [key in UserConnectionTarget]: number };
+
 @Injectable()
-export class QuotesStatisticService {
-  private readonly logger = new Logger(QuotesStatisticService.name);
-  private quotesNumberByProvider: Map<string, number> = new Map();
+export class UsersConnectionsStatisticService {
+  private readonly logger = new Logger(UsersConnectionsStatisticService.name);
+  private quotesNumberByUser: Map<string, IUserQuotesNumber> = new Map();
 
   constructor(
-    private readonly repo: Repository<QuotesStatistic>,
+    private readonly repo: Repository<UsersConnectionsStatistic>,
     private readonly dataSource: DataSource,
   ) {
   }
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   private async saveAccumulatedQuotesNumber(): Promise<void> {
-    if (this.quotesNumberByProvider.size > 0) {
-      const stats = Array.from(this.quotesNumberByProvider.entries()).map(([quotesProviderName, quotesNumber]) => ({
-        quotesProviderName,
-        quotesNumber,
-      }));
+    if (this.quotesNumberByUser.size > 0) {
+      const stats: Partial<UsersConnectionsStatistic>[] = [];
+      Array.from(this.quotesNumberByUser.entries()).forEach(([userId, quotesNumber]) => {
+        const quotesNumberFixServer = quotesNumber[UserConnectionTarget.FIX_SERVER];
+        const quotesNumberWebsocketServer = quotesNumber[UserConnectionTarget.WEBSOCKET_SERVER];
+        if (quotesNumberFixServer !== 0) {
+          stats.push({
+            userId,
+            quotesNumber: quotesNumberFixServer,
+            target: UserConnectionTarget.FIX_SERVER
+          })
+        }
+
+        if (quotesNumberWebsocketServer !== 0) {
+          stats.push({
+            userId,
+            quotesNumber: quotesNumberWebsocketServer,
+            target: UserConnectionTarget.WEBSOCKET_SERVER
+          })
+        }
+      });
 
       this.logger.debug('Reset quotes number variable');
-      this.quotesNumberByProvider.clear();
+      this.quotesNumberByUser.clear();
 
       await this.repo.save(stats);
     }
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  private async deleteOldQuotesStatistic() {
+  private async deleteOldUsersConnectionsStatistic() {
     const oneWeekAgo = new Date();
     oneWeekAgo.setHours(oneWeekAgo.getHours() - 24 * 7);
 
     const result = await this.repo
       .createQueryBuilder()
       .delete()
-      .from(QuotesStatistic)
+      .from(UsersConnectionsStatistic)
       .where('created_at <= :oneWeekAgo', { oneWeekAgo })
       .execute();
 
-    this.logger.debug(`Removed ${result.affected} expired records from quotes_statistic table.`);
+    this.logger.debug(`Removed ${result.affected} expired records from users_connections_statistic table.`);
   }
 
-  public incrementQuotesNumber(provider: string, n = 1): void {
-    const currentNumber = this.quotesNumberByProvider.get(provider) || 0;
-    this.quotesNumberByProvider.set(provider, currentNumber + n);
+  public incrementQuotesNumber(userId: string, target: UserConnectionTarget, n = 1): void {
+    const currentNumber = this.quotesNumberByUser.get(userId) || {
+      [UserConnectionTarget.FIX_SERVER]: 0,
+      [UserConnectionTarget.WEBSOCKET_SERVER]: 0,
+    };
+
+    currentNumber[target] += n;
+    this.quotesNumberByUser.set(userId, currentNumber);
   }
 
-  async getTimeline(startTime?: Date, endTime?: Date, timezone: string = 'UTC'): Promise<QuotesStatisticDto[]> {
+  async getTimeline(startTime?: Date, endTime?: Date, timezone: string = 'UTC'): Promise<UsersConnectionsStatisticDto[]> {
     if (!startTime) {
       startTime = await this.getOldestStatsDate();
     }
@@ -74,22 +97,26 @@ export class QuotesStatisticService {
     return this.dataSource.query(`
       with 
         time_series as (select generate_series($1, $2, '1 ${interval}'::interval) as time),
-        providers as (select distinct quotes_statistic.quotes_provider_name as name from quotes_statistic)
+        users as (select distinct users_connections_statistic.user_id as "userId" from users_connections_statistic),
+        targets as (select distinct users_connections_statistic.target from users_connections_statistic)
       select
         ${formatTimeFunction} as time,
-        p.name as "providerName",
-        coalesce(sum(qs.quotes_number)::int, 0) as records,
+        u."userId",
+        t.target,
+        coalesce(sum(ucs.quotes_number)::int, 0) as records,
         ts.time as "startTime",
         ts.time + interval '1 ${interval}' as "endTime"
       from time_series ts
-        cross join providers p
-        left join quotes_statistic qs on date_trunc('${interval}', qs.created_at, $5) = ts.time
-        and qs.quotes_provider_name = p.name
-        and qs.created_at between $3 and $4
+        cross join users u
+        cross join targets t 
+        left join users_connections_statistic ucs on date_trunc('${interval}', ucs.created_at, $5) = ts.time
+        and ucs.user_id = u."userId"
+        and ucs.target = t.target                                                         
+        and ucs.created_at between $3 and $4
       group by ts.time,
-        p.name
+        u."userId", t.target
       order by ts.time,
-        p.name;
+        u."userId", t.target;
     `, [
       startTimeIntervalBegin.toDate(),
       endTimeIntervalBegin.toDate(),
@@ -100,8 +127,8 @@ export class QuotesStatisticService {
   }
 
   private async getOldestStatsDate(): Promise<Date> {
-    const oldestStat = await this.repo.createQueryBuilder('quotes_statistic')
-      .select('MIN(quotes_statistic.createdAt)', 'min')
+    const oldestStat = await this.repo.createQueryBuilder('users_connections_statistic')
+      .select('MIN(users_connections_statistic.createdAt)', 'min')
       .getRawOne();
     return new Date(oldestStat.min);
   }
