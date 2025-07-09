@@ -10,6 +10,7 @@ import { QuotesStatisticModule } from "./quotes-statistic";
 import { UsersConnectionsStatisticModule } from "./users-connections-statistic";
 import { ProviderMonitoringModule } from "./provider-monitoring";
 import { Setting } from "@boarteam/boar-pack-users-backend";
+import { UsersConnectionsHistoryModule } from "./users-connections-history";
 
 @Module({
   imports: [
@@ -37,7 +38,10 @@ import { Setting } from "@boarteam/boar-pack-users-backend";
     }),
     ProviderMonitoringModule.forRootAsync({
       dataSourceName: 'boar_pack_db',
-    })
+    }),
+    UsersConnectionsHistoryModule.forRoot({
+      dataSourceName: 'boar_pack_db',
+    }),
   ],
 })
 class Swagger {
