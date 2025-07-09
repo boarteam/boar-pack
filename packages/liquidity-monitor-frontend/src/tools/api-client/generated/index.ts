@@ -15,6 +15,9 @@ export type { InstrumentsHistoryQueryDto } from './models/InstrumentsHistoryQuer
 export type { InstrumentsHistoryResponseDto } from './models/InstrumentsHistoryResponseDto';
 export type { QuotesStatisticDto } from './models/QuotesStatisticDto';
 export type { QuotesStatisticQueryDto } from './models/QuotesStatisticQueryDto';
+export { UsersConnectionsStatisticDto } from './models/UsersConnectionsStatisticDto';
+export type { UsersConnectionsStatisticQueryDto } from './models/UsersConnectionsStatisticQueryDto';
 
 export { InstrumentsHistoryService } from './services/InstrumentsHistoryService';
 export { QuotesStatisticsService } from './services/QuotesStatisticsService';
+export { UsersConnectionsStatisticService } from './services/UsersConnectionsStatisticService';
