@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { tokenName } from './auth.constants';
 import { ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
-import { LocalAuthTokenDto } from "./local-auth.dto";
+import { LocalAuthTokenDto } from "./local-auth/local-auth.dto";
 import { CheckPolicies, ManageAllPolicy } from "../casl";
 import { UsersService } from "../users";
 
@@ -30,7 +30,7 @@ export default class AuthManageController {
     }
 
     const loginResult = await this.authService.login(user);
-    res.cookie(tokenName, loginResult.accessToken);
+    this.authService.setCookie(res, loginResult.accessToken);
     return loginResult;
   }
 }

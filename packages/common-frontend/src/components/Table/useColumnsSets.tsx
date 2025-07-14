@@ -33,19 +33,28 @@ function getColumnsStates<T>(
   columns: TIndexableRecord[],
   shownCols: Set<keyof T>,
   state: TColumnsState = {},
-): Record<string, ColumnsState> {
+): {state: Record<string, ColumnsState>, someColumnsShown: boolean} {
+  let someColumnsShown = false;
   columns.forEach(col => {
     const idx = Array.isArray(col.dataIndex) ? col.dataIndex.join(',') : col.dataIndex;
+    let childrenColumnsShown = false;
     if ('children' in col && Array.isArray(col.children)) {
-      getColumnsStates(col.children, shownCols, state);
+      const { someColumnsShown } = getColumnsStates(col.children, shownCols, state);
+      if (someColumnsShown) {
+        childrenColumnsShown = true;
+      }
     }
 
-    if (idx && !shownCols.has(idx as keyof T)) {
-      state[idx as string] = { show: false };
+    if (idx) {
+      if (shownCols.has(idx as keyof T) || childrenColumnsShown) {
+        someColumnsShown = true;
+      } else {
+        state[idx as string] = { show: false };
+      }
     }
   }, state);
 
-  return state as Record<string, ColumnsState>;
+  return { state, someColumnsShown };
 }
 
 export default function useColumnsSets<Entity>({
@@ -60,7 +69,7 @@ export default function useColumnsSets<Entity>({
         columns: columnsSet
       }) => [
         name,
-        getColumnsStates<Entity>(columns, new Set(columnsSet))
+        getColumnsStates<Entity>(columns as TIndexableRecord[], new Set(columnsSet)).state,
       ])
     ), [columns]
   );
@@ -97,7 +106,30 @@ export default function useColumnsSets<Entity>({
 
   const columnsState = {
     value: chosenColumnsSet,
-    onChange: setChosenColumnsSet,
+    // value contains only hidden columns and one which is just changed
+    onChange: (value: TColumnsStates) => {
+      const checkParentVisibility = (columns: TIndexableRecord[]) => {
+        let someColumnsShown = false;
+
+        columns.forEach(col => {
+          const idx = Array.isArray(col.dataIndex) ? col.dataIndex.join(',') : col.dataIndex as string;
+          if (idx && value[idx]?.show) {
+            someColumnsShown = true;
+          }
+
+          if ('children' in col && Array.isArray(col.children)) {
+            const someChildColumnsShown = checkParentVisibility(col.children);
+            if (someChildColumnsShown) {
+              value[idx] = { show: true };
+            }
+          }
+        });
+
+        return someColumnsShown;
+      };
+      checkParentVisibility(columns as TIndexableRecord[]);
+      setChosenColumnsSet(value);
+    },
   };
 
   return {
