@@ -1,7 +1,6 @@
 import { DynamicModule, Module } from "@nestjs/common";
 import { ProviderMonitoringService } from "./provider-monitoring.service";
 import { SettingsModule, SettingsService, TelegrafModule, TelegrafService } from "@boarteam/boar-pack-users-backend";
-import { ProviderMonitoringController } from "./provider-monitoring.controller";
 import { FETCH_PROVIDERS } from "./provider-monitoring.constants";
 import { getDataSourceToken, TypeOrmModule } from "@nestjs/typeorm";
 import { ProvidersProblematicPeriod } from "./entities/providers-problematic-period.entity";
@@ -36,9 +35,7 @@ export class ProviderMonitoringModule {
           dataSourceName: config.dataSourceName,
         }),
       ],
-      controllers: [
-        ProviderMonitoringController
-      ],
+      controllers: [],
       providers: [
         {
           provide: FETCH_PROVIDERS,
