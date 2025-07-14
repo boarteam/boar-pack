@@ -1,6 +1,6 @@
 import { Strategy } from 'passport-http-bearer';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { TUser } from '../users';
 import { TOKENS_AUTH } from "./tokens.constants";
 import { TokensService } from "./tokens.service";
@@ -10,6 +10,7 @@ import Joi from "joi";
 @Injectable()
 export class TokensAuthStrategy extends PassportStrategy(Strategy, TOKENS_AUTH) {
   private uuidValidationSchema = Joi.string().uuid({ version: ['uuidv4'] });
+  private readonly logger = new Logger(TokensAuthStrategy.name);
 
   constructor(
     private tokens: TokensService,
@@ -23,7 +24,8 @@ export class TokensAuthStrategy extends PassportStrategy(Strategy, TOKENS_AUTH) 
 
     const { error } = this.uuidValidationSchema.validate(id);
     if (error || !hash) {
-      throw new UnauthorizedException('Invalid token');
+      this.logger.error(`Invalid token format: ${token}`, error);
+      throw new UnauthorizedException(`Invalid token ${token}`);
     }
 
     const tokenEntity = await this.tokens.findOne({

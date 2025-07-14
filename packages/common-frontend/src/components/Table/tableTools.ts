@@ -1,4 +1,5 @@
 import { CondOperator, QueryJoin, SCondition } from "@nestjsx/crud-request";
+import { validate as uuidValidate } from 'uuid';
 import { IWithId, TFilters, TSearchableColumn } from "./tableTypes";
 import React, { Key } from "react";
 import { TColumnsStates } from "./useColumnsSets";
@@ -20,7 +21,12 @@ export function getFiltersSearch({
     let operator = col.filterOperator || col.operator;
     let value = filters[colDataIndex] || baseFilters[colDataIndex];
     filterKeys.delete(colDataIndex);
-    if (value === '' || value === undefined || col.numeric && !Number.isFinite(Number(value))) {
+    if (
+      value === '' ||
+      value === undefined ||
+      col.numeric && !Number.isFinite(Number(value)) ||
+      col.uuid && (typeof value !== 'string' || !uuidValidate(value))
+    ) {
       return;
     }
 
@@ -126,7 +132,10 @@ export function applyKeywordToSearch(
       const field = col.searchField || (Array.isArray(col.field) ? col.field.join('.') : col.field);
       const operator = col.operator;
 
-      if (!col.numeric || Number.isFinite(Number(word))) {
+      const wrongNumeric = col.numeric && !Number.isFinite(Number(word));
+      const wrongUuid = col.uuid && (typeof word !== 'string' || !uuidValidate(word));
+
+      if (!wrongNumeric && !wrongUuid) {
         keywordSearch.$or.push({ [field]: { [operator]: word } });
       }
     });
@@ -146,6 +155,7 @@ export function applyKeywordToSearch(
 export type TIndexableRecord = {
   dataIndex?: Key | Key[];
   children?: TIndexableRecord[] | React.ReactNode;
+  editable?: false;
 };
 
 export function collectFieldsFromColumns<T>(
@@ -166,7 +176,9 @@ export function buildFieldsFromColumnsForDescriptionsDisplay<T>(
     if ('children' in col && Array.isArray(col.children)) {
       buildFieldsFromColumnsForDescriptionsDisplay(col.children, idColumnName, fields);
     }
-    fields.add(String(Array.isArray(col.dataIndex) ? col.dataIndex[0] : col.dataIndex));
+    if (col.editable !== false) {
+      fields.add(String(Array.isArray(col.dataIndex) ? col.dataIndex[0] : col.dataIndex));
+    }
   });
 
   return fields;
@@ -186,7 +198,11 @@ export function buildFieldsFromColumns<T>(
     // skip id column because it is always included by backend
     // and join fields because they are included by join
 
-    const dataIndex = String(Array.isArray(col.dataIndex) ? col.dataIndex[0] : col.dataIndex);
+    const dataIndex = Array.isArray(col.dataIndex) ? col.dataIndex[0] : col.dataIndex;
+    if (typeof dataIndex !== 'string') {
+      return;
+    }
+
     if (!dataIndex || (Array.isArray(idColumnName) ? idColumnName.includes(dataIndex) : dataIndex === idColumnName) || joinFields.has(dataIndex)) {
       return;
     }
