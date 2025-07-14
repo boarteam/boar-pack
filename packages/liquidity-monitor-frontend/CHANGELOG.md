@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-frontend@1.1.1...@boarteam/boar-pack-liquidity-monitor-frontend@1.2.0) (2025-07-14)
+
+
+### Bug Fixes
+
+* **liquidity-monitor-backend:** ADM-294 Simplified Instruments History DTO by removing groupId and platformId, added new optional field 's' ([ca72f1c](https://github.com/boarteam/boar-pack/commit/ca72f1c5b6e36a1eded9ab8d5685f494b0845c10))
+
+
+### Features
+
+* **api-client:** add UsersConnectionsStatisticService to ApiClient ([c962eca](https://github.com/boarteam/boar-pack/commit/c962ecacd93b2dc095d48a5a9f938a40919c40d5))
+
+
+
+
+
 ## [1.1.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-frontend@1.1.0...@boarteam/boar-pack-liquidity-monitor-frontend@1.1.1) (2025-05-08)
 
 

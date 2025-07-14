@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-backend@1.2.1...@boarteam/boar-pack-liquidity-monitor-backend@2.0.0) (2025-07-14)
+
+
+### Bug Fixes
+
+* **instruments-history:** ADM-303 Preserving context when running instruments history service ([816aff8](https://github.com/boarteam/boar-pack/commit/816aff86087d28fd83c4cc01494984b79981136d))
+* **liquidity-monitor-backend:** ADM-294 Simplified Instruments History DTO by removing groupId and platformId, added new optional field 's' ([ca72f1c](https://github.com/boarteam/boar-pack/commit/ca72f1c5b6e36a1eded9ab8d5685f494b0845c10))
+* **provider-monitoring:** ADM-303 useFactory instead of fetchProviders method ([3a3163f](https://github.com/boarteam/boar-pack/commit/3a3163fc373fcd04bfd47239a7fd27c70f3265b0))
+* **quotes-statistic:** return default date when no records found for upcoming status ([ad76ce5](https://github.com/boarteam/boar-pack/commit/ad76ce5a2304785343e663661538dd6ff2b0c52f))
+
+
+### Features
+
+* **provider-monitoring:** ADM-303 add ProvidersProblematicPeriod entity and update monitoring logic ([e945bdc](https://github.com/boarteam/boar-pack/commit/e945bdc4bc2627074fa50059c57a8a5b98f43342))
+
+
+### BREAKING CHANGES
+
+* **provider-monitoring:** ProviderMonitoringModule import changes
+
+
+
+
+
 ## [1.2.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-backend@1.2.0...@boarteam/boar-pack-liquidity-monitor-backend@1.2.1) (2025-05-23)
 
 **Note:** Version bump only for package @boarteam/boar-pack-liquidity-monitor-backend
