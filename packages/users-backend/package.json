@@ -38,6 +38,9 @@
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "passport-azure-ad-oauth2": "^0.0.4",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-yandex": "^0.0.5",
     "pg": "^8.13.3",
     "telegraf": "^4.12.2",
     "typeorm": "^0.3.25",
@@ -53,9 +56,6 @@
     "@types/ws": "^8.5.14",
     "class-transformer": "^0.5.1",
     "openapi-typescript-codegen": "^0.29.0",
-    "passport-azure-ad-oauth2": "^0.0.4",
-    "passport-google-oauth20": "^2.0.0",
-    "passport-yandex": "^0.0.5",
     "pg": "^8.13.1"
   },
   "scripts": {
