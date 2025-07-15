@@ -19,6 +19,7 @@
   "gitHead": "c56c90047b5cb4e4d719890553e61f8d7e6ff25f",
   "dependencies": {
     "@nestjs/websockets": "^11.0.10",
-    "lossless-json": "^4.0.2"
+    "lossless-json": "^4.0.2",
+    "reflect-metadata": "^0.2.2"
   }
 }
