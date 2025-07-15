@@ -4,7 +4,7 @@
   "npmClient": "yarn",
   "command": {
     "version": {
-      "conventionalCommits": false
+      "conventionalCommits": true
     }
   }
 }
