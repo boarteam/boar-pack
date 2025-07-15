@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-users-backend",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
   "main": "src/index",
   "files": [
@@ -35,11 +35,11 @@
     "nestjs-joi": "^1.10.1",
     "openapi-typescript-codegen": "^0.29.0",
     "passport": "^0.7.0",
+    "passport-azure-ad-oauth2": "^0.0.4",
+    "passport-google-oauth20": "^2.0.0",
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "passport-azure-ad-oauth2": "^0.0.4",
-    "passport-google-oauth20": "^2.0.0",
     "passport-yandex": "^0.0.5",
     "pg": "^8.13.3",
     "telegraf": "^4.12.2",
