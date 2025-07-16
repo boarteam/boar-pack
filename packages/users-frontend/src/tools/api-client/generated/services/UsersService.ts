@@ -56,7 +56,7 @@ export class UsersService {
     }
     /**
      * Update a single User
-     * @returns User Response
+     * @returns User
      * @throws ApiError
      */
     public updateOneBaseUsersControllerUser({
@@ -78,7 +78,7 @@ export class UsersService {
     }
     /**
      * Delete a single User
-     * @returns any Delete one base response
+     * @returns any
      * @throws ApiError
      */
     public deleteOneBaseUsersControllerUser({
@@ -96,7 +96,7 @@ export class UsersService {
     }
     /**
      * Retrieve multiple Users
-     * @returns GetManyUserResponseDto Get paginated response
+     * @returns GetManyUserResponseDto
      * @throws ApiError
      */
     public getManyBaseUsersControllerUser({
@@ -177,7 +177,7 @@ export class UsersService {
     }
     /**
      * Create a single User
-     * @returns User Get create one base response
+     * @returns User
      * @throws ApiError
      */
     public createOneBaseUsersControllerUser({

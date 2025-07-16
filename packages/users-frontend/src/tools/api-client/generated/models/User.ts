@@ -11,7 +11,7 @@ export type User = {
     permissions: Array<string>;
     createdAt: string;
     updatedAt: string;
-    deletedAt: string;
+    deletedAt: string | null;
     policies: Array<Record<string, any>>;
     experimentalFeatures: Array<string>;
 };

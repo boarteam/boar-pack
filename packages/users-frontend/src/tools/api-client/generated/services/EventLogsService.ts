@@ -46,7 +46,7 @@ export class EventLogsService {
     }
     /**
      * Retrieve multiple EventLogs
-     * @returns GetManyEventLogResponseDto Get paginated response
+     * @returns GetManyEventLogResponseDto
      * @throws ApiError
      */
     public getManyBaseEventLogsControllerEventLog({
@@ -121,7 +121,7 @@ export class EventLogsService {
     }
     /**
      * Create a single EventLog
-     * @returns EventLog Get create one base response
+     * @returns EventLog
      * @throws ApiError
      */
     public createOneBaseEventLogsControllerEventLog({
@@ -138,7 +138,7 @@ export class EventLogsService {
     }
     /**
      * Update a single EventLog
-     * @returns EventLog Response
+     * @returns EventLog
      * @throws ApiError
      */
     public updateOneBaseEventLogsControllerEventLog({
@@ -160,7 +160,7 @@ export class EventLogsService {
     }
     /**
      * Delete a single EventLog
-     * @returns any Delete one base response
+     * @returns any
      * @throws ApiError
      */
     public deleteOneBaseEventLogsControllerEventLog({
