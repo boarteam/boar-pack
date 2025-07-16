@@ -10,7 +10,6 @@ import { QuotesStatisticModule } from "./quotes-statistic";
 import { UsersConnectionsStatisticModule } from "./users-connections-statistic";
 import { ProviderMonitoringModule } from "./provider-monitoring";
 import { Setting } from "@boarteam/boar-pack-users-backend";
-import { InstrumentsHistoryModule } from "./instruments-history";
 import { ApiStatisticModule } from "./api-statistic";
 
 @Module({
@@ -36,9 +35,6 @@ import { ApiStatisticModule } from "./api-statistic";
     }),
     UsersConnectionsStatisticModule.forRoot({
       dataSourceName: 'boar_pack_db'
-    }),
-    InstrumentsHistoryModule.forRoot({
-      dataSourceName: 'boar_pack_db',
     }),
     ApiStatisticModule.forRoot({
       dataSourceName: 'boar_pack_db',

@@ -13,7 +13,7 @@ export class TokensService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
      * Retrieve multiple Tokens
-     * @returns GetManyTokenResponseDto Get paginated response
+     * @returns GetManyTokenResponseDto
      * @throws ApiError
      */
     public getManyBaseTokensControllerToken({
@@ -88,7 +88,7 @@ export class TokensService {
     }
     /**
      * Update a single Token
-     * @returns Token Response
+     * @returns Token
      * @throws ApiError
      */
     public updateOneBaseTokensControllerToken({
@@ -110,7 +110,7 @@ export class TokensService {
     }
     /**
      * Delete a single Token
-     * @returns any Delete one base response
+     * @returns any
      * @throws ApiError
      */
     public deleteOneBaseTokensControllerToken({
@@ -129,14 +129,13 @@ export class TokensService {
     /**
      * Create a single Token
      * @returns TokenWithValueDto
-     * @returns Token Get create one base response
      * @throws ApiError
      */
     public createOneBaseMyTokensControllerToken({
         requestBody,
     }: {
         requestBody: TokenCreateDto,
-    }): CancelablePromise<TokenWithValueDto | Token> {
+    }): CancelablePromise<TokenWithValueDto> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/my/tokens',
@@ -146,7 +145,7 @@ export class TokensService {
     }
     /**
      * Retrieve multiple Tokens
-     * @returns GetManyTokenResponseDto Get paginated response
+     * @returns GetManyTokenResponseDto
      * @throws ApiError
      */
     public getManyBaseMyTokensControllerToken({
@@ -221,7 +220,7 @@ export class TokensService {
     }
     /**
      * Update a single Token
-     * @returns Token Response
+     * @returns Token
      * @throws ApiError
      */
     public updateOneBaseMyTokensControllerToken({
@@ -243,7 +242,7 @@ export class TokensService {
     }
     /**
      * Delete a single Token
-     * @returns any Delete one base response
+     * @returns any
      * @throws ApiError
      */
     public deleteOneBaseMyTokensControllerToken({
