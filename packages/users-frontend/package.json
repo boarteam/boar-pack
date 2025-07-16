@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-users-frontend",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Users frontend package for Boar Pack",
   "repository": "git@github.com:boarteam/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
