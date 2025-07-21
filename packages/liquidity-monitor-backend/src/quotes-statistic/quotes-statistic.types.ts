@@ -7,3 +7,9 @@ declare module '@boarteam/boar-pack-users-backend' {
     QuotesStatistic: typeof QuotesStatistic;
   }
 }
+// All providers should have at least these fields
+export type TProvider = {
+  id: string,
+  name: string,
+  threshold: number | null,
+}
