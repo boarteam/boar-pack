@@ -171,7 +171,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     const now = Date.now();
     providers.forEach((provider: TProvider) => {
       const latestQuoteDate = latestQuotesByProviders.get(provider.id);
-      const diff = latestQuoteDate ? (now - latestQuoteDate.getTime()) / 1000 : null;
+      const diff = latestQuoteDate ? Math.round(now - latestQuoteDate.getTime()) / 1000 : null;
       const isProblematic = diff === null || provider.threshold && (diff > provider.threshold);
 
       if (isProblematic) {
@@ -202,7 +202,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
           this.logger.log(`Resetting notification attempts for provider ${provider.name}`);
           notifications.push(
             this.telegrafService.sendMessage(
-              fmt`✅${bold('Provider')} ${bold(provider.name)} is active again.`,
+              fmt`✅ ${bold('Provider')} ${bold(provider.name)} is active again.`,
               Notifications.QuotesByProviderStatus
             )
           );
