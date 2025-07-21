@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-backend@3.0.1...@boarteam/boar-pack-common-backend@3.1.0) (2025-07-21)
+
+
+### Features
+
+* enhance error handling in Websockets with optional details ([53910b6](https://github.com/boarteam/boar-pack/commit/53910b68213c6487b96592b7a98652ed1a58980b))
+
+
+
+
+
 ## [3.0.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-backend@3.0.0...@boarteam/boar-pack-common-backend@3.0.1) (2025-07-15)
 
 **Note:** Version bump only for package @boarteam/boar-pack-common-backend
