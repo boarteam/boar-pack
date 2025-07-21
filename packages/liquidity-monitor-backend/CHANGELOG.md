@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-backend@3.0.4...@boarteam/boar-pack-liquidity-monitor-backend@3.1.0) (2025-07-21)
+
+
+### Features
+
+* integrate QuotesStatistic module and enhance provider activity monitoring ([1354fbc](https://github.com/boarteam/boar-pack/commit/1354fbcdb055e81275d0fb0213d00622f9036912))
+
+
+
+
+
 ## [3.0.4](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-backend@3.0.3...@boarteam/boar-pack-liquidity-monitor-backend@3.0.4) (2025-07-21)
 
 **Note:** Version bump only for package @boarteam/boar-pack-liquidity-monitor-backend
