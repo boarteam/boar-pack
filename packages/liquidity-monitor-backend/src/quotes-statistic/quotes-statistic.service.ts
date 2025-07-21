@@ -4,6 +4,12 @@ import { DataSource, Repository } from 'typeorm';
 import { QuotesStatistic } from './entities/quotes-statistic.entity';
 import { QuotesStatisticDto } from "./dto/quotes-statistic.dto";
 import moment from "moment";
+import { TProvider } from "./quotes-statistic.types";
+
+type TLatestQuotesQueryResult = {
+  quotesProviderName: string; // qs.quotes_provider_name
+  latestQuoteDate: string; // max(qs.created_at)
+};
 
 type TInterval = 'second' | 'minute' | 'hour' | 'day' | 'week';
 
@@ -153,5 +159,20 @@ export class QuotesStatisticService {
       default:
         return `to_char(date_trunc('week', ts.time at time zone '${timezone}'), 'YYYY-MM-DD')`;
     }
+  }
+
+  public async getLatestQuotesByProvider(providerIds: TProvider['id'][]): Promise<Map<QuotesStatistic['quotesProviderName'], Date>> {
+    const result: TLatestQuotesQueryResult[] = await this.repo
+      .createQueryBuilder('qs')
+      .select('qs.quotesProviderName', 'quotesProviderName')
+      .addSelect('max(qs.createdAt)', 'latestQuoteDate')
+      .where('qs.quotesProviderName in (:...providerIds)', { providerIds })
+      .groupBy('qs.quotesProviderName')
+      .getRawMany();
+
+    return new Map(result.map(row => [
+      row.quotesProviderName,
+      new Date(row.latestQuoteDate),
+    ]));
   }
 }

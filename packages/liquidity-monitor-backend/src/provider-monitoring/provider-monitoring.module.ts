@@ -5,13 +5,7 @@ import { FETCH_PROVIDERS } from "./provider-monitoring.constants";
 import { getDataSourceToken, TypeOrmModule } from "@nestjs/typeorm";
 import { ProvidersProblematicPeriod } from "./entities/providers-problematic-period.entity";
 import { DataSource } from "typeorm";
-
-// All providers should have at least these fields
-export type TProvider = {
-  id: string,
-  name: string,
-  threshold: number | null,
-}
+import { QuotesStatisticModule, QuotesStatisticService, TProvider } from "../quotes-statistic";
 
 @Module({})
 export class ProviderMonitoringModule {
@@ -26,6 +20,9 @@ export class ProviderMonitoringModule {
       imports: [
         ...(config.imports || []),
         TypeOrmModule.forFeature([ProvidersProblematicPeriod], config.dataSourceName),
+        QuotesStatisticModule.forFeature({
+          dataSourceName: config.dataSourceName,
+        }),
         TelegrafModule.register({
           withControllers: false,
           dataSourceName: config.dataSourceName,
@@ -48,18 +45,21 @@ export class ProviderMonitoringModule {
             getDataSourceToken(config.dataSourceName),
             TelegrafService,
             SettingsService,
+            QuotesStatisticService,
             FETCH_PROVIDERS,
           ],
           useFactory: (
             dataSource: DataSource,
             telegrafService: TelegrafService,
             settingsService: SettingsService,
+            quotesStatisticService: QuotesStatisticService,
             fetchProviders: () => Promise<TLocalProvider[]>,
           ) => {
             return new ProviderMonitoringService(
               dataSource,
               telegrafService,
               settingsService,
+              quotesStatisticService,
               fetchProviders,
             );
           },
