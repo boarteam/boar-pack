@@ -7,5 +7,6 @@ export class WebsocketsErrorEventDto implements WebsocketsEventDto {
   event: 'error';
   data: {
     message: string;
+    details?: any;
   };
 }
