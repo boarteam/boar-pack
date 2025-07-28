@@ -54,6 +54,6 @@ export class JWTAuthService {
    * @param token The token to revoke
    */
   public async revokeToken(token: TRevokedToken) {
-    return this.revokedTokensService.revokeToken(token);
+    return this.revokedTokensService.revokeToken(token, this.config.refreshTokenExpiration);
   }
 }

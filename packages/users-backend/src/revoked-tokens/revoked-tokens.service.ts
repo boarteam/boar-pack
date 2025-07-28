@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { RevokedToken, TRevokedToken } from './entities/revoked-token.entity';
+import { RevokedToken, TOKEN_TYPE, TRevokedToken } from './entities/revoked-token.entity';
 import { Cron, CronExpression } from "@nestjs/schedule";
+import ms, { StringValue } from "ms";
 
 @Injectable()
 export class RevokedTokensService {
@@ -12,13 +13,26 @@ export class RevokedTokensService {
   /**
    * Revokes a JWT token by storing its JTI in the database
    * @param token The token to revoke, containing at least the JTI and expiration date
+   * @param refreshTokenExpiration The expiration time for the refresh token. We use it to set the expiration date of
+   * the session token.
    */
-  async revokeToken(token: TRevokedToken): Promise<void> {
+  async revokeToken(token: TRevokedToken, refreshTokenExpiration: StringValue): Promise<void> {
+    const tokens: TRevokedToken[] = [token];
+
+    if (token.sid) {
+      tokens.push({
+        jti: token.sid,
+        sid: token.sid,
+        expiresAt: new Date(Date.now() + ms(refreshTokenExpiration)),
+        tokenType: TOKEN_TYPE.SESSION,
+      });
+    }
+
     await this.revokedTokenRepository
       .createQueryBuilder()
       .insert()
       .into(RevokedToken)
-      .values(token)
+      .values(tokens)
       .orIgnore()
       .execute();
 
@@ -28,13 +42,17 @@ export class RevokedTokensService {
   /**
    * Checks if a token has been revoked
    * @param jti The JWT token identifier
+   * @param sid Optional session identifier, used for session tokens
    * @returns true if the token is revoked, false otherwise
    */
-  async isTokenRevoked(jti: string): Promise<boolean> {
-    const token = await this.revokedTokenRepository.findOne({
-      where: { jti },
+  async isTokenRevoked(jti: string, sid?: string): Promise<boolean> {
+    const tokensCount = await this.revokedTokenRepository.count({
+      where: [
+        { jti },
+        { sid, tokenType: TOKEN_TYPE.SESSION },
+      ]
     });
-    return !!token;
+    return tokensCount > 0;
   }
 
   @Cron(CronExpression.EVERY_HOUR)

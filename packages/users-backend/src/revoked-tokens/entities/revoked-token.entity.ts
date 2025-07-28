@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from 
 export enum TOKEN_TYPE {
   ACCESS = 'access',
   REFRESH = 'refresh',
+  SESSION = 'session',
 }
 
 @Entity('revoked_tokens')

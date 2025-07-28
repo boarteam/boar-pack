@@ -60,7 +60,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {
 
     // Check if a token has been revoked
     if (payload.jti) {
-      const isRevoked = await this.revokedTokensService.isTokenRevoked(payload.jti);
+      const isRevoked = await this.revokedTokensService.isTokenRevoked(payload.jti, payload.sid);
       if (isRevoked) {
         this.logger.debug(`Token with JTI ${payload.jti} has been revoked`);
         throw new UnauthorizedException('Token has been revoked');
