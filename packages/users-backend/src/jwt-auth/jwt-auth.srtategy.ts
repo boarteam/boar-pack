@@ -13,7 +13,16 @@ export type TJWTPayload = {
   iat?: string; // Issued At
   exp?: number; // Expiration Time
   jti?: string; // JWT ID, used for revocation
+  sid?: string; // Session ID to identify the family of tokens
 };
+
+export type TJWTRefreshPayload = {
+  sub: string; // User ID
+  jti?: string; // JWT ID, used for revocation
+  iat?: number; // Issued At
+  exp?: number; // Expiration Time
+  sid?: string; // Session ID to identify the family of tokens
+}
 
 @Injectable()
 export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {

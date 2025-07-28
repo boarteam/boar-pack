@@ -32,8 +32,8 @@ export default class YandexAuthController {
       throw new UnauthorizedException(`User is not authorized`);
     }
 
-    const loginResult = await this.authService.login(req.user);
-    this.authService.setCookie(res, loginResult.accessToken);
+    const tokens = await this.authService.login(req.user);
+    this.authService.setCookie(res, tokens);
     res.redirect('/');
   }
 }

@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TUser, UsersService } from '../users';
-import { JWTAuthService, TJWTPayload } from '../jwt-auth';
+import { JWTAuthService, TJWTPayload, TJWTRefreshPayload, TOKEN_TYPE } from '../jwt-auth';
 import bcrypt from 'bcrypt';
 import { LocalAuthTokenDto } from "./local-auth/local-auth.dto";
 import { Response } from 'express';
-import { tokenName } from "./auth.constants";
+import { refreshTokenName, tokenName } from "./auth.constants";
+import { AuthConfigService, TAuthConfig } from "./auth.config";
 
 declare global {
   namespace Express {
@@ -18,11 +19,15 @@ declare global {
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
+  private readonly config: TAuthConfig;
 
   constructor(
     private usersService: UsersService,
     private jwtAuthService: JWTAuthService,
-  ) {}
+    private readonly authConfigService: AuthConfigService,
+  ) {
+    this.config = this.authConfigService.config;
+  }
 
   async validateUser(email: string, pass: string): Promise<TUser | null> {
     const user = await this.usersService.findByEmail(email);
@@ -52,9 +57,19 @@ export class AuthService {
   }
 
   async login(user: Pick<TUser, 'email' | 'id'>): Promise<LocalAuthTokenDto> {
-    const payload: TJWTPayload = { email: user.email, sub: user.id };
+    const sid = this.jwtAuthService.generateJwtId();
+    const payload: TJWTPayload = {
+      email: user.email,
+      sub: user.id,
+      sid,
+    };
+    const refreshPayload: TJWTRefreshPayload = {
+      sub: user.id,
+      sid,
+    }
     return {
-      accessToken: this.jwtAuthService.sign(payload),
+      accessToken: this.jwtAuthService.sign(payload, TOKEN_TYPE.ACCESS),
+      refreshToken: this.jwtAuthService.sign(refreshPayload, TOKEN_TYPE.REFRESH),
     };
   }
 
@@ -68,11 +83,34 @@ export class AuthService {
     this.logger.log(`User with id ${jwt.sub} has been logged out and token revoked`);
   }
 
-  public setCookie(res: Response, token: string): void {
-    res.cookie(tokenName, token, {
+  public setCookie(res: Response, tokens: LocalAuthTokenDto): void {
+    res.cookie(tokenName, tokens.accessToken.token, {
       httpOnly: true,
       secure: process.env.SECURE_COOKIE === 'true',
       sameSite: 'lax',
+      maxAge: tokens.accessToken.payload.exp,
+    });
+
+    res.cookie(refreshTokenName, tokens.refreshToken.token, {
+      httpOnly: true,
+      secure: process.env.SECURE_COOKIE === 'true',
+      sameSite: 'lax',
+      maxAge: tokens.refreshToken.payload.exp,
+      path: this.config.refreshTokenPath,
+    });
+  }
+
+  public clearCookies(res: Response): void {
+    res.clearCookie(tokenName, {
+      httpOnly: true,
+      secure: process.env.SECURE_COOKIE === 'true',
+      sameSite: 'lax',
+    });
+    res.clearCookie(refreshTokenName, {
+      httpOnly: true,
+      secure: process.env.SECURE_COOKIE === 'true',
+      sameSite: 'lax',
+      path: this.config.refreshTokenPath,
     });
   }
 }

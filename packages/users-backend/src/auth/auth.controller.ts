@@ -33,6 +33,6 @@ export default class AuthController {
       await this.authService.logout(req.jwt);
     }
 
-    this.authService.setCookie(res, '');
+    this.authService.clearCookies(res);
   }
 }

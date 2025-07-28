@@ -1,25 +1,56 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { TJWTPayload } from "./jwt-auth.srtategy";
+import { TJWTPayload, TJWTRefreshPayload } from "./jwt-auth.srtategy";
 import { RevokedTokensService } from '../revoked-tokens';
 import { v4 as uuidv4 } from 'uuid';
+import { JWTAuthConfigService, TJWTAuthConfig } from "./jwt-auth.config";
+import { JwtSignOptions } from "@nestjs/jwt/dist/interfaces";
+import ms from 'ms';
+
+export enum TOKEN_TYPE {
+  ACCESS = 'access',
+  REFRESH = 'refresh',
+}
 
 @Injectable()
 export class JWTAuthService {
+  private readonly config: TJWTAuthConfig;
+
   constructor(
     private readonly jwtService: JwtService,
     private revokedTokensService: RevokedTokensService,
+    private readonly jwtAuthConfig: JWTAuthConfigService,
   ) {
+    this.config = this.jwtAuthConfig.config;
   }
 
-  sign(payload: TJWTPayload): string {
-    return this.jwtService.sign(payload, {
-      expiresIn: '1h',
-      jwtid: uuidv4(),
-    });
+  public generateJwtId(): string {
+    return uuidv4();
   }
 
-  decode<T = TJWTPayload>(token: string): T {
+  public sign<PayloadType extends TJWTPayload | TJWTRefreshPayload>(
+    payload: PayloadType,
+    tokenType: TOKEN_TYPE,
+  ) {
+    const expiresIn = tokenType === TOKEN_TYPE.ACCESS
+      ? this.config.accessTokenExpiration
+      : this.config.refreshTokenExpiration;
+    const options: JwtSignOptions = {
+      expiresIn,
+      jwtid: this.generateJwtId(),
+    }
+    return {
+      token: this.jwtService.sign(payload, options),
+      payload: {
+        ...payload,
+        exp: ms(expiresIn),
+        jti: options.jwtid,
+        sid: payload.sid,
+      } as PayloadType,
+    };
+  }
+
+  public decode<T = TJWTPayload>(token: string): T {
     return this.jwtService.decode(token) as T;
   }
 
@@ -28,7 +59,7 @@ export class JWTAuthService {
    * @param jti The JWT token identifier
    * @param expiresAt When the token naturally expires
    */
-  async revokeToken(jti: string, expiresAt: Date) {
+  public async revokeToken(jti: string, expiresAt: Date) {
     return this.revokedTokensService.revokeToken(jti, expiresAt);
   }
 }
