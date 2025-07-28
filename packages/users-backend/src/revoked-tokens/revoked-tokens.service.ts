@@ -16,7 +16,7 @@ export class RevokedTokensService {
    * @param refreshTokenExpiration The expiration time for the refresh token. We use it to set the expiration date of
    * the session token.
    */
-  async revokeToken(token: TRevokedToken, refreshTokenExpiration: StringValue): Promise<void> {
+  public async revokeToken(token: TRevokedToken, refreshTokenExpiration: StringValue): Promise<void> {
     const tokens: TRevokedToken[] = [token];
 
     if (token.sid) {
@@ -28,15 +28,24 @@ export class RevokedTokensService {
       });
     }
 
-    await this.revokedTokenRepository
+    await this.revokeTokens(tokens);
+  }
+
+  public async revokeRefreshToken(token: TRevokedToken): Promise<void> {
+    await this.revokeTokens([token]);
+  }
+
+  private revokeTokens(tokens: TRevokedToken[]): Promise<void> {
+    return this.revokedTokenRepository
       .createQueryBuilder()
       .insert()
       .into(RevokedToken)
       .values(tokens)
       .orIgnore()
-      .execute();
-
-    this.logger.debug(`Token with JTI ${token.jti} has been revoked`);
+      .execute()
+      .then(() => {
+        this.logger.debug(`Tokens with JTI ${tokens.map(t => t.jti).join(', ')} have been revoked`);
+      });
   }
 
   /**
@@ -45,7 +54,7 @@ export class RevokedTokensService {
    * @param sid Optional session identifier, used for session tokens
    * @returns true if the token is revoked, false otherwise
    */
-  async isTokenRevoked(jti: string, sid?: string): Promise<boolean> {
+  public async isTokenRevoked(jti: string, sid?: string): Promise<boolean> {
     const tokensCount = await this.revokedTokenRepository.count({
       where: [
         { jti },

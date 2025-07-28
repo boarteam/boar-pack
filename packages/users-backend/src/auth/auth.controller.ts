@@ -2,9 +2,10 @@ import { Controller, Post, Req, Res, UnauthorizedException, UseGuards } from '@n
 import { ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from '../jwt-auth/jwt-auth.guard';
+import { JwtAuthGuard, SkipJWTGuard } from '../jwt-auth/jwt-auth.guard';
 import { SkipPoliciesGuard } from '../casl/policies.guard';
 import { LocalAuthTokenDto } from "./local-auth/local-auth.dto";
+import { JwtAuthRefreshGuard } from "../jwt-auth/jwt-auth.refresh.guard";
 
 @SkipPoliciesGuard()
 @ApiTags('Authentication')
@@ -34,5 +35,20 @@ export default class AuthController {
     }
 
     this.authService.clearCookies(res);
+  }
+
+  @SkipJWTGuard()
+  @UseGuards(JwtAuthRefreshGuard)
+  @Post('refresh')
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    if (!req.user) {
+      throw new UnauthorizedException(`User is not authorized`);
+    }
+
+    const tokens = await this.authService.login(req.user);
+    this.authService.setCookie(res, tokens);
   }
 }
