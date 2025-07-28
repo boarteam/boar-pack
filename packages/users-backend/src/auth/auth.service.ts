@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TUser, UsersService } from '../users';
-import { JWTAuthService, TJWTPayload, TJWTRefreshPayload, TOKEN_TYPE } from '../jwt-auth';
+import { JWTAuthService, TJWTPayload, TJWTRefreshPayload } from '../jwt-auth';
 import bcrypt from 'bcrypt';
 import { LocalAuthTokenDto } from "./local-auth/local-auth.dto";
 import { Response } from 'express';
 import { refreshTokenName, tokenName } from "./auth.constants";
 import { AuthConfigService, TAuthConfig } from "./auth.config";
+import { TOKEN_TYPE } from "../revoked-tokens";
 
 declare global {
   namespace Express {
@@ -75,11 +76,16 @@ export class AuthService {
 
   async logout(jwt: TJWTPayload): Promise<void> {
     if (!jwt.jti || !jwt.exp) {
-      this.logger.warn('JWT does not have JTI or exp, cannot log out');
+      this.logger.warn('JWT does not have JTI or exp, cannot revoke it');
       return;
     }
 
-    await this.jwtAuthService.revokeToken(jwt.jti, new Date(jwt.exp * 1000));
+    await this.jwtAuthService.revokeToken({
+      jti: jwt.jti,
+      expiresAt: new Date(jwt.exp * 1000),
+      tokenType: TOKEN_TYPE.ACCESS,
+      sid: jwt.sid || null,
+    });
     this.logger.log(`User with id ${jwt.sub} has been logged out and token revoked`);
   }
 

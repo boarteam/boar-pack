@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { RevokedToken } from './entities/revoked-token.entity';
+import { RevokedToken, TRevokedToken } from './entities/revoked-token.entity';
 import { Cron, CronExpression } from "@nestjs/schedule";
 
 @Injectable()
@@ -11,19 +11,18 @@ export class RevokedTokensService {
 
   /**
    * Revokes a JWT token by storing its JTI in the database
-   * @param jti The JWT token identifier
-   * @param expiresAt When the token naturally expires
+   * @param token The token to revoke, containing at least the JTI and expiration date
    */
-  async revokeToken(jti: string, expiresAt: Date): Promise<void> {
+  async revokeToken(token: TRevokedToken): Promise<void> {
     await this.revokedTokenRepository
       .createQueryBuilder()
       .insert()
       .into(RevokedToken)
-      .values({ jti, expiresAt })
+      .values(token)
       .orIgnore()
       .execute();
 
-    this.logger.debug(`Token with JTI ${jti} has been revoked`);
+    this.logger.debug(`Token with JTI ${token.jti} has been revoked`);
   }
 
   /**

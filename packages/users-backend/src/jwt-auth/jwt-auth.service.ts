@@ -1,16 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { TJWTPayload, TJWTRefreshPayload } from "./jwt-auth.srtategy";
-import { RevokedTokensService } from '../revoked-tokens';
+import { RevokedToken, RevokedTokensService, TOKEN_TYPE, TRevokedToken } from '../revoked-tokens';
 import { v4 as uuidv4 } from 'uuid';
 import { JWTAuthConfigService, TJWTAuthConfig } from "./jwt-auth.config";
 import { JwtSignOptions } from "@nestjs/jwt/dist/interfaces";
 import ms from 'ms';
-
-export enum TOKEN_TYPE {
-  ACCESS = 'access',
-  REFRESH = 'refresh',
-}
 
 @Injectable()
 export class JWTAuthService {
@@ -56,10 +51,9 @@ export class JWTAuthService {
 
   /**
    * Revoke a JWT token by its JTI
-   * @param jti The JWT token identifier
-   * @param expiresAt When the token naturally expires
+   * @param token The token to revoke
    */
-  public async revokeToken(jti: string, expiresAt: Date) {
-    return this.revokedTokensService.revokeToken(jti, expiresAt);
+  public async revokeToken(token: TRevokedToken) {
+    return this.revokedTokensService.revokeToken(token);
   }
 }
