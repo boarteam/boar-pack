@@ -53,7 +53,7 @@ export class JwtAuthRefreshStrategy extends PassportStrategy(Strategy, JWT_AUTH_
 
     const isRevoked = await this.revokedTokensService.isTokenRevoked(payload.jti, payload.sid);
     if (isRevoked) {
-      this.logger.debug(`Refresh token with JTI ${payload.jti} has been revoked`);
+      this.logger.debug(`Refresh token with JTI ${payload.jti} has already been revoked`);
       throw new UnauthorizedException('Token has been revoked');
     } else {
       // Refresh token is valid, we revoke it to prevent reuse
