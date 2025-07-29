@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { RevokedToken, TOKEN_TYPE, TRevokedToken } from './entities/revoked-token.entity';
 import { Cron, CronExpression } from "@nestjs/schedule";
 import ms, { StringValue } from "ms";
+import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
 
 @Injectable()
 export class RevokedTokensService {
@@ -55,9 +56,9 @@ export class RevokedTokensService {
    * @returns true if the token is revoked, false otherwise
    */
   public async isTokenRevoked(jti: string, sid?: string): Promise<boolean> {
-    const whereConditions = [{ jti }];
+    const whereConditions: FindOptionsWhere<RevokedToken>[] = [{ jti }];
 
-    if (sid !== undefined && sid !== null) {
+    if (sid) {
       whereConditions.push({ sid, tokenType: TOKEN_TYPE.SESSION });
     }
 
