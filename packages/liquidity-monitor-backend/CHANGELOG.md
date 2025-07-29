@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-backend@3.1.0...@boarteam/boar-pack-liquidity-monitor-backend@3.2.0) (2025-07-29)
+
+
+### Features
+
+* improve time difference calculation and format notification message ([564b598](https://github.com/boarteam/boar-pack/commit/564b59843e2753fb4b0bb10fc458dff944de6e3f))
+
+
+
+
+
 # [3.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-backend@3.0.4...@boarteam/boar-pack-liquidity-monitor-backend@3.1.0) (2025-07-21)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@3.0.1...@boarteam/boar-pack-users-frontend@3.1.0) (2025-07-29)
+
+
+### Features
+
+* **auth:** Add refresh token support with configurable expiration and session revocation ([#65](https://github.com/boarteam/boar-pack/issues/65)) ([75bdcc7](https://github.com/boarteam/boar-pack/commit/75bdcc76d5e824d9da70cc24a30a19a7bd98eb8b))
+
+
+
+
+
 ## [3.0.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@3.0.0...@boarteam/boar-pack-users-frontend@3.0.1) (2025-07-16)
 
 **Note:** Version bump only for package @boarteam/boar-pack-users-frontend
