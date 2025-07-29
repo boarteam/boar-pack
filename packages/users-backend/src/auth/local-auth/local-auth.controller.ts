@@ -26,8 +26,8 @@ export default class LocalAuthController {
     if (!req.user) {
       throw new UnauthorizedException(`User is not authorized`);
     }
-    const loginResult = await this.authService.login(req.user);
-    this.authService.setCookie(res, loginResult.accessToken);
-    return loginResult;
+    const tokens = await this.authService.login(req.user);
+    this.authService.setCookie(res, tokens);
+    return tokens;
   }
 }

@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { RevokedToken } from './entities/revoked-token.entity';
+import { RevokedToken, TOKEN_TYPE, TRevokedToken } from './entities/revoked-token.entity';
 import { Cron, CronExpression } from "@nestjs/schedule";
+import ms, { StringValue } from "ms";
+import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
 
 @Injectable()
 export class RevokedTokensService {
@@ -11,31 +13,59 @@ export class RevokedTokensService {
 
   /**
    * Revokes a JWT token by storing its JTI in the database
-   * @param jti The JWT token identifier
-   * @param expiresAt When the token naturally expires
+   * @param token The token to revoke, containing at least the JTI and expiration date
+   * @param refreshTokenExpiration The expiration time for the refresh token. We use it to set the expiration date of
+   * the session token.
    */
-  async revokeToken(jti: string, expiresAt: Date): Promise<void> {
-    await this.revokedTokenRepository
+  public async revokeToken(token: TRevokedToken, refreshTokenExpiration: StringValue): Promise<void> {
+    const tokens: TRevokedToken[] = [token];
+
+    if (token.sid) {
+      tokens.push({
+        jti: token.sid,
+        sid: token.sid,
+        expiresAt: new Date(Date.now() + ms(refreshTokenExpiration)),
+        tokenType: TOKEN_TYPE.SESSION,
+      });
+    }
+
+    await this.revokeTokens(tokens);
+  }
+
+  public async revokeRefreshToken(token: TRevokedToken): Promise<void> {
+    await this.revokeTokens([token]);
+  }
+
+  private revokeTokens(tokens: TRevokedToken[]): Promise<void> {
+    return this.revokedTokenRepository
       .createQueryBuilder()
       .insert()
       .into(RevokedToken)
-      .values({ jti, expiresAt })
+      .values(tokens)
       .orIgnore()
-      .execute();
-
-    this.logger.debug(`Token with JTI ${jti} has been revoked`);
+      .execute()
+      .then(() => {
+        this.logger.debug(`Tokens with JTI ${tokens.map(t => t.jti).join(', ')} have been revoked`);
+      });
   }
 
   /**
    * Checks if a token has been revoked
    * @param jti The JWT token identifier
+   * @param sid Optional session identifier, used for session tokens
    * @returns true if the token is revoked, false otherwise
    */
-  async isTokenRevoked(jti: string): Promise<boolean> {
-    const token = await this.revokedTokenRepository.findOne({
-      where: { jti },
+  public async isTokenRevoked(jti: string, sid?: string): Promise<boolean> {
+    const whereConditions: FindOptionsWhere<RevokedToken>[] = [{ jti }];
+
+    if (sid) {
+      whereConditions.push({ sid, tokenType: TOKEN_TYPE.SESSION });
+    }
+
+    const tokensCount = await this.revokedTokenRepository.count({
+      where: whereConditions,
     });
-    return !!token;
+    return tokensCount > 0;
   }
 
   @Cron(CronExpression.EVERY_HOUR)

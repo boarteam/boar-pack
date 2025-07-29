@@ -28,6 +28,16 @@ export class AuthenticationService {
         });
     }
     /**
+     * @returns any
+     * @throws ApiError
+     */
+    public refresh(): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/auth/refresh',
+        });
+    }
+    /**
      * @returns LocalAuthTokenDto
      * @throws ApiError
      */

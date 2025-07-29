@@ -9,6 +9,7 @@ import { JWTAuthConfigService } from "./jwt-auth.config";
 import { PassportModule } from "@nestjs/passport";
 import { JWTAuthService } from "./jwt-auth.service";
 import { RevokedTokensModule } from '../revoked-tokens';
+import { JwtAuthRefreshStrategy } from "./jwt-auth.refresh.srtategy";
 
 @Module({})
 export class JwtAuthModule {
@@ -38,6 +39,7 @@ export class JwtAuthModule {
       providers: [
         JWTAuthConfigService,
         JwtAuthStrategy,
+        JwtAuthRefreshStrategy,
         JWTAuthService,
         {
           provide: APP_GUARD,
