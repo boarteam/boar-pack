@@ -55,11 +55,14 @@ export class RevokedTokensService {
    * @returns true if the token is revoked, false otherwise
    */
   public async isTokenRevoked(jti: string, sid?: string): Promise<boolean> {
+    const whereConditions = [{ jti }];
+
+    if (sid !== undefined && sid !== null) {
+      whereConditions.push({ sid, tokenType: TOKEN_TYPE.SESSION });
+    }
+
     const tokensCount = await this.revokedTokenRepository.count({
-      where: [
-        { jti },
-        { sid, tokenType: TOKEN_TYPE.SESSION },
-      ]
+      where: whereConditions,
     });
     return tokensCount > 0;
   }
