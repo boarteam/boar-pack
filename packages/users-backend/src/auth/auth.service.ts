@@ -94,14 +94,14 @@ export class AuthService {
       httpOnly: true,
       secure: process.env.SECURE_COOKIE === 'true',
       sameSite: 'lax',
-      maxAge: tokens.accessToken.payload.exp,
+      maxAge: tokens.accessToken.payload.exp && Math.max((tokens.accessToken.payload.exp * 1000) - Date.now(), 0),
     });
 
     res.cookie(refreshTokenName, tokens.refreshToken.token, {
       httpOnly: true,
       secure: process.env.SECURE_COOKIE === 'true',
       sameSite: 'lax',
-      maxAge: tokens.refreshToken.payload.exp,
+      maxAge: tokens.refreshToken.payload.exp && Math.max((tokens.refreshToken.payload.exp * 1000) - Date.now(), 0),
       path: this.config.refreshTokenPath,
     });
   }

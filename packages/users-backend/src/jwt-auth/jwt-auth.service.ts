@@ -38,7 +38,7 @@ export class JWTAuthService {
       token: this.jwtService.sign(payload, options),
       payload: {
         ...payload,
-        exp: ms(expiresIn),
+        exp: Math.floor((ms(expiresIn) + Date.now()) / 1000),
         jti: options.jwtid,
         sid: payload.sid,
       } as PayloadType,
