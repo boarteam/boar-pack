@@ -1,6 +1,5 @@
 import { Controller, NotFoundException, Param, Post, Req, Res, } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { tokenName } from './auth.constants';
 import { ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { LocalAuthTokenDto } from "./local-auth/local-auth.dto";
@@ -29,8 +28,8 @@ export default class AuthManageController {
       throw new NotFoundException(`User with id ${userId} is not found`);
     }
 
-    const loginResult = await this.authService.login(user);
-    this.authService.setCookie(res, loginResult.accessToken);
-    return loginResult;
+    const tokens = await this.authService.login(user);
+    this.authService.setCookie(res, tokens);
+    return tokens;
   }
 }

@@ -3,6 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 export type LocalAuthTokenDto = {
-    accessToken: string;
+    accessToken: {
+        token: string;
+        payload: Record<string, any>;
+    };
+    refreshToken: {
+        token: string;
+        payload: Record<string, any>;
+    };
 };
 

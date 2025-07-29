@@ -19,6 +19,7 @@ import LocalAuthController from "./local-auth/local-auth.controller";
 import { YandexAuthStrategy } from "./yandex/yandex-auth.strategy";
 import { YandexAuthConfigService } from "./yandex/yandex-auth.config";
 import YandexAuthController from "./yandex/yandex-auth.controller";
+import { AuthConfigService } from "./auth.config";
 
 @Module({})
 export class AuthModule {
@@ -45,6 +46,7 @@ export class AuthModule {
       ],
       providers: [
         AuthService,
+        AuthConfigService,
         {
           provide: APP_GUARD,
           useClass: JwtAuthGuard,
@@ -102,6 +104,7 @@ export class AuthModule {
         }),
       ],
       providers: [
+        AuthConfigService,
         AuthService,
         {
           provide: APP_GUARD,
