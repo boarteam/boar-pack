@@ -26,3 +26,8 @@ It will generate:
 
 - a new page in `packages/<package-name>-frontend/src/pages` folder
 - components for the page in `packages/<package-name>-frontend/src/components` folder
+
+## Documentation
+
+See [docs/auth-refresh-token.md](docs/auth-refresh-token.md) for details on the refresh token implementation (commit 75bdcc7).
+
