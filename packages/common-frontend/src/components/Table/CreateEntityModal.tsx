@@ -1,7 +1,7 @@
 import { ProColumns } from "@ant-design/pro-components";
 import { Button, Modal } from "antd";
 import { MutableRefObject, useRef } from "react";
-import { Descriptions, DescriptionsRefType } from "../Descriptions";
+import { ConditionalFieldsConfig, Descriptions, DescriptionsRefType } from "../Descriptions";
 import { buildFieldsFromColumnsForDescriptionsDisplay } from "./tableTools";
 
 export interface CreateEntityModalProps<Entity> {
@@ -24,6 +24,8 @@ export interface CreateEntityModalProps<Entity> {
    * Receives the validated form data.
    */
   onSubmit: (data: any, descriptionsRef: MutableRefObject<DescriptionsRefType<Entity>>) => Promise<void>;
+  /** Configuration for conditional fields */
+  conditionalFieldsConfig?: ConditionalFieldsConfig
 }
 
 export function CreateEntityModal<
@@ -40,6 +42,7 @@ export function CreateEntityModal<
   idColumnName,
   onCancel,
   onSubmit,
+  conditionalFieldsConfig,
 }: CreateEntityModalProps<Entity>) {
   const descriptionsRef = useRef<DescriptionsRefType<Entity>>(null);
 
@@ -79,6 +82,7 @@ export function CreateEntityModal<
           editableKeys,
           actionRender: () => [],
         }}
+        conditionalFieldsConfig={conditionalFieldsConfig}
       />
     </Modal>
   );
