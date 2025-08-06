@@ -55,6 +55,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     columnsState: managedColumnsState,
     columnsSetSelect: managedColumnsSetSelect,
     popupCreation = false,
+    conditionalFieldsConfig,
     toolBarRender,
     params,
     editPopupTitle,
@@ -120,6 +121,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     createButtonSize: rest.size,
     popupCreation,
     createNewDefaultParams,
+    conditionalFieldsConfig,
   });
 
   const { exportButton, importButton, setLastQueryParams } = useImportExport<TPathParams>({
