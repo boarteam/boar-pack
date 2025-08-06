@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.0.0...@boarteam/boar-pack-common-frontend@3.1.0) (2025-08-06)
+
+
+### Features
+
+* **common-frontend:** JUI-28 Create entity modal - option for configuring dependent rendering ([#67](https://github.com/boarteam/boar-pack/issues/67)) ([ef0f5b2](https://github.com/boarteam/boar-pack/commit/ef0f5b28ff8b535e6ee881b553bebb832eb906dc))
+
+
+
+
+
 # [2.6.0-alpha.7](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@2.10.0...@boarteam/boar-pack-common-frontend@2.6.0-alpha.7) (2025-07-03)
 
 
