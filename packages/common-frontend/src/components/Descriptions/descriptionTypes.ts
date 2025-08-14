@@ -5,6 +5,7 @@ import { QueryJoin } from "@nestjsx/crud-request";
 import { ProColumns } from "@ant-design/pro-components";
 import { ProDescriptionsProps } from "@ant-design/pro-descriptions";
 import { FieldData } from "rc-field-form/lib/interface";
+import { VIEW_MODE_TYPE } from "./useContentViewMode";
 
 export type TGetOneParams = {
   /**
@@ -65,6 +66,7 @@ export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = objec
   params?: TDescriptionGetRequestParams,
   columns: ProColumns<Entity>[],
   onEntityChange?: (entity: Entity | null) => void;
+  contentViewMode?: VIEW_MODE_TYPE,
   ref?: React.Ref<DescriptionsRefType<Entity>>,
 } & Omit<ProDescriptionsProps<Entity>, 'columns'>;
 

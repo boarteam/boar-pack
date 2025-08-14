@@ -63,6 +63,7 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     params,
     onEntityChange,
     conditionalFieldsConfig,
+    contentViewMode: contentViewModeProp,
     ...rest
   }: TDescriptionsProps<Entity,
     CreateDto,
@@ -127,7 +128,7 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     contentViewModeButton,
     contentViewMode
   } = useContentViewMode({
-    mode: sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL
+    mode: contentViewModeProp || (sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL)
   });
   const [errorsPerSection, setErrorsPerSection] = useState<Map<TDescriptionSection<Entity>['key'], number>>(
     new Map(sections.map(section => [section.key, 0]))
