@@ -9,10 +9,17 @@ import {
 import { Request } from 'express';
 import { getAction } from "@dataui/crud";
 import { isEqual } from 'lodash';
+import { Action, CaslAbilityFactory } from "../casl";
+import { Roles } from "./entities/user.entity";
 
 @Injectable()
 export class UsersEditingGuard implements CanActivate {
   private readonly logger = new Logger(UsersEditingGuard.name);
+
+  constructor(
+    private readonly calsAbilityFactory: CaslAbilityFactory,
+  ) {
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
@@ -25,7 +32,16 @@ export class UsersEditingGuard implements CanActivate {
 
     const editingUserId = request.params['id'];
     switch (getAction(context.getHandler())) {
-      case 'Update-One':
+      case 'Create-One': {
+        const ability = await this.calsAbilityFactory.createForUser(user);
+        if (request.body['role'] === Roles.ADMIN && !ability.can(Action.Manage, 'all')) {
+          this.logger.warn(`User can't create admin`);
+          throw new ForbiddenException(`User can't create admin`);
+        }
+        break;
+      }
+
+      case 'Update-One': {
         if (editingUserId === user.id) {
           const newRole = request.body['role'];
           if (newRole !== user.role && newRole !== undefined) {
@@ -45,14 +61,23 @@ export class UsersEditingGuard implements CanActivate {
             throw new ForbiddenException(`User can't change his permissions`);
           }
         }
-        break;
 
-      case 'Delete-One':
+        const ability = await this.calsAbilityFactory.createForUser(user);
+        if (request.body['role'] === Roles.ADMIN && !ability.can(Action.Manage, 'all')) {
+          this.logger.warn(`User can't change role to admin`);
+          throw new ForbiddenException(`User can't change role to admin`);
+        }
+
+        break;
+      }
+
+      case 'Delete-One': {
         if (editingUserId === user.id) {
           this.logger.warn(`User can't delete himself`);
           throw new ForbiddenException(`User can't delete himself`);
         }
         break;
+      }
     }
 
     return true;

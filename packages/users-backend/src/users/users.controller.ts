@@ -11,6 +11,7 @@ import { PermissionDto } from "./dto/permission.dto";
 import { UsersEditingGuard } from "./users-editing.guard";
 import { ViewUsersPolicy } from "./policies/view-users.policy";
 import { Tools } from "@boarteam/boar-pack-common-backend";
+import { ManageUsersPolicy } from "./policies/manage-users.policy";
 
 @Crud({
   model: {
@@ -44,6 +45,9 @@ import { Tools } from "@boarteam/boar-pack-common-backend";
       interceptors: [
         HashPasswordInterceptor,
       ],
+      decorators: [
+        UseGuards(UsersEditingGuard),
+      ]
     },
     updateOneBase: {
       interceptors: [
@@ -64,7 +68,7 @@ import { Tools } from "@boarteam/boar-pack-common-backend";
     update: UserUpdateDto,
   },
 })
-@CheckPolicies(new ManageAllPolicy())
+@CheckPolicies(new ManageUsersPolicy())
 @UseFilters(Tools.TypeOrmExceptionFilter)
 @ApiTags('Users')
 @ApiExtraModels(PermissionDto)
