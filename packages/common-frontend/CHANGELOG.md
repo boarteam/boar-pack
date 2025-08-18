@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.1.0...@boarteam/boar-pack-common-frontend@3.2.0) (2025-08-18)
+
+
+### Features
+
+* **descriptions:** add support for custom contentViewMode in Descriptions component ([875f0e8](https://github.com/boarteam/boar-pack/commit/875f0e890ba0478008e053b17df7eab54853de33))
+
+
+
+
+
 # [3.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.0.0...@boarteam/boar-pack-common-frontend@3.1.0) (2025-08-06)
 
 

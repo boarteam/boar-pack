@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.2.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.1.0...@boarteam/boar-pack-users-backend@6.2.0) (2025-08-18)
+
+
+### Features
+
+* **users-backend:** enhance role management and validation in UsersEditingGuard ([7867d22](https://github.com/boarteam/boar-pack/commit/7867d22b138c163dda9202d2bd69e3b1e0539f47))
+
+
+
+
+
 # [6.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.0.3...@boarteam/boar-pack-users-backend@6.1.0) (2025-07-29)
 
 
