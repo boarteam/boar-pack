@@ -10,6 +10,7 @@ import { getTableDataQueryParams } from "./getTableDataQueryParams";
 import { useEditableTable } from "./useEditableTable";
 import { useBulkEditing } from "./useBulkEditing";
 import { useImportExport } from "./useImportExport";
+import { ChangesModal } from "../ChangesModal";
 
 const useStyles = createStyles(() => {
   return {
@@ -21,12 +22,16 @@ const useStyles = createStyles(() => {
   }
 })
 
-const Table = <Entity extends Record<string | symbol, any>,
+const Table = <
+  Entity extends Record<string | symbol, any>,
   CreateDto = Entity,
   UpdateDto = Entity,
   TEntityParams = {},
   TPathParams extends Record<string, string | number> = {},
-  TKey = string,
+  TImportRequest = { // TODO: Add to Table types
+    new?: Array<Entity>,
+    modified?: Array<Entity>,
+  },
 >(
   {
     getAll,
@@ -37,7 +42,6 @@ const Table = <Entity extends Record<string | symbol, any>,
     onDeleteMany,
     exportUrl,
     exportParams,
-    onImport,
     pathParams,
     idColumnName = 'id',
     entityToCreateDto,
@@ -60,6 +64,7 @@ const Table = <Entity extends Record<string | symbol, any>,
     editPopupTitle,
     createPopupTitle,
     descriptionsMainTitle,
+    importConfig,
     ...rest
   }: TTableProps<Entity,
     CreateDto,
@@ -122,10 +127,18 @@ const Table = <Entity extends Record<string | symbol, any>,
     createNewDefaultParams,
   });
 
-  const { exportButton, importButton, setLastQueryParams } = useImportExport<TPathParams>({
+  const {
+    exportButton,
+    importButton,
+    setLastQueryParams,
+    diffResult,
+    setDiffResult,
+  } = useImportExport<Entity, TPathParams>({
+    columns,
     exportUrl,
     exportParams,
-    onImport,
+    changedRecordsColumnsConfig: importConfig?.changedRecordsColumnsConfig,
+    relationalFields: importConfig?.relationalFields,
   })
 
   useEffect(() => {
@@ -207,7 +220,7 @@ const Table = <Entity extends Record<string | symbol, any>,
           ? bulkDeleteButton
           : null,
         !viewOnly && createButton || null,
-        !viewOnly && onImport && importButton || null,
+        !viewOnly && importConfig?.onImport && importButton || null,
         exportUrl && exportButton || null,
         ...toolBarRender && toolBarRender(...args) || [],
       ]}
@@ -247,6 +260,21 @@ const Table = <Entity extends Record<string | symbol, any>,
         entityToUpdateDto={entityToUpdateDto}
       />
     </Modal>
+    <ChangesModal<
+        Entity,
+        TImportRequest
+      >
+      {...(diffResult && { changes: diffResult })}
+      onCommit={importConfig?.onImport}
+      onClose={() => {
+        actionRef.current?.reload();
+        setDiffResult(undefined);
+      }}
+      originRecordsColumnsConfig={columns}
+      changedRecordsColumnsConfig={importConfig?.changedRecordsColumnsConfig}
+      createdRecordsColumnsConfig={importConfig?.createdRecordsColumnsConfig}
+      relationalFields={importConfig?.relationalFields}
+    />
     {messagesContext}
   </>);
 };
