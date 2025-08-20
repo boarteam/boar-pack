@@ -7,6 +7,8 @@ import { ColumnStateType } from "@ant-design/pro-table/es/typing";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { ProColumns } from "@ant-design/pro-components";
 import { ConditionalFieldsConfig } from "../Descriptions";
+import { TImportResponse, TRelationalFields } from "../ChangesModal";
+import { CancelablePromise } from "@boarteam/boar-pack-users-frontend/dist/src/tools/api-client";
 
 export type IWithId = {
   id: string | number,
@@ -105,7 +107,7 @@ interface BaseProps<Entity,
   descriptionsMainTitle?: ProColumns<Entity>['title'] | null;
 }
 
-export interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {
+export interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}, ImportRequestParams = {}> {
   actionRef?: MutableRefObject<ActionType | undefined>;
   editable?: RowEditableConfig<Entity>;
   afterSave?: (record: Entity) => Promise<void>;
@@ -114,7 +116,6 @@ export interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {
   exportParams?: {
     [key: string]: string | number
   };
-  onImport?: (event: React.ChangeEvent<HTMLInputElement>) => Promise<any>;
   onUpdate: ({}: Partial<Entity> & {
     requestBody: UpdateDto,
     index?: number,
@@ -122,8 +123,16 @@ export interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}> {
   onDelete: ({}: Partial<Entity> & TPathParams) => Promise<void>;
   entityToCreateDto: (entity: Entity) => CreateDto;
   entityToUpdateDto: (entity: Entity) => UpdateDto;
-  onUpdateMany: ({}: Partial<Entity> & { requestBody: { updateValues: Partial<UpdateDto>[], records: Entity[] } } & TPathParams) => Promise<void>,
+  onUpdateMany: ({}: Partial<Entity> & {
+    requestBody: { updateValues: Partial<UpdateDto>[], records: Entity[] }
+  } & TPathParams) => Promise<void>,
   onDeleteMany: ({}: Partial<Entity> & { requestBody: { records: Entity[] } } & TPathParams) => Promise<void>,
+  importConfig?: {
+    onImport?: (params: ImportRequestParams) => CancelablePromise<TImportResponse>;
+    relationalFields?: TRelationalFields,
+    changedRecordsColumnsConfig: ProColumns<Entity>[],
+    createdRecordsColumnsConfig: ProColumns<Entity>[],
+  }
 }
 
 // Conditional type to merge base and editable props conditionally
@@ -140,4 +149,4 @@ export type TTableProps<Entity,
   CreateDto,
   UpdateDto,
   TEntityParams = {},
-  TPathParams = {}> = ConditionalProps<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams>;
+  TPathParams = {}> = ConditionalProps<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams>
