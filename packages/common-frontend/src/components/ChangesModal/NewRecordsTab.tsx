@@ -10,6 +10,10 @@ function NewRecordsTab<Entity>({
   createdRecordsColumnsConfig: ProColumns<Entity>[],
 }) {
 
+  if (!created.length) {
+    return <p>No new records found.</p>
+  }
+
   return [
     <h3 key='new-records-header'>New Records (Local Comparing)</h3>,
     <ProTable<Entity>

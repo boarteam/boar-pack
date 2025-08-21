@@ -12,7 +12,7 @@ import { TRelationalFields } from "../ChangesModal";
 type TImportedJSON<Entity> = (Entity & { id: string })[]
 
 export type TUpdatedDiffResult<Entity> = {
-  updated: (Entity & {
+  tableData: (Entity & {
     id: string | number,
     diff: diff.Diff<any, any>[]
   }),
@@ -20,7 +20,11 @@ export type TUpdatedDiffResult<Entity> = {
 
 export type TDiffResult<Entity> = {
   created: Entity[],
-  updated: TUpdatedDiffResult<Entity>[],
+  updated: ({
+    id: string | number,
+    version: string | number,
+  } & Entity)[],
+  tableData: TUpdatedDiffResult<Entity>[],
 }
 
 export function useImportExport<Entity, TPathParams = {}>({
@@ -54,6 +58,41 @@ export function useImportExport<Entity, TPathParams = {}>({
 
   const trueBooleanValues = [true, "True", "true", "1", "yes", "on"];
 
+  const buildExportUrl = useCallback(() => {
+    const params = {
+      ...(lastQueryParams && {
+        s: (lastQueryParams as any).s,
+        sort: (lastQueryParams as any).sort?.[0],
+      }),
+      ...exportParams,
+    } as Record<string, string | number | undefined>;
+
+    const qp = Object.entries(params)
+      .filter(([, v]) => v !== undefined && v !== null && v !== '')
+      .reduce((acc, [k, v]) => {
+        acc.append(k, String(v));
+        return acc;
+      }, new URLSearchParams());
+
+    return exportUrl
+      ? exportUrl + (qp.toString() ? `?${qp.toString()}` : '')
+      : undefined;
+  }, [exportUrl, exportParams, lastQueryParams]);
+
+  const fetchExportCsvArrayBuffer = useCallback(async (): Promise<ArrayBuffer> => {
+    const url = buildExportUrl();
+    if (!url) throw new Error('Specify exportUrl!');
+
+    const res = await fetch(url, {
+      method: 'GET',
+    });
+
+    if (!res.ok) {
+      throw new Error(`Can't get actual CSV data for comparing. HTTP ${res.status}`);
+    }
+    return await res.arrayBuffer();
+  }, [buildExportUrl]);
+
   const normalizeRow = (row: any) => {
     const normalizedRow = { ...row };
     if (relationalFields) {
@@ -76,13 +115,25 @@ export function useImportExport<Entity, TPathParams = {}>({
     return normalizedRow;
   }
 
+  const getRelationalValue = (relationField: {
+    id: any;
+    name?: string;
+    description?: string;
+  }) => {
+    return relationField?.name || relationField?.description || relationField?.id;
+  }
+
   const handleFileAsync = async (e: ChangeEvent<HTMLInputElement>) => {
     setIsLoadingImport(true);
 
-    const fileBefore = e.target.files[0];
-    const fileAfter = e.target.files[1];
+    const fileAfter = e.target.files[0];
 
-    const dataBefore = await fileBefore.arrayBuffer();
+    if (!fileAfter) {
+      throw new Error('Choose CSV with changes.');
+    }
+
+    // File before now should be fetched from the same endpoint as the export button use
+    const dataBefore = await fetchExportCsvArrayBuffer();
     const dataAfter = await fileAfter.arrayBuffer();
 
     // Data is an ArrayBuffer
@@ -92,6 +143,7 @@ export function useImportExport<Entity, TPathParams = {}>({
     const jsonBefore: TImportedJSON<Entity> = XLSX.utils.sheet_to_json(workbookBefore.Sheets[workbookBefore.SheetNames[0]], {
       defval: null
     });
+
     const jsonAfter: TImportedJSON<Entity> = XLSX.utils.sheet_to_json(workbookAfter.Sheets[workbookAfter.SheetNames[0]], {
       defval: null
     });
@@ -111,6 +163,7 @@ export function useImportExport<Entity, TPathParams = {}>({
     const diffResult: TDiffResult<Entity> = {
       created: [],
       updated: [],
+      tableData: [],
     };
 
     jsonAfter.map((row) => {
@@ -122,45 +175,71 @@ export function useImportExport<Entity, TPathParams = {}>({
         return;
       }
 
+      // Existing record
       newMap[normalizedRow.id] = normalizedRow;
     });
 
     // Recognize added and changed records
     for (const id in newMap) {
       if (!oldMap[id]) {
-        diffResult.created.push(newMap[id]);
-      } else {
-        const differences = diff(oldMap[id], newMap[id], {
-          normalize: (currentPath, key, lhs, rhs) => {
-            // If the key is a relational field, we need to compare the IDs
-            if (relationalFields && relationalFields.has(key)) {
-              return [true, true]
-            }
+        continue;
+      }
+
+      const differences = diff(oldMap[id], newMap[id], {
+        normalize: (currentPath, key, lhs, rhs) => {
+          // We don't need to compare versions
+          if (key === 'version') {
+            return [true, true];
           }
-        });
 
-        if (differences) {
-          const changedFields = differences.map((diff) => diff.path?.[0]).filter((field: string | undefined) => field);
-          const requiredFields = [
-            ...changedFields,
-            ...changedRecordsColumnsConfig.map(column => column.dataIndex),
-          ];
+          // We don't care about relational ids. Skip them
+          if (key.endsWith('_id')) {
+            return [true, true];
+          }
 
-          const fields = Object.fromEntries(
-            columns
-              .filter((column) => requiredFields.includes(column.dataIndex))
-              .map((column) => {
-                let value = newMap[id][column.dataIndex] || newMap[id][column.dataIndex + "_id"];
+          // If the key is a relational field (dictionary value), we need to compare only value fields
+          if (relationalFields && relationalFields.has(key)) {
+            return [
+              getRelationalValue(lhs),
+              getRelationalValue(rhs),
+            ]
+          }
 
-                return [column.dataIndex, value];
-              }));
-
-          diffResult.updated.push({
-            id,
-            ...fields,
-            diff: differences,
-          });
+          return [lhs, rhs];
         }
+      });
+
+      if (differences) {
+        const changedFields = differences.map((diff) => diff.path?.[0]).filter((field: string | undefined) => field);
+        const displayFields = changedRecordsColumnsConfig.map(column => column.dataIndex);
+
+        const payload = {
+          id,
+          version: newMap[id].version,
+        };
+
+        const tableData = {
+          id,
+          diff: differences,
+        };
+
+        columns.forEach((column) => {
+          const key = column.dataIndex;
+          const value = newMap[id][key] === undefined ? newMap[id][key + "_id"] : newMap[id][key];
+          if (changedFields.includes(key)) {
+            payload[key] = value;
+          }
+
+          if (displayFields.includes(key)) {
+            tableData[key] = value;
+          }
+        })
+
+        // Will be sent to the server
+        diffResult.updated.push(payload);
+
+        // Will be shown in the "changed values" tab
+        diffResult.tableData.push(tableData);
       }
     }
 
@@ -169,23 +248,14 @@ export function useImportExport<Entity, TPathParams = {}>({
     setIsLoadingImport(false);
   };
 
-  const params = {
-    ...(lastQueryParams && {
-      s: lastQueryParams.s,
-      sort: lastQueryParams.sort?.[0],
-    }),
-    ...exportParams
-  }
-
-  const url = exportUrl + (Object.keys(params).length ? '?' + new URLSearchParams(params).toString() : '');
   const exportButton = <Tooltip title="Export">
-    <Link to={url} target={'_blank'}>
+    <Link to={buildExportUrl() ?? '#'} target={'_blank'}>
       <Button icon={<DownloadOutlined />} />
     </Link>
   </Tooltip>;
 
   const importButton = <>
-    <Tooltip title="Import two CSV files (before & after)">
+    <Tooltip title="Import changes CSV file">
       <Button
         loading={isLoadingImport}
         icon={<UploadOutlined />}
@@ -198,7 +268,6 @@ export function useImportExport<Entity, TPathParams = {}>({
       ref={fileInputRef}
       style={{ display: 'none' }}
       accept=".csv"
-      multiple
       onChange={handleFileAsync}
     />
   </>
