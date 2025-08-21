@@ -5,9 +5,15 @@ import { TDiffResult, TUpdatedDiffResult } from "../Table/useImportExport";
 import ProTable from "@ant-design/pro-table";
 
 function ChangesTab<Entity> ({ updated, changedRecordsColumnsConfig }: {
-  updated: TDiffResult<Entity>['updated'],
+  updated: TDiffResult<Entity>['tableData'],
   changedRecordsColumnsConfig: ProColumns<Entity>[]
 }) {
+  if (!updated.length) {
+    return <>
+      No changes found.
+    </>
+  }
+
   const updateColumns = [
     ...changedRecordsColumnsConfig,
     {
@@ -23,7 +29,7 @@ function ChangesTab<Entity> ({ updated, changedRecordsColumnsConfig }: {
                   <Tag color="blue">{change.path.join(".")}</Tag>
                 </div>
                 <div>
-                  {change.lhs ? `${change.lhs.toString()} →` : ""} {change.rhs.toString()}
+                  {change.lhs ? `${change.lhs.toString()} →` : ""} {change.rhs ? change.rhs.toString() : change.rhs === false ? 'false' : '-'}
                 </div>
               </div>
             );

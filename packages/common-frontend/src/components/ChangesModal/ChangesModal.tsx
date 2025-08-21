@@ -27,7 +27,7 @@ export type TRelationalFields = Map<string, {
   }
 }>
 
-type TImportConflict = {
+export type TImportConflict = {
   id: number;
   version: number;
   fields: Array<{
@@ -38,6 +38,7 @@ type TImportConflict = {
 }
 
 export type TImportResponse = {
+  errors?: Array<TServerErrorItem>,
   conflicts?: Array<TImportConflict>,
   created_count: number,
   updated_count: number
@@ -84,7 +85,7 @@ export function ChangesModal<
 
   const { styles } = useStyles();
   const [activeTab, setActiveTab] = useState<string>(ModalTabs.changes);
-  const { created, updated } = changes;
+  const { created, updated, tableData } = changes;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [importResponse, setImportResponse] = useState<TImportResponse>();
   const [serverErrors, setServerErrors] = useState<TServerErrorItem[]>([]);
@@ -144,19 +145,19 @@ export function ChangesModal<
     {
       key: ModalTabs.changes,
       tab: "Changed values",
-      disabled: updated.length === 0,
-      label: updated.length ? (
+      disabled: tableData.length === 0,
+      label: tableData.length ? (
         <Badge
           size="small"
           color="blue"
-          count={updated.length}
+          count={tableData.length}
         >
           Changed Values
         </Badge>
       ) : "Changed Values",
       children: <ChangesTab
         changedRecordsColumnsConfig={changedRecordsColumnsConfig}
-        updated={updated}
+        updated={tableData}
       />,
     },
     {
@@ -230,7 +231,11 @@ export function ChangesModal<
           type="primary"
           key="approve"
           onClick={handleCommitClick}
-          disabled={importResponse?.conflicts?.length === 0}
+          disabled={
+          importResponse?.conflicts?.length === 0
+            || serverErrors.length > 0
+            || updated.length === 0 && created.length === 0
+        }
         >
           Commit
         </Button>,

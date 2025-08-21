@@ -1,4 +1,4 @@
-import { Descriptions } from "@boarteam/boar-pack-common-frontend";
+import { Descriptions, TImportConflict } from "@boarteam/boar-pack-common-frontend";
 import { Tag, Tooltip, Button } from "antd";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TImportResponse, TRelationalFields } from "./ChangesModal";
@@ -10,19 +10,21 @@ import { ProColumns } from "@ant-design/pro-components";
 const useStyles = createStyles(() => {
   return {
     conflictsStyle: {
-      ".ant-descriptions-row > *:nth-child(3), .ant-descriptions-row > *:nth-child(4)": {
-        backgroundColor: "#f0fff0 !important",
-        width: "25%",
-      },
       ".ant-descriptions-row > *:nth-child(1), .ant-descriptions-row > *:nth-child(2)": {
-        width: "25%",
+
+      },
+      ".ant-descriptions-row > *:nth-child(3)": {
+
+      },
+      ".ant-descriptions-row > *:nth-child(4)": {
+        backgroundColor: "#f0fff0 !important",
       },
     },
   };
 });
 
-const getImportedKey = (field: string) => {
-  return `${field}-imported`;
+const getCurrentKey = (field: string) => {
+  return `${field}-current`;
 };
 
 const getNormalizedKey = (field: string) => {
@@ -37,7 +39,7 @@ function ConflictsTab<Entity>({
 }: {
   conflicts?: TImportResponse['conflicts'],
   relationalFields?: TRelationalFields;
-  setResolvedData?:  Dispatch<SetStateAction<Entity[]>>;
+  setResolvedData?: Dispatch<SetStateAction<Entity[]>>;
   originColumns: ProColumns<Entity>[];
 }) {
 
@@ -54,14 +56,17 @@ function ConflictsTab<Entity>({
     return value;
   };
 
-  // Initial value based on received conflicts
+  /*Initial value based on received conflicts
+  {
+    field: 'importing field value',
+    field-current: 'current field name from server',
+    ...
+  }*/
   const [resolvedData, setLocalResolvedData] = useState<Partial<Entity>[]>(conflicts.map(conflict => (
     conflict.fields.reduce((acc, currentValue) => {
       const key = getNormalizedKey(currentValue.field);
-      acc[key] = getRelationalData(key, currentValue.current_value);
-      if (key !== 'version') {
-        acc[getImportedKey(key)] = getRelationalData(key, currentValue.imported_value);
-      }
+      acc[key] = getRelationalData(key, currentValue.imported_value);
+      acc[getCurrentKey(key)] = getRelationalData(key, currentValue.current_value);
 
       return acc;
     }, {})
@@ -69,22 +74,21 @@ function ConflictsTab<Entity>({
 
   useEffect(() => {
     if (!setResolvedData) return;
-    // Need to replace value for [field] using value from [field-imported] and then remove [field-imported]
-    const payload = resolvedData.map((obj, i) => {
-      const newObj = {
-        id: conflicts[i].id,
-        ...obj,
-        version: conflicts[i].version,
-      };
 
-      Object.keys(newObj).forEach(key => {
-        if (key.endsWith("-imported")) {
-          const originalKey = key.replace("-imported", "");
-          newObj[originalKey] = newObj[key];
-          delete newObj[key];
+    const payload = resolvedData.map((obj, i) => {
+      const data = { ...obj };
+      // Remove all -current postfix keys from the resolved data
+      Object.keys(obj).forEach(key => {
+        if (key.endsWith('-current')) {
+          delete data[key];
         }
-      });
-      return newObj;
+      })
+
+      return {
+        id: conflicts[i].id,
+        ...data,
+        version: conflicts[i].version,
+      }
     });
 
     setResolvedData(payload);
@@ -92,15 +96,8 @@ function ConflictsTab<Entity>({
 
   const { styles } = useStyles();
 
-  const useServerValue = (conflictId: number, field: string) => {
-    const conflict = conflicts.find(c => c.id === conflictId);
-    if (!conflict) return;
-
-    const fieldData = conflict.fields.find(f => f.field === field);
-    if (!fieldData) return;
-
+  const useCurrentValue = (conflict: TImportConflict, field: string) => {
     const key = getNormalizedKey(field);
-    const value = getRelationalData(key, fieldData.current_value);
 
     // Update the resolved data for this conflict
     setLocalResolvedData(prev => {
@@ -108,7 +105,7 @@ function ConflictsTab<Entity>({
       const index = conflicts.indexOf(conflict);
       newData[index] = {
         ...newData[index],
-        [getImportedKey(key)]: value,
+        [key]: newData[index][getCurrentKey(key)],
       };
       return newData;
     });
@@ -124,20 +121,19 @@ function ConflictsTab<Entity>({
       const originColumn = keyedOriginColumns[key];
       conflictColumns.push({
         ...originColumn,
+        dataIndex: getCurrentKey(key),
         editable: false,
       });
       conflictColumns.push({
         ...originColumn,
-        dataIndex: getImportedKey(key),
         title: (
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span>New</span>
+          <div style={{ textAlign: 'center' }}>
             <Tooltip title="Use value from server">
               <Button
                 size="small"
                 type="link"
                 icon={<SwapOutlined />}
-                onClick={() => useServerValue(conflict.id, field.field)}
+                onClick={() => useCurrentValue(conflict, field.field)}
               />
             </Tooltip>
           </div>
@@ -146,10 +142,19 @@ function ConflictsTab<Entity>({
     });
 
     return (
-      <div key={idx} style={{ display: "flex", flexDirection: "column", gap: 4, width: "100%" }}>
+      <div key={idx} style={{ display: "flex", flexDirection: "column", gap: 15, width: "100%" }}>
         <div>
-          <Tag color="error">ID {conflict.id} (v{conflict.version})</Tag>
+          <Tag color="error">ID {conflict.id}</Tag>
+          <Tag color="blue">Server version: v{conflict.version}</Tag>
         </div>
+        <table>
+          <thead>
+            <tr>
+              <th style={{ width: '50%' }}>Current (From Server)</th>
+              <th style={{ width: '50%' }}>New (Importing)</th>
+            </tr>
+          </thead>
+        </table>
         <Descriptions
           size="small"
           bordered
@@ -157,7 +162,7 @@ function ConflictsTab<Entity>({
           columns={conflictColumns}
           column={2}
           canEdit={true}
-          // fieldsEditType={FieldsEdit.All}
+          mainTitle={null}
           className={styles.conflictsStyle}
         >
         </Descriptions>
