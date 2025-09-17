@@ -36,15 +36,7 @@ export enum FieldsEdit {
   All = 'all'
 }
 
-export interface ConditionalFieldsConfig {
-  /** Which field to watch */
-  field: string;
-  /** Map of watched-value → array of dataIndex you want to show */
-  deps: Record<string, string[]>;
-}
-
 export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = object> = {
-  conditionalFieldsConfig?: ConditionalFieldsConfig;
   mainTitle?: ProColumns<Entity>['title'] | null,
   entity?: Partial<Entity>,
   getOne?: ({}: TGetOneParams & TPathParams) => Promise<Entity | null>,
