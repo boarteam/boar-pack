@@ -32,7 +32,6 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
   createButtonSize,
   popupCreation,
   createNewDefaultParams,
-  conditionalFieldsConfig,
 }: {
   actionRef?: MutableRefObject<ActionType | undefined>;
   pathParams: TPathParams;
@@ -106,7 +105,6 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
       setCreatePopupData(undefined);
     }}
     onSubmit={onCreateSubmit}
-    conditionalFieldsConfig={conditionalFieldsConfig}
   />;
 
   return {

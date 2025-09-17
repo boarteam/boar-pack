@@ -6,7 +6,6 @@ import { TColumnsSet } from "./useColumnsSets";
 import { ColumnStateType } from "@ant-design/pro-table/es/typing";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { ProColumns } from "@ant-design/pro-components";
-import { ConditionalFieldsConfig } from "../Descriptions";
 
 export type IWithId = {
   id: string | number,
@@ -97,7 +96,6 @@ interface BaseProps<Entity,
   viewOnly?: boolean;
   columnsSets?: TColumnsSet<Entity>[];
   popupCreation?: boolean;
-  conditionalFieldsConfig?: ConditionalFieldsConfig;
   columnsState?: ColumnStateType;
   columnsSetSelect?: () => React.ReactNode;
   editPopupTitle?: string;

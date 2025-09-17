@@ -1,6 +1,6 @@
 import { ActionType } from "@ant-design/pro-table";
 import React, { Key, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Badge, Button, Form, Result, Tabs, TabsProps, Tooltip } from "antd";
+import { Badge, Button, Result, Tabs, TabsProps, Tooltip } from "antd";
 import { DeleteOutlined, StopOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { DescriptionsRefType, FieldsEdit, TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
@@ -21,7 +21,7 @@ import { debounce } from "lodash";
 import { NamePath } from "antd/lib/form/interface";
 import { FieldData } from "rc-field-form/lib/interface";
 
-const useStyles = createStyles(({ css }) => {
+const useStyles = createStyles(({css}) => {
   return {
     antDescriptionsStyles: css`
       .ant-descriptions-item-content {
@@ -62,7 +62,6 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     columns,
     params,
     onEntityChange,
-    conditionalFieldsConfig,
     contentViewMode: contentViewModeProp,
     ...rest
   }: TDescriptionsProps<Entity,
@@ -82,36 +81,13 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
   }
   form = editable.form;
 
-  const watchedValue = conditionalFieldsConfig
-    ? Form.useWatch(conditionalFieldsConfig.field, form)
-    : undefined;
-
-  const filteredColumns = React.useMemo(() => {
-    if (!conditionalFieldsConfig) {
-      return columns;
-    }
-
-    const { field, deps } = conditionalFieldsConfig;
-    const depsList = deps[watchedValue as string];
-
-    if (!depsList?.length) {
-      return columns;
-    }
-
-    // Always include the watched field itself
-    return columns.filter(col => {
-      const idx = col.dataIndex as string;
-      return idx === field || depsList.includes(idx);
-    });
-  }, [columns, watchedValue, conditionalFieldsConfig]);
-
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
   const intl = useIntl();
   const [data, setData] = useState<Partial<Entity> | undefined>(entity);
   const [loading, setLoading] = useState(false);
 
-  const sections = columnsToDescriptionItemProps(filteredColumns, mainTitle);
+  const sections = columnsToDescriptionItemProps(columns, mainTitle);
 
   const columnDataIndexToSection = sections.reduce((acc, section) => {
     section.columns.forEach(column => {
