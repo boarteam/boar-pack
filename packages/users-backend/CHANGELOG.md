@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.3.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.2.0...@boarteam/boar-pack-users-backend@6.3.0) (2025-09-18)
+
+
+### Features
+
+* **users-backend:** add audit logs module for tracking entity changes ([d41a4cb](https://github.com/boarteam/boar-pack/commit/d41a4cbefb1a3d96f5607a116902ae047b7226c4))
+
+
+
+
+
 # [6.2.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.1.0...@boarteam/boar-pack-users-backend@6.2.0) (2025-08-18)
 
 

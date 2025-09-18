@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.2.0...@boarteam/boar-pack-common-frontend@3.2.1) (2025-09-18)
+
+
+### Reverts
+
+* Revert "feat(common-frontend): JUI-28 Create entity modal - option for configuring dependent rendering (#67)" ([355d5a4](https://github.com/boarteam/boar-pack/commit/355d5a4cf179d99835c583e450041006abdcbdca)), closes [#67](https://github.com/boarteam/boar-pack/issues/67)
+
+
+
+
+
 # [3.2.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.1.0...@boarteam/boar-pack-common-frontend@3.2.0) (2025-08-18)
 
 
