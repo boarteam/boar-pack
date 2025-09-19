@@ -11,7 +11,7 @@ export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudSer
 
   public async createOne(req: CrudRequest<TUser>, dto: DeepPartial<T>): Promise<T> {
     const result = await super.createOne(req, dto);
-    await this.repo.manager.getRepository(AuditLog).save({
+    await this.createAuditLog({
       action: AuditAction.CREATE,
       userId: req.auth?.id,
       tableName: this.repo.metadata.tableName,
@@ -26,7 +26,7 @@ export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudSer
   ): Promise<T[]> {
     const result = await super.createMany(req, dto);
 
-    await this.repo.manager.getRepository(AuditLog).save(
+    await this.createAuditLog(
       result.map(r => ({
         userId: req.auth?.id,
         tableName: this.repo.metadata.tableName,
@@ -65,7 +65,7 @@ export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudSer
       result = await this.getOneOrFail(req);
     }
 
-    await this.repo.manager.getRepository(AuditLog).save({
+    await this.createAuditLog({
       action: AuditAction.UPDATE,
       userId: req.auth?.id,
       tableName: this.repo.metadata.tableName,
@@ -152,7 +152,7 @@ export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudSer
         ? await this.repo.softRemove(found as DeepPartial<T>)
         : await this.repo.remove(found);
 
-    await this.repo.manager.getRepository(AuditLog).save({
+    await this.createAuditLog({
       action: AuditAction.DELETE,
       userId: req.auth?.id,
       tableName: this.repo.metadata.tableName,
@@ -161,4 +161,9 @@ export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudSer
 
     return toReturn;
   }
+
+  public createAuditLog(log: Partial<AuditLog> | Partial<AuditLog>[]): Promise<AuditLog | AuditLog[]> {
+    return this.repo.manager.getRepository(AuditLog).save(log as Partial<AuditLog>);
+  }
 }
+
