@@ -84,7 +84,7 @@ export class CaslAbilityFactory {
         user.permissions.forEach((permission) => {
           const actionAndSubject = CaslAbilityFactory.permissionsToActionsMap[permission];
           if (!actionAndSubject) {
-            this.logger.error(`Unknown permission: ${permission}`);
+            this.logger.warn(`Unknown permission: ${permission}`);
             return;
           }
 
