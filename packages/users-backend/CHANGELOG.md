@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.4.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.3.0...@boarteam/boar-pack-users-backend@6.4.0) (2025-09-19)
+
+
+### Features
+
+* **users-backend:** centralize audit log creation in `AuditLogBaseService` ([187061b](https://github.com/boarteam/boar-pack/commit/187061b5148d5079e433709a43a258bac93b3cb1))
+
+
+
+
+
 # [6.3.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.2.0...@boarteam/boar-pack-users-backend@6.3.0) (2025-09-18)
 
 
