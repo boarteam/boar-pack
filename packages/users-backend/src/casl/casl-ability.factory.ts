@@ -31,7 +31,7 @@ export type TTextSubjects = 'all';
 export type TSubjectsNames =
   | keyof TSubjects
   | TTextSubjects;
-type Subjects =
+export type Subjects =
   | InferSubjects<TSubjects[keyof TSubjects]>
   | TTextSubjects;
 
