@@ -1,5 +1,5 @@
 import { CreateManyDto, CrudRequest, } from '@dataui/crud';
-import { DeepPartial, ObjectLiteral, Repository, } from 'typeorm';
+import { DeepPartial, EntityManager, ObjectLiteral, Repository, } from 'typeorm';
 import { TypeOrmCrudService } from "@dataui/crud-typeorm";
 import { Injectable } from "@nestjs/common";
 import { AuditAction, AuditLog } from "./entities/audit-log.entity";
@@ -162,8 +162,8 @@ export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudSer
     return toReturn;
   }
 
-  public createAuditLog(log: Partial<AuditLog> | Partial<AuditLog>[]): Promise<AuditLog | AuditLog[]> {
-    return this.repo.manager.getRepository(AuditLog).save(log as Partial<AuditLog>);
+  public createAuditLog(log: Partial<AuditLog> | Partial<AuditLog>[], manager?: EntityManager): Promise<AuditLog | AuditLog[]> {
+    return (manager || this.repo.manager).getRepository(AuditLog).save(log as Partial<AuditLog>);
   }
 }
 
