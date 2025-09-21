@@ -8,6 +8,7 @@ import { EventLogTimelineDto } from "./dto/event-log-timeline.dto";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import moment from "moment";
 import 'moment-timezone';
+import { TSkipEventsLogOptions } from "./event-logs.interceptor";
 
 type TInterval = 'second' | 'minute' | 'hour' | 'day' | 'week';
 
@@ -60,7 +61,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     this.logger.debug(`Removed ${result.affected} expired records from event_logs table.`);
   }
 
-  audit(eventLog: Partial<EventLog>, request?: Request): void {
+  audit(eventLog: Partial<EventLog>, request?: Request, skipOptions?: TSkipEventsLogOptions): void {
     // @ts-ignore
     if (request?.[EventLogsService.requestHandled]) {
       this.logger.debug('Request already handled');
@@ -72,10 +73,20 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       const { user } = request;
       const userRole = user?.role ? EventLogsService.rolesMap[user.role] : UserRole.GUEST;
 
+      const payload = request.body ? { ...request.body } : null;
+      if (skipOptions && typeof skipOptions === 'object' && Array.isArray(skipOptions.body) && payload) {
+        for (const field of skipOptions.body) {
+          if (field in payload) {
+            // @ts-ignore
+            payload[field] = '*****';
+          }
+        }
+      }
+
       logPartial.userId = user?.id || null;
       logPartial.userName = user?.name || null;
       logPartial.userRole = userRole || UserRole.GUEST;
-      logPartial.payload = request.body || null;
+      logPartial.payload = payload;
       logPartial.method = request.method || null;
       logPartial.url = request.url || null;
       logPartial.entityId = request.params.id || null;
