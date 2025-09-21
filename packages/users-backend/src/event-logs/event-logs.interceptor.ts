@@ -17,8 +17,12 @@ import { SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
 import type { TEventLogServiceConfig } from "./event-logs.types";
 import { Reflector } from "@nestjs/core";
 
+export type TSkipEventsLogOptions = true | {
+  body?: string[];
+}
+
 export const SKIP_EVENTS_LOG = 'SKIP_EVENTS_LOG';
-export const SkipEventsLog = () => SetMetadata(SKIP_EVENTS_LOG, true);
+export const SkipEventsLog = (skipOptions: TSkipEventsLogOptions = true) => SetMetadata(SKIP_EVENTS_LOG, skipOptions);
 
 @Injectable()
 export class EventLogInterceptor implements NestInterceptor {
@@ -36,8 +40,8 @@ export class EventLogInterceptor implements NestInterceptor {
     const handler = context.getHandler();
     const controller = context.getClass();
 
-    const skipLog = this.reflector.getAllAndOverride<boolean>(SKIP_EVENTS_LOG, [handler, controller]);
-    if (skipLog) {
+    const skipOptions = this.reflector.getAllAndOverride<TSkipEventsLogOptions | undefined>(SKIP_EVENTS_LOG, [handler, controller]);
+    if (skipOptions === true) {
       return next.handle();
     }
 
@@ -57,13 +61,13 @@ export class EventLogInterceptor implements NestInterceptor {
         logEntry.duration = Date.now() - now;
         logEntry.statusCode = response.statusCode;
         logEntry.logLevel = response.statusCode >= 500 ? LogLevel.ERROR : (response.statusCode >= 400 ? LogLevel.WARNING : LogLevel.INFO);
-        this.eventLogService.audit(logEntry, request);
+        this.eventLogService.audit(logEntry, request, skipOptions);
       }),
       catchError((error: HttpException) => {
         logEntry.duration = Date.now() - now;
         logEntry.statusCode = error?.getStatus?.() || 500;
         logEntry.logLevel = logEntry.statusCode >= 500 ? LogLevel.ERROR : LogLevel.WARNING;
-        this.eventLogService.audit(logEntry, request);
+        this.eventLogService.audit(logEntry, request, skipOptions);
         return throwError(() => error);
       }),
     );

@@ -6,6 +6,7 @@ import { AuthService } from '../auth.service';
 import { SkipJWTGuard } from '../../jwt-auth/jwt-auth.guard';
 import { SkipPoliciesGuard } from '../../casl/policies.guard';
 import { LocalAuthLoginDto, LocalAuthTokenDto } from "./local-auth.dto";
+import { SkipEventsLog } from "../../event-logs";
 
 @SkipPoliciesGuard()
 @ApiTags('Authentication')
@@ -18,6 +19,9 @@ export default class LocalAuthController {
   @SkipJWTGuard()
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @SkipEventsLog({
+    body: ['password'],
+  })
   async login(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
