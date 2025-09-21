@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.7.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.6.0...@boarteam/boar-pack-users-backend@6.7.0) (2025-09-21)
+
+
+### Features
+
+* **users-backend:** enforce CASL policy in `getMany` method of `AuditLogsController` ([3664698](https://github.com/boarteam/boar-pack/commit/366469831066452c072bc89dc7584f757f68ab03))
+
+
+
+
+
 # [6.6.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.5.0...@boarteam/boar-pack-users-backend@6.6.0) (2025-09-21)
 
 
