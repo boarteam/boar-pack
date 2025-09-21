@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.5](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-backend@3.2.4...@boarteam/boar-pack-liquidity-monitor-backend@3.2.5) (2025-09-21)
+
+**Note:** Version bump only for package @boarteam/boar-pack-liquidity-monitor-backend
+
+
+
+
+
 ## [3.2.4](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-backend@3.2.3...@boarteam/boar-pack-liquidity-monitor-backend@3.2.4) (2025-09-21)
 
 **Note:** Version bump only for package @boarteam/boar-pack-liquidity-monitor-backend

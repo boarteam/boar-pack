@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.6.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.5.0...@boarteam/boar-pack-users-backend@6.6.0) (2025-09-21)
+
+
+### Features
+
+* **users-backend:** support selective event log skipping and payload sanitization ([b2ac3b1](https://github.com/boarteam/boar-pack/commit/b2ac3b1bf89ac039e17af67ebaf50cf1519da61d))
+
+
+
+
+
 # [6.5.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.4.0...@boarteam/boar-pack-users-backend@6.5.0) (2025-09-21)
 
 
