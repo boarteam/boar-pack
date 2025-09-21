@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.5.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.4.0...@boarteam/boar-pack-users-backend@6.5.0) (2025-09-21)
+
+
+### Bug Fixes
+
+* **users-backend:** log unknown permissions with warning instead of error ([9502ad9](https://github.com/boarteam/boar-pack/commit/9502ad94a36c4dc6e9695af43179132c73660163))
+
+
+### Features
+
+* **users-backend:** support custom EntityManager in `createAuditLog` method ([9b603a2](https://github.com/boarteam/boar-pack/commit/9b603a2bcc01a4b2f4ab80612c35bc20348934e2))
+
+
+
+
+
 # [6.4.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.3.0...@boarteam/boar-pack-users-backend@6.4.0) (2025-09-19)
 
 
