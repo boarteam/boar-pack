@@ -11,20 +11,22 @@ import { TRelationalFields } from "../ChangesModal";
 
 type TImportedJSON<Entity> = (Entity & { id: string })[]
 
-export type TUpdatedDiffResult<Entity> = {
-  tableData: (Entity & {
-    id: string | number,
-    diff: diff.Diff<any, any>[]
-  }),
+export type TUpdatedDiffResult = {
+  id: string | number,
+  diff: diff.Diff<any, any>[],
+  [key: string]: any,
 }
+
+type TUpdatedResult = ({
+  id: string | number,
+  version: string | number,
+  [key: string]: any,
+})
 
 export type TDiffResult<Entity> = {
   created: Entity[],
-  updated: ({
-    id: string | number,
-    version: string | number,
-  } & Entity)[],
-  tableData: TUpdatedDiffResult<Entity>[],
+  updated: TUpdatedResult[],
+  tableData: TUpdatedDiffResult[],
 }
 
 export function useImportExport<Entity, TPathParams = {}>({
@@ -56,7 +58,7 @@ export function useImportExport<Entity, TPathParams = {}>({
     }
   }, []);
 
-  const trueBooleanValues = [true, "True", "true", "1", "yes", "on"];
+  const trueBooleanValues = [true, "TRUE", "True", "true", "1", "yes", "on"];
 
   const buildExportUrl = useCallback(() => {
     const params = {
@@ -95,20 +97,42 @@ export function useImportExport<Entity, TPathParams = {}>({
 
   const normalizeRow = (row: any) => {
     const normalizedRow = { ...row };
-    if (relationalFields) {
-      for (const key in normalizedRow) {
-        // Relational fields handling
-        const relationalKey = key.replace('_id', '');
-        if (relationalFields.has(relationalKey)) {
-          const relation = relationalFields.get(relationalKey);
-          const id = normalizedRow[key];
-          normalizedRow[relationalKey] = relation.data[id] || null;
-        }
+    for (const key in normalizedRow) {
+      if (normalizedRow[key] === null) {
+        continue;
+      }
 
-        // Boolean values handling
-        if (keyedColumns[key]?.valueType === "switch") {
-          normalizedRow[key] = trueBooleanValues.includes(normalizedRow[key]);
-        }
+      // Relational fields handling
+      const relationalKey = key.replace('_id', '');
+      if (relationalFields?.has(relationalKey)) {
+        const relation = relationalFields.get(relationalKey);
+        const id = Number(normalizedRow[key]);
+        normalizedRow[relationalKey] = relation.data[id] || null;
+        continue;
+      }
+
+      // Boolean values handling
+      if (keyedColumns[key]?.valueType === "switch") {
+        normalizedRow[key] = trueBooleanValues.includes(normalizedRow[key]);
+        continue;
+      }
+
+      // Numeric values handling
+      if (keyedColumns[key]?.valueType === "digit") {
+        normalizedRow[key] = Number(normalizedRow[key]);
+        continue;
+      }
+
+      // Empty values handling
+      if (['', 'null'].includes(normalizedRow[key])) {
+        normalizedRow[key] = null;
+        continue;
+      }
+
+      // Text values handling
+      // Text by default if not specified
+      if (keyedColumns[key] && keyedColumns[key].valueType === undefined || 'text') {
+        normalizedRow[key] = String(normalizedRow[key]);
       }
     }
 
@@ -132,13 +156,21 @@ export function useImportExport<Entity, TPathParams = {}>({
       throw new Error('Choose CSV with changes.');
     }
 
+    console.time('fetch actual export from api');
+
     // File before now should be fetched from the same endpoint as the export button use
     const dataBefore = await fetchExportCsvArrayBuffer();
+
+    console.timeEnd('fetch actual export from api');
+
     const dataAfter = await fileAfter.arrayBuffer();
 
     // Data is an ArrayBuffer
     const workbookBefore = XLSX.read(dataBefore);
-    const workbookAfter = XLSX.read(dataAfter);
+    const workbookAfter = XLSX.read(dataAfter, {
+      type: 'array',
+      raw: true,
+    });
 
     const jsonBefore: TImportedJSON<Entity> = XLSX.utils.sheet_to_json(workbookBefore.Sheets[workbookBefore.SheetNames[0]], {
       defval: null
@@ -158,7 +190,7 @@ export function useImportExport<Entity, TPathParams = {}>({
         }
       )
     );
-    const newMap = {};
+    const newMap: { [key: string]: any } = {};
 
     const diffResult: TDiffResult<Entity> = {
       created: [],
@@ -185,7 +217,7 @@ export function useImportExport<Entity, TPathParams = {}>({
         continue;
       }
 
-      const differences = diff(oldMap[id], newMap[id], {
+      const differences = diff<any, any>(oldMap[id], newMap[id], {
         normalize: (currentPath, key, lhs, rhs) => {
           // We don't need to compare versions
           if (key === 'version') {
@@ -210,21 +242,22 @@ export function useImportExport<Entity, TPathParams = {}>({
       });
 
       if (differences) {
+        // console.log(differences);
         const changedFields = differences.map((diff) => diff.path?.[0]).filter((field: string | undefined) => field);
         const displayFields = changedRecordsColumnsConfig.map(column => column.dataIndex);
 
-        const payload = {
+        const payload: TUpdatedResult = {
           id,
           version: newMap[id].version,
         };
 
-        const tableData = {
+        const tableData: TUpdatedDiffResult = {
           id,
           diff: differences,
         };
 
         columns.forEach((column) => {
-          const key = column.dataIndex;
+          const key = String(column.dataIndex);
           const value = newMap[id][key] === undefined ? newMap[id][key + "_id"] : newMap[id][key];
           if (changedFields.includes(key)) {
             payload[key] = value;
@@ -250,7 +283,7 @@ export function useImportExport<Entity, TPathParams = {}>({
 
   const exportButton = <Tooltip title="Export">
     <Link to={buildExportUrl() ?? '#'} target={'_blank'}>
-      <Button icon={<DownloadOutlined />} />
+      <Button icon={<UploadOutlined />} />
     </Link>
   </Tooltip>;
 
@@ -258,7 +291,7 @@ export function useImportExport<Entity, TPathParams = {}>({
     <Tooltip title="Import changes CSV file">
       <Button
         loading={isLoadingImport}
-        icon={<UploadOutlined />}
+        icon={<DownloadOutlined />}
         onClick={openFileDialog}
       />
     </Tooltip>

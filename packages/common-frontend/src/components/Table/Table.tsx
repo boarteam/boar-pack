@@ -11,6 +11,7 @@ import { useEditableTable } from "./useEditableTable";
 import { useBulkEditing } from "./useBulkEditing";
 import { useImportExport } from "./useImportExport";
 import { ChangesModal } from "../ChangesModal";
+import { ProColumns } from "@ant-design/pro-components";
 
 const useStyles = createStyles(() => {
   return {
@@ -76,6 +77,14 @@ const Table = <
   const actionRef = actionRefProp || actionRefComponent;
   const [updatePopupData, setUpdatePopupData] = useState<Partial<Entity> | undefined>();
   const { styles } = useStyles();
+  const flatColumns: ProColumns<Entity>[] = [];
+  columns.forEach((column) => {
+    if (column.children && column.children.length > 0) {
+      flatColumns.push(...column.children);
+    } else {
+      flatColumns.push(column);
+    }
+  });
 
   const {
     editableConfig,
@@ -134,7 +143,7 @@ const Table = <
     diffResult,
     setDiffResult,
   } = useImportExport<Entity, TPathParams>({
-    columns,
+    columns: flatColumns,
     exportUrl,
     exportParams,
     changedRecordsColumnsConfig: importConfig?.changedRecordsColumnsConfig,
@@ -270,9 +279,12 @@ const Table = <
         actionRef.current?.reload();
         setDiffResult(undefined);
       }}
-      originRecordsColumnsConfig={columns}
+      originRecordsColumnsConfig={flatColumns}
       changedRecordsColumnsConfig={importConfig?.changedRecordsColumnsConfig}
-      createdRecordsColumnsConfig={importConfig?.createdRecordsColumnsConfig}
+      createdRecordsColumnsConfig={{
+        columnsSets,
+        columns: importConfig?.createdRecordsColumnsConfig
+      }}
       relationalFields={importConfig?.relationalFields}
     />
     {messagesContext}

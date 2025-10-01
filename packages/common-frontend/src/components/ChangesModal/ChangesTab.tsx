@@ -25,12 +25,8 @@ function ChangesTab<Entity> ({ updated, changedRecordsColumnsConfig }: {
           {diff.map((change, index) => {
             return (
               <div key={index} style={{ display: "flex", alignItems: "center" }}>
-                <div style={{ width: 100 }}>
-                  <Tag color="blue">{change.path.join(".")}</Tag>
-                </div>
-                <div>
-                  {change.lhs ? `${change.lhs.toString()} →` : ""} {change.rhs ? change.rhs.toString() : change.rhs === false ? 'false' : '-'}
-                </div>
+                <Tag color="blue">{change.path.join(".")}</Tag>
+                {change.lhs ? `${change.lhs.toString()} →` : "- →"} {change.rhs ? change.rhs : change.rhs === false ? 'false' : '-'}
               </div>
             );
           })}
@@ -41,7 +37,7 @@ function ChangesTab<Entity> ({ updated, changedRecordsColumnsConfig }: {
 
   return [
     <h3 key='changes-header'>Changed Values (Local Comparing)</h3>,
-    <ProTable<TUpdatedDiffResult<Entity>>
+    <ProTable<TUpdatedDiffResult>
       key='changes-data'
       dataSource={updated}
       columns={updateColumns}
