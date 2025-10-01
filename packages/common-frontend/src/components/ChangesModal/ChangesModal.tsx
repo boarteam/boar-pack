@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import ConflictsTab from "./ConflictsTab";
 import ErrorsTab from "./ErrorsTab";
 import ResultsTab from "./ResultsTab";
-import NewRecordsTab from "./NewRecordsTab";
+import NewRecordsTab, { TCreatedRecordsColumnsConfig } from "./NewRecordsTab";
 import ChangesTab from "./ChangesTab";
 import { TDiffResult } from "../Table/useImportExport";
 import { CancelablePromise } from "@boarteam/boar-pack-users-frontend/dist/src/tools/api-client";
@@ -79,13 +79,10 @@ export function ChangesModal<
   relationalFields?: TRelationalFields,
   originRecordsColumnsConfig: ProColumns<Entity>[],
   changedRecordsColumnsConfig: ProColumns<Entity>[];
-  createdRecordsColumnsConfig: ProColumns<Entity>[];
+  createdRecordsColumnsConfig: TCreatedRecordsColumnsConfig<Entity>;
 }) {
-  if (!changes) return null;
-
   const { styles } = useStyles();
   const [activeTab, setActiveTab] = useState<string>(ModalTabs.changes);
-  const { created, updated, tableData } = changes;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [importResponse, setImportResponse] = useState<TImportResponse>();
   const [serverErrors, setServerErrors] = useState<TServerErrorItem[]>([]);
@@ -96,6 +93,18 @@ export function ChangesModal<
       setActiveTab(ModalTabs.errors);
     }
   }, [serverErrors.length]);
+
+  if (!changes) return null;
+
+  const { created, updated, tableData } = changes;
+
+  const onCancel = () => {
+    setActiveTab(ModalTabs.changes);
+    setImportResponse(undefined);
+    setServerErrors([]);
+    setResolvedData([])
+    onClose();
+  }
 
   const handleCommitClick = async () => {
     // TODO: Client validation
@@ -223,19 +232,19 @@ export function ChangesModal<
     <Modal
       title="Preview changes"
       open={true}
-      onCancel={onClose}
+      onCancel={onCancel}
       footer={[
-        <Button key="close" onClick={onClose}>Close</Button>,
+        <Button key="close" onClick={onCancel}>Close</Button>,
         <Button
           loading={isLoading}
           type="primary"
           key="approve"
           onClick={handleCommitClick}
           disabled={
-          importResponse?.conflicts?.length === 0
+            importResponse?.conflicts?.length === 0
             || serverErrors.length > 0
             || updated.length === 0 && created.length === 0
-        }
+          }
         >
           Commit
         </Button>,
@@ -249,5 +258,5 @@ export function ChangesModal<
         items={tabList}
       />
     </Modal>
-  );
+  )
 }

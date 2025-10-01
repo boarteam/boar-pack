@@ -62,8 +62,8 @@ function ConflictsTab<Entity>({
     field-current: 'current field name from server',
     ...
   }*/
-  const [resolvedData, setLocalResolvedData] = useState<Partial<Entity>[]>(conflicts.map(conflict => (
-    conflict.fields.reduce((acc, currentValue) => {
+  const [resolvedData, setLocalResolvedData] = useState<Record<string, any>[]>(conflicts.map(conflict => (
+    conflict.fields.reduce((acc: Record<string, any>, currentValue) => {
       const key = getNormalizedKey(currentValue.field);
       acc[key] = getRelationalData(key, currentValue.imported_value);
       acc[getCurrentKey(key)] = getRelationalData(key, currentValue.current_value);
@@ -77,7 +77,7 @@ function ConflictsTab<Entity>({
 
     const payload = resolvedData.map((obj, i) => {
       const data = { ...obj };
-      // Remove all -current postfix keys from the resolved data
+      // Remove "current" postfix key from the resolved data
       Object.keys(obj).forEach(key => {
         if (key.endsWith('-current')) {
           delete data[key];
@@ -123,6 +123,8 @@ function ConflictsTab<Entity>({
         ...originColumn,
         dataIndex: getCurrentKey(key),
         editable: false,
+        // Should override render to keep -current value
+        render: (node) => node
       });
       conflictColumns.push({
         ...originColumn,
