@@ -64,8 +64,9 @@ export class WebsocketsClients<IncomeEventType,
     ws.on('message', (msg: Buffer) => {
       let event: IncomeEventType;
       try {
-        this.logger.verbose(msg);
-        event = parse(String(msg), null, this.toSafeNumberOrString) as IncomeEventType;
+        const str = String(msg);
+        this.logger.verbose(str);
+        event = parse(str, null, this.toSafeNumberOrString) as IncomeEventType;
       } catch (e) {
         this.logger.error(`Error, while parsing message from WS server ${msg}`);
         this.logger.error(e, e.stack);
@@ -123,7 +124,7 @@ export class WebsocketsClients<IncomeEventType,
     }, timeout) as unknown as number;
   }
 
-  public send<T>(client: WebSocket, data: T): Promise<void> {
+  public send(client: WebSocket, data: OutgoingEventType): Promise<void> {
     return new Promise((resolve, reject) => {
       const send = () => {
         client.send(JSON.stringify(data), (err) => {
