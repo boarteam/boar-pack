@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.8.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.7.0...@boarteam/boar-pack-users-backend@6.8.0) (2025-10-13)
+
+
+### Features
+
+* **users-backend:** add FieldsPermissionInterceptor for dynamic field-level access control ([df88614](https://github.com/boarteam/boar-pack/commit/df88614e6bf88ec9bc48d2a572eafdec5a288f3d))
+
+
+
+
+
 # [6.7.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.6.0...@boarteam/boar-pack-users-backend@6.7.0) (2025-09-21)
 
 
