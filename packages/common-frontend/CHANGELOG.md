@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.2.1...@boarteam/boar-pack-common-frontend@3.3.0) (2025-10-13)
+
+
+### Features
+
+* **common-frontend:** ADM-249 add file comparison and diff calculation for import/export functionality ([3b45747](https://github.com/boarteam/boar-pack/commit/3b45747b697a8fc28488854edd91faf07ee0301d))
+* **common-frontend:** ADM-249 Added create option for a Relational Select component ([aa4d6d8](https://github.com/boarteam/boar-pack/commit/aa4d6d8ac6293a5a25a112cb5eb4432caf9ef059))
+* **common-frontend:** ADM-249 Finished import modal ([5ee3c31](https://github.com/boarteam/boar-pack/commit/5ee3c31ff42d51be30a2881af2571d5e95b2840c))
+* **common-frontend:** ADM-249 Improvements and bug fixes ([fb3c483](https://github.com/boarteam/boar-pack/commit/fb3c483790128c60b4b249f2ea4fc1c150ee8cd7))
+* **common-frontend:** ADM-249 Optimizations ([1113487](https://github.com/boarteam/boar-pack/commit/111348709a5fdeb07f24adec25f14ff797da7572))
+
+
+
+
+
 ## [3.2.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.2.0...@boarteam/boar-pack-common-frontend@3.2.1) (2025-09-18)
 
 
