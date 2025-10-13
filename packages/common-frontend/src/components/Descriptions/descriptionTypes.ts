@@ -28,6 +28,7 @@ export type TDescriptionGetRequestParams = {
 export type DescriptionsRefType<Entity> = {
   reset: () => void;
   submit: () => void;
+  update: () => Promise<any>;
   setFieldErrors: (fields: FieldData<Entity>[]) => void;
 };
 

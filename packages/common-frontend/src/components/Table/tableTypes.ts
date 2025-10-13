@@ -8,6 +8,7 @@ import { RowEditableConfig } from "@ant-design/pro-utils";
 import { ProColumns } from "@ant-design/pro-components";
 import { TImportResponse, TRelationalFields } from "../ChangesModal";
 import { CancelablePromise } from "@boarteam/boar-pack-users-frontend/dist/src/tools/api-client";
+import { FieldsEdit } from "../Descriptions";
 
 export type IWithId = {
   id: string | number,
@@ -103,6 +104,7 @@ interface BaseProps<Entity,
   editPopupTitle?: string;
   createPopupTitle?: string;
   descriptionsMainTitle?: ProColumns<Entity>['title'] | null;
+  fieldsEditType?: FieldsEdit;
 }
 
 export interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}, ImportRequestParams = {}> {
