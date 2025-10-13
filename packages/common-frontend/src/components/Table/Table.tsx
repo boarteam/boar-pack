@@ -1,10 +1,10 @@
 import ProTable, { ActionType } from "@ant-design/pro-table";
 import { useEffect, useRef, useState } from "react";
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 import { TFilterParams, TFilters, TSort, TTableProps } from "./tableTypes";
 import useColumnsSets from "./useColumnsSets";
 import { createStyles } from "antd-style";
-import { Descriptions } from "../Descriptions";
+import { Descriptions, DescriptionsRefType, FieldsEdit } from "../Descriptions";
 import { KEY_SYMBOL, useCreation } from "./useCreation";
 import { getTableDataQueryParams } from "./getTableDataQueryParams";
 import { useEditableTable } from "./useEditableTable";
@@ -77,7 +77,15 @@ const Table = <
   const actionRef = actionRefProp || actionRefComponent;
   const [updatePopupData, setUpdatePopupData] = useState<Partial<Entity> | undefined>();
   const { styles } = useStyles();
+  const ref = useRef<DescriptionsRefType<Entity>>();
   const flatColumns: ProColumns<Entity>[] = [];
+  const [isLoading, setIsLoading] = useState(false);
+
+  const editModalCancelHandler = () => {
+    actionRef?.current?.reload();
+    setUpdatePopupData(undefined);
+  }
+
   columns.forEach((column) => {
     if (column.children && column.children.length > 0) {
       flatColumns.push(...column.children);
@@ -254,19 +262,33 @@ const Table = <
       open={updatePopupData !== undefined}
       width='80%'
       closeIcon={true}
-      footer={null}
-      onCancel={() => {
-        actionRef?.current?.reload();
-        setUpdatePopupData(undefined);
-      }}
+      footer={rest.fieldsEditType === FieldsEdit.All ? <>
+        <Button
+          type='primary'
+          loading={isLoading}
+          onClick={() => {
+            setIsLoading(true);
+            ref.current?.update()
+              .then(() => {
+              editModalCancelHandler();
+            })
+              .finally(() => setIsLoading(false));
+          }}>
+          Save
+        </Button>
+        <Button onClick={editModalCancelHandler}>Cancel</Button>
+      </> : null}
+      onCancel={editModalCancelHandler}
     >
       <Descriptions<Entity, CreateDto, UpdateDto, TPathParams>
         mainTitle={descriptionsMainTitle}
         columns={columns ?? []}
         entity={updatePopupData}
+        ref={ref}
         canEdit={true}
         onUpdate={onUpdate}
         entityToUpdateDto={entityToUpdateDto}
+        fieldsEditType={rest.fieldsEditType ?? FieldsEdit.Single}
       />
     </Modal>
     <ChangesModal<

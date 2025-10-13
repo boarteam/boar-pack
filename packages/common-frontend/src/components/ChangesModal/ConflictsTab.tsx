@@ -77,7 +77,7 @@ function ConflictsTab<Entity>({
 
     const payload = resolvedData.map((obj, i) => {
       const data = { ...obj };
-      // Remove "current" postfix key from the resolved data
+      // Remove the "current" postfix key from the resolved data
       Object.keys(obj).forEach(key => {
         if (key.endsWith('-current')) {
           delete data[key];
