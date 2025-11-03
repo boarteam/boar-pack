@@ -4,7 +4,7 @@ import { TUser } from "../users/entities/user.entity";
 import { IncomingMessage } from "http";
 import passport from "passport";
 import { Interval } from "@nestjs/schedule";
-import { WS_AUTH_STRATEGY } from "./ws-auth.constants";
+import { WS_AUTH_CLIENT_AUTHENTICATED, WS_AUTH_STRATEGY } from "./ws-auth.constants";
 
 declare module 'ws' {
   interface WebSocket {
@@ -39,10 +39,14 @@ export class WsAuthService {
 
         if (err) {
           this.logger.error(err, err.stack);
+          socket.send('Authentication error');
+          socket.close();
           return resolve(null);
         }
         if (!user) {
           this.logger.warn(`User was not taken by ${this.strategy} auth strategy`);
+          socket.send('Authentication error');
+          socket.close();
           return resolve(null);
         }
 
@@ -83,6 +87,7 @@ export class WsAuthService {
     }
 
     this.clients.add(client);
+    client.emit(WS_AUTH_CLIENT_AUTHENTICATED);
     client.on('pong', () => {
       this.clientsToTerminate.delete(client);
     });
