@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.9.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.8.0...@boarteam/boar-pack-users-backend@6.9.0) (2025-11-03)
+
+
+### Features
+
+* **users-backend:** improve WebSocket authentication handling ([8db0e9e](https://github.com/boarteam/boar-pack/commit/8db0e9ea70e0818762aefdb1e244afffa332f47a))
+
+
+
+
+
 # [6.8.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.7.0...@boarteam/boar-pack-users-backend@6.8.0) (2025-10-13)
 
 
