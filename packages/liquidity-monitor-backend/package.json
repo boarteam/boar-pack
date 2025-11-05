@@ -16,18 +16,18 @@
   "dependencies": {
     "@boarteam/boar-pack-common-backend": "^3.1.1",
     "@boarteam/boar-pack-users-backend": "^6.9.0",
-    "@nestjs/common": "^11.0.10",
-    "@nestjs/config": "^4.0.0",
-    "@nestjs/core": "^11.0.10",
-    "@nestjs/schedule": "^5.0.1",
-    "@nestjs/swagger": "^11.0.4",
+    "@nestjs/common": "^11.1.8",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.1.8",
+    "@nestjs/schedule": "^6.0.1",
+    "@nestjs/swagger": "^11.2.1",
     "@nestjs/typeorm": "^11.0.0",
-    "joi": "^17.12.2",
+    "joi": "^18.0.1",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
-    "nestjs-joi": "^1.10.1",
+    "nestjs-joi": "^1.12.0",
     "openapi-typescript-codegen": "^0.29.0",
-    "typeorm": "^0.3.25"
+    "typeorm": "^0.3.27"
   },
   "scripts": {
     "yalc:push": "yalc push",

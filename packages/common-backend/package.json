@@ -18,8 +18,8 @@
   },
   "gitHead": "c56c90047b5cb4e4d719890553e61f8d7e6ff25f",
   "dependencies": {
-    "@nestjs/websockets": "^11.0.10",
-    "lossless-json": "^4.0.2",
+    "@nestjs/websockets": "^11.1.8",
+    "lossless-json": "^4.3.0",
     "reflect-metadata": "^0.2.2"
   }
 }
