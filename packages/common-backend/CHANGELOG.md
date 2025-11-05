@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-backend@3.1.1...@boarteam/boar-pack-common-backend@4.0.0) (2025-11-05)
+
+
+### chore
+
+* **deps:** update devDependencies and lockfile ([bd216cf](https://github.com/boarteam/boar-pack/commit/bd216cf0bf81911a57feb04ba686e4c17723d078))
+
+
+### BREAKING CHANGES
+
+* **deps:** nestjs and typeorm version is updated
+
+
+
+
+
 ## [3.1.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-backend@3.1.0...@boarteam/boar-pack-common-backend@3.1.1) (2025-10-13)
 
 
