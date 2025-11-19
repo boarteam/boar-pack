@@ -18,7 +18,7 @@ type RelationSelectProps<T, CreateDto = T> = ProFormSelectProps & {
   createPopupTitle?: string,
 };
 
-export const RelationSelect = function <T, CreateDto>({
+export const RelationSelect = function <T, CreateDto = T>({
   selectedItem,
   onCreate,
   creationColumns,
