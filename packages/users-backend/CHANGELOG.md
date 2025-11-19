@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@7.0.0...@boarteam/boar-pack-users-backend@7.1.0) (2025-11-19)
+
+
+### Features
+
+* **liquidity-monitor:** add targets timeline support and extend statistics tracking ([6ee67e7](https://github.com/boarteam/boar-pack/commit/6ee67e700e7c2963f9e51cfd1e4ffc3fc4444aba))
+
+
+
+
+
 # [7.0.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@6.9.0...@boarteam/boar-pack-users-backend@7.0.0) (2025-11-05)
 
 

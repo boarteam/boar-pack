@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.3.0...@boarteam/boar-pack-common-frontend@3.3.1) (2025-11-19)
+
+
+### Bug Fixes
+
+* **common-frontend:** add default type for `CreateDto` in `RelationSelect` component ([141c9c5](https://github.com/boarteam/boar-pack/commit/141c9c5c9b8a59e92ff93b004834f281f15f4774))
+
+
+
+
+
 # [3.3.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.2.1...@boarteam/boar-pack-common-frontend@3.3.0) (2025-10-13)
 
 
