@@ -3,18 +3,35 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeor
 export enum UserConnectionTarget {
   FIX_SERVER = 'fix-server',
   WEBSOCKET_SERVER = 'websocket-server',
+  TOKEN = 'token',
+  ACCOUNT = 'account',
 }
+
+export type TComplexTarget = UserConnectionTarget.FIX_SERVER | UserConnectionTarget.WEBSOCKET_SERVER;
 
 @Entity('users_connections_statistic')
 export class UsersConnectionsStatistic {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  /**
+   * @deprecated use targetId instead
+   * Will be removed after migration to targetId
+   */
   @Column({
     type: 'uuid',
-    nullable: false,
+    nullable: true,
   })
-  userId: string;
+  userId: string | null;
+
+  /**
+   * Identifier of the target (e.g., user id, token id, account id, etc.)
+   */
+  @Column({
+    type: 'uuid',
+    nullable: true, // convert to false after migration
+  })
+  targetId: string | null;
 
   @Column({
     type: 'enum',

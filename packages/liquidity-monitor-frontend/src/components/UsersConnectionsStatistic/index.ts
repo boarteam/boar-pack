@@ -5,3 +5,4 @@ export type TUser = {
 
 export * from './UsersConnectionsStatisticCards';
 export * from './UsersConnectionsStatisticTimeline';
+export * from './TargetsConnectionsStatisticCards';
