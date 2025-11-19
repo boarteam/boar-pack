@@ -28,7 +28,7 @@ import { FieldsPermissionInterceptor } from "../casl/fields-permission.intercept
   query: {
     alwaysPaginate: true,
     exclude: ['pass'],
-    softDelete: true
+    softDelete: true,
   },
   routes: {
     only: ['getManyBase', 'getOneBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],

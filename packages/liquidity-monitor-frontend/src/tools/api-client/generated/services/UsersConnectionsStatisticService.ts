@@ -30,4 +30,27 @@ export class UsersConnectionsStatisticService {
             },
         });
     }
+    /**
+     * @returns UsersConnectionsStatisticDto
+     * @throws ApiError
+     */
+    public getTargetsTimeline({
+        targetIds,
+        startTime,
+        endTime,
+    }: {
+        targetIds: Array<string>,
+        startTime?: string,
+        endTime?: string,
+    }): CancelablePromise<Array<UsersConnectionsStatisticDto>> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/users-connections-statistic/targets-timeline',
+            query: {
+                'startTime': startTime,
+                'endTime': endTime,
+                'targetIds': targetIds,
+            },
+        });
+    }
 }

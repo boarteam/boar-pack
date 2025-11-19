@@ -4,6 +4,7 @@ export class UsersConnectionsStatisticDto {
   time: string;
   records: number;
   userId: string;
+  targetId: string;
   target: UserConnectionTarget;
   startTime: string;
   endTime: string;
