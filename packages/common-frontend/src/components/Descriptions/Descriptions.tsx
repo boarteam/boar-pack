@@ -89,6 +89,21 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
 
   const sections = columnsToDescriptionItemProps(columns, mainTitle);
 
+  const recalculateErrors = () => {
+    // Recalculate the error count per section (tab) after validation
+    const newErrorsPerSection = new Map<string, number>();
+    sections.forEach((section) => {
+      let errorCount = 0;
+      section.columns.forEach((column) => {
+        if (form.getFieldError(column.dataIndex as NamePath<Entity>)?.length > 0) {
+          errorCount++;
+        }
+      });
+      newErrorsPerSection.set(section.key, errorCount);
+    });
+    setErrorsPerSection(newErrorsPerSection);
+  }
+
   const columnDataIndexToSection = sections.reduce((acc, section) => {
     section.columns.forEach(column => {
       if (Array.isArray(column.dataIndex)) {
@@ -119,18 +134,21 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     } catch (error) {
       console.error('Validation or submission failed:', error);
     } finally {
-      // Recalculate the error count per section (tab) after validation
-      const newErrorsPerSection = new Map<string, number>();
-      sections.forEach((section) => {
-        let errorCount = 0;
-        section.columns.forEach((column) => {
-          if (form.getFieldError(column.dataIndex as NamePath<Entity>)?.length > 0) {
-            errorCount++;
-          }
-        });
-        newErrorsPerSection.set(section.key, errorCount);
-      });
-      setErrorsPerSection(newErrorsPerSection);
+      recalculateErrors();
+    }
+  };
+
+  const handleUpdate = async () => {
+    try {
+      // Validate all fields in the form
+      const data = await form.validateFields();
+      // Let the parent component handle the update logic
+      return onSave(null, data, null);
+    } catch (error) {
+      console.error('Validation or submission failed:', error);
+      throw error;
+    } finally {
+      recalculateErrors();
     }
   };
 
@@ -140,6 +158,7 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
       form.resetFields();
     },
     submit: () => handleSubmit(),
+    update: () => handleUpdate(),
     setFieldErrors: (fields: FieldData<Entity>[]) => {
       form.setFields(fields)
     }
@@ -216,7 +235,11 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
         await onUpdate({
           ...queryParams,
           ...{} as Partial<Entity>,
-          requestBody: entityToUpdateDto(pick(record, [propName as keyof Entity])),
+          requestBody: entityToUpdateDto(
+            propName === null
+              ? record
+              : pick(record, [propName as keyof Entity])
+          ),
         });
       }
 

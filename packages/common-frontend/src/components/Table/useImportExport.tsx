@@ -153,7 +153,7 @@ export function useImportExport<Entity, TPathParams = {}>({
     const fileAfter = e.target.files[0];
 
     if (!fileAfter) {
-      throw new Error('Choose CSV with changes.');
+      throw new Error('Choose file with changes.');
     }
 
     console.time('fetch actual export from api');
@@ -179,9 +179,6 @@ export function useImportExport<Entity, TPathParams = {}>({
     const jsonAfter: TImportedJSON<Entity> = XLSX.utils.sheet_to_json(workbookAfter.Sheets[workbookAfter.SheetNames[0]], {
       defval: null
     });
-
-    // TODO: Check JSON structure
-    // ...
 
     const oldMap = Object.fromEntries(
       jsonBefore.map(
@@ -218,7 +215,7 @@ export function useImportExport<Entity, TPathParams = {}>({
       }
 
       const differences = diff<any, any>(oldMap[id], newMap[id], {
-        normalize: (currentPath, key, lhs, rhs) => {
+        normalize: (currentPath, key, lhs, rhs): [any, any] => {
           // We don't need to compare versions
           if (key === 'version') {
             return [true, true];
@@ -288,7 +285,7 @@ export function useImportExport<Entity, TPathParams = {}>({
   </Tooltip>;
 
   const importButton = <>
-    <Tooltip title="Import changes CSV file">
+    <Tooltip title="Import changes file">
       <Button
         loading={isLoadingImport}
         icon={<DownloadOutlined />}
@@ -300,7 +297,7 @@ export function useImportExport<Entity, TPathParams = {}>({
       type="file"
       ref={fileInputRef}
       style={{ display: 'none' }}
-      accept=".csv"
+      accept=".csv, .xlsx"
       onChange={handleFileAsync}
     />
   </>

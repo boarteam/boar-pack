@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.3.0...@boarteam/boar-pack-common-frontend@3.4.0) (2025-10-13)
+
+
+### Features
+
+* **common-frontend:** ADM-330 enhance Descriptions component with error recalculation and update handling ([6c56848](https://github.com/boarteam/boar-pack/commit/6c56848923b70efdc51ede951741b963bdd75691))
+
+
+
+
+
 # [3.3.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.2.1...@boarteam/boar-pack-common-frontend@3.3.0) (2025-10-13)
 
 
