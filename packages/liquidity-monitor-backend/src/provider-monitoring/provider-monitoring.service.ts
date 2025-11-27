@@ -21,6 +21,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     attempts: number,
     lastNotification: number
   }>();
+  // МОЖЕШЬ ПРОСТАВИТЬ ТУТ [60, 60, 60, 60] для теста активных периодов
   private readonly exponentialBackoff = [299, 599, 1799, 3599];
   private providerActivityInterval: NodeJS.Timeout | null = null;
 
@@ -107,6 +108,8 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     const providers = (await this.fetchProviders())
       .filter(provider => provider.threshold) // Skip providers without a threshold;
 
+    console.log('fetchProviders', providers)
+
     const providersIds = providers.map(provider => provider.id);
 
     if (!providersIds.length) {
@@ -173,6 +176,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
       const latestQuoteDate = latestQuotesByProviders.get(provider.id);
       const diff = latestQuoteDate ? Math.round(now - latestQuoteDate.getTime()) / 1000 : null;
       const isProblematic = diff === null || provider.threshold && (diff > provider.threshold);
+      console.log('sendNotifications', diff, isProblematic)
 
       if (isProblematic) {
         const log = diff === null ? `Provider ${provider.name} has no quotes` : `Provider ${provider.name} has no quotes in the last ${diff} seconds`;
@@ -182,6 +186,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
         const previousNotification = this.notificationsJournal.get(provider.id);
         if (previousNotification) {
           const diff = (now - previousNotification.lastNotification) / 1000;
+          console.log('sendNotifications inner', diff, previousNotification.attempts, this.exponentialBackoff[previousNotification.attempts])
           if (previousNotification.attempts >= this.exponentialBackoff.length || diff < this.exponentialBackoff[previousNotification.attempts]) {
             this.logger.warn(`Skipping notification for ${provider.name} due to exponential backoff`);
             return;
