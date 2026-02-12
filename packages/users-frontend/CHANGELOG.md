@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@3.1.4...@boarteam/boar-pack-users-frontend@3.2.0) (2026-02-12)
+
+
+### Features
+
+* **users-frontend:** allow custom render function for user permissions in `UsersTable` ([b898dd8](https://github.com/boarteam/boar-pack/commit/b898dd8c2048f148c5f1f7cd72a2d9de5b3d2f1b))
+
+
+
+
+
 ## [3.1.5](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@3.1.4...@boarteam/boar-pack-users-frontend@3.1.5) (2025-11-19)
 
 **Note:** Version bump only for package @boarteam/boar-pack-users-frontend
