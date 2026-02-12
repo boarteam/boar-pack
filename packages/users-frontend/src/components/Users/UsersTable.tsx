@@ -23,9 +23,11 @@ type TUserFilterParams = {
 
 export const UsersTable = ({
   permissionsConfig = [],
+  renderPermissions,
   userPageUrlPrefix = '/admin/users',
 }: {
   permissionsConfig?: PermissionsConfig;
+  renderPermissions?: (user: User) => React.ReactNode;
   userPageUrlPrefix?: string | null;
 }) => {
   const columns = useUsersColumns({
@@ -67,10 +69,12 @@ export const UsersTable = ({
       expandable={{
         // hide expandable icon for new records which are not saved yet, since you can't set permissions for them
         rowExpandable: record => !isRecordNew(record),
-        expandedRowRender: record => <PermissionsList
-          user={record}
-          permissionsConfig={permissionsConfig}
-        />,
+        expandedRowRender: renderPermissions
+          ? record => <>{renderPermissions(record)}</>
+          : record => <PermissionsList
+            user={record}
+            permissionsConfig={permissionsConfig}
+          />,
       }}
       viewOnly={!canManageAll}
       editable={{
