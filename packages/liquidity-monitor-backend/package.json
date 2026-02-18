@@ -2,9 +2,11 @@
   "name": "@boarteam/boar-pack-liquidity-monitor-backend",
   "version": "4.1.0",
   "description": "Backend for Liquidity Monitor",
-  "main": "src/index",
+  "main": "dist/index",
+  "types": "dist/index.d.ts",
   "files": [
-    "src"
+    "src",
+    "dist"
   ],
   "repository": "git@github.com:boarteam/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
@@ -30,6 +32,7 @@
     "typeorm": "^0.3.27"
   },
   "scripts": {
+    "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "yalc:push": "yalc push",
     "gen-types": "SWAGGER=true JWT_SECRET=swagger nest start"
   },
