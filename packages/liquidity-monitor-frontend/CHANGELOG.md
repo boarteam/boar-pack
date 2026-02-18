@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-frontend@2.1.0...@boarteam/boar-pack-liquidity-monitor-frontend@3.0.0) (2026-02-18)
+
+
+### Features
+
+* **build:** add `tsconfig.build.json` and update build scripts across packages ([0cd9899](https://github.com/boarteam/boar-pack/commit/0cd989981357e02106db0c658f67058ae46baf7f))
+* **liquidity-monitor-frontend:** refactor API client usage and introduce `ApiClientContext` ([1ba31cf](https://github.com/boarteam/boar-pack/commit/1ba31cfad302c7a034aed7155ed437cc2ab87fbc))
+* **users-frontend:** refactor API client handling and introduce `ApiClientContext` ([4784202](https://github.com/boarteam/boar-pack/commit/4784202fd9bf664bddf19a6ac78104a81931d6d7))
+
+
+
+
+
 # [2.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-liquidity-monitor-frontend@2.0.1...@boarteam/boar-pack-liquidity-monitor-frontend@2.1.0) (2025-11-19)
 
 

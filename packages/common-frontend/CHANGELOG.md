@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.3.1...@boarteam/boar-pack-common-frontend@4.0.0) (2026-02-18)
+
+
+### Features
+
+* **common-frontend:** improve typings, refactor components, and add build configuration ([0a059f8](https://github.com/boarteam/boar-pack/commit/0a059f8e365429a51596526aa591b43d671b4965))
+
+
+
+
+
 ## [3.3.1](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-frontend@3.3.0...@boarteam/boar-pack-common-frontend@3.3.1) (2025-11-19)
 
 
