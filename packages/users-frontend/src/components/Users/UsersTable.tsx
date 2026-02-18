@@ -1,6 +1,6 @@
 import { Table, isRecordNew, Operators } from "@boarteam/boar-pack-common-frontend";
-import apiClient from "@@api/apiClient";
-import { User, UserCreateDto, UserUpdateDto } from "@@api/generated";
+import { useApiClient } from "../ApiClientContext";
+import { User, UserCreateDto, UserUpdateDto } from "../../tools/api-client/generated";
 import { useUsersColumns } from "./useUsersColumns";
 import pick from "lodash/pick";
 import { PermissionsConfig, PermissionsList } from "./PermissionsList";
@@ -30,6 +30,7 @@ export const UsersTable = ({
   renderPermissions?: (user: User) => React.ReactNode;
   userPageUrlPrefix?: string | null;
 }) => {
+  const apiClient = useApiClient();
   const columns = useUsersColumns({
     userPageUrlPrefix,
   });
@@ -45,8 +46,8 @@ export const UsersTable = ({
         return apiClient.users.getManyBaseUsersControllerUser(params);
       }}
       onCreate={params => apiClient.users.createOneBaseUsersControllerUser(params)}
-      onUpdate={params => apiClient.users.updateOneBaseUsersControllerUser(params)}
-      onDelete={params => apiClient.users.deleteOneBaseUsersControllerUser(params)}
+      onUpdate={params => apiClient.users.updateOneBaseUsersControllerUser(params as any)}
+      onDelete={params => apiClient.users.deleteOneBaseUsersControllerUser(params as any)}
       entityToCreateDto={entityToDto}
       entityToUpdateDto={entityToDto}
       pathParams={{}}

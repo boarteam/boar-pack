@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import { ProDescriptionsItemProps } from "@ant-design/pro-descriptions";
-import { TelegramSettingsUpdateDto } from "@@api/generated";
+import { TelegramSettingsUpdateDto } from "../../tools/api-client/generated";
 
 type TSettingsContext = {
   columns: ProDescriptionsItemProps<TelegramSettingsUpdateDto, 'text'>[]

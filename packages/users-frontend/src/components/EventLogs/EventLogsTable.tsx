@@ -1,5 +1,5 @@
-import apiClient from "@@api/apiClient";
-import { EventLog, EventLogCreateDto, EventLogTimelineQueryDto, EventLogUpdateDto } from "@@api/generated";
+import { useApiClient } from "../ApiClientContext";
+import { EventLog, EventLogCreateDto, EventLogTimelineQueryDto, EventLogUpdateDto } from "../../tools/api-client/generated";
 import { useEventLogsColumns } from "./useEventLogsColumns";
 import { Table, TColumnsSet } from "@boarteam/boar-pack-common-frontend";
 import { eventLogsSearchableColumns } from "./eventLogsSearchableColumns";
@@ -88,6 +88,7 @@ const EventLogsTable = ({
 }: EventLogTimelineQueryDto & {
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
 }) => {
+  const apiClient = useApiClient();
   const columns = useEventLogsColumns({
     startTime,
     endTime,

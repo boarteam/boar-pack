@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Column } from '@ant-design/plots';
 import { ColumnConfig } from "@ant-design/plots/es/components/column";
-import { EventLogTimelineDto, EventLogTimelineQueryDto } from "@@api/generated";
-import apiClient from "@@api/apiClient";
+import { EventLogTimelineDto, EventLogTimelineQueryDto } from "../../tools/api-client/generated";
+import { useApiClient } from "../ApiClientContext";
 import { Button } from "antd";
 import { PageLoading } from "@ant-design/pro-layout";
 import { useModel } from "umi";
@@ -16,6 +16,7 @@ export const EventLogsTimeline: React.FC<TEventLogsTimelineProps> = ({
   endTime,
   onDateRangeChange,
 }) => {
+    const apiClient = useApiClient();
     // @ts-ignore
     const { initialState } = useModel('@@initialState');
     // @ts-ignore

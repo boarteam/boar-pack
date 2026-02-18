@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { User, UserCreateDto } from "@@api/generated";
+import { User, UserCreateDto } from "../../tools/api-client/generated";
 import { Alert, Card, Switch, Table, Typography, Space } from "antd";
-import apiClient from "@@api/apiClient";
+import { useApiClient } from "../ApiClientContext";
 import { useAccess } from "umi";
 
 const { Title } = Typography;
@@ -29,6 +29,7 @@ export const PermissionsList: React.FC<PermissionsListProps> = ({
   user,
   permissionsConfig,
 }) => {
+  const apiClient = useApiClient();
   const [permissionsSet, setPermissionsSet] = useState<Set<string>>(
     new Set(user.permissions as string[])
   );

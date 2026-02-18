@@ -2,8 +2,8 @@ import { ProDescriptions } from "@ant-design/pro-components";
 import { Button, Card, message, Space, Typography } from "antd";
 import React, { useContext } from "react";
 import { useIntl } from "umi";
-import apiClient from "@@api/apiClient";
-import { EventSettingsDto, TelegramSettingsUpdateDto } from "@@api/generated";
+import { useApiClient } from "../ApiClientContext";
+import { EventSettingsDto, TelegramSettingsUpdateDto } from "../../tools/api-client/generated";
 import { SettingsContext } from "../../components/Settings/settingsContext";
 
 const { Title, Text, Paragraph } = Typography;
@@ -12,28 +12,29 @@ const isBoolean = (value: any) => {
   return [true, false].includes(value)
 }
 
-async function onSaveTelegramSettings(row: TelegramSettingsUpdateDto) {
-  apiClient.telegraf.setTelegramSettings({
-    requestBody: row,
-  }).catch(e => {
-    console.error(e);
-  });
-}
-
-async function onSaveEventSettings(row: EventSettingsDto) {
-  apiClient.settings.setEventSettings({
-    requestBody: row,
-  }).catch(e => {
-    console.error(e);
-  });
-}
-
 export const NotificationsSettings: React.FC = () => {
+  const apiClient = useApiClient();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [settingsChanging, setSettingsChanging] = React.useState<boolean>(false);
   const [messageApi, contextHolder] = message.useMessage();
   const intl = useIntl();
   const settingsContext = useContext(SettingsContext);
+
+  const onSaveTelegramSettings = async (row: TelegramSettingsUpdateDto) => {
+    apiClient.telegraf.setTelegramSettings({
+      requestBody: row,
+    }).catch(e => {
+      console.error(e);
+    });
+  };
+
+  const onSaveEventSettings = async (row: EventSettingsDto) => {
+    apiClient.settings.setEventSettings({
+      requestBody: row,
+    }).catch(e => {
+      console.error(e);
+    });
+  };
 
   const testSettings = async () => {
     setLoading(true);
