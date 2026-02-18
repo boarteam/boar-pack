@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(yarn build:*)",
+      "Bash(yarn install:*)",
+      "Bash(ls:*)",
+      "Bash(npm pack:*)"
+    ]
+  }
+}
