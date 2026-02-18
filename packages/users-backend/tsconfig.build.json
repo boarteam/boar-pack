@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@boarteam/boar-pack-users-backend": ["./src/index.ts"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["dist", "test", "**/*spec.ts", ".yalc/**/*"]
+}

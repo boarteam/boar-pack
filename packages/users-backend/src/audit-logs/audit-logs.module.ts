@@ -3,10 +3,8 @@ import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
 import { AuditLogsService } from './audit-logs.service';
 import { AuditLogsController } from './audit-logs.controller';
 import { AuditLog } from './entities/audit-log.entity';
-import { CaslModule } from "@boarteam/boar-pack-users-backend/src/casl/casl.module";
-import { CaslAbilityFactory } from "@boarteam/boar-pack-users-backend/src/casl/casl-ability.factory";
+import { CaslModule, CaslAbilityFactory, Action } from "../casl";
 import { AuditLogsPermissions } from "./audit-logs.permissions";
-import { Action } from "@boarteam/boar-pack-users-backend/src/casl/action.enum";
 import { DataSource } from "typeorm";
 
 @Module({})

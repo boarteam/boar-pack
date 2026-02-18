@@ -2,9 +2,11 @@
   "name": "@boarteam/boar-pack-users-backend",
   "version": "7.1.0",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
-  "main": "src/index",
+  "main": "dist/index",
+  "types": "dist/index.d.ts",
   "files": [
-    "src"
+    "src",
+    "dist"
   ],
   "repository": "git@github.com:boarteam/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
@@ -61,6 +63,7 @@
     "pg": "^8.16.3"
   },
   "scripts": {
+    "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "yalc:push": "yalc push",
     "gen-types": "SWAGGER=true JWT_SECRET=swagger nest start"
   },

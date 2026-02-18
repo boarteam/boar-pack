@@ -1,7 +1,7 @@
 import { Controller, Req, UnauthorizedException } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Crud, CrudController, CrudRequest, Override, ParsedRequest } from '@dataui/crud';
-import { CheckPolicies } from "@boarteam/boar-pack-users-backend";
+import { CheckPolicies } from "../casl";
 import { AuditLogsService } from './audit-logs.service';
 import { AuditLog } from './entities/audit-log.entity';
 import { ViewAuditLogsPolicy } from "./policies/view-audit-logs.policy";
