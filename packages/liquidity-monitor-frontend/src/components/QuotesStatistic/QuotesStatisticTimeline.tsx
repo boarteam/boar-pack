@@ -3,7 +3,7 @@ import { PageLoading } from "@ant-design/pro-layout";
 import { QuotesStatisticDto, QuotesStatisticQueryDto } from "../../tools/api-client";
 import { Column, ColumnConfig } from "@ant-design/plots";
 import moment from "moment";
-import apiClient from "../../tools/api-client/apiClient";
+import { useApiClient } from "../ApiClientContext";
 import { TStatisticProvider } from "./index";
 // @ts-ignore
 import { useModel } from "umi";
@@ -22,6 +22,7 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
   onDateRangeChange,
   providers,
 }) => {
+  const apiClient = useApiClient();
   const [data, setData] = useState<QuotesStatisticDto[] | null>(null);
 
   const { initialState } = useModel('@@initialState');

@@ -6,7 +6,7 @@ import { StatisticCard } from "@ant-design/pro-components";
 import { groupBy } from "lodash";
 import { createStyles } from "antd-style";
 import { UsersConnectionsStatisticDto } from "../../tools/api-client";
-import apiClient from "../../tools/api-client/apiClient";
+import { useApiClient } from "../ApiClientContext";
 import { TUser } from "./index";
 import { Link } from "react-router-dom";
 
@@ -32,6 +32,7 @@ export const UsersConnectionsStatisticCards = ({
   users,
   updateInterval,
 }: TUsersConnectionsStatisticCardsProps) => {
+  const apiClient = useApiClient();
   let startTimeInitial = new Date();
   startTimeInitial.setHours(startTimeInitial.getHours() - 1);
   const userPageUrlPrefix = '/admin/users';
