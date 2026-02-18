@@ -1,9 +1,7 @@
 import {CanActivate, ExecutionContext, Injectable, Logger, UnauthorizedException} from '@nestjs/common';
 import { WebSocket } from "ws";
 import { WsAuthService } from "./ws-auth.service";
-import {
-  WsErrorCodes
-} from "@boarteam/boar-pack-common-backend/src/modules/websockets/websockets.clients";
+import { WsErrorCodes } from "@boarteam/boar-pack-common-backend";
 
 @Injectable()
 export class WsAuthGuard implements CanActivate {

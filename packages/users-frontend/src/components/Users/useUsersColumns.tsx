@@ -1,11 +1,10 @@
 import { Link, useIntl } from "@umijs/max";
 import { ProColumns } from "@ant-design/pro-components";
 import { EditOutlined, UserOutlined } from "@ant-design/icons";
-import { Password } from "@boarteam/boar-pack-common-frontend";
+import { Password, safetyRun } from "@boarteam/boar-pack-common-frontend";
 import { useAccess, useModel } from "umi";
 import { Tooltip } from "antd";
 import { User } from "../../tools/api-client/generated";
-import safetyRun from "@boarteam/boar-pack-common-frontend/src/tools/safetyRun";
 import { useApiClient } from "../ApiClientContext";
 
 export const useUsersColumns = ({
