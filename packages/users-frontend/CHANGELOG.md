@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@3.2.0...@boarteam/boar-pack-users-frontend@4.1.0) (2026-02-18)
+
+
+### Features
+
+* **users-frontend:** refactor API client handling and introduce `ApiClientContext` ([4784202](https://github.com/boarteam/boar-pack/commit/4784202fd9bf664bddf19a6ac78104a81931d6d7))
+
+
+
+
+
 # [4.0.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-frontend@3.2.0...@boarteam/boar-pack-users-frontend@4.0.0) (2026-02-18)
 
 

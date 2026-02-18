@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-users-backend",
-  "version": "8.0.0",
+  "version": "8.1.0",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
   "main": "dist/index",
   "types": "dist/index.d.ts",
@@ -15,7 +15,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boarteam/boar-pack-common-backend": "^5.0.0",
+    "@boarteam/boar-pack-common-backend": "^5.1.0",
     "@casl/ability": "^6.7.3",
     "@dataui/crud": "^5.3.4",
     "@dataui/crud-typeorm": "^5.3.4",

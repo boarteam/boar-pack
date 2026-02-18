@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-liquidity-monitor-backend",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "Backend for Liquidity Monitor",
   "main": "dist/index",
   "types": "dist/index.d.ts",
@@ -15,8 +15,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boarteam/boar-pack-common-backend": "^5.0.0",
-    "@boarteam/boar-pack-users-backend": "^8.0.0",
+    "@boarteam/boar-pack-common-backend": "^5.1.0",
+    "@boarteam/boar-pack-users-backend": "^8.1.0",
     "@nestjs/common": "^11.1.8",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.8",

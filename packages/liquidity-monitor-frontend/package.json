@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-liquidity-monitor-frontend",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Frontend for Liquidity Monitor",
   "repository": "git@github.com:boarteam/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
