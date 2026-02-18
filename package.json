@@ -23,7 +23,7 @@
     "build": "lerna run build",
     "ver:pre": "lerna publish --conventional-commits --conventional-prerelease",
     "ver": "lerna version",
-    "pub": "lerna publish from-package",
+    "pub": "lerna run build && lerna publish from-package",
     "watch:common-fontend": "chokidar 'packages/common-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/common-frontend'",
     "watch:common-backend": "chokidar 'packages/common-backend/src/**/*' -c 'npm run yalc:push --prefix packages/common-backend'",
     "watch:users-frontend": "chokidar 'packages/users-frontend/src/**/*' -c 'npm run yalc:push --prefix packages/users-frontend'",

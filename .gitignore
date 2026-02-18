@@ -3,4 +3,5 @@ yarn-error.log
 .yalc
 .idea
 dist
+*.tsbuildinfo
 lerna-debug.log
