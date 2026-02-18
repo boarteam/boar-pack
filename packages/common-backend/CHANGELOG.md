@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-backend@4.0.0...@boarteam/boar-pack-common-backend@5.1.0) (2026-02-18)
+
+
+### Features
+
+* **build:** add `tsconfig.build.json` and update build scripts across packages ([0cd9899](https://github.com/boarteam/boar-pack/commit/0cd989981357e02106db0c658f67058ae46baf7f))
+
+
+
+
+
 # [5.0.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-common-backend@4.0.0...@boarteam/boar-pack-common-backend@5.0.0) (2026-02-18)
 
 
