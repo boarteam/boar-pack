@@ -7,8 +7,6 @@ import { ColumnStateType } from "@ant-design/pro-table/es/typing";
 import { RowEditableConfig } from "@ant-design/pro-utils";
 import { ProColumns } from "@ant-design/pro-components";
 import { TImportResponse, TRelationalFields } from "../ChangesModal";
-import { CancelablePromise } from "@boarteam/boar-pack-users-frontend/dist/src/tools/api-client";
-
 export type IWithId = {
   id: string | number,
 }
@@ -126,7 +124,7 @@ export interface EditableProps<Entity, CreateDto, UpdateDto, TPathParams = {}, I
   } & TPathParams) => Promise<void>,
   onDeleteMany: ({}: Partial<Entity> & { requestBody: { records: Entity[] } } & TPathParams) => Promise<void>,
   importConfig?: {
-    onImport?: (params: ImportRequestParams) => CancelablePromise<TImportResponse>;
+    onImport?: (params: ImportRequestParams) => Promise<TImportResponse>;
     relationalFields?: TRelationalFields,
     changedRecordsColumnsConfig: ProColumns<Entity>[],
     createdRecordsColumnsConfig: ProColumns<Entity>[],

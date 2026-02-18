@@ -1,5 +1,13 @@
-import { TIncomeEvent } from "../../../liquidity-manager-frontend/src/components/RealTimeData/RealTimeDataSource";
 import { message } from "antd";
+
+export type TIncomeEvent = {
+  event: string;
+  data: {
+    message: string;
+    status?: WebSocket['readyState'];
+    [key: string]: any;
+  };
+};
 
 export enum WsErrorCodes {
   ConnectionClosed = 1000,

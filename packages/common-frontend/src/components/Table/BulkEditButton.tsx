@@ -99,14 +99,14 @@ const BulkEditDialog =  <Entity extends Record<string | symbol, any>>(
             }}
             columns={section.columns.filter(column => column?.editable === undefined).map(column => ({
               ...column,
-              render: (...params) => !editableKeys.has(column.dataIndex) ? '(This field will not be changed)' : column.render(...params),
+              render: (...params: any[]) => !editableKeys.has(column.dataIndex as string) ? '(This field will not be changed)' : (column.render as Function)(...params),
               editable: false,
               title: (
                 <Checkbox
-                  checked={editableKeys.has(column.dataIndex)}
-                  onChange={e => handleCheckboxChange(column.dataIndex, e.target.checked)}
+                  checked={editableKeys.has(column.dataIndex as string)}
+                  onChange={e => handleCheckboxChange(column.dataIndex as string, e.target.checked)}
                 >
-                  {column.title}
+                  {column.title as React.ReactNode}
                 </Checkbox>
               ),
             }))}

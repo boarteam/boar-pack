@@ -1,4 +1,3 @@
-import diff from "deep-diff";
 import { Tag } from "antd";
 import { ProColumns } from "@ant-design/pro-components";
 import { TDiffResult, TUpdatedDiffResult } from "../Table/useImportExport";
@@ -14,19 +13,20 @@ function ChangesTab<Entity> ({ updated, changedRecordsColumnsConfig }: {
     </>
   }
 
-  const updateColumns = [
-    ...changedRecordsColumnsConfig,
+  const updateColumns: ProColumns<TUpdatedDiffResult>[] = [
+    ...(changedRecordsColumnsConfig as unknown as ProColumns<TUpdatedDiffResult>[]),
     {
       title: "Changes",
       dataIndex: "diff",
       key: "diff",
-      render: (diff: diff.Diff<any, any>[]) => (
+      render: (_dom, entity) => (
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          {diff.map((change, index) => {
+          {entity.diff.map((change, index) => {
+            const c = change as { path?: any[]; lhs?: any; rhs?: any };
             return (
               <div key={index} style={{ display: "flex", alignItems: "center" }}>
-                <Tag color="blue">{change.path.join(".")}</Tag>
-                {change.lhs ? `${change.lhs.toString()} →` : "- →"} {change.rhs ? change.rhs : change.rhs === false ? 'false' : '-'}
+                <Tag color="blue">{c.path?.join(".")}</Tag>
+                {c.lhs ? `${c.lhs.toString()} →` : "- →"} {c.rhs ? c.rhs : c.rhs === false ? 'false' : '-'}
               </div>
             );
           })}
