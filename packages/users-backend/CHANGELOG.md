@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.0.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@7.1.0...@boarteam/boar-pack-users-backend@8.0.0) (2026-02-18)
+
+
+### Features
+
+* **users-backend:** refactor imports and add build configuration ([1ec2e5d](https://github.com/boarteam/boar-pack/commit/1ec2e5dbe8510d36203a413f888656b829547fc6))
+
+
+
+
+
 # [7.1.0](https://github.com/boarteam/boar-pack/compare/@boarteam/boar-pack-users-backend@7.0.0...@boarteam/boar-pack-users-backend@7.1.0) (2025-11-19)
 
 

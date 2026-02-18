@@ -1,6 +1,6 @@
 {
   "name": "@boarteam/boar-pack-common-backend",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
   "repository": "git@github.com:boarteam/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
