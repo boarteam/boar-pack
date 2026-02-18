@@ -84,7 +84,7 @@ export function useBulkEditing<Entity, TPathParams, UpdateDto, U>({
   />;
 
   const rowSelection: ProTableProps<Entity, U>['rowSelection'] = {
-    selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName]),
+    selectedRowKeys: selectedRecords.map(record => Array.isArray(idColumnName) ? idColumnName.map(colName => record[colName]).join('-') : record[idColumnName!]) as React.Key[],
     selections: [
       {
         key: 'all',

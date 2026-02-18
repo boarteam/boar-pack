@@ -8,8 +8,6 @@ import ResultsTab from "./ResultsTab";
 import NewRecordsTab, { TCreatedRecordsColumnsConfig } from "./NewRecordsTab";
 import ChangesTab from "./ChangesTab";
 import { TDiffResult } from "../Table/useImportExport";
-import { CancelablePromise } from "@boarteam/boar-pack-users-frontend/dist/src/tools/api-client";
-
 enum ModalTabs {
   changes = "changes",
   newRecords = "newRecords",
@@ -73,7 +71,7 @@ export function ChangesModal<
   changedRecordsColumnsConfig,
   createdRecordsColumnsConfig,
 }: {
-  onCommit: (params: ImportRequestParams) => CancelablePromise<TImportResponse>,
+  onCommit: (params: ImportRequestParams) => Promise<TImportResponse>,
   onClose: () => void;
   changes?: TDiffResult<Entity>,
   relationalFields?: TRelationalFields,

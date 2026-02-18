@@ -54,7 +54,7 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
       });
       setCreatePopupData(undefined);
       await actionRef?.current?.reload();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
 
       // Handle common error

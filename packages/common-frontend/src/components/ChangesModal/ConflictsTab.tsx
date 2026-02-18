@@ -1,4 +1,4 @@
-import { Descriptions, TImportConflict } from "@boarteam/boar-pack-common-frontend";
+import { Descriptions, TImportConflict } from "../../index";
 import { Tag, Tooltip, Button } from "antd";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TImportResponse, TRelationalFields } from "./ChangesModal";
@@ -91,7 +91,7 @@ function ConflictsTab<Entity>({
       }
     });
 
-    setResolvedData(payload);
+    setResolvedData(payload as Entity[]);
   }, [resolvedData, conflicts, setResolvedData]);
 
   const { styles } = useStyles();

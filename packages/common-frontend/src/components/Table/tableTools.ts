@@ -155,7 +155,7 @@ export function applyKeywordToSearch(
 export type TIndexableRecord = {
   dataIndex?: Key | Key[];
   children?: TIndexableRecord[] | React.ReactNode;
-  editable?: false;
+  editable?: boolean | ((...args: any[]) => boolean);
 };
 
 export function collectFieldsFromColumns<T>(

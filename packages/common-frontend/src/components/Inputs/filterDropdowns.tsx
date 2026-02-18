@@ -34,7 +34,7 @@ export function SwitchFilterDropdown({ setSelectedKeys, selectedKeys, confirm, c
             label: 'Only filled values',
             children: <Switch
               checked={selectedKeys.length ? Boolean(selectedKeys[0]) : undefined}
-              onChange={(value) => setSelectedKeys([value as any])}
+              onChange={(value) => setSelectedKeys([Number(value)])}
             />,
             style: { padding: 0 },
             contentStyle: { justifyContent: 'flex-end' },
@@ -50,7 +50,7 @@ export function CheckboxFilterDropdown({ setSelectedKeys, selectedKeys, confirm,
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <Checkbox
         checked={selectedKeys.length ? Boolean(selectedKeys[0]) : undefined}
-        onChange={(event) => setSelectedKeys([event.target.checked as any])}
+        onChange={(event) => setSelectedKeys([Number(event.target.checked)])}
         indeterminate={selectedKeys.length === 0}
         style={{ margin: '8px 16px', width: 250 }}
       >
@@ -61,14 +61,17 @@ export function CheckboxFilterDropdown({ setSelectedKeys, selectedKeys, confirm,
 }
 
 export function NumberRangeFilterDropdown({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: FilterDropdownProps) {
-  const [range, updateRange] = useState<[number, number] | undefined>(selectedKeys);
+  const toRange = (keys: React.Key[]): [number, number] | undefined =>
+    keys.length >= 2 ? [Number(keys[0]), Number(keys[1])] : undefined;
+
+  const [range, updateRange] = useState<[number, number] | undefined>(toRange(selectedKeys));
 
   useEffect(() => {
-    updateRange(selectedKeys);
+    updateRange(toRange(selectedKeys));
   }, [selectedKeys]);
 
   useEffect(() => {
-    setSelectedKeys(range);
+    setSelectedKeys(range ?? []);
   }, [range]);
 
   return (
