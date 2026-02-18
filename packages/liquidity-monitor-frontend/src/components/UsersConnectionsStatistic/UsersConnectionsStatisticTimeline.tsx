@@ -3,7 +3,7 @@ import { PageLoading } from "@ant-design/pro-layout";
 import { UsersConnectionsStatisticDto, UsersConnectionsStatisticQueryDto } from "../../tools/api-client";
 import { Column, ColumnConfig } from "@ant-design/plots";
 import moment from "moment";
-import apiClient from "../../tools/api-client/apiClient";
+import { useApiClient } from "../ApiClientContext";
 // @ts-ignore
 import { useModel } from "umi";
 import { Empty } from "antd";
@@ -17,6 +17,7 @@ export const UsersConnectionsStatisticTimeline: React.FC<TUsersConnectionsStatis
   endTime,
   onDateRangeChange,
 }) => {
+  const apiClient = useApiClient();
   const [data, setData] = useState<UsersConnectionsStatisticDto[] | null>(null);
 
   const { initialState } = useModel('@@initialState');

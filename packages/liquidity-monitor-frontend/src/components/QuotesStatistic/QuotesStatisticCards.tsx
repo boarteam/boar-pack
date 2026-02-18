@@ -6,7 +6,7 @@ import { StatisticCard } from "@ant-design/pro-components";
 import { groupBy } from "lodash";
 import { createStyles } from "antd-style";
 import { QuotesStatisticDto } from "../../tools/api-client";
-import apiClient from "../../tools/api-client/apiClient";
+import { useApiClient } from "../ApiClientContext";
 import { TStatisticProvider } from "./index";
 
 type TQuotesStatisticCardsProps = {
@@ -31,6 +31,7 @@ export const QuotesStatisticCards = ({
   providers,
   updateInterval,
 }: TQuotesStatisticCardsProps) => {
+  const apiClient = useApiClient();
   let startTimeInitial = new Date();
   startTimeInitial.setHours(startTimeInitial.getHours() - 1);
 

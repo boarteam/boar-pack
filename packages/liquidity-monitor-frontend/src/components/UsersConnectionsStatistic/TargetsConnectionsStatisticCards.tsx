@@ -6,7 +6,7 @@ import { StatisticCard } from "@ant-design/pro-components";
 import { groupBy } from "lodash";
 import { createStyles } from "antd-style";
 import { UsersConnectionsStatisticDto } from "../../tools/api-client";
-import apiClient from "../../tools/api-client/apiClient";
+import { useApiClient } from "../ApiClientContext";
 
 export type TTarget = {
   id: string;
@@ -35,6 +35,7 @@ export const TargetsConnectionsStatisticCards = ({
   targets,
   updateInterval,
 }: TTargetsConnectionsStatisticCardsProps) => {
+  const apiClient = useApiClient();
   let startTimeInitial = new Date();
   startTimeInitial.setHours(startTimeInitial.getHours() - 1);
   const [startTime, setStartTime] = useState<string | undefined>(startTimeInitial.toISOString());
