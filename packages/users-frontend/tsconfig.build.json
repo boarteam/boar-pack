@@ -1,6 +1,10 @@
 {
   "extends": "./tsconfig.json",
-  "include": [
-    "src"
-  ]
+  "compilerOptions": {
+    "paths": {
+      "@@/*": ["./src/.umi/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["dist", "src/.umi", "src/pages", "src/access.ts"]
 }

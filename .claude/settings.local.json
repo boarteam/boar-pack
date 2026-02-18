@@ -5,7 +5,8 @@
       "Bash(yarn build:*)",
       "Bash(yarn install:*)",
       "Bash(ls:*)",
-      "Bash(npm pack:*)"
+      "Bash(npm pack:*)",
+      "Bash(find:*)"
     ]
   }
 }
