@@ -1,11 +1,11 @@
-import { NamedLogger } from "@boarteam/boar-pack-common-backend/src/tools";
+import { Tools } from "@boarteam/boar-pack-common-backend";
 import { EventLogsService } from "./event-logs.service";
 import { Inject } from "@nestjs/common";
 import { SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
 import type { TEventLogServiceConfig } from "./event-logs.types";
 import { LogLevel } from "./entities/event-log.entity";
 
-export class EventLogsLogger extends NamedLogger {
+export class EventLogsLogger extends Tools.NamedLogger {
   constructor(
     private readonly eventLogsService: EventLogsService,
     @Inject(SERVICE_CONFIG_TOKEN) private readonly serviceConfig: TEventLogServiceConfig,
