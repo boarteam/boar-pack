@@ -1,5 +1,5 @@
 import React from "react";
-import { EventLog } from "@@api/generated";
+import { EventLog } from "../../tools/api-client/generated";
 import { Card, Descriptions, Tag, Typography } from "antd";
 import {
   ClockCircleOutlined,

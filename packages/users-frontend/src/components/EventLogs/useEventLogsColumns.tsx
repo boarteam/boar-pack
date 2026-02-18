@@ -1,6 +1,6 @@
 import { ProColumns } from "@ant-design/pro-components";
 import { Badge, Collapse, CollapseProps, Space, Tooltip, Typography } from "antd";
-import { EventLog, EventLogTimelineQueryDto } from "@@api/generated";
+import { EventLog, EventLogTimelineQueryDto } from "../../tools/api-client/generated";
 import {
   AppstoreOutlined,
   ExclamationCircleOutlined,
@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import { useContext, useEffect, useState } from "react";
 import UserAgentDisplay from "./UserAgentDisplay";
-import apiClient from "@@api/apiClient";
+import { useApiClient } from "../ApiClientContext";
 import { getUserRoleIcon } from "./EventLogExplanation";
 import { EventLogsContext } from "./eventLogsContext";
 import { DateRange } from "@boarteam/boar-pack-common-frontend";
@@ -58,6 +58,7 @@ export const useEventLogsColumns = ({
 }: EventLogTimelineQueryDto & {
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
 }): ProColumns<EventLog>[] => {
+  const apiClient = useApiClient();
   const [users, setUsers] = useState<{ text: string, value: string }[]>([]);
   const [serviceNames, setServiceNames] = useState<string[]>([]);
   const eventLogsContext = useContext(EventLogsContext);

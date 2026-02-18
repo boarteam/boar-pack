@@ -4,15 +4,16 @@ import { EditOutlined, UserOutlined } from "@ant-design/icons";
 import { Password } from "@boarteam/boar-pack-common-frontend";
 import { useAccess, useModel } from "umi";
 import { Tooltip } from "antd";
-import { User } from "@@api/generated";
+import { User } from "../../tools/api-client/generated";
 import safetyRun from "@boarteam/boar-pack-common-frontend/src/tools/safetyRun";
-import apiClient from "@@api/apiClient";
+import { useApiClient } from "../ApiClientContext";
 
 export const useUsersColumns = ({
   userPageUrlPrefix = '/admin/users',
 }: {
   userPageUrlPrefix?: string | null;
 }): ProColumns<User>[] => {
+  const apiClient = useApiClient();
   const intl = useIntl();
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};

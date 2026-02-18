@@ -5,9 +5,11 @@
   "repository": "git@github.com:boarteam/boar-pack.git",
   "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
-  "main": "src/index",
+  "main": "dist/index",
+  "types": "dist/index.d.ts",
   "files": [
-    "src"
+    "src",
+    "dist"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
@@ -31,7 +33,7 @@
     "umi-presets-pro": "^2.0.3"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "yalc:push": "yalc push"
   },
   "gitHead": "c56c90047b5cb4e4d719890553e61f8d7e6ff25f"

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useAccess } from "umi";
 import { Token, TokenCreateDto, TokenUpdateDto } from "../../tools/api-client";
 import { Operators, Table } from "@boarteam/boar-pack-common-frontend";
-import apiClient from "@@api/apiClient";
+import { useApiClient } from "../ApiClientContext";
 import { useMyTokensColumns } from "./useMyTokensColumns";
 import { Modal, Typography } from "antd";
 
@@ -20,6 +20,7 @@ type TTokenFilterParams = {
 }
 
 export const MyTokensTable = () => {
+  const apiClient = useApiClient();
   // Track the newly created token
   const [createdToken, setCreatedToken] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -40,10 +41,10 @@ export const MyTokensTable = () => {
             setShowModal(true);
           }
 
-          return token as Token;
+          return token as unknown as Token;
         }}
-        onUpdate={params => apiClient.tokens.updateOneBaseMyTokensControllerToken(params)}
-        onDelete={params => apiClient.tokens.deleteOneBaseMyTokensControllerToken(params)}
+        onUpdate={params => apiClient.tokens.updateOneBaseMyTokensControllerToken(params as any)}
+        onDelete={params => apiClient.tokens.deleteOneBaseMyTokensControllerToken(params as any)}
         entityToCreateDto={entityToDto}
         entityToUpdateDto={entityToDto}
         columns={columns}
