@@ -30,8 +30,11 @@
     "openapi-typescript-codegen": "^0.29.0",
     "typeorm": "^0.3.27"
   },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0"
+  },
   "scripts": {
-    "build": "rm -rf dist && tsc --project tsconfig.build.json",
+    "build": "rm -rf dist && nest build -p tsconfig.build.json",
     "yalc:push": "yalc push",
     "gen-types": "SWAGGER=true JWT_SECRET=swagger nest start"
   },

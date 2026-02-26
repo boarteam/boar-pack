@@ -6,7 +6,9 @@
       "Bash(yarn install:*)",
       "Bash(ls:*)",
       "Bash(npm pack:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npx --yes @nestjs/cli:*)",
+      "Bash(npx @nestjs/cli build:*)"
     ]
   }
 }
