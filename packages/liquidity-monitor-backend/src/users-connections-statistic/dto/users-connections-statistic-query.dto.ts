@@ -19,6 +19,6 @@ export class TargetsConnectionsStatisticQueryDto {
   @JoiSchema(Joi.string().isoDate().optional())
   endTime?: string;
 
-  @JoiSchema(Joi.array().items(Joi.string()).required())
+  @JoiSchema(Joi.array().items(Joi.string()).single().required())
   targetIds: string[];
 }
