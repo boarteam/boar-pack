@@ -1,0 +1,78 @@
+name: Bug report
+description: Report a defect in one of the @boarteam/boar-pack-* packages
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Reports with a minimal
+        reproduction get fixed much faster.
+
+        **Please do not report security vulnerabilities here** — use
+        [private vulnerability reporting](https://github.com/boarteam/boar-pack/security)
+        instead (see SECURITY.md).
+  - type: dropdown
+    id: package
+    attributes:
+      label: Affected package
+      description: Which package does the bug live in?
+      options:
+        - "@boarteam/boar-pack-users-backend"
+        - "@boarteam/boar-pack-users-frontend"
+        - "@boarteam/boar-pack-common-backend"
+        - "@boarteam/boar-pack-common-frontend"
+        - "@boarteam/boar-pack-liquidity-monitor-backend"
+        - "@boarteam/boar-pack-liquidity-monitor-frontend"
+        - repository / tooling / other
+    validations:
+      required: true
+  - type: input
+    id: package-version
+    attributes:
+      label: Package version
+      description: The exact published version you installed (check your lockfile).
+      placeholder: e.g. 8.1.1
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened, and what did you expect?
+      description: Include error messages and stack traces as text, not screenshots.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: >-
+        Steps or code that reproduce the problem — module registration code,
+        the failing request, a repo link. Issues without a usable reproduction
+        will likely be closed.
+      placeholder: |
+        1. Register the module with …
+        2. Call …
+        3. Observe …
+    validations:
+      required: true
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      placeholder: e.g. 22.11.0
+    validations:
+      required: true
+  - type: input
+    id: framework-versions
+    attributes:
+      label: NestJS / React versions
+      description: NestJS version for backend packages, React + antd + umi versions for frontend packages.
+      placeholder: e.g. NestJS 11.1.8, or React 18.2 + antd 5.15 + umi 4.1
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: OS, package manager, TypeORM/Postgres versions — whatever seems relevant.
