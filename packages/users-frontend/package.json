@@ -1,8 +1,24 @@
 {
   "name": "@boarteam/boar-pack-users-frontend",
   "version": "4.1.0",
-  "description": "Users frontend package for Boar Pack",
-  "repository": "git@github.com:boarteam/boar-pack.git",
+  "description": "React (Ant Design) components and pages for boar-pack user management: login flows, user administration and profile UI",
+  "keywords": [
+    "react",
+    "antd",
+    "umi",
+    "authentication",
+    "users",
+    "login",
+    "user-management",
+    "boar-pack"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boarteam/boar-pack.git",
+    "directory": "packages/users-frontend"
+  },
+  "homepage": "https://github.com/boarteam/boar-pack/tree/master/packages/users-frontend#readme",
+  "bugs": "https://github.com/boarteam/boar-pack/issues",
   "author": "Andrey Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "main": "dist/index",

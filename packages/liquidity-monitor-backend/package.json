@@ -1,13 +1,29 @@
 {
   "name": "@boarteam/boar-pack-liquidity-monitor-backend",
   "version": "5.1.1",
-  "description": "Backend for Liquidity Monitor",
+  "description": "NestJS modules for liquidity monitoring: quote-flow statistics, provider monitoring, user-connection and API statistics",
+  "keywords": [
+    "nestjs",
+    "liquidity",
+    "monitoring",
+    "quotes",
+    "statistics",
+    "typeorm",
+    "typescript",
+    "boar-pack"
+  ],
   "main": "dist/index",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
-  "repository": "git@github.com:boarteam/boar-pack.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boarteam/boar-pack.git",
+    "directory": "packages/liquidity-monitor-backend"
+  },
+  "homepage": "https://github.com/boarteam/boar-pack/tree/master/packages/liquidity-monitor-backend#readme",
+  "bugs": "https://github.com/boarteam/boar-pack/issues",
   "author": "Andrey Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "publishConfig": {

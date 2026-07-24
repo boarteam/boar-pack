@@ -1,8 +1,25 @@
 {
   "name": "@boarteam/boar-pack-common-frontend",
   "version": "4.1.0",
-  "description": "Common frontend package for Boar Pack",
-  "repository": "git@github.com:boarteam/boar-pack.git",
+  "description": "Shared React (Ant Design) building blocks for boar-pack frontends: CRUD tables on top of pro-table, API client tooling and misc utilities",
+  "keywords": [
+    "react",
+    "antd",
+    "ant-design-pro",
+    "pro-table",
+    "crud",
+    "umi",
+    "components",
+    "typescript",
+    "boar-pack"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boarteam/boar-pack.git",
+    "directory": "packages/common-frontend"
+  },
+  "homepage": "https://github.com/boarteam/boar-pack/tree/master/packages/common-frontend#readme",
+  "bugs": "https://github.com/boarteam/boar-pack/issues",
   "author": "Andrey Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "main": "dist/index",

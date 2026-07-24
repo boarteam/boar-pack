@@ -2,12 +2,30 @@
   "name": "@boarteam/boar-pack-users-backend",
   "version": "8.1.1",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
+  "keywords": [
+    "nestjs",
+    "authentication",
+    "authorization",
+    "users",
+    "jwt",
+    "passport",
+    "casl",
+    "permissions",
+    "typeorm",
+    "boar-pack"
+  ],
   "main": "dist/index",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
-  "repository": "git@github.com:boarteam/boar-pack.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boarteam/boar-pack.git",
+    "directory": "packages/users-backend"
+  },
+  "homepage": "https://github.com/boarteam/boar-pack/tree/master/packages/users-backend#readme",
+  "bugs": "https://github.com/boarteam/boar-pack/issues",
   "author": "Andrey Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "publishConfig": {

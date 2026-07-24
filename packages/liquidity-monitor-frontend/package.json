@@ -1,8 +1,24 @@
 {
   "name": "@boarteam/boar-pack-liquidity-monitor-frontend",
   "version": "3.1.0",
-  "description": "Frontend for Liquidity Monitor",
-  "repository": "git@github.com:boarteam/boar-pack.git",
+  "description": "React (Ant Design) components for liquidity monitoring dashboards: quote-flow charts, provider and connection statistics views",
+  "keywords": [
+    "react",
+    "antd",
+    "charts",
+    "dashboard",
+    "liquidity",
+    "monitoring",
+    "umi",
+    "boar-pack"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boarteam/boar-pack.git",
+    "directory": "packages/liquidity-monitor-frontend"
+  },
+  "homepage": "https://github.com/boarteam/boar-pack/tree/master/packages/liquidity-monitor-frontend#readme",
+  "bugs": "https://github.com/boarteam/boar-pack/issues",
   "author": "Andrey Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "main": "dist/index",
