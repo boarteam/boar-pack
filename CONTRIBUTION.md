@@ -92,18 +92,32 @@ You can also run individual watchers:
 yarn watch:common-frontend
 ```
 
-### **Generating Modules or Pages**
+### **Generating Modules or Pages (maintainers only)**
 
-Use the provided scripts to scaffold new modules or pages:
+> **Note:** the generator scripts copy templates from a sibling checkout of the
+> **private** `boarteam/boar-plate` repository (`../boar-plate` next to this
+> repo). They only work for maintainers with access to that repository; outside
+> contributors can create modules and pages by hand, using an existing module
+> as the reference.
 
 - **New Module**:
+
   ```bash
-  yarn gen:module
+  yarn gen:module <package-name> <module-name>
   ```
-- **New Page**:
+
+  Use singular form for the module name; it is converted to plural form in the
+  generated code where necessary. Example: `yarn gen:module common quote` adds
+  a `quotes` module to `packages/common-backend/src/modules`.
+
+- **New Page with a table**:
+
   ```bash
-  yarn gen:page
+  yarn gen:page <package-name> <module-name>
   ```
+
+  Generates a page in `packages/<package-name>-frontend/src/pages` and its
+  components in `packages/<package-name>-frontend/src/components`.
 
 ---
 

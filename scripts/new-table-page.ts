@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import { copyAndRenameFiles } from "./tools";
 
@@ -17,6 +18,14 @@ if (!newModuleName) {
 // Directory containing the template module
 const templatePageDir = path.join(__dirname, '../../boar-plate/packages/ui/src/pages/TemplateThings');
 const templateComponentDir = path.join(__dirname, '../../boar-plate/packages/ui/src/components/TemplateThings');
+
+if (!fs.existsSync(templatePageDir) || !fs.existsSync(templateComponentDir)) {
+  console.error(
+    'Templates not found. This generator is maintainer-only: it requires a checkout of the private\n' +
+    'boarteam/boar-plate repository next to this one (../boar-plate). See CONTRIBUTION.md.'
+  );
+  process.exit(1);
+}
 
 Promise.all([
   copyAndRenameFiles(templatePageDir, 'template-thing', pack, newModuleName),
