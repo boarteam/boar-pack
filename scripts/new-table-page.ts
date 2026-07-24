@@ -22,7 +22,7 @@ const templateComponentDir = path.join(__dirname, '../../boar-plate/packages/ui/
 if (!fs.existsSync(templatePageDir) || !fs.existsSync(templateComponentDir)) {
   console.error(
     'Templates not found. This generator is maintainer-only: it requires a checkout of the private\n' +
-    'boarteam/boar-plate repository next to this one (../boar-plate). See CONTRIBUTION.md.'
+    'boarteam/boar-plate repository next to this one (../boar-plate). See CONTRIBUTING.md.'
   );
   process.exit(1);
 }
