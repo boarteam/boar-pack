@@ -76,65 +76,6 @@ export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudSer
     return result as T;
   }
 
-  // TODO: implement
-
-  // /**
-  //  * Recover one
-  //  * @param req
-  //  * @param dto
-  //  */
-  // public async recoverOne(req: CrudRequest): Promise<T> {
-  //   // disable cache while recovering
-  //   req.options.query.cache = false;
-  //   const found = await this.getOneOrFail(req, false, true);
-  //   return this.repo.recover(found as DeepPartial<T>);
-  // }
-  //
-  // /**
-  //  * Replace one
-  //  * @param req
-  //  * @param dto
-  //  */
-  // public async replaceOne(req: CrudRequest, dto: DeepPartial<T>): Promise<T> {
-  //   const { allowParamsOverride, returnShallow } = req.options.routes.replaceOneBase;
-  //   const paramsFilters = this.getParamFilters(req.parsed);
-  //   // disable cache while replacing
-  //   req.options.query.cache = false;
-  //   const [_, found] = await oO(this.getOneOrFail(req, returnShallow));
-  //   const toSave = !allowParamsOverride
-  //     ? { ...(found || {}), ...dto, ...paramsFilters, ...req.parsed.authPersist }
-  //     : {
-  //       ...(found || /* istanbul ignore next */ {}),
-  //       ...paramsFilters,
-  //       ...dto,
-  //       ...req.parsed.authPersist,
-  //     };
-  //   const replaced = await this.repo.save(
-  //     plainToClass(
-  //       this.entityType,
-  //       toSave,
-  //       req.parsed.classTransformOptions,
-  //     ) as unknown as DeepPartial<T>,
-  //   );
-  //
-  //   if (returnShallow) {
-  //     return replaced;
-  //   } else {
-  //     const primaryParams = this.getPrimaryParams(req.options);
-  //
-  //     /* istanbul ignore if */
-  //     if (!primaryParams.length) {
-  //       return replaced;
-  //     }
-  //
-  //     req.parsed.search = primaryParams.reduce(
-  //       (acc, p) => ({ ...acc, [p]: replaced[p] }),
-  //       {},
-  //     );
-  //     return this.getOneOrFail(req);
-  //   }
-  // }
-  //
   /**
    * Delete one
    * @param req

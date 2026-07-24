@@ -62,18 +62,6 @@ export const EventLogsTimeline: React.FC<TEventLogsTimelineProps> = ({
         height: 300,
         theme: navTheme === 'realDark' ? 'dark' : 'light',
         legend: {},
-        // slider: {
-        //   x: {
-        //     values: sliderPosition,
-        //     onChange(values: [number, number]) {
-        //       sliderPosition[0] = values[0];
-        //       sliderPosition[1] = values[1];
-        //       if (!showFilterButton) {
-        //         setShowFilterButton(true);
-        //       }
-        //     }
-        //   },
-        // },
         axis: {
             x: {
                 labelFormatter: (v: string, i: number) => {
