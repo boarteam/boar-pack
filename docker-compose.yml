@@ -15,4 +15,4 @@ services:
       PRIVATE_SCHEMA_NAME: public
       EXTENSIONS: pgcrypto,"uuid-ossp"
     volumes:
-      - ./packages/db/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./docker/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
