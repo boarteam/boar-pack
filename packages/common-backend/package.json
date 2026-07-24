@@ -3,7 +3,7 @@
   "version": "5.1.0",
   "description": "NestJS Users module including permissions system, authentication strategies etc",
   "repository": "git@github.com:boarteam/boar-pack.git",
-  "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
+  "author": "Andrey Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "main": "dist/index",
   "types": "dist/index.d.ts",

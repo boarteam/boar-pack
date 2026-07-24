@@ -8,7 +8,7 @@
     "dist"
   ],
   "repository": "git@github.com:boarteam/boar-pack.git",
-  "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
+  "author": "Andrey Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",

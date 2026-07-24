@@ -3,7 +3,7 @@
   "version": "3.1.0",
   "description": "Frontend for Liquidity Monitor",
   "repository": "git@github.com:boarteam/boar-pack.git",
-  "author": "Andrew Balakirev <balakirev.andrey@gmail.com>",
+  "author": "Andrey Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "main": "dist/index",
   "types": "dist/index.d.ts",
