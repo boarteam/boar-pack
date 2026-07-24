@@ -1,8 +1,24 @@
 {
   "name": "@boarteam/boar-pack-common-backend",
   "version": "5.1.0",
-  "description": "NestJS Users module including permissions system, authentication strategies etc",
-  "repository": "git@github.com:boarteam/boar-pack.git",
+  "description": "Shared NestJS building blocks for boar-pack backends: scrypt password hashing, cluster helpers, WebSocket utilities, scheduling and misc tools",
+  "keywords": [
+    "nestjs",
+    "scrypt",
+    "websockets",
+    "cluster",
+    "schedule",
+    "utilities",
+    "typescript",
+    "boar-pack"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boarteam/boar-pack.git",
+    "directory": "packages/common-backend"
+  },
+  "homepage": "https://github.com/boarteam/boar-pack/tree/master/packages/common-backend#readme",
+  "bugs": "https://github.com/boarteam/boar-pack/issues",
   "author": "Andrey Balakirev <balakirev.andrey@gmail.com>",
   "license": "MIT",
   "main": "dist/index",
