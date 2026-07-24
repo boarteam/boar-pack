@@ -34,6 +34,5 @@
   "scripts": {
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "yalc:push": "yalc push"
-  },
-  "gitHead": "c56c90047b5cb4e4d719890553e61f8d7e6ff25f"
+  }
 }

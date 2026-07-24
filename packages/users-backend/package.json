@@ -66,6 +66,5 @@
     "build": "rm -rf dist && nest build -p tsconfig.build.json",
     "yalc:push": "yalc push",
     "gen-types": "SWAGGER=true JWT_SECRET=swagger nest start"
-  },
-  "gitHead": "c56c90047b5cb4e4d719890553e61f8d7e6ff25f"
+  }
 }
