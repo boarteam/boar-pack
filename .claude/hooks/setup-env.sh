@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Add /usr/local/bin to PATH (for docker, etc.)
+export PATH="/usr/local/bin:$PATH"
+
 # Load nvm and set up node environment
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
