@@ -6,9 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DataSource, Repository } from 'typeorm';
 import request from 'supertest';
 import bcrypt from 'bcrypt';
-// Import AuthModule through the barrel: the auth/jwt-auth/users modules form
-// require cycles that only resolve cleanly when loading starts at the index.
-import { AuthModule } from '../src/auth';
+import { AuthModule } from '../src/auth/auth.module';
 import { UsersModule } from '../src/users/users.module';
 import { Roles, User } from '../src/users/entities/user.entity';
 import { CaslModule } from '../src/casl/casl.module';
@@ -18,10 +16,6 @@ import { TokensPermissions } from '../src/tokens/tokens.permissions';
 import { RevokedToken } from '../src/revoked-tokens/entities/revoked-token.entity';
 import { JwtAuthGuard } from '../src/jwt-auth/jwt-auth.guard';
 import { createTestDatabase, testDataSourceOptions } from './pg';
-
-// uuid v13 ships ESM-only code that jest's CommonJS runtime cannot parse;
-// JWTAuthService only uses v4, so substitute node's own uuid generator.
-jest.mock('uuid', () => ({ v4: () => require('node:crypto').randomUUID() }));
 
 const ADMIN_EMAIL = 'test-admin@test.test';
 const ADMIN_PASSWORD = 'test';

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TJWTPayload, TJWTRefreshPayload } from './jwt-auth.srtategy';
 import { RevokedTokensService, TOKEN_TYPE, TRevokedToken } from '../revoked-tokens';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'node:crypto';
 import { JWTAuthConfigService, TJWTAuthConfig } from './jwt-auth.config';
 import { JwtSignOptions } from '@nestjs/jwt/dist/interfaces';
 import ms from 'ms';
@@ -20,7 +20,7 @@ export class JWTAuthService {
   }
 
   public generateJwtId(): string {
-    return uuidv4();
+    return randomUUID();
   }
 
   public sign<PayloadType extends TJWTPayload | TJWTRefreshPayload>(

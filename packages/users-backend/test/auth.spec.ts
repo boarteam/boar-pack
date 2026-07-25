@@ -4,11 +4,6 @@ import { Test } from '@nestjs/testing';
 import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import request from 'supertest';
-// The auth barrel must be loaded before any deep src import: the package has a
-// circular import chain (auth.service -> jwt-auth index -> jwt-auth strategy ->
-// auth index) that only resolves cleanly when entered through './auth', which
-// is exactly how src/index.ts (the production entrypoint) loads it.
-import '../src/auth';
 import { AuthModule } from '../src/auth/auth.module';
 import { CaslModule } from '../src/casl/casl.module';
 import { SkipPoliciesGuard } from '../src/casl/policies.guard';
@@ -22,13 +17,6 @@ import { Setting } from '../src/settings/entities/setting.entity';
 import { AuditLog } from '../src/audit-logs/entities/audit-log.entity';
 import { createTestDatabase, testDataSourceOptions } from './pg';
 import { ADMIN_EMAIL, findSetCookie, login, setCookieValue } from './auth-helpers';
-
-// uuid v13 is ESM-only and cannot be parsed by the CJS jest runtime, so the
-// import inside JWTAuthService is replaced with the equivalent node builtin
-// (same v4 semantics).
-jest.mock('uuid', () => ({
-  v4: () => require('node:crypto').randomUUID(),
-}));
 
 const dataSourceName = 'boar_pack_db';
 
