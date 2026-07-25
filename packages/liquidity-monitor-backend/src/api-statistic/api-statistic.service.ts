@@ -1,7 +1,6 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { ApiStatistic } from './entities/api-statistic.entity';
-import { SERVICES } from './api-statistic.constants';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
@@ -23,7 +22,7 @@ export class ApiStatisticService implements OnModuleInit, OnModuleDestroy {
     }
 
     const apiStatistic = new ApiStatistic();
-    apiStatistic.serviceName = SERVICES.TID_API;
+    apiStatistic.serviceName = this.serviceName;
     apiStatistic.uptimePeriod = `[${new Date().toISOString()},)`;
 
     const savedRecord = await this.repo.save(apiStatistic);
@@ -46,6 +45,12 @@ export class ApiStatisticService implements OnModuleInit, OnModuleDestroy {
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   async updateUptimeStatistic() {
+    // The cron is registered for every instance, including ones the host left
+    // unconfigured — those have no row to extend.
+    if (!this.serviceName || !this.lastInsertedId) {
+      return;
+    }
+
     await this.update();
   }
 

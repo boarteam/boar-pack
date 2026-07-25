@@ -46,15 +46,27 @@ describe('ApiStatisticService (Postgres)', () => {
 
       const rows = await selectRanges(ds);
       expect(rows).toHaveLength(1);
-      // Note: the constructor-provided service name only enables the service;
-      // the inserted row is always labeled SERVICES.TID_API (current behavior).
-      expect(rows[0].serviceName).toBe(SERVICES.TID_API);
+      expect(rows[0].serviceName).toBe('my-api');
       expect(rows[0].open).toBe(true);
       expect(rows[0].hi).toBeNull();
 
       const lower = new Date(rows[0].lo as Date).getTime();
       expect(lower).toBeGreaterThanOrEqual(before - 1000);
       expect(lower).toBeLessThanOrEqual(Date.now() + 1000);
+    });
+
+    it('labels every instance with its own name, so services share the table without colliding', async () => {
+      const mine = new ApiStatisticService(ds.getRepository(ApiStatistic), 'my-api');
+      // hosts that want the legacy label pass the exported constant explicitly
+      const tid = new ApiStatisticService(ds.getRepository(ApiStatistic), SERVICES.TID_API);
+      await mine.onModuleInit();
+      await tid.onModuleInit();
+
+      const rows = await selectRanges(ds);
+      expect(rows.map((row) => row.serviceName).sort()).toEqual(
+        [SERVICES.TID_API, 'my-api'].sort(),
+      );
+      expect(rows.every((row) => row.open)).toBe(true);
     });
 
     it('the heartbeat refreshes the upper bound and moves it forward on each call', async () => {
@@ -99,6 +111,24 @@ describe('ApiStatisticService (Postgres)', () => {
       await service.onModuleDestroy();
 
       expect(await ds.getRepository(ApiStatistic).count()).toBe(0);
+    });
+
+    it('the heartbeat is inert too: it runs no query and leaves other services alone', async () => {
+      const configured = new ApiStatisticService(ds.getRepository(ApiStatistic), 'my-api');
+      await configured.onModuleInit();
+
+      // Nest registers the 5s cron for every instance, unconfigured ones
+      // included — without a row to extend it must not touch the database.
+      const service = new ApiStatisticService(ds.getRepository(ApiStatistic));
+      await service.onModuleInit();
+      const updateSpy = jest.spyOn(service, 'update');
+      await service.updateUptimeStatistic();
+
+      expect(updateSpy).not.toHaveBeenCalled();
+      const rows = await selectRanges(ds);
+      expect(rows).toHaveLength(1);
+      expect(rows[0].serviceName).toBe('my-api');
+      expect(rows[0].open).toBe(true);
     });
   });
 });
