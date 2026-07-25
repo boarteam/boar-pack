@@ -45,6 +45,13 @@ export class JwtAuthRefreshStrategy extends PassportStrategy(Strategy, JWT_AUTH_
   async validate(payload: TJWTRefreshPayload) {
     this.logger.debug(`Validating refresh token for user with id: ${payload.sub}`);
 
+    // Access tokens are signed with the same secret, so without this check they
+    // could be exchanged for a fresh token pair
+    if (payload.type !== TOKEN_TYPE.REFRESH) {
+      this.logger.debug(`Rejecting token of type "${payload.type}" used as a refresh token`);
+      throw new UnauthorizedException('Invalid token type');
+    }
+
     // Check if a token has been revoked
     if (!payload.jti) {
       this.logger.error('Refresh token payload does not contain JTI');

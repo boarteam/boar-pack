@@ -5,7 +5,7 @@ import { JWTAuthConfigService } from './jwt-auth.config';
 import { Request } from 'express';
 import { JWT_AUTH, tokenName } from '../auth';
 import { UsersService } from '../users';
-import { RevokedTokensService } from '../revoked-tokens';
+import { RevokedTokensService, TOKEN_TYPE } from '../revoked-tokens';
 
 export type TJWTPayload = {
   email: string;
@@ -14,6 +14,7 @@ export type TJWTPayload = {
   exp?: number; // Expiration Time
   jti?: string; // JWT ID, used for revocation
   sid?: string; // Session ID to identify the family of tokens
+  type?: TOKEN_TYPE; // Set when signing; access and refresh tokens are not interchangeable
 };
 
 export type TJWTRefreshPayload = {
@@ -22,6 +23,7 @@ export type TJWTRefreshPayload = {
   iat?: number; // Issued At
   exp?: number; // Expiration Time
   sid?: string; // Session ID to identify the family of tokens
+  type?: TOKEN_TYPE; // Set when signing; access and refresh tokens are not interchangeable
 };
 
 @Injectable()
@@ -57,6 +59,13 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {
 
   async validate(req: Request, payload: TJWTPayload) {
     this.logger.debug(`Validating user with email: ${payload.email}`);
+
+    // Refresh tokens are signed with the same secret, so without this check they
+    // would be accepted as access tokens
+    if (payload.type !== TOKEN_TYPE.ACCESS) {
+      this.logger.debug(`Rejecting token of type "${payload.type}" used as an access token`);
+      throw new UnauthorizedException('Invalid token type');
+    }
 
     // Check if a token has been revoked
     if (payload.jti) {

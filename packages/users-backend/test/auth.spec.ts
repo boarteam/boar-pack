@@ -204,21 +204,33 @@ describe('auth (e2e)', () => {
       await request(server).get('/me').set('Authorization', 'Bearer not.a.jwt').expect(401);
     });
 
-    it('currently accepts a refresh token as an access token', async () => {
-      // BUG: access and refresh JWTs share the secret and carry no type
-      // discriminator, so the access-token strategy accepts refresh tokens
-      // (payload.sub is enough for the user lookup). Asserting the current
-      // behavior here.
+    it('rejects a refresh token presented as an access token', async () => {
       const loginRes = await login(server).expect(201);
 
       await request(server)
         .get('/me')
         .set('Authorization', `Bearer ${loginRes.body.refreshToken.token}`)
-        .expect(200);
+        .expect(401);
+    });
+
+    it('stamps the token type into both signed payloads', async () => {
+      const loginRes = await login(server).expect(201);
+
+      expect(loginRes.body.accessToken.payload.type).toBe('access');
+      expect(loginRes.body.refreshToken.payload.type).toBe('refresh');
     });
   });
 
   describe('POST /auth/refresh', () => {
+    it('rejects an access token presented as a refresh token', async () => {
+      const loginRes = await login(server).expect(201);
+
+      await request(server)
+        .post('/auth/refresh')
+        .set('Authorization', `Bearer ${loginRes.body.accessToken.token}`)
+        .expect(401);
+    });
+
     it('rotates the pair for a refresh token in the Authorization header; the old token is single-use', async () => {
       const loginRes = await login(server).expect(201);
       const oldRefresh = loginRes.body.refreshToken;

@@ -35,10 +35,13 @@ export class JWTAuthService {
       expiresIn,
       jwtid: this.generateJwtId(),
     };
+    // The token type is part of the signed payload: access and refresh tokens share
+    // a secret, and the strategies reject a token presented as the wrong type
+    const signedPayload = { ...payload, type: tokenType };
     return {
-      token: this.jwtService.sign(payload, options),
+      token: this.jwtService.sign(signedPayload, options),
       payload: {
-        ...payload,
+        ...signedPayload,
         exp: Math.floor((ms(expiresIn) + Date.now()) / 1000),
         jti: options.jwtid,
         sid: payload.sid,
