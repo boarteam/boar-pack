@@ -7,7 +7,7 @@ import { useApiClient } from '../ApiClientContext';
 import { TStatisticProvider } from './index';
 // @ts-ignore
 import { useModel } from 'umi';
-import { Empty } from 'antd';
+import { Empty, message } from 'antd';
 
 type TQuotesStatisticTimelineProps = QuotesStatisticQueryDto & {
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
@@ -35,7 +35,12 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
         endTime,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       })
-      .then(setData);
+      .then(setData)
+      .catch((e) => {
+        console.error(e);
+        message.error('Quotes statistic request failed');
+        setData([]);
+      });
   }, [startTime, endTime]);
 
   if (!data) {

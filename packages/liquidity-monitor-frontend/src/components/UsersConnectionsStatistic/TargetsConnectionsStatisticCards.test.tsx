@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, render, screen, waitFor } from '@testing-library/react';
+import { message } from 'antd';
 import { TargetsConnectionsStatisticCards } from './TargetsConnectionsStatisticCards';
 import { ApiClientProvider } from '../ApiClientContext';
 import { ApiClient, UsersConnectionsStatisticDto } from '../../tools/api-client/generated';
@@ -36,14 +37,17 @@ const targets = [
 ];
 
 function renderCards(
-  props: { targets?: { id: string; name: string }[] },
+  props: { targets?: { id: string; name: string }[]; updateInterval?: number },
   rows: UsersConnectionsStatisticDto[] = [],
 ) {
   const getTargetsTimeline = vi.fn().mockResolvedValue(rows);
   const client = { usersConnectionsStatistic: { getTargetsTimeline } } as unknown as ApiClient;
   const utils = render(
     <ApiClientProvider value={client}>
-      <TargetsConnectionsStatisticCards targets={props.targets} />
+      <TargetsConnectionsStatisticCards
+        targets={props.targets}
+        updateInterval={props.updateInterval}
+      />
     </ApiClientProvider>,
   );
   return { ...utils, getTargetsTimeline };
@@ -51,9 +55,11 @@ function renderCards(
 
 beforeEach(() => {
   captured.line.length = 0;
+  vi.spyOn(message, 'error').mockImplementation(() => ({}) as any);
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
@@ -94,22 +100,64 @@ describe('TargetsConnectionsStatisticCards', () => {
     expect(t1Chart.height).toBe(200);
   });
 
-  it('does not request anything when the targets list is empty', async () => {
-    // Current behavior: with no targets there is no request, so `data` never
-    // resolves and the component stays on the loading spinner forever.
+  it('shows an empty state instead of a spinner when the targets list is empty', async () => {
+    // With no targets there is nothing to request, so the component must not
+    // wait on a request that never happens.
     const { getTargetsTimeline, container } = renderCards({ targets: [] });
 
     await act(async () => {});
     expect(getTargetsTimeline).not.toHaveBeenCalled();
-    expect(container.querySelector('.ant-spin')).toBeTruthy();
+    expect(container.querySelector('.ant-spin')).toBeFalsy();
+    expect(screen.getByText('No data')).toBeInTheDocument();
   });
 
-  it('does not request anything when targets is undefined', async () => {
+  it('shows an empty state when targets is undefined', async () => {
     const { getTargetsTimeline, container } = renderCards({ targets: undefined });
 
     await act(async () => {});
     expect(getTargetsTimeline).not.toHaveBeenCalled();
-    expect(container.querySelector('.ant-spin')).toBeTruthy();
+    expect(container.querySelector('.ant-spin')).toBeFalsy();
+    expect(screen.getByText('No data')).toBeInTheDocument();
     expect(screen.queryByTestId('line-chart')).not.toBeInTheDocument();
+  });
+
+  it('surfaces a failed request and leaves the loading state', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const failure = new Error('network down');
+    const getTargetsTimeline = vi.fn().mockRejectedValue(failure);
+    const client = { usersConnectionsStatistic: { getTargetsTimeline } } as unknown as ApiClient;
+
+    const { container } = render(
+      <ApiClientProvider value={client}>
+        <TargetsConnectionsStatisticCards targets={targets} />
+      </ApiClientProvider>,
+    );
+
+    expect(await screen.findByText('Target One')).toBeInTheDocument();
+    expect(container.querySelector('.ant-spin')).toBeFalsy();
+    expect(consoleError).toHaveBeenCalledWith(failure);
+    expect(message.error).toHaveBeenCalledWith('Targets connections statistic request failed');
+  });
+
+  it('clears the refresh interval on unmount', async () => {
+    vi.useFakeTimers();
+    const { getTargetsTimeline, unmount } = renderCards({ targets, updateInterval: 30_000 });
+
+    expect(getTargetsTimeline).toHaveBeenCalledTimes(1);
+    await act(async () => {});
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(30_000);
+    });
+    expect(getTargetsTimeline).toHaveBeenCalledTimes(2);
+
+    unmount();
+    // The interval is cleared, so nothing is left ticking after unmount.
+    expect(vi.getTimerCount()).toBe(0);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(120_000);
+    });
+    expect(getTargetsTimeline).toHaveBeenCalledTimes(2);
   });
 });

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Col, Empty, Row, Space } from 'antd';
+import { Col, Empty, message, Row, Space } from 'antd';
 import { PageLoading } from '@ant-design/pro-layout';
 import { Line } from '@ant-design/plots';
 import { StatisticCard } from '@ant-design/pro-components';
@@ -48,18 +48,30 @@ export const UsersConnectionsStatisticCards = ({
         endTime,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       })
-      .then(setData);
+      .then(setData)
+      .catch((e) => {
+        console.error(e);
+        message.error('Users connections statistic request failed');
+        setData([]);
+      });
   };
 
   useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
     if (updateInterval) {
-      setInterval(() => {
+      intervalId = setInterval(() => {
         startTimeInitial = new Date();
         startTimeInitial.setHours(startTimeInitial.getHours() - 1);
         setStartTime(startTimeInitial.toISOString());
         setEndTime(new Date().toISOString());
       }, updateInterval);
     }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, []);
 
   useEffect(() => {

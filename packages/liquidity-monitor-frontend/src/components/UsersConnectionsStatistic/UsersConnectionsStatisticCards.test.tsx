@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
+import { message } from 'antd';
 import { MemoryRouter } from 'react-router-dom';
 import { UsersConnectionsStatisticCards } from './UsersConnectionsStatisticCards';
 import { ApiClientProvider } from '../ApiClientContext';
@@ -52,9 +53,11 @@ function renderCards(rows: UsersConnectionsStatisticDto[], updateInterval?: numb
 
 beforeEach(() => {
   captured.line.length = 0;
+  vi.spyOn(message, 'error').mockImplementation(() => ({}) as any);
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
@@ -141,5 +144,47 @@ describe('UsersConnectionsStatisticCards', () => {
 
     resolveRequest([]);
     expect(await screen.findByRole('link', { name: 'Alice' })).toBeInTheDocument();
+  });
+
+  it('surfaces a failed request and leaves the loading state', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const failure = new Error('network down');
+    const getTimeline = vi.fn().mockRejectedValue(failure);
+    const client = { usersConnectionsStatistic: { getTimeline } } as unknown as ApiClient;
+
+    const { container } = render(
+      <MemoryRouter>
+        <ApiClientProvider value={client}>
+          <UsersConnectionsStatisticCards users={users} />
+        </ApiClientProvider>
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByRole('link', { name: 'Alice' })).toBeInTheDocument();
+    expect(container.querySelector('.ant-spin')).toBeFalsy();
+    expect(consoleError).toHaveBeenCalledWith(failure);
+    expect(message.error).toHaveBeenCalledWith('Users connections statistic request failed');
+  });
+
+  it('clears the refresh interval on unmount', async () => {
+    vi.useFakeTimers();
+    const { getTimeline, unmount } = renderCards([], 30_000);
+
+    expect(getTimeline).toHaveBeenCalledTimes(1);
+    await act(async () => {});
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(30_000);
+    });
+    expect(getTimeline).toHaveBeenCalledTimes(2);
+
+    unmount();
+    // The interval is cleared, so nothing is left ticking after unmount.
+    expect(vi.getTimerCount()).toBe(0);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(120_000);
+    });
+    expect(getTimeline).toHaveBeenCalledTimes(2);
   });
 });

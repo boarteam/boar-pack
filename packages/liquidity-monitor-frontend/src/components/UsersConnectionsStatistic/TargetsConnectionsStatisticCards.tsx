@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Col, Empty, Row } from 'antd';
+import { Col, Empty, message, Row } from 'antd';
 import { PageLoading } from '@ant-design/pro-layout';
 import { Line } from '@ant-design/plots';
 import { StatisticCard } from '@ant-design/pro-components';
@@ -53,18 +53,30 @@ export const TargetsConnectionsStatisticCards = ({
         endTime,
         targetIds: targets.map((t) => t.id),
       })
-      .then(setData);
+      .then(setData)
+      .catch((e) => {
+        console.error(e);
+        message.error('Targets connections statistic request failed');
+        setData([]);
+      });
   };
 
   useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
     if (updateInterval) {
-      setInterval(() => {
+      intervalId = setInterval(() => {
         startTimeInitial = new Date();
         startTimeInitial.setHours(startTimeInitial.getHours() - 1);
         setStartTime(startTimeInitial.toISOString());
         setEndTime(new Date().toISOString());
       }, updateInterval);
     }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -73,7 +85,12 @@ export const TargetsConnectionsStatisticCards = ({
 
   const { styles } = useStyles();
 
-  if (!data || !targets) {
+  // Without targets no request is made, so there is nothing to wait for.
+  if (!targets || targets.length === 0) {
+    return <Empty />;
+  }
+
+  if (!data) {
     return <PageLoading />;
   }
 
