@@ -3,7 +3,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JWTAuthConfigService } from './jwt-auth.config';
 import { Request } from 'express';
-import { JWT_AUTH, tokenName } from '../auth';
+import { JWT_AUTH } from '../auth/auth-strategies.constants';
+import { tokenName } from '../auth/auth.constants';
 import { UsersService } from '../users';
 import { RevokedTokensService, TOKEN_TYPE } from '../revoked-tokens';
 
