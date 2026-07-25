@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Col, Empty, Result, Row, Space, Tag, theme } from 'antd';
 import { PageLoading } from '@ant-design/pro-layout';
 import { Line } from '@ant-design/plots';
@@ -42,7 +42,7 @@ export const QuotesStatisticCards = ({ providers, updateInterval }: TQuotesStati
   const [endTime, setEndTime] = useState<string | undefined>(new Date().toISOString());
   const [data, setData] = useState<QuotesStatisticDto[] | null | undefined>(undefined);
 
-  const requestQuotesStatistic = () => {
+  const requestQuotesStatistic = useCallback(() => {
     apiClient.quotesStatistics
       .getTimeline({
         startTime,
@@ -55,7 +55,7 @@ export const QuotesStatisticCards = ({ providers, updateInterval }: TQuotesStati
         console.error('Quotes statistic request failed');
         setData(null);
       });
-  };
+  }, [apiClient.quotesStatistics, startTime, endTime]);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
@@ -71,11 +71,11 @@ export const QuotesStatisticCards = ({ providers, updateInterval }: TQuotesStati
         clearInterval(intervalId);
       }
     };
-  }, []);
+  }, [updateInterval]);
 
   useEffect(() => {
     requestQuotesStatistic();
-  }, [startTime, endTime]);
+  }, [requestQuotesStatistic]);
 
   const { styles } = useStyles();
   const { token } = theme.useToken();

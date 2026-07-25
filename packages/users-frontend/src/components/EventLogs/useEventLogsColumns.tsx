@@ -75,7 +75,7 @@ export const useEventLogsColumns = ({
     apiClient.eventLogs.getServiceNames().then((names) => {
       setServiceNames(names);
     });
-  }, []);
+  }, [apiClient.eventLogs, apiClient.users]);
 
   return [
     {

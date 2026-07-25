@@ -81,10 +81,11 @@ export const TargetsConnectionsStatisticCards = ({
         clearInterval(intervalId);
       }
     };
-  }, []);
+  }, [updateInterval]);
 
   useEffect(() => {
     getTargetsConnectionsStatistic();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the helper closes over the `targets` array prop and is rebuilt on every render, so depending on it would re-request the timeline whenever the caller passes a new array; the request is meant to follow the time window only
   }, [startTime, endTime]);
 
   const { styles } = useStyles();

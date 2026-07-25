@@ -137,10 +137,14 @@ const Table = <
       relationalFields: importConfig?.relationalFields,
     });
 
+  const pathParamsKey = JSON.stringify(pathParams);
+  const paramsKey = JSON.stringify(params);
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- the editableRecord prop opens the edit popup, but closing it clears the local state while the prop still holds the record, so the popup data cannot be derived during render
     setUpdatePopupData(editableRecord);
     actionRef?.current?.reload();
-  }, [editableRecord, JSON.stringify(pathParams), JSON.stringify(params)]);
+  }, [editableRecord, pathParamsKey, paramsKey, actionRef]);
 
   const { columnsSetSelect: localColumnsSetSelect, columnsState: localColumnsState } =
     useColumnsSets<Entity>({

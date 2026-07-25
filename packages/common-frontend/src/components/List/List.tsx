@@ -70,9 +70,11 @@ const List = <
   const [editableData, setEditableData] = useState<Entity[]>([]);
   const intl = useIntl();
 
+  const pathParamsKey = JSON.stringify(pathParams);
+
   useEffect(() => {
     actionRef?.current?.reload();
-  }, [JSON.stringify(pathParams)]);
+  }, [pathParamsKey, actionRef]);
 
   const request = async (params: TFilterParams, sort: TSort = {}, filters: TFilters = {}) => {
     const { current, pageSize, keyword, baseFilters, join, sortMap } = params;

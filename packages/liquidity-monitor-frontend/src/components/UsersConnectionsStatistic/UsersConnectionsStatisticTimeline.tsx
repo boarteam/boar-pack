@@ -37,7 +37,7 @@ export const UsersConnectionsStatisticTimeline: React.FC<
         message.error('Users connections statistic request failed');
         setData([]);
       });
-  }, [startTime, endTime]);
+  }, [startTime, endTime, apiClient.usersConnectionsStatistic]);
 
   if (!data) {
     return <PageLoading />;

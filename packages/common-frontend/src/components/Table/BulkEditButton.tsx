@@ -44,9 +44,10 @@ const BulkEditDialog = <Entity extends Record<string | symbol, any>>({
 
   const [form] = useForm();
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- a new bulk-edit config means a new set of records, so the checked fields have to be cleared alongside the form; the checkboxes are user-driven in between and cannot be derived during render
     setEditableKeys(new Set());
     form.resetFields();
-  }, [config]);
+  }, [config, form]);
 
   const handleCheckboxChange = (dataIndex: string, checked: boolean) => {
     setEditableKeys((prev) => {

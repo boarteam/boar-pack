@@ -123,12 +123,14 @@ export function NumberRangeFilterDropdown({
   const [range, updateRange] = useState<TNumberRange | undefined>(toNumberRange(selectedKeys));
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- antd owns the filter state: when the table resets or restores its filters the dropdown has to adopt the new keys, and the inputs stay editable in between, so the range cannot be derived during render
     updateRange(toNumberRange(selectedKeys));
   }, [selectedKeys]);
 
   useEffect(() => {
     // an open end is passed on as undefined, which React.Key does not describe
     setSelectedKeys((range ?? []) as React.Key[]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- antd rebuilds setSelectedKeys on every render of the dropdown, so depending on it would push the range back into the table on every render and re-render it in a loop
   }, [range]);
 
   return (

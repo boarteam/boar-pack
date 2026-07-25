@@ -31,7 +31,7 @@ export const EventLogsTimeline: React.FC<TEventLogsTimelineProps> = ({
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       })
       .then(setData);
-  }, [startTime, endTime]);
+  }, [startTime, endTime, apiClient.eventLogs]);
 
   if (!data) {
     return <PageLoading />;

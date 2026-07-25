@@ -68,6 +68,7 @@ export default function useColumnsSets<Entity>({
           getColumnsStates<Entity>(columns as TIndexableRecord[], new Set(columnsSet)).state,
         ]),
       ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- columnsSets is an inline literal at most call sites, so listing it would rebuild the map (and with it the select options) on every render; the sets are static configuration and only the columns they index can change
     [columns],
   );
 

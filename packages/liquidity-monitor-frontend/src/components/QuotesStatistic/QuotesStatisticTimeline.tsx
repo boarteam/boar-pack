@@ -41,7 +41,7 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
         message.error('Quotes statistic request failed');
         setData([]);
       });
-  }, [startTime, endTime]);
+  }, [startTime, endTime, apiClient.quotesStatistics]);
 
   if (!data) {
     return <PageLoading />;

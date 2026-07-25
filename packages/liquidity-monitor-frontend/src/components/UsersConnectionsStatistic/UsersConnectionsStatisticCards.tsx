@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Col, Empty, message, Row, Space } from 'antd';
 import { PageLoading } from '@ant-design/pro-layout';
 import { Line } from '@ant-design/plots';
@@ -47,7 +47,7 @@ export const UsersConnectionsStatisticCards = ({
   const [endTime, setEndTime] = useState<string | undefined>(new Date().toISOString());
   const [data, setData] = useState<UsersConnectionsStatisticDto[] | null>(null);
 
-  const getUsersConnectionsStatistic = () => {
+  const getUsersConnectionsStatistic = useCallback(() => {
     apiClient.usersConnectionsStatistic
       .getTimeline({
         startTime,
@@ -60,7 +60,7 @@ export const UsersConnectionsStatisticCards = ({
         message.error('Users connections statistic request failed');
         setData([]);
       });
-  };
+  }, [apiClient.usersConnectionsStatistic, startTime, endTime]);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
@@ -76,11 +76,11 @@ export const UsersConnectionsStatisticCards = ({
         clearInterval(intervalId);
       }
     };
-  }, []);
+  }, [updateInterval]);
 
   useEffect(() => {
     getUsersConnectionsStatistic();
-  }, [startTime, endTime]);
+  }, [getUsersConnectionsStatistic]);
 
   const { styles } = useStyles();
 
