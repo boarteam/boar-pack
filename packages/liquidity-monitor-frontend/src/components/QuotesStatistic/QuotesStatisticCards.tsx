@@ -102,11 +102,11 @@ export const QuotesStatisticCards = ({ providers, updateInterval }: TQuotesStati
               </Space>
             }
             chart={
-              dataByProvider[provider.id] ? (
+              dataByProvider[provider.name] ? (
                 <Line
                   {...{
                     height: 150,
-                    data: dataByProvider[provider.id],
+                    data: dataByProvider[provider.name],
                     xField: 'time',
                     yField: 'records',
                     legend: { size: false },

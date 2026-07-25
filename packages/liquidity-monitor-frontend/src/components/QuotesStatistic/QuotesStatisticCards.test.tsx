@@ -16,9 +16,8 @@ vi.mock('@ant-design/plots', () => ({
   Column: (props: any) => <div data-testid="column-chart" />,
 }));
 
-// NOTE: the component groups the fetched rows by `providerName` but looks the
-// groups up by `provider.id`, so rows only attach to a card when the DTO's
-// providerName field carries the provider id.
+// The API returns the provider display name (`p.name as "providerName"`), so the
+// component groups by `providerName` and looks the groups up by `provider.name`.
 const makeRow = (providerName: string, time: string, records: number): QuotesStatisticDto => ({
   time,
   records,
@@ -57,7 +56,10 @@ afterEach(() => {
 
 describe('QuotesStatisticCards', () => {
   it('renders one card per provider with its name and enabled/disabled tag', async () => {
-    renderCards({ providers }, [makeRow('p1', '10:00', 5), makeRow('p2', '10:00', 2)]);
+    renderCards({ providers }, [
+      makeRow('Provider One', '10:00', 5),
+      makeRow('Provider Two', '10:00', 2),
+    ]);
 
     expect(await screen.findByText('Provider One')).toBeInTheDocument();
     expect(screen.getByText('Provider Two')).toBeInTheDocument();
@@ -90,14 +92,14 @@ describe('QuotesStatisticCards', () => {
   });
 
   it('passes each provider its own timeline rows to the Line chart', async () => {
-    const p1Rows = [makeRow('p1', '10:00', 5), makeRow('p1', '10:05', 7)];
-    const p2Rows = [makeRow('p2', '10:00', 1)];
+    const p1Rows = [makeRow('Provider One', '10:00', 5), makeRow('Provider One', '10:05', 7)];
+    const p2Rows = [makeRow('Provider Two', '10:00', 1)];
     renderCards({ providers }, [...p1Rows, ...p2Rows]);
 
     await screen.findAllByTestId('line-chart');
 
-    const p1Chart = captured.line.find((props) => props.data[0].providerName === 'p1');
-    const p2Chart = captured.line.find((props) => props.data[0].providerName === 'p2');
+    const p1Chart = captured.line.find((props) => props.data[0].providerName === 'Provider One');
+    const p2Chart = captured.line.find((props) => props.data[0].providerName === 'Provider Two');
 
     expect(p1Chart).toBeDefined();
     expect(p1Chart.data).toEqual(p1Rows);
@@ -116,11 +118,21 @@ describe('QuotesStatisticCards', () => {
   });
 
   it('shows an empty placeholder for providers without rows', async () => {
-    renderCards({ providers }, [makeRow('p1', '10:00', 5)]);
+    renderCards({ providers }, [makeRow('Provider One', '10:00', 5)]);
 
     await screen.findByText('Provider Two');
     expect(screen.getAllByTestId('line-chart')).toHaveLength(1);
     expect(screen.getByText('No quotes statistic')).toBeInTheDocument();
+  });
+
+  it('matches rows to cards by provider name, not by provider id', async () => {
+    // Rows carrying the provider *id* belong to no card: the DTO's providerName
+    // field is the display name.
+    renderCards({ providers }, [makeRow('p1', '10:00', 5), makeRow('p2', '10:00', 2)]);
+
+    await screen.findByText('Provider One');
+    expect(screen.queryByTestId('line-chart')).not.toBeInTheDocument();
+    expect(screen.getAllByText('No quotes statistic')).toHaveLength(providers.length);
   });
 
   it('refetches the shifted window when updateInterval elapses and stops after unmount', async () => {
@@ -184,14 +196,16 @@ describe('QuotesStatisticCards', () => {
   });
 
   it('renders the error result when providers is null', async () => {
-    renderCards({ providers: null }, [makeRow('p1', '10:00', 5)]);
+    renderCards({ providers: null }, [makeRow('Provider One', '10:00', 5)]);
 
     expect(await screen.findByText('Quotes statistic request failed')).toBeInTheDocument();
     expect(screen.queryByTestId('line-chart')).not.toBeInTheDocument();
   });
 
   it('stays in the loading state while providers is undefined', async () => {
-    const { container } = renderCards({ providers: undefined }, [makeRow('p1', '10:00', 5)]);
+    const { container } = renderCards({ providers: undefined }, [
+      makeRow('Provider One', '10:00', 5),
+    ]);
 
     // Let the timeline request resolve; the component still waits for providers.
     await act(async () => {});
