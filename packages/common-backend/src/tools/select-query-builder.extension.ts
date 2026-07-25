@@ -11,9 +11,7 @@ declare module 'typeorm' {
 // @ts-ignore
 const originExecute = SelectQueryBuilder.prototype.executeEntitiesAndRawResults;
 // @ts-ignore
-SelectQueryBuilder.prototype.executeEntitiesAndRawResults = async function (
-  queryRunner,
-) {
+SelectQueryBuilder.prototype.executeEntitiesAndRawResults = async function (queryRunner) {
   // @ts-ignore
   const { entities, raw } = await originExecute.call(this, queryRunner);
   entities.forEach((entity, index) => {

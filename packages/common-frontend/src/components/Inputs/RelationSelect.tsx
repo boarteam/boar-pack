@@ -1,21 +1,21 @@
-import { ProFormSelect, ProFormSelectProps } from "@ant-design/pro-components";
-import { useState } from "react";
-import { useCreation } from "../Table";
-import { Space } from "antd";
+import { ProFormSelect, ProFormSelectProps } from '@ant-design/pro-components';
+import { useState } from 'react';
+import { useCreation } from '../Table';
+import { Space } from 'antd';
 
 type RelationSelectProps<T, CreateDto = T> = ProFormSelectProps & {
-  selectedItem: T | null | undefined,
-  onChange?: (type: T | null) => void,
-  filter?: string[],
-  fetchItems: (filter: string[], keyword?: string) => Promise<{ data: T[] }>,
+  selectedItem: T | null | undefined;
+  onChange?: (type: T | null) => void;
+  filter?: string[];
+  fetchItems: (filter: string[], keyword?: string) => Promise<{ data: T[] }>;
   fieldNames?: {
-    value: string,
-    label: string,
-  },
-  onCreate?: ({}: { requestBody: CreateDto }) => Promise<T>,
-  creationColumns?: any[], // TODO: any specified in the createEntityModal. Need to fix it in the both places
-  idColumnName?: string & keyof T | (string & keyof T)[],
-  createPopupTitle?: string,
+    value: string;
+    label: string;
+  };
+  onCreate?: ({}: { requestBody: CreateDto }) => Promise<T>;
+  creationColumns?: any[]; // TODO: any specified in the createEntityModal. Need to fix it in the both places
+  idColumnName?: (string & keyof T) | (string & keyof T)[];
+  createPopupTitle?: string;
 };
 
 export const RelationSelect = function <T, CreateDto = T>({
@@ -35,15 +35,16 @@ export const RelationSelect = function <T, CreateDto = T>({
   ...rest
 }: RelationSelectProps<T, CreateDto>) {
   const { value: valueKey, label: labelKey } = fieldNames;
-  const [value, setValue] = useState(selectedItem ? {
-    label: selectedItem[labelKey as keyof T],
-    value: selectedItem[valueKey as keyof T],
-  } : undefined);
+  const [value, setValue] = useState(
+    selectedItem
+      ? {
+          label: selectedItem[labelKey as keyof T],
+          value: selectedItem[valueKey as keyof T],
+        }
+      : undefined,
+  );
 
-  const {
-    creationModal,
-    createButton,
-  } = useCreation<T, CreateDto>({
+  const { creationModal, createButton } = useCreation<T, CreateDto>({
     onCreate,
     columns: creationColumns,
     popupCreation: !!onCreate,
@@ -52,7 +53,7 @@ export const RelationSelect = function <T, CreateDto = T>({
     pathParams: {},
     entityToCreateDto: (entity: T) => entity as unknown as CreateDto,
     title: createPopupTitle,
-    idColumnName
+    idColumnName,
   });
 
   const request = async ({ keyWords: keyword }: { keyWords: string }) => {
@@ -62,7 +63,7 @@ export const RelationSelect = function <T, CreateDto = T>({
     }
     const resp = await fetchItems(reqFilter, keyword);
     return resp.data;
-  }
+  };
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -70,15 +71,15 @@ export const RelationSelect = function <T, CreateDto = T>({
         showSearch
         mode={'single'}
         request={request}
-        className='relational-select'
+        className="relational-select"
         formItemProps={{
           style: {
             margin: 0,
             display: 'inline-block',
-          }
+          },
         }}
         style={{ minWidth: 160 }}
-        placeholder='Please choose'
+        placeholder="Please choose"
         fieldProps={{
           fieldNames: {
             value: valueKey,
@@ -105,4 +106,4 @@ export const RelationSelect = function <T, CreateDto = T>({
       {creationModal}
     </div>
   );
-}
+};

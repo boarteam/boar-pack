@@ -15,10 +15,7 @@ export function login(
 }
 
 export function setCookies(res: Response): string[] {
-  const header = res.headers['set-cookie'] as unknown as
-    | string
-    | string[]
-    | undefined;
+  const header = res.headers['set-cookie'] as unknown as string | string[] | undefined;
   if (!header) {
     return [];
   }
@@ -31,10 +28,7 @@ export function findSetCookie(res: Response, name: string): string | undefined {
 }
 
 /** Just the value part of the given Set-Cookie header. */
-export function setCookieValue(
-  res: Response,
-  name: string,
-): string | undefined {
+export function setCookieValue(res: Response, name: string): string | undefined {
   const cookie = findSetCookie(res, name);
   return cookie?.split(';')[0].slice(name.length + 1);
 }

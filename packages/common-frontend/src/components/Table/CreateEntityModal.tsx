@@ -1,8 +1,8 @@
-import { ProColumns } from "@ant-design/pro-components";
-import { Button, Modal } from "antd";
-import { MutableRefObject, useRef } from "react";
-import { Descriptions, DescriptionsRefType } from "../Descriptions";
-import { buildFieldsFromColumnsForDescriptionsDisplay } from "./tableTools";
+import { ProColumns } from '@ant-design/pro-components';
+import { Button, Modal } from 'antd';
+import { MutableRefObject, useRef } from 'react';
+import { Descriptions, DescriptionsRefType } from '../Descriptions';
+import { buildFieldsFromColumnsForDescriptionsDisplay } from './tableTools';
 
 export interface CreateEntityModalProps<Entity> {
   /** Whether the modal is visible */
@@ -23,14 +23,17 @@ export interface CreateEntityModalProps<Entity> {
    * Called when the form is submitted.
    * Receives the validated form data.
    */
-  onSubmit: (data: any, descriptionsRef: MutableRefObject<DescriptionsRefType<Entity>>) => Promise<void>;
+  onSubmit: (
+    data: any,
+    descriptionsRef: MutableRefObject<DescriptionsRefType<Entity>>,
+  ) => Promise<void>;
 }
 
 export function CreateEntityModal<
   Entity,
   CreateDto = Entity,
   UpdateDto = Entity,
-  TPathParams = object
+  TPathParams = object,
 >({
   entity,
   open = entity !== undefined,

@@ -1,6 +1,6 @@
-import dayjs from "dayjs";
-import { createStyles } from "antd-style";
-import CommentAvatar from "./CommentAvatar";
+import dayjs from 'dayjs';
+import { createStyles } from 'antd-style';
+import CommentAvatar from './CommentAvatar';
 
 export interface AuthorProps {
   id: string;
@@ -22,24 +22,16 @@ const useStyles = createStyles(() => {
     commentStyles: {
       display: 'flex',
       alignItems: 'flex-start',
-      gap: '10px'
-    }
-  }
-})
+      gap: '10px',
+    },
+  };
+});
 
-const Comment: React.FC<CommentProps> = ({
-  content,
-  author,
-  date,
-  ...rest
-}) => {
+const Comment: React.FC<CommentProps> = ({ content, author, date, ...rest }) => {
   const { styles } = useStyles();
 
   return (
-    <div
-      className={styles.commentStyles}
-      {...rest}
-    >
+    <div className={styles.commentStyles} {...rest}>
       <CommentAvatar author={author} />
       <div>
         <strong>{author.name}</strong>

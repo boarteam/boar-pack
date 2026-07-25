@@ -1,4 +1,4 @@
-import { Action, AppAbility, IPolicyHandler } from "../../casl";
+import { Action, AppAbility, IPolicyHandler } from '../../casl';
 
 export const MyToken = 'MyToken' as const;
 

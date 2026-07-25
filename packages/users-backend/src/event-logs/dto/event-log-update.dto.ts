@@ -1,12 +1,20 @@
-import Joi from "joi";
+import Joi from 'joi';
 import { JoiSchema } from 'nestjs-joi';
 import { LogType, UserRole, LogLevel } from '../entities/event-log.entity';
 
 export class EventLogUpdateDto {
-  @JoiSchema(Joi.string().valid(...Object.values(LogType)).optional())
+  @JoiSchema(
+    Joi.string()
+      .valid(...Object.values(LogType))
+      .optional(),
+  )
   logType?: LogType;
 
-  @JoiSchema(Joi.string().valid(...Object.values(LogLevel)).optional())
+  @JoiSchema(
+    Joi.string()
+      .valid(...Object.values(LogLevel))
+      .optional(),
+  )
   logLevel?: LogLevel;
 
   @JoiSchema(Joi.string().optional())
@@ -18,7 +26,11 @@ export class EventLogUpdateDto {
   @JoiSchema(Joi.string().uuid().allow(null).optional())
   userId?: string;
 
-  @JoiSchema(Joi.string().valid(...Object.values(UserRole)).optional())
+  @JoiSchema(
+    Joi.string()
+      .valid(...Object.values(UserRole))
+      .optional(),
+  )
   userRole?: string;
 
   @JoiSchema(Joi.string().optional())

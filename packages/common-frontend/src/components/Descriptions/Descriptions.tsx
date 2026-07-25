@@ -1,27 +1,32 @@
-import { ActionType } from "@ant-design/pro-table";
-import React, { Key, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Badge, Button, Result, Tabs, TabsProps, Tooltip } from "antd";
-import { DeleteOutlined, StopOutlined } from "@ant-design/icons";
-import { FormattedMessage, useIntl } from "react-intl";
-import { DescriptionsRefType, FieldsEdit, TDescriptionsProps, TGetOneParams } from "./descriptionTypes";
-import { PageLoading, ProDescriptions } from "@ant-design/pro-components";
-import { columnsToDescriptionItemProps, TDescriptionSection } from "./useDescriptionColumns";
-import pick from "lodash/pick";
-import safetyRun from "../../tools/safetyRun";
+import { ActionType } from '@ant-design/pro-table';
+import React, { Key, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { Badge, Button, Result, Tabs, TabsProps, Tooltip } from 'antd';
+import { DeleteOutlined, StopOutlined } from '@ant-design/icons';
+import { FormattedMessage, useIntl } from 'react-intl';
+import {
+  DescriptionsRefType,
+  FieldsEdit,
+  TDescriptionsProps,
+  TGetOneParams,
+} from './descriptionTypes';
+import { PageLoading, ProDescriptions } from '@ant-design/pro-components';
+import { columnsToDescriptionItemProps, TDescriptionSection } from './useDescriptionColumns';
+import pick from 'lodash/pick';
+import safetyRun from '../../tools/safetyRun';
 import {
   buildFieldsFromColumnsForDescriptionsDisplay,
   buildJoinFields,
   collectFieldsFromColumns,
-} from "../Table";
-import { RowEditableConfig } from "@ant-design/pro-utils";
-import { useForm } from "antd/es/form/Form";
-import useContentViewMode, { VIEW_MODE_TYPE } from "./useContentViewMode";
-import { createStyles } from "antd-style";
-import { debounce } from "lodash";
-import { NamePath } from "antd/lib/form/interface";
-import { FieldData } from "rc-field-form/lib/interface";
+} from '../Table';
+import { RowEditableConfig } from '@ant-design/pro-utils';
+import { useForm } from 'antd/es/form/Form';
+import useContentViewMode, { VIEW_MODE_TYPE } from './useContentViewMode';
+import { createStyles } from 'antd-style';
+import { debounce } from 'lodash';
+import { NamePath } from 'antd/lib/form/interface';
+import { FieldData } from 'rc-field-form/lib/interface';
 
-const useStyles = createStyles(({css}) => {
+const useStyles = createStyles(({ css }) => {
   return {
     antDescriptionsStyles: css`
       .ant-descriptions-item-content {
@@ -32,15 +37,16 @@ const useStyles = createStyles(({css}) => {
 
         &:hover {
           .anticon-edit {
-              opacity: 1;
+            opacity: 1;
           }
         }
       }
-    `
-  }
-})
+    `,
+  };
+});
 
-const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
+const DescriptionsComponent = <
+  Entity extends Record<string | symbol, any>,
   CreateDto = Entity,
   UpdateDto = Entity,
   TPathParams = object,
@@ -64,10 +70,7 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     onEntityChange,
     contentViewMode: contentViewModeProp,
     ...rest
-  }: TDescriptionsProps<Entity,
-    CreateDto,
-    UpdateDto,
-    TPathParams>,
+  }: TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams>,
   ref: React.Ref<DescriptionsRefType<Entity>>,
 ) => {
   const { styles } = useStyles();
@@ -77,7 +80,7 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     editable = {
       ...editable,
       form,
-    }
+    };
   }
   form = editable.form;
 
@@ -90,25 +93,23 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
   const sections = columnsToDescriptionItemProps(columns, mainTitle);
 
   const columnDataIndexToSection = sections.reduce((acc, section) => {
-    section.columns.forEach(column => {
+    section.columns.forEach((column) => {
       if (Array.isArray(column.dataIndex)) {
         throw new Error('We only support simple dataIndex for now');
       }
 
       acc.set(column.dataIndex, section);
-    })
+    });
     return acc;
   }, new Map<Key, TDescriptionSection<Entity>>());
 
-  const {
-    contentViewModeButton,
-    contentViewMode
-  } = useContentViewMode({
-    mode: contentViewModeProp || (sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL)
+  const { contentViewModeButton, contentViewMode } = useContentViewMode({
+    mode:
+      contentViewModeProp || (sections.length > 1 ? VIEW_MODE_TYPE.TABS : VIEW_MODE_TYPE.GENERAL),
   });
-  const [errorsPerSection, setErrorsPerSection] = useState<Map<TDescriptionSection<Entity>['key'], number>>(
-    new Map(sections.map(section => [section.key, 0]))
-  );
+  const [errorsPerSection, setErrorsPerSection] = useState<
+    Map<TDescriptionSection<Entity>['key'], number>
+  >(new Map(sections.map((section) => [section.key, 0])));
 
   const handleSubmit = async () => {
     try {
@@ -136,13 +137,13 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
 
   useImperativeHandle(ref, () => ({
     reset: () => {
-      setErrorsPerSection(new Map(sections.map(section => [section.key, 0])));
+      setErrorsPerSection(new Map(sections.map((section) => [section.key, 0])));
       form.resetFields();
     },
     submit: () => handleSubmit(),
     setFieldErrors: (fields: FieldData<Entity>[]) => {
-      form.setFields(fields)
-    }
+      form.setFields(fields);
+    },
   }));
 
   const onValuesChange = debounce((changedValues, allValues) => {
@@ -154,41 +155,37 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
       key = Object.keys(previousValues).find((field) => !(field in allValues));
     }
 
-    form.validateFields([key])
-      .finally(() => {
-        const section = columnDataIndexToSection.get(key);
-        const dataIndexes = section.columns.map(column => {
-          return Array.isArray(column.dataIndex) ? column.dataIndex.join('.') : column.dataIndex;
-        });
-
-        const errorsNumber = form.getFieldsError(dataIndexes as NamePath<Entity>[]).reduce((acc, field) => acc + field.errors.length, 0);
-        setErrorsPerSection((prev) => {
-          const updated = new Map(prev);
-          updated.set(section.key, errorsNumber);
-          return updated;
-        });
+    form.validateFields([key]).finally(() => {
+      const section = columnDataIndexToSection.get(key);
+      const dataIndexes = section.columns.map((column) => {
+        return Array.isArray(column.dataIndex) ? column.dataIndex.join('.') : column.dataIndex;
       });
+
+      const errorsNumber = form
+        .getFieldsError(dataIndexes as NamePath<Entity>[])
+        .reduce((acc, field) => acc + field.errors.length, 0);
+      setErrorsPerSection((prev) => {
+        const updated = new Map(prev);
+        updated.set(section.key, errorsNumber);
+        return updated;
+      });
+    });
   }, 500);
 
   const queryParams = useMemo(() => {
     const join = params?.join;
     const queryParams: TGetOneParams & TPathParams = {
-      ...(pathParams ?? {} as TPathParams),
+      ...(pathParams ?? ({} as TPathParams)),
     };
 
     const { joinSelect, joinFields } = buildJoinFields(join);
     queryParams.join = joinSelect;
-    queryParams.fields = collectFieldsFromColumns(
-      columns,
-      idColumnName,
-      joinFields,
-    );
+    queryParams.fields = collectFieldsFromColumns(columns, idColumnName, joinFields);
 
     return queryParams;
   }, [params, pathParams]);
 
-  const getKey = (index: number) =>
-    index + String(pathParams?.[idColumnName as keyof TPathParams])
+  const getKey = (index: number) => index + String(pathParams?.[idColumnName as keyof TPathParams]);
 
   const requestData = async () => {
     if (!getOne) {
@@ -207,7 +204,7 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const onSave: RowEditableConfig<Entity>['onSave'] = async (propName, record) => {
     try {
@@ -215,7 +212,7 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
       if (onUpdate && entityToUpdateDto) {
         await onUpdate({
           ...queryParams,
-          ...{} as Partial<Entity>,
+          ...({} as Partial<Entity>),
           requestBody: entityToUpdateDto(pick(record, [propName as keyof Entity])),
         });
       }
@@ -227,67 +224,92 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   useEffect(() => {
     safetyRun(requestData());
-  }, [])
+  }, []);
 
   useEffect(() => {
     setData(entity);
     form.setFieldsValue(entity);
-  }, [entity])
+  }, [entity]);
 
   if (loading) {
     return <PageLoading />;
   }
 
   if (!data) {
-    return (
-      <Result
-        status="404"
-        title="404"
-        subTitle="The entity is not found."
-      />
-    );
+    return <Result status="404" title="404" subTitle="The entity is not found." />;
   }
 
-  const formProps = contentViewMode === VIEW_MODE_TYPE.TABS ? {
-    onValuesChange,
-  } : undefined;
+  const formProps =
+    contentViewMode === VIEW_MODE_TYPE.TABS
+      ? {
+          onValuesChange,
+        }
+      : undefined;
 
   const contentViewSwitcher = sections.length > 1 ? contentViewModeButton : undefined;
   const descriptions = sections.map((section, index) => {
-    return <ProDescriptions<Entity>
-      key={getKey(index)}
-      title={section.title as React.ReactNode}
-      actionRef={actionRef}
-      size={"small"}
-      bordered
-      loading={loading}
-      style={{ marginBottom: 20 }}
-      labelStyle={{ width: '15%' }}
-      dataSource={data as Entity}
-      className={styles.antDescriptionsStyles}
-      editable={canEdit ? {
-        type: 'multiple',
-        onSave,
-        deletePopconfirmMessage: intl.formatMessage({ id: 'table.deletePopconfirmMessage' }),
-        onlyAddOneLineAlertMessage: intl.formatMessage({ id: 'table.onlyAddOneLineAlertMessage' }),
-        cancelText: <Tooltip title={intl.formatMessage({ id: 'table.cancelText' })}><StopOutlined /></Tooltip>,
-        deleteText: <Tooltip title={intl.formatMessage({ id: 'table.deleteText' })}><DeleteOutlined /></Tooltip>,
-        saveText: <Button size={"small"} type={"primary"}><FormattedMessage id={'table.saveText'} /></Button>,
-        ...(fieldsEditType === FieldsEdit.All && {
-          editableKeys: [...buildFieldsFromColumnsForDescriptionsDisplay(columns, idColumnName)],
-          actionRender: () => [],
-        }),
-        ...editable,
-      } : undefined}
-      columns={section.columns}
-      extra={contentViewMode === VIEW_MODE_TYPE.GENERAL && index === 0 ? contentViewSwitcher : undefined}
-      formProps={formProps}
-      {...rest}
-    />;
+    return (
+      <ProDescriptions<Entity>
+        key={getKey(index)}
+        title={section.title as React.ReactNode}
+        actionRef={actionRef}
+        size={'small'}
+        bordered
+        loading={loading}
+        style={{ marginBottom: 20 }}
+        labelStyle={{ width: '15%' }}
+        dataSource={data as Entity}
+        className={styles.antDescriptionsStyles}
+        editable={
+          canEdit
+            ? {
+                type: 'multiple',
+                onSave,
+                deletePopconfirmMessage: intl.formatMessage({
+                  id: 'table.deletePopconfirmMessage',
+                }),
+                onlyAddOneLineAlertMessage: intl.formatMessage({
+                  id: 'table.onlyAddOneLineAlertMessage',
+                }),
+                cancelText: (
+                  <Tooltip title={intl.formatMessage({ id: 'table.cancelText' })}>
+                    <StopOutlined />
+                  </Tooltip>
+                ),
+                deleteText: (
+                  <Tooltip title={intl.formatMessage({ id: 'table.deleteText' })}>
+                    <DeleteOutlined />
+                  </Tooltip>
+                ),
+                saveText: (
+                  <Button size={'small'} type={'primary'}>
+                    <FormattedMessage id={'table.saveText'} />
+                  </Button>
+                ),
+                ...(fieldsEditType === FieldsEdit.All && {
+                  editableKeys: [
+                    ...buildFieldsFromColumnsForDescriptionsDisplay(columns, idColumnName),
+                  ],
+                  actionRender: () => [],
+                }),
+                ...editable,
+              }
+            : undefined
+        }
+        columns={section.columns}
+        extra={
+          contentViewMode === VIEW_MODE_TYPE.GENERAL && index === 0
+            ? contentViewSwitcher
+            : undefined
+        }
+        formProps={formProps}
+        {...rest}
+      />
+    );
   });
 
   if (contentViewMode === VIEW_MODE_TYPE.GENERAL) {
@@ -298,31 +320,25 @@ const DescriptionsComponent = <Entity extends Record<string | symbol, any>,
     return {
       key: getKey(index),
       label: (
-        <Badge
-          size='small'
-          overflowCount={5}
-          count={errorsPerSection.get(section.key)}
-        >
+        <Badge size="small" overflowCount={5} count={errorsPerSection.get(section.key)}>
           {section.title as React.ReactNode}
         </Badge>
       ),
       forceRender: true,
       children: descriptions[index],
-    }
+    };
   });
 
-  return <Tabs
-    defaultActiveKey="0"
-    items={tabsItems}
-    tabBarExtraContent={contentViewModeButton}
-  />;
+  return <Tabs defaultActiveKey="0" items={tabsItems} tabBarExtraContent={contentViewModeButton} />;
 };
 
-const Descriptions = React.forwardRef(DescriptionsComponent) as <Entity extends Record<string | symbol, any>,
+const Descriptions = React.forwardRef(DescriptionsComponent) as <
+  Entity extends Record<string | symbol, any>,
   CreateDto = Entity,
   UpdateDto = Entity,
-  TPathParams = object>(
-  props: TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams>
+  TPathParams = object,
+>(
+  props: TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams>,
 ) => React.ReactElement;
 
 export default Descriptions;

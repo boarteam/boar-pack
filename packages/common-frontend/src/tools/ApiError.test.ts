@@ -63,9 +63,7 @@ describe('ApiError', () => {
       name: e.field,
       errors: [e.message],
     }));
-    expect(formErrors).toEqual([
-      { name: 'name', errors: ['name should not be empty'] },
-    ]);
+    expect(formErrors).toEqual([{ name: 'name', errors: ['name should not be empty'] }]);
   });
 
   it('leaves declared fields undefined when nothing hydrates them', () => {

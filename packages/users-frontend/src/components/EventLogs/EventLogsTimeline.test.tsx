@@ -65,7 +65,7 @@ const renderTimeline = (
   render(
     <TestProviders client={client}>
       <EventLogsTimeline onDateRangeChange={onDateRangeChange} {...props} />
-    </TestProviders>
+    </TestProviders>,
   );
   return { client, onDateRangeChange };
 };
@@ -157,10 +157,7 @@ describe('EventLogsTimeline', () => {
         },
       },
     });
-    expect(onDateRangeChange).toHaveBeenCalledWith(
-      '2026-01-15T10:00:00Z',
-      '2026-01-15T10:00:59Z'
-    );
+    expect(onDateRangeChange).toHaveBeenCalledWith('2026-01-15T10:00:00Z', '2026-01-15T10:00:59Z');
   });
 
   it('handles interval clicks without payload gracefully', async () => {
@@ -181,7 +178,7 @@ describe('EventLogsTimeline', () => {
     const { rerender } = render(
       <TestProviders client={client}>
         <EventLogsTimeline onDateRangeChange={onDateRangeChange} />
-      </TestProviders>
+      </TestProviders>,
     );
     await screen.findByTestId('column-chart');
     expect(client.eventLogs.getTimeline).toHaveBeenCalledTimes(1);
@@ -193,7 +190,7 @@ describe('EventLogsTimeline', () => {
           startTime="2026-02-01T00:00:00Z"
           endTime="2026-02-02T00:00:00Z"
         />
-      </TestProviders>
+      </TestProviders>,
     );
 
     await waitFor(() => {

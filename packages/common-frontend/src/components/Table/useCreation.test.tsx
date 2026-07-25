@@ -40,7 +40,11 @@ function Harness({
   createNewDefaultParams?: Partial<Entity>;
   pathParams?: Record<string, string>;
 }) {
-  const { createButton, creationModal } = useCreation<Entity, Partial<Entity>, Record<string, string>>({
+  const { createButton, creationModal } = useCreation<
+    Entity,
+    Partial<Entity>,
+    Record<string, string>
+  >({
     title: 'Create entity',
     columns: [],
     idColumnName: 'id',
@@ -180,7 +184,10 @@ describe('useCreation', () => {
       await user.click(screen.getByText('New'));
 
       await act(async () => {
-        await modalProps.onSubmit({ name: 'Zed', email: 'z@x.io', junk: 'dropped' }, descriptionsRef);
+        await modalProps.onSubmit(
+          { name: 'Zed', email: 'z@x.io', junk: 'dropped' },
+          descriptionsRef,
+        );
       });
 
       expect(onCreate).toHaveBeenCalledTimes(1);
@@ -208,10 +215,12 @@ describe('useCreation', () => {
       it('maps an ApiError 400 body to form field errors and keeps the popup open', async () => {
         const user = userEvent.setup();
         const actionRef = makeActionRef();
-        const onCreate = vi.fn().mockRejectedValue(makeApiError(400, [
-          { field: 'name', message: 'Name is required' },
-          { field: 'email', message: 'Email must be valid' },
-        ]));
+        const onCreate = vi.fn().mockRejectedValue(
+          makeApiError(400, [
+            { field: 'name', message: 'Name is required' },
+            { field: 'email', message: 'Email must be valid' },
+          ]),
+        );
         const descriptionsRef = { current: { setFieldErrors: vi.fn() } } as any;
 
         renderHarness({ popupCreation: true, actionRef, onCreate, createNewDefaultParams: {} });
@@ -234,9 +243,9 @@ describe('useCreation', () => {
 
       it('does not map field errors for non-400 ApiErrors', async () => {
         const user = userEvent.setup();
-        const onCreate = vi.fn().mockRejectedValue(makeApiError(500, [
-          { field: 'name', message: 'Server exploded' },
-        ]));
+        const onCreate = vi
+          .fn()
+          .mockRejectedValue(makeApiError(500, [{ field: 'name', message: 'Server exploded' }]));
         const descriptionsRef = { current: { setFieldErrors: vi.fn() } } as any;
 
         renderHarness({ popupCreation: true, onCreate, createNewDefaultParams: {} });
@@ -258,9 +267,11 @@ describe('useCreation', () => {
         renderHarness({ popupCreation: true, onCreate, createNewDefaultParams: {} });
         await user.click(screen.getByText('New'));
 
-        await expect(act(async () => {
-          await modalProps.onSubmit({ name: 'x' }, descriptionsRef);
-        })).resolves.not.toThrow();
+        await expect(
+          act(async () => {
+            await modalProps.onSubmit({ name: 'x' }, descriptionsRef);
+          }),
+        ).resolves.not.toThrow();
 
         expect(descriptionsRef.current.setFieldErrors).not.toHaveBeenCalled();
         expect(consoleErrorSpy).toHaveBeenCalled();

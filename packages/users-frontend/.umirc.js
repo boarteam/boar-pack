@@ -12,6 +12,6 @@ export default defineConfig({
   model: {},
   locale: {},
   access: {
-  //   strictMode: true,
+    //   strictMode: true,
   },
 });

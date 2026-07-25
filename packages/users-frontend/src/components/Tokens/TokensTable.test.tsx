@@ -54,7 +54,7 @@ const renderTable = (client = makeClient()) => {
   render(
     <TestProviders client={client}>
       <TokensTable userId="user-7" />
-    </TestProviders>
+    </TestProviders>,
   );
   return client;
 };

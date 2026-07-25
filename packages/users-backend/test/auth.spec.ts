@@ -16,20 +16,12 @@ import { SkipJWTGuard } from '../src/jwt-auth/jwt-auth.guard';
 import { Roles, User } from '../src/users/entities/user.entity';
 import { UsersModule } from '../src/users/users.module';
 import { Token } from '../src/tokens/entities/token.entity';
-import {
-  RevokedToken,
-  TOKEN_TYPE,
-} from '../src/revoked-tokens/entities/revoked-token.entity';
+import { RevokedToken, TOKEN_TYPE } from '../src/revoked-tokens/entities/revoked-token.entity';
 import { EventLog } from '../src/event-logs/entities/event-log.entity';
 import { Setting } from '../src/settings/entities/setting.entity';
 import { AuditLog } from '../src/audit-logs/entities/audit-log.entity';
 import { createTestDatabase, testDataSourceOptions } from './pg';
-import {
-  ADMIN_EMAIL,
-  findSetCookie,
-  login,
-  setCookieValue,
-} from './auth-helpers';
+import { ADMIN_EMAIL, findSetCookie, login, setCookieValue } from './auth-helpers';
 
 // uuid v13 is ESM-only and cannot be parsed by the CJS jest runtime, so the
 // import inside JWTAuthService is replaced with the equivalent node builtin
@@ -158,9 +150,7 @@ describe('auth (e2e)', () => {
       // scoped to the REFRESH_TOKEN_PATH default
       expect(refreshCookie).toContain('Path=/api/auth/refresh');
       expect(refreshCookie).toContain('HttpOnly');
-      expect(setCookieValue(res, 'auth_refresh_token')).toBe(
-        refreshToken.token,
-      );
+      expect(setCookieValue(res, 'auth_refresh_token')).toBe(refreshToken.token);
     });
 
     it('rejects a wrong password with 401', async () => {
@@ -211,10 +201,7 @@ describe('auth (e2e)', () => {
     });
 
     it('rejects a garbage token', async () => {
-      await request(server)
-        .get('/me')
-        .set('Authorization', 'Bearer not.a.jwt')
-        .expect(401);
+      await request(server).get('/me').set('Authorization', 'Bearer not.a.jwt').expect(401);
     });
 
     it('currently accepts a refresh token as an access token', async () => {
@@ -251,10 +238,7 @@ describe('auth (e2e)', () => {
       expect(newRefresh).not.toBe(oldRefresh.token);
 
       // the new access token works
-      await request(server)
-        .get('/me')
-        .set('Authorization', `Bearer ${newAccess}`)
-        .expect(200);
+      await request(server).get('/me').set('Authorization', `Bearer ${newAccess}`).expect(200);
 
       // the used refresh token was revoked on use…
       const revoked = await dataSource
@@ -337,10 +321,7 @@ describe('auth (e2e)', () => {
       expect(sessionRow?.tokenType).toBe(TOKEN_TYPE.SESSION);
 
       // so the access token stops working…
-      await request(server)
-        .get('/me')
-        .set('Authorization', `Bearer ${access.token}`)
-        .expect(401);
+      await request(server).get('/me').set('Authorization', `Bearer ${access.token}`).expect(401);
 
       // …and so does the refresh token of the same session
       await request(server)

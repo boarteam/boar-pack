@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { SearchOutlined } from "@ant-design/icons";
-import { Checkbox, Empty, Input, Menu } from "antd";
-import { FilterDropdownProps } from "antd/es/table/interface";
+import { useState, useEffect } from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import { Checkbox, Empty, Input, Menu } from 'antd';
+import { FilterDropdownProps } from 'antd/es/table/interface';
 
-export const SearchSelect = function<T>({
+export const SearchSelect = function <T>({
   selectedKeys,
   setSelectedKeys,
   filter = [],
@@ -14,13 +14,13 @@ export const SearchSelect = function<T>({
     label: 'name',
   },
 }: Pick<FilterDropdownProps, 'selectedKeys' | 'setSelectedKeys'> & {
-  filter?: string[],
-  limit?: number,
-  fetchItems: (filter: string[], limit?: number, keyword?: string) => Promise<{ data: T[] }>,
+  filter?: string[];
+  limit?: number;
+  fetchItems: (filter: string[], limit?: number, keyword?: string) => Promise<{ data: T[] }>;
   fieldNames?: {
-    value: string,
-    label: string,
-  },
+    value: string;
+    label: string;
+  };
 }) {
   const { value: valueKey, label: labelKey } = fieldNames;
 
@@ -33,7 +33,7 @@ export const SearchSelect = function<T>({
 
     const resp = await fetchItems(reqFilter, limit, keyword);
     setAvailableItems(resp.data);
-  }
+  };
 
   useEffect(() => {
     request('');
@@ -45,49 +45,45 @@ export const SearchSelect = function<T>({
         <Input
           prefix={<SearchOutlined />}
           placeholder={'Search in filters'}
-          onChange={e => request(e.target.value)}
+          onChange={(e) => request(e.target.value)}
           className={`ant-table-filter-dropdown-search-input`}
         />
       </div>
-      {
-        availableItems.length === 0 
-          ? (
-            <Empty
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-              description={'Not Found'}
-              imageStyle={{
-                height: 24,
-              }}
-              style={{
-                margin: 0,
-                padding: '16px 0',
-              }}
-            />
-          )
-          : (
-              <Menu
-                selectable
-                multiple
-                prefixCls={`ant-dropdown-menu`}
-                className={'ant-dropdown-menu'}
-                onSelect={({ key }) => setSelectedKeys([...selectedKeys, key])}
-                onDeselect={({ key }) => setSelectedKeys(selectedKeys.filter(selectedKey => selectedKey !== key))}
-                // @ts-ignore
-                selectedKeys={selectedKeys}
-                items={availableItems.map(item => (
-                  {
-                    key: String(item?.[valueKey as keyof T]),
-                    label: (
-                      <>
-                        <Checkbox checked={selectedKeys?.includes(String(item?.[valueKey as keyof T]))} />
-                        <span>{String(item?.[labelKey as keyof T])}</span>
-                      </>
-                    ),
-                  }
-                ))}
-              />
-            )
-      }
+      {availableItems.length === 0 ? (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description={'Not Found'}
+          imageStyle={{
+            height: 24,
+          }}
+          style={{
+            margin: 0,
+            padding: '16px 0',
+          }}
+        />
+      ) : (
+        <Menu
+          selectable
+          multiple
+          prefixCls={`ant-dropdown-menu`}
+          className={'ant-dropdown-menu'}
+          onSelect={({ key }) => setSelectedKeys([...selectedKeys, key])}
+          onDeselect={({ key }) =>
+            setSelectedKeys(selectedKeys.filter((selectedKey) => selectedKey !== key))
+          }
+          // @ts-ignore
+          selectedKeys={selectedKeys}
+          items={availableItems.map((item) => ({
+            key: String(item?.[valueKey as keyof T]),
+            label: (
+              <>
+                <Checkbox checked={selectedKeys?.includes(String(item?.[valueKey as keyof T]))} />
+                <span>{String(item?.[labelKey as keyof T])}</span>
+              </>
+            ),
+          }))}
+        />
+      )}
     </>
   );
-}
+};

@@ -16,16 +16,14 @@ export class CaslModule {
         },
       ],
       exports: [CaslAbilityFactory],
-    }
+    };
   }
 
   static forFeature() {
     return {
       module: CaslModule,
-      providers: [
-        CaslAbilityFactory,
-      ],
+      providers: [CaslAbilityFactory],
       exports: [CaslAbilityFactory],
-    }
+    };
   }
 }

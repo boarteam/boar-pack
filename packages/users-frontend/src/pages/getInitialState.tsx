@@ -1,11 +1,11 @@
-import { PageLoading } from "@ant-design/pro-layout";
-import { PureAbility } from "@casl/ability";
-import { unpackRules } from "@casl/ability/extra";
-import { stringify } from "querystring";
+import { PageLoading } from '@ant-design/pro-layout';
+import { PureAbility } from '@casl/ability';
+import { unpackRules } from '@casl/ability/extra';
+import { stringify } from 'querystring';
 import { history } from '@umijs/max';
-import { Action } from "@/tools/action.enum";
-import defaultSettings, { appSettings } from "@/../config/defaultSettings";
-import { CancelablePromise } from "@@api/generated";
+import { Action } from '@/tools/action.enum';
+import defaultSettings, { appSettings } from '@/../config/defaultSettings';
+import { CancelablePromise } from '@@api/generated';
 
 export const loginPath = appSettings.loginPath;
 const resetPasswordPath = appSettings.resetPasswordPath;
@@ -65,8 +65,8 @@ export type TInitialState<TUser> = {
   currentUser?: TUser;
   currentCompany?: string;
   loading?: boolean;
-  ability?: PureAbility<[Action, string]>,
-}
+  ability?: PureAbility<[Action, string]>;
+};
 
 export function onPageChange<TUser>(initialState?: TInitialState<TUser>) {
   const currentUser = initialState?.currentUser;
@@ -82,9 +82,9 @@ export function onPageChange<TUser>(initialState?: TInitialState<TUser>) {
  * @see https://umijs.org/zh-CN/plugins/plugin-initial-state
  */
 export async function getInitialState<TUser>(
-    afterLogin = false,
-    projectSettings: typeof defaultSettings = {},
-    fetchUserInfoCallback: () => CancelablePromise<TUser>
+  afterLogin = false,
+  projectSettings: typeof defaultSettings = {},
+  fetchUserInfoCallback: () => CancelablePromise<TUser>,
 ): Promise<TInitialState<TUser>> {
   const ability = new PureAbility<[Action, string]>();
   const pathname = history.location.pathname;
@@ -92,12 +92,12 @@ export async function getInitialState<TUser>(
   const state: TInitialState<TUser> = {
     settings: {
       ...defaultSettings,
-      ...projectSettings
+      ...projectSettings,
     },
     ability,
   };
 
-  if (![loginPath, resetPasswordPath].some(path => pathname.startsWith(path)) || afterLogin) {
+  if (![loginPath, resetPasswordPath].some((path) => pathname.startsWith(path)) || afterLogin) {
     const currentUser = await fetchUserInfo(fetchUserInfoCallback);
 
     if (!currentUser) {

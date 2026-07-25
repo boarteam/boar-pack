@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal } from 'antd';
-import CommentForm from "./CommentForm";
+import CommentForm from './CommentForm';
 
 interface CommentFormProps {
   isOpen: boolean;
@@ -10,7 +10,13 @@ interface CommentFormProps {
   title?: string;
 }
 
-const CommentFormModal: React.FC<CommentFormProps> = ({ setIsOpen, isOpen, onSubmit, children, title = 'Add comment' }) => {
+const CommentFormModal: React.FC<CommentFormProps> = ({
+  setIsOpen,
+  isOpen,
+  onSubmit,
+  children,
+  title = 'Add comment',
+}) => {
   return (
     <Modal
       title={title}

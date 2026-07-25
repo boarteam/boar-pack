@@ -9,8 +9,7 @@ export type TGoogleAuthConfig = {
 
 @Injectable()
 export class GoogleAuthConfigService {
-  constructor(private configService: ConfigService) {
-  }
+  constructor(private configService: ConfigService) {}
 
   get config(): TGoogleAuthConfig {
     const clientId = this.configService.getOrThrow<string>('GOOGLE_CLIENT_ID');

@@ -70,11 +70,11 @@ describe('ApiStatisticService (Postgres)', () => {
       await service.updateUptimeStatistic();
       const [second] = await selectRanges(ds);
       expect(second.open).toBe(false);
-      expect(new Date(second.hi as Date).getTime())
-        .toBeGreaterThan(new Date(first.hi as Date).getTime());
+      expect(new Date(second.hi as Date).getTime()).toBeGreaterThan(
+        new Date(first.hi as Date).getTime(),
+      );
       // lower bound stays where init put it
-      expect(new Date(second.lo as Date).getTime())
-        .toEqual(new Date(first.lo as Date).getTime());
+      expect(new Date(second.lo as Date).getTime()).toEqual(new Date(first.lo as Date).getTime());
     });
 
     it('onModuleDestroy closes the range', async () => {

@@ -78,10 +78,7 @@ describe('RelationSelect', () => {
     await user.type(combobox, 'Al');
 
     await waitFor(() =>
-      expect(fetchItems).toHaveBeenCalledWith(
-        ['type||$eq||demo', 'name||$contL||Al'],
-        'Al',
-      ),
+      expect(fetchItems).toHaveBeenCalledWith(['type||$eq||demo', 'name||$contL||Al'], 'Al'),
     );
   });
 

@@ -1,4 +1,4 @@
-import { UsersConnectionsStatistic } from "./entities/users-connections-statistic.entity";
+import { UsersConnectionsStatistic } from './entities/users-connections-statistic.entity';
 
 export * from '@boarteam/boar-pack-users-backend';
 

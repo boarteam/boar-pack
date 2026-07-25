@@ -1,4 +1,12 @@
-import { Controller, Get, Req, Res, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { AuthService } from '../auth.service';
@@ -11,23 +19,18 @@ import { AuthExceptionFilter } from '../auth.exception-filter';
 @ApiTags('Authentication')
 @Controller('auth/google')
 export default class GoogleAuthController {
-  constructor(private authService: AuthService) {
-  }
+  constructor(private authService: AuthService) {}
 
   @SkipJWTGuard()
   @UseGuards(GoogleAuthGuard)
   @Get('')
-  async loginGoogle() {
-  }
+  async loginGoogle() {}
 
   @SkipJWTGuard()
   @UseGuards(GoogleAuthGuard)
   @UseFilters(AuthExceptionFilter)
   @Get('callback')
-  async loginGoogleCallback(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async loginGoogleCallback(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     if (!req.user) {
       throw new UnauthorizedException(`User is not authorized`);
     }

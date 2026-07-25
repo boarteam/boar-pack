@@ -3,10 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { UsersConnectionsStatisticCards } from './UsersConnectionsStatisticCards';
 import { ApiClientProvider } from '../ApiClientContext';
-import {
-  ApiClient,
-  UsersConnectionsStatisticDto,
-} from '../../tools/api-client/generated';
+import { ApiClient, UsersConnectionsStatisticDto } from '../../tools/api-client/generated';
 
 const captured = vi.hoisted(() => ({
   line: [] as any[],
@@ -63,9 +60,7 @@ afterEach(() => {
 
 describe('UsersConnectionsStatisticCards', () => {
   it('renders one card per user with the name linking to the admin user page', async () => {
-    renderCards([
-      makeRow('u1', UsersConnectionsStatisticDto.target.FIX_SERVER, '10:00', 3),
-    ]);
+    renderCards([makeRow('u1', UsersConnectionsStatisticDto.target.FIX_SERVER, '10:00', 3)]);
 
     const aliceLink = await screen.findByRole('link', { name: 'Alice' });
     const bobLink = screen.getByRole('link', { name: 'Bob' });
@@ -95,9 +90,7 @@ describe('UsersConnectionsStatisticCards', () => {
       makeRow('u1', UsersConnectionsStatisticDto.target.WEBSOCKET_SERVER, '10:00', 8),
       makeRow('u1', UsersConnectionsStatisticDto.target.FIX_SERVER, '10:05', 4),
     ];
-    const u2Rows = [
-      makeRow('u2', UsersConnectionsStatisticDto.target.TOKEN, '10:00', 1),
-    ];
+    const u2Rows = [makeRow('u2', UsersConnectionsStatisticDto.target.TOKEN, '10:00', 1)];
     renderCards([...u1Rows, ...u2Rows]);
 
     await screen.findAllByTestId('line-chart');
@@ -119,9 +112,7 @@ describe('UsersConnectionsStatisticCards', () => {
   });
 
   it('shows an empty placeholder for users without connection rows', async () => {
-    renderCards([
-      makeRow('u1', UsersConnectionsStatisticDto.target.ACCOUNT, '10:00', 2),
-    ]);
+    renderCards([makeRow('u1', UsersConnectionsStatisticDto.target.ACCOUNT, '10:00', 2)]);
 
     await screen.findByRole('link', { name: 'Bob' });
     expect(screen.getAllByTestId('line-chart')).toHaveLength(1);

@@ -5,16 +5,15 @@ import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from '../auth.service';
 import { SkipJWTGuard } from '../../jwt-auth/jwt-auth.guard';
 import { SkipPoliciesGuard } from '../../casl/policies.guard';
-import { LocalAuthLoginDto, LocalAuthTokenDto } from "./local-auth.dto";
-import { SkipEventsLog } from "../../event-logs";
+import { LocalAuthLoginDto, LocalAuthTokenDto } from './local-auth.dto';
+import { SkipEventsLog } from '../../event-logs';
 
 @SkipPoliciesGuard()
 @ApiTags('Authentication')
 @ApiExtraModels(LocalAuthTokenDto)
 @Controller('auth')
 export default class LocalAuthController {
-  constructor(private authService: AuthService) {
-  }
+  constructor(private authService: AuthService) {}
 
   @SkipJWTGuard()
   @UseGuards(LocalAuthGuard)

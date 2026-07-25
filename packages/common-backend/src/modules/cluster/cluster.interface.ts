@@ -1,5 +1,5 @@
-import { Cluster } from "node:cluster";
-import { Worker } from "cluster";
+import { Cluster } from 'node:cluster';
+import { Worker } from 'cluster';
 
 export interface WorkerSettings {
   workerId: string;

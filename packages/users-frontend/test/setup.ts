@@ -29,8 +29,7 @@ class ObserverStub {
   }
 }
 (window as any).ResizeObserver = (window as any).ResizeObserver || ObserverStub;
-(window as any).IntersectionObserver =
-  (window as any).IntersectionObserver || ObserverStub;
+(window as any).IntersectionObserver = (window as any).IntersectionObserver || ObserverStub;
 
 window.scrollTo = window.scrollTo || (() => {});
 Element.prototype.scrollIntoView = Element.prototype.scrollIntoView || (() => {});

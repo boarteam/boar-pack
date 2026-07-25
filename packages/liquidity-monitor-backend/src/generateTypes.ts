@@ -1,16 +1,16 @@
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule, } from '@nestjs/swagger';
-import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { resolve } from "path";
-import { ConfigModule } from "@nestjs/config";
+import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/swagger';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { resolve } from 'path';
+import { ConfigModule } from '@nestjs/config';
 // @ts-ignore-next-line - Ignore the error because the package on project level
-import { generate } from "openapi-typescript-codegen";
-import { QuotesStatisticModule } from "./quotes-statistic";
-import { UsersConnectionsStatisticModule } from "./users-connections-statistic";
-import { ProviderMonitoringModule } from "./provider-monitoring";
-import { Setting } from "@boarteam/boar-pack-users-backend";
-import { ApiStatisticModule } from "./api-statistic";
+import { generate } from 'openapi-typescript-codegen';
+import { QuotesStatisticModule } from './quotes-statistic';
+import { UsersConnectionsStatisticModule } from './users-connections-statistic';
+import { ProviderMonitoringModule } from './provider-monitoring';
+import { Setting } from '@boarteam/boar-pack-users-backend';
+import { ApiStatisticModule } from './api-statistic';
 
 @Module({
   imports: [
@@ -25,16 +25,13 @@ import { ApiStatisticModule } from "./api-statistic";
       username: 'app',
       password: 'password',
       database: 'boar_pack',
-      entities: [
-        resolve(__dirname, './*/entities/*.entity.{ts,js}'),
-        Setting,
-      ],
+      entities: [resolve(__dirname, './*/entities/*.entity.{ts,js}'), Setting],
     }),
     QuotesStatisticModule.forRoot({
       dataSourceName: 'boar_pack_db',
     }),
     UsersConnectionsStatisticModule.forRoot({
-      dataSourceName: 'boar_pack_db'
+      dataSourceName: 'boar_pack_db',
     }),
     ApiStatisticModule.forRoot({
       dataSourceName: 'boar_pack_db',
@@ -42,11 +39,10 @@ import { ApiStatisticModule } from "./api-statistic";
     ProviderMonitoringModule.forRootAsync({
       dataSourceName: 'boar_pack_db',
       useFactory: () => async () => Promise.resolve([]),
-    })
+    }),
   ],
 })
-class Swagger {
-}
+class Swagger {}
 
 async function bootstrap() {
   try {
@@ -56,10 +52,7 @@ async function bootstrap() {
       operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
     };
 
-    const swaggerConfig = new DocumentBuilder()
-      .setTitle('API')
-      .setVersion('1.0')
-      .build();
+    const swaggerConfig = new DocumentBuilder().setTitle('API').setVersion('1.0').build();
 
     const document = SwaggerModule.createDocument(app, swaggerConfig, options);
 
@@ -67,7 +60,10 @@ async function bootstrap() {
     await app.listen(3335);
     await generate({
       input: 'http://localhost:3335/docs-json',
-      output: resolve(__dirname, '../../../liquidity-monitor-frontend/src/tools/api-client/generated'),
+      output: resolve(
+        __dirname,
+        '../../../liquidity-monitor-frontend/src/tools/api-client/generated',
+      ),
       httpClient: 'node',
       clientName: 'ApiClient',
       useOptions: true,

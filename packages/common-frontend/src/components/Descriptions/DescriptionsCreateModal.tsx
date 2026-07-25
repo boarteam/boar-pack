@@ -1,10 +1,10 @@
-import { useEffect, useMemo } from "react";
-import { Button, Modal } from "antd";
-import { TDescriptionsCreateModalProps } from "./descriptionTypes";
-import { ProDescriptions } from "@ant-design/pro-components";
-import { columnsToDescriptionItemProps } from "./useDescriptionColumns";
-import { useForm } from "antd/es/form/Form";
-import { buildFieldsFromColumnsForDescriptionsDisplay } from "../Table";
+import { useEffect, useMemo } from 'react';
+import { Button, Modal } from 'antd';
+import { TDescriptionsCreateModalProps } from './descriptionTypes';
+import { ProDescriptions } from '@ant-design/pro-components';
+import { columnsToDescriptionItemProps } from './useDescriptionColumns';
+import { useForm } from 'antd/es/form/Form';
+import { buildFieldsFromColumnsForDescriptionsDisplay } from '../Table';
 
 const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
   idColumnName,
@@ -12,18 +12,13 @@ const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
   data,
   onClose,
   onSubmit,
-...rest
+  ...rest
 }: TDescriptionsCreateModalProps<Entity>) => {
   const sections = columnsToDescriptionItemProps(columns, 'General');
   const [form] = useForm();
 
   const editableKeys = useMemo(() => {
-    return [
-      ...buildFieldsFromColumnsForDescriptionsDisplay(
-        columns,
-        idColumnName,
-      ),
-    ];
+    return [...buildFieldsFromColumnsForDescriptionsDisplay(columns, idColumnName)];
   }, [columns, idColumnName]);
 
   useEffect(() => {
@@ -34,16 +29,22 @@ const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
     <Modal
       open={data !== undefined}
       onCancel={onClose}
-      width='80%'
+      width="80%"
       footer={[
-        <Button key='submit' type="primary" onClick={async () => form.validateFields().then(onSubmit)}>Create</Button>
+        <Button
+          key="submit"
+          type="primary"
+          onClick={async () => form.validateFields().then(onSubmit)}
+        >
+          Create
+        </Button>,
       ]}
     >
       {sections.map((section, index) => (
         <ProDescriptions<Entity>
           key={index + (Array.isArray(idColumnName) ? idColumnName.join('-') : idColumnName)}
           title={section.title as React.ReactNode}
-          size={"small"}
+          size={'small'}
           bordered
           column={2}
           style={{ marginBottom: 20 }}

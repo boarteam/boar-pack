@@ -3,9 +3,9 @@ import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
 import { AuditLogsService } from './audit-logs.service';
 import { AuditLogsController } from './audit-logs.controller';
 import { AuditLog } from './entities/audit-log.entity';
-import { CaslModule, CaslAbilityFactory, Action } from "../casl";
-import { AuditLogsPermissions } from "./audit-logs.permissions";
-import { DataSource } from "typeorm";
+import { CaslModule, CaslAbilityFactory, Action } from '../casl';
+import { AuditLogsPermissions } from './audit-logs.permissions';
+import { DataSource } from 'typeorm';
 
 @Module({})
 export class AuditLogsModule {
@@ -22,16 +22,12 @@ export class AuditLogsModule {
           inject: [getDataSourceToken(config.dataSourceName)],
           useFactory: (dataSource: DataSource) => {
             return new AuditLogsService(dataSource.getRepository(AuditLog));
-          }
+          },
         },
       ],
-      exports: [
-        AuditLogsService,
-      ],
-      controllers: [
-        AuditLogsController,
-      ]
-    }
+      exports: [AuditLogsService],
+      controllers: [AuditLogsController],
+    };
   }
 
   constructor() {
@@ -44,6 +40,6 @@ export class AuditLogsModule {
       permission: AuditLogsPermissions.MANAGE,
       action: Action.Manage,
       subject: AuditLog,
-    })
+    });
   }
 }

@@ -55,16 +55,12 @@ describe('BcryptService', () => {
 
   it('throws at construction when BCRYPT_SALT_ROUNDS is missing', () => {
     delete process.env.BCRYPT_SALT_ROUNDS;
-    expect(() => createService()).toThrow(
-      'BCRYPT_SALT_ROUNDS is not defined, set it as integer',
-    );
+    expect(() => createService()).toThrow('BCRYPT_SALT_ROUNDS is not defined, set it as integer');
   });
 
   it('throws at construction when BCRYPT_SALT_ROUNDS is not an integer', () => {
     process.env.BCRYPT_SALT_ROUNDS = 'not-a-number';
-    expect(() => createService()).toThrow(
-      'BCRYPT_SALT_ROUNDS is not defined, set it as integer',
-    );
+    expect(() => createService()).toThrow('BCRYPT_SALT_ROUNDS is not defined, set it as integer');
   });
 
   describe('BcryptConfigService', () => {

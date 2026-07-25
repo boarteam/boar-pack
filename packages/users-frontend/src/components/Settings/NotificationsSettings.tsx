@@ -1,16 +1,16 @@
-import { ProDescriptions } from "@ant-design/pro-components";
-import { Button, Card, message, Space, Typography } from "antd";
-import React, { useContext } from "react";
-import { useIntl } from "umi";
-import { useApiClient } from "../ApiClientContext";
-import { EventSettingsDto, TelegramSettingsUpdateDto } from "../../tools/api-client/generated";
-import { SettingsContext } from "../../components/Settings/settingsContext";
+import { ProDescriptions } from '@ant-design/pro-components';
+import { Button, Card, message, Space, Typography } from 'antd';
+import React, { useContext } from 'react';
+import { useIntl } from 'umi';
+import { useApiClient } from '../ApiClientContext';
+import { EventSettingsDto, TelegramSettingsUpdateDto } from '../../tools/api-client/generated';
+import { SettingsContext } from '../../components/Settings/settingsContext';
 
 const { Title, Text, Paragraph } = Typography;
 
 const isBoolean = (value: any) => {
-  return [true, false].includes(value)
-}
+  return [true, false].includes(value);
+};
 
 export const NotificationsSettings: React.FC = () => {
   const apiClient = useApiClient();
@@ -21,19 +21,23 @@ export const NotificationsSettings: React.FC = () => {
   const settingsContext = useContext(SettingsContext);
 
   const onSaveTelegramSettings = async (row: TelegramSettingsUpdateDto) => {
-    apiClient.telegraf.setTelegramSettings({
-      requestBody: row,
-    }).catch(e => {
-      console.error(e);
-    });
+    apiClient.telegraf
+      .setTelegramSettings({
+        requestBody: row,
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   };
 
   const onSaveEventSettings = async (row: EventSettingsDto) => {
-    apiClient.settings.setEventSettings({
-      requestBody: row,
-    }).catch(e => {
-      console.error(e);
-    });
+    apiClient.settings
+      .setEventSettings({
+        requestBody: row,
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   };
 
   const testSettings = async () => {
@@ -46,26 +50,35 @@ export const NotificationsSettings: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <Card>
       <div>
         <Title level={3}>Introduction</Title>
         <Paragraph>
-          This service allows you to receive important event notifications through Telegram. You'll be able to stay
-          informed about system usage and health.
+          This service allows you to receive important event notifications through Telegram. You'll
+          be able to stay informed about system usage and health.
         </Paragraph>
 
         <Title level={4}>Creation of Telegram Bot</Title>
         <Paragraph>
           <ol>
-            <li>Register your bot by sending the command <Text copyable={true} code>/newbot</Text> to <a
-              href="https://t.me/BotFather" target="_blank" rel="noreferrer"
-            >@BotFather</a> and follow the
-              instructions.
+            <li>
+              Register your bot by sending the command{' '}
+              <Text copyable={true} code>
+                /newbot
+              </Text>{' '}
+              to{' '}
+              <a href="https://t.me/BotFather" target="_blank" rel="noreferrer">
+                @BotFather
+              </a>{' '}
+              and follow the instructions.
             </li>
-            <li>Copy the bot token provided by @BotFather and paste it in the "Telegram Bot Access Token" field.</li>
+            <li>
+              Copy the bot token provided by @BotFather and paste it in the "Telegram Bot Access
+              Token" field.
+            </li>
             <li>Add your bot to the group you wish to send notifications to.</li>
           </ol>
         </Paragraph>
@@ -75,39 +88,61 @@ export const NotificationsSettings: React.FC = () => {
         <Title level={5}>Option 1: Personal Notifications</Title>
         <Paragraph>
           <ol>
-            <li>Send the command <Text code copyable={true}>/getid</Text> to the bot named <a
-              href="https://t.me/myidbot" target="_blank" rel="noreferrer"
-            >@myidbot</a> in your Telegram messenger.
+            <li>
+              Send the command{' '}
+              <Text code copyable={true}>
+                /getid
+              </Text>{' '}
+              to the bot named{' '}
+              <a href="https://t.me/myidbot" target="_blank" rel="noreferrer">
+                @myidbot
+              </a>{' '}
+              in your Telegram messenger.
             </li>
-            <li>Copy the chat ID returned by the bot and paste it in the designated "Telegram Chat ID" field.</li>
+            <li>
+              Copy the chat ID returned by the bot and paste it in the designated "Telegram Chat ID"
+              field.
+            </li>
           </ol>
         </Paragraph>
 
         <Title level={5}>Option 2: Notifications for Telegram Groups</Title>
         <Paragraph>
           <ol>
-            <li>Add the bot named <a
-              href="https://t.me/myidbot" target="_blank" rel="noreferrer"
-            >@myidbot</a> to your Telegram group.</li>
-            <li>Send the command <Text code copyable={true}>/getgroupid</Text> to @myidbot within the group chat.
+            <li>
+              Add the bot named{' '}
+              <a href="https://t.me/myidbot" target="_blank" rel="noreferrer">
+                @myidbot
+              </a>{' '}
+              to your Telegram group.
             </li>
-            <li>Copy the group ID returned by the bot and paste it in the designated "Telegram Chat ID" field.</li>
+            <li>
+              Send the command{' '}
+              <Text code copyable={true}>
+                /getgroupid
+              </Text>{' '}
+              to @myidbot within the group chat.
+            </li>
+            <li>
+              Copy the group ID returned by the bot and paste it in the designated "Telegram Chat
+              ID" field.
+            </li>
           </ol>
         </Paragraph>
       </div>
 
-      <Space direction={'vertical'} size={"middle"}>
+      <Space direction={'vertical'} size={'middle'}>
         <ProDescriptions<TelegramSettingsUpdateDto>
           bordered={true}
           size={'small'}
           formProps={{
             onValuesChange: async (changedValues) => {
-              if (Object.keys(changedValues).some(key => isBoolean(changedValues[key]))) {
+              if (Object.keys(changedValues).some((key) => isBoolean(changedValues[key]))) {
                 setSettingsChanging(true);
                 await onSaveTelegramSettings(changedValues);
                 setSettingsChanging(false);
               }
-            }
+            },
           }}
           columns={[
             {
@@ -136,8 +171,8 @@ export const NotificationsSettings: React.FC = () => {
           request={async () => {
             return {
               success: true,
-              data: await apiClient.telegraf.getTelegramSettings()
-            }
+              data: await apiClient.telegraf.getTelegramSettings(),
+            };
           }}
           editable={{
             onSave: async (key, row) => {
@@ -151,25 +186,25 @@ export const NotificationsSettings: React.FC = () => {
               }
 
               return [dom.save, dom.cancel];
-            }
+            },
           }}
         />
         {settingsContext.columns.length > 0 && (
           <ProDescriptions<EventSettingsDto>
-            title='Events'
+            title="Events"
             bordered={true}
             size={'small'}
             formProps={{
               onValuesChange: async (changedValues) => {
-                if (Object.keys(changedValues).some(key => isBoolean(changedValues[key]))) {
+                if (Object.keys(changedValues).some((key) => isBoolean(changedValues[key]))) {
                   setSettingsChanging(true);
                   await onSaveEventSettings(changedValues);
                   setSettingsChanging(false);
                 }
-              }
+              },
             }}
             columns={[
-              ...settingsContext.columns.map(column => ({
+              ...settingsContext.columns.map((column) => ({
                 ...column,
                 fieldProps: {
                   loading: settingsChanging,
@@ -180,8 +215,8 @@ export const NotificationsSettings: React.FC = () => {
             request={async () => {
               return {
                 success: true,
-                data: await apiClient.settings.getEventSettings()
-              }
+                data: await apiClient.settings.getEventSettings(),
+              };
             }}
             editable={{
               onSave: async (key, row) => {
@@ -191,17 +226,15 @@ export const NotificationsSettings: React.FC = () => {
               },
               actionRender: () => {
                 return [];
-              }
+              },
             }}
           />
         )}
-        <Button
-          type="primary"
-          loading={loading}
-          onClick={testSettings}
-        >Send test message</Button>
+        <Button type="primary" loading={loading} onClick={testSettings}>
+          Send test message
+        </Button>
       </Space>
       {contextHolder}
     </Card>
-  )
-}
+  );
+};

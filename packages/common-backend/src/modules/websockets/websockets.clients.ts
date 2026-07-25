@@ -1,6 +1,6 @@
-import { Injectable, Logger, Scope } from "@nestjs/common";
-import WebSocket from "ws";
-import { isSafeNumber, parse } from "lossless-json";
+import { Injectable, Logger, Scope } from '@nestjs/common';
+import WebSocket from 'ws';
+import { isSafeNumber, parse } from 'lossless-json';
 
 export type TBaseConfig<EventType> = {
   url: string;
@@ -20,15 +20,15 @@ export enum WsErrorCodes {
 }
 
 @Injectable({ scope: Scope.TRANSIENT })
-export class WebsocketsClients<IncomeEventType,
+export class WebsocketsClients<
+  IncomeEventType,
   OutgoingEventType = any,
   ConfigType extends TBaseConfig<IncomeEventType> = TBaseConfig<IncomeEventType>,
-  > {
+> {
   private readonly logger = new Logger(WebsocketsClients.name);
   private readonly clients = new WeakMap<WebSocket, ConfigType>();
 
-  constructor() {
-  }
+  constructor() {}
 
   private toSafeNumberOrString(value: string): number | string {
     return isSafeNumber(value) ? parseFloat(value) : value;
@@ -71,7 +71,7 @@ export class WebsocketsClients<IncomeEventType,
         this.logger.error(`Error, while parsing message from WS server ${msg}`);
         this.logger.error(e, e.stack);
         if (!config.ignoreInvalidJson) {
-          ws?.close(WsErrorCodes.InvalidJson, "Invalid JSON");
+          ws?.close(WsErrorCodes.InvalidJson, 'Invalid JSON');
         }
         return;
       }
@@ -90,7 +90,9 @@ export class WebsocketsClients<IncomeEventType,
   }
 
   private onClose(ws: WebSocket, config: ConfigType | undefined, code: number, reason: Buffer) {
-    this.logger.log(`${config?.url} socket closed with code ${code} and reason: ${reason.toString()}`);
+    this.logger.log(
+      `${config?.url} socket closed with code ${code} and reason: ${reason.toString()}`,
+    );
     ws.removeAllListeners();
     config?.onClose?.();
     this.clients.delete(ws);
@@ -98,12 +100,12 @@ export class WebsocketsClients<IncomeEventType,
 
   public close(client: WebSocket): Promise<void> {
     const config = this.clients.get(client);
-    if (typeof config?.reconnectTimeout === "number") {
+    if (typeof config?.reconnectTimeout === 'number') {
       clearTimeout(config.reconnectTimeout);
     }
 
     if (client.readyState === WebSocket.CLOSED) {
-      this.onClose(client, config, WsErrorCodes.ConnectionClosed, Buffer.from("Closed by client"));
+      this.onClose(client, config, WsErrorCodes.ConnectionClosed, Buffer.from('Closed by client'));
       return Promise.resolve();
     }
 
@@ -137,7 +139,7 @@ export class WebsocketsClients<IncomeEventType,
 
           resolve();
         });
-      }
+      };
 
       if (client.readyState !== WebSocket.OPEN) {
         const timeout = setTimeout(() => {

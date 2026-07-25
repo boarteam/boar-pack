@@ -13,12 +13,12 @@ matching UI lives in
 
 ## What's inside
 
-| Module | Purpose |
-| --- | --- |
-| `QuotesStatisticModule` | Counts quotes per liquidity provider (in-memory counters flushed to Postgres every 5s) and serves a bucketed timeline + latest-quote-per-provider queries. |
-| `UsersConnectionsStatisticModule` | Counts messages delivered per user connection and per downstream target (`fix-server`, `websocket-server`, `token`, `account`), with timeline endpoints. |
-| `ProviderMonitoringModule` | Every 10s checks providers against their `threshold`; opens a "problematic period" and sends a Telegram alert (with exponential backoff) when a provider goes quiet, closes it on recovery. |
-| `ApiStatisticModule` | Records service-uptime intervals as a heartbeat row (`tstzrange` extended every 5s, closed on shutdown). |
+| Module                            | Purpose                                                                                                                                                                                     |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QuotesStatisticModule`           | Counts quotes per liquidity provider (in-memory counters flushed to Postgres every 5s) and serves a bucketed timeline + latest-quote-per-provider queries.                                  |
+| `UsersConnectionsStatisticModule` | Counts messages delivered per user connection and per downstream target (`fix-server`, `websocket-server`, `token`, `account`), with timeline endpoints.                                    |
+| `ProviderMonitoringModule`        | Every 10s checks providers against their `threshold`; opens a "problematic period" and sends a Telegram alert (with exponential backoff) when a provider goes quiet, closes it on recovery. |
+| `ApiStatisticModule`              | Records service-uptime intervals as a heartbeat row (`tstzrange` extended every 5s, closed on shutdown).                                                                                    |
 
 Statistics tables are self-purged after 7 days (daily cron).
 
@@ -87,8 +87,7 @@ import { Setting } from '@boarteam/boar-pack-users-backend';
       inject: [MyProvidersService],
       // return a function that lists your providers:
       // { id: string; name: string; threshold: number | null }[]
-      useFactory: (providers: MyProvidersService) =>
-        () => providers.findAllWithThresholds(),
+      useFactory: (providers: MyProvidersService) => () => providers.findAllWithThresholds(),
     }),
   ],
 })

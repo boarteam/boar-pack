@@ -42,9 +42,7 @@ export function TestProviders({
   return (
     <IntlProvider locale="en" messages={intlMessages} onError={() => {}}>
       <MemoryRouter>
-        <ApiClientProvider value={client as ApiClient}>
-          {children}
-        </ApiClientProvider>
+        <ApiClientProvider value={client as ApiClient}>{children}</ApiClientProvider>
       </MemoryRouter>
     </IntlProvider>
   );

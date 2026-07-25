@@ -5,10 +5,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuditLogsService extends TypeOrmCrudService<AuditLog> {
-
-  constructor(
-    readonly repo: Repository<AuditLog>,
-  ) {
+  constructor(readonly repo: Repository<AuditLog>) {
     super(repo);
   }
 }

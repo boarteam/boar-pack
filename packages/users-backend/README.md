@@ -14,18 +14,18 @@ matching UI lives in
 
 ## What's inside
 
-| Module | Registration | Purpose |
-| --- | --- | --- |
-| `AuthModule` | `forRoot({ localAuth?, googleAuth?, msAuth?, yandexAuth?, withControllers?, dataSourceName? })` | Login endpoints and passport strategies; installs the global JWT guard. Each login method is opt-in via its flag. |
-| `UsersModule` | `register({ withControllers?, dataSourceName? })` | User entity, CRUD controllers (`@dataui/crud`), `/me` endpoint with packed CASL abilities. |
-| `CaslModule` | `forRoot()` / `forFeature()` | Permission system. `forRoot()` installs the global `PoliciesGuard` — **endpoints are closed by default** unless a policy allows them. |
-| `JwtAuthModule` | `register({ dataSourceName? })` | Access + refresh JWT strategies, token revocation (pulled in by `AuthModule` automatically). |
-| `TokensModule` | `forRoot({ dataSourceName })` / `forAuth({ dataSourceName })` | Long-lived API tokens; `forAuth` adds bearer-token authentication. |
-| `EventLogsModule` | `forRoot(…)` / `forInterceptor(…)` / `forFeature(…)` | Audit trail of requests/events; `forInterceptor` logs globally via interceptor + middleware. |
-| `SettingsModule` | `register({ withControllers, dataSourceName })` | Key-value application settings with CRUD endpoints. |
-| `TelegrafModule` | `register({ withControllers, dataSourceName })` | Outbound Telegram notifications (not a login method). |
-| `WsAuthModule` | plain import / `forCustomStrategy(name)` | Authenticates WebSocket connections (default: the JWT strategy) on a `/ws` gateway. |
-| `BcryptModule` | plain import | Password hashing service used by users/tokens. |
+| Module            | Registration                                                                                    | Purpose                                                                                                                               |
+| ----------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `AuthModule`      | `forRoot({ localAuth?, googleAuth?, msAuth?, yandexAuth?, withControllers?, dataSourceName? })` | Login endpoints and passport strategies; installs the global JWT guard. Each login method is opt-in via its flag.                     |
+| `UsersModule`     | `register({ withControllers?, dataSourceName? })`                                               | User entity, CRUD controllers (`@dataui/crud`), `/me` endpoint with packed CASL abilities.                                            |
+| `CaslModule`      | `forRoot()` / `forFeature()`                                                                    | Permission system. `forRoot()` installs the global `PoliciesGuard` — **endpoints are closed by default** unless a policy allows them. |
+| `JwtAuthModule`   | `register({ dataSourceName? })`                                                                 | Access + refresh JWT strategies, token revocation (pulled in by `AuthModule` automatically).                                          |
+| `TokensModule`    | `forRoot({ dataSourceName })` / `forAuth({ dataSourceName })`                                   | Long-lived API tokens; `forAuth` adds bearer-token authentication.                                                                    |
+| `EventLogsModule` | `forRoot(…)` / `forInterceptor(…)` / `forFeature(…)`                                            | Audit trail of requests/events; `forInterceptor` logs globally via interceptor + middleware.                                          |
+| `SettingsModule`  | `register({ withControllers, dataSourceName })`                                                 | Key-value application settings with CRUD endpoints.                                                                                   |
+| `TelegrafModule`  | `register({ withControllers, dataSourceName })`                                                 | Outbound Telegram notifications (not a login method).                                                                                 |
+| `WsAuthModule`    | plain import / `forCustomStrategy(name)`                                                        | Authenticates WebSocket connections (default: the JWT strategy) on a `/ws` gateway.                                                   |
+| `BcryptModule`    | plain import                                                                                    | Password hashing service used by users/tokens.                                                                                        |
 
 ## Install
 
@@ -48,11 +48,7 @@ Requirements of the host application:
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {
-  AuthModule,
-  CaslModule,
-  UsersModule,
-} from '@boarteam/boar-pack-users-backend';
+import { AuthModule, CaslModule, UsersModule } from '@boarteam/boar-pack-users-backend';
 
 @Module({
   imports: [
@@ -67,9 +63,7 @@ import {
       database: 'boar_pack',
       // Registers every entity the package ships, including internal ones
       // (e.g. revoked refresh tokens):
-      entities: [
-        'node_modules/@boarteam/boar-pack-users-backend/dist/**/entities/*.entity.js',
-      ],
+      entities: ['node_modules/@boarteam/boar-pack-users-backend/dist/**/entities/*.entity.js'],
       synchronize: true, // dev only — manage schema yourself in production
     }),
     CaslModule.forRoot(), // installs the global PoliciesGuard
@@ -90,17 +84,17 @@ export class AppModule {}
 Required environment variables for this setup (see
 [`.env.example`](https://github.com/boarteam/boar-pack/blob/master/packages/users-backend/.env.example)):
 
-| Variable | Meaning |
-| --- | --- |
-| `JWT_SECRET` | Secret for signing access/refresh tokens (**required**). |
-| `BCRYPT_SALT_ROUNDS` | Bcrypt cost factor, e.g. `10` (**required**). |
-| `ACCESS_TOKEN_EXPIRATION` | Access-token TTL, default `1h`. |
-| `REFRESH_TOKEN_EXPIRATION` | Refresh-token TTL, default `7d`. |
-| `REFRESH_TOKEN_PATH` | Cookie path for the refresh token, default `/api/auth/refresh`. |
-| `SECURE_COOKIE` | Set `true` in production to mark auth cookies `Secure`. |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_SECRET_ID` / `GOOGLE_CALLBACK_URL` | Only when `googleAuth: true`. |
-| `MICROSOFT_CLIENT_ID` / `MICROSOFT_TENANT_ID` / `MICROSOFT_SECRET_ID` / `MICROSOFT_CALLBACK_URL` | Only when `msAuth: true`. |
-| `YANDEX_CLIENT_ID` / `YANDEX_SECRET_ID` / `YANDEX_CALLBACK_URL` | Only when `yandexAuth: true`. |
+| Variable                                                                                         | Meaning                                                         |
+| ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| `JWT_SECRET`                                                                                     | Secret for signing access/refresh tokens (**required**).        |
+| `BCRYPT_SALT_ROUNDS`                                                                             | Bcrypt cost factor, e.g. `10` (**required**).                   |
+| `ACCESS_TOKEN_EXPIRATION`                                                                        | Access-token TTL, default `1h`.                                 |
+| `REFRESH_TOKEN_EXPIRATION`                                                                       | Refresh-token TTL, default `7d`.                                |
+| `REFRESH_TOKEN_PATH`                                                                             | Cookie path for the refresh token, default `/api/auth/refresh`. |
+| `SECURE_COOKIE`                                                                                  | Set `true` in production to mark auth cookies `Secure`.         |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_SECRET_ID` / `GOOGLE_CALLBACK_URL`                                  | Only when `googleAuth: true`.                                   |
+| `MICROSOFT_CLIENT_ID` / `MICROSOFT_TENANT_ID` / `MICROSOFT_SECRET_ID` / `MICROSOFT_CALLBACK_URL` | Only when `msAuth: true`.                                       |
+| `YANDEX_CLIENT_ID` / `YANDEX_SECRET_ID` / `YANDEX_CALLBACK_URL`                                  | Only when `yandexAuth: true`.                                   |
 
 Controller routes (`/auth/login`, `/users`, `/me`, …) sit under your app's
 global prefix; the `REFRESH_TOKEN_PATH` default assumes

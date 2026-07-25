@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { RevokedToken, TOKEN_TYPE, TRevokedToken } from './entities/revoked-token.entity';
-import { Cron, CronExpression } from "@nestjs/schedule";
-import ms, { StringValue } from "ms";
-import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
+import { Cron, CronExpression } from '@nestjs/schedule';
+import ms, { StringValue } from 'ms';
+import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 
 @Injectable()
 export class RevokedTokensService {
@@ -17,7 +17,10 @@ export class RevokedTokensService {
    * @param refreshTokenExpiration The expiration time for the refresh token. We use it to set the expiration date of
    * the session token.
    */
-  public async revokeToken(token: TRevokedToken, refreshTokenExpiration: StringValue): Promise<void> {
+  public async revokeToken(
+    token: TRevokedToken,
+    refreshTokenExpiration: StringValue,
+  ): Promise<void> {
     const tokens: TRevokedToken[] = [token];
 
     if (token.sid) {
@@ -45,7 +48,9 @@ export class RevokedTokensService {
       .orIgnore()
       .execute()
       .then(() => {
-        this.logger.debug(`Tokens with JTI ${tokens.map(t => t.jti).join(', ')} have been revoked`);
+        this.logger.debug(
+          `Tokens with JTI ${tokens.map((t) => t.jti).join(', ')} have been revoked`,
+        );
       });
   }
 

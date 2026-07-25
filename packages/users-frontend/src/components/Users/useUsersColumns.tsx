@@ -1,11 +1,11 @@
-import { Link, useIntl } from "@umijs/max";
-import { ProColumns } from "@ant-design/pro-components";
-import { EditOutlined, UserOutlined } from "@ant-design/icons";
-import { Password, safetyRun } from "@boarteam/boar-pack-common-frontend";
-import { useAccess, useModel } from "umi";
-import { Tooltip } from "antd";
-import { User } from "../../tools/api-client/generated";
-import { useApiClient } from "../ApiClientContext";
+import { Link, useIntl } from '@umijs/max';
+import { ProColumns } from '@ant-design/pro-components';
+import { EditOutlined, UserOutlined } from '@ant-design/icons';
+import { Password, safetyRun } from '@boarteam/boar-pack-common-frontend';
+import { useAccess, useModel } from 'umi';
+import { Tooltip } from 'antd';
+import { User } from '../../tools/api-client/generated';
+import { useApiClient } from '../ApiClientContext';
 
 export const useUsersColumns = ({
   userPageUrlPrefix = '/admin/users',
@@ -19,13 +19,16 @@ export const useUsersColumns = ({
   const { canManageAll } = useAccess() || {};
 
   const onLoginAsUser = (userId: string) => {
-    safetyRun(apiClient.authentication.loginAsUser({
-      userId,
-    })
-      .then(() => {
-        window.location.href = '/';
-      }));
-  }
+    safetyRun(
+      apiClient.authentication
+        .loginAsUser({
+          userId,
+        })
+        .then(() => {
+          window.location.href = '/';
+        }),
+    );
+  };
 
   const columns: ProColumns<User>[] = [
     {
@@ -36,15 +39,19 @@ export const useUsersColumns = ({
         rules: [
           {
             required: true,
-          }
-        ]
+          },
+        ],
       },
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
       },
       render(text, record) {
-        return userPageUrlPrefix ? <Link to={`${userPageUrlPrefix}/${record.id}`}>{text}</Link> : text;
-      }
+        return userPageUrlPrefix ? (
+          <Link to={`${userPageUrlPrefix}/${record.id}`}>{text}</Link>
+        ) : (
+          text
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'pages.users.email' }),
@@ -54,8 +61,8 @@ export const useUsersColumns = ({
         rules: [
           {
             required: true,
-          }
-        ]
+          },
+        ],
       },
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete
@@ -91,8 +98,8 @@ export const useUsersColumns = ({
         rules: [
           {
             required: true,
-          }
-        ]
+          },
+        ],
       },
       editable: (v, record) => record.id !== currentUser?.id,
     },
@@ -111,10 +118,7 @@ export const useUsersColumns = ({
         >
           <EditOutlined />
         </a>,
-        <Tooltip
-          title={'Login as user'}
-          key="loginAsUser"
-        >
+        <Tooltip title={'Login as user'} key="loginAsUser">
           <a
             onClick={() => {
               onLoginAsUser(record.id);
@@ -122,11 +126,10 @@ export const useUsersColumns = ({
           >
             <UserOutlined />
           </a>
-        </Tooltip>
+        </Tooltip>,
       ],
     });
   }
-
 
   return columns;
 };

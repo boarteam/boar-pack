@@ -1,12 +1,12 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
-import { Repository } from "typeorm";
-import { ApiStatistic } from "./entities/api-statistic.entity";
-import { SERVICES } from "./api-statistic.constants";
-import { Cron, CronExpression } from "@nestjs/schedule";
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { ApiStatistic } from './entities/api-statistic.entity';
+import { SERVICES } from './api-statistic.constants';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class ApiStatisticService implements OnModuleInit, OnModuleDestroy {
-  private lastInsertedId: string
+  private lastInsertedId: string;
   private logger = new Logger(ApiStatisticService.name);
 
   constructor(
@@ -16,7 +16,9 @@ export class ApiStatisticService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     if (!this.serviceName) {
-      this.logger.warn('Skip api statistic service initialization. Provide service name to enable it.');
+      this.logger.warn(
+        'Skip api statistic service initialization. Provide service name to enable it.',
+      );
       return;
     }
 
@@ -32,12 +34,13 @@ export class ApiStatisticService implements OnModuleInit, OnModuleDestroy {
     const now = new Date();
 
     // Set the uptime period for the last record
-    await this.repo.createQueryBuilder("as")
+    await this.repo
+      .createQueryBuilder('as')
       .update(ApiStatistic)
       .set({
         uptimePeriod: () => `tstzrange(lower(uptime_period), '${now.toISOString()}', '[)')`,
       })
-      .where("id = :id", { id: this.lastInsertedId })
+      .where('id = :id', { id: this.lastInsertedId })
       .execute();
   }
 

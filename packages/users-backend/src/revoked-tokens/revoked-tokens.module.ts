@@ -3,7 +3,7 @@ import { TypeOrmModule, getDataSourceToken } from '@nestjs/typeorm';
 import { RevokedToken } from './entities/revoked-token.entity';
 import { RevokedTokensService } from './revoked-tokens.service';
 import { DataSource } from 'typeorm';
-import { ScheduleModule } from "@nestjs/schedule";
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({})
 export class RevokedTokensModule {
@@ -20,7 +20,7 @@ export class RevokedTokensModule {
           inject: [getDataSourceToken(config.dataSourceName)],
           useFactory: (dataSource: DataSource) => {
             return new RevokedTokensService(dataSource.getRepository(RevokedToken));
-          }
+          },
         },
       ],
       exports: [RevokedTokensService],

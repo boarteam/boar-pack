@@ -181,10 +181,7 @@ describe('EventLogsModule.forInterceptor', () => {
   });
 
   it('captures the request body as payload and the :id param as entityId', async () => {
-    await request(app.getHttpServer())
-      .post('/items/i-42')
-      .send({ foo: 'bar', n: 7 })
-      .expect(201);
+    await request(app.getHttpServer()).post('/items/i-42').send({ foo: 'bar', n: 7 }).expect(201);
 
     const rows = await flushAndFind({ url: '/items/i-42' });
     expect(rows).toHaveLength(1);

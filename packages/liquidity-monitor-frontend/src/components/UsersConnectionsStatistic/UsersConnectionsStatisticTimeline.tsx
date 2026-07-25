@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { PageLoading } from "@ant-design/pro-layout";
-import { UsersConnectionsStatisticDto, UsersConnectionsStatisticQueryDto } from "../../tools/api-client";
-import { Column, ColumnConfig } from "@ant-design/plots";
-import moment from "moment";
-import { useApiClient } from "../ApiClientContext";
+import { PageLoading } from '@ant-design/pro-layout';
+import {
+  UsersConnectionsStatisticDto,
+  UsersConnectionsStatisticQueryDto,
+} from '../../tools/api-client';
+import { Column, ColumnConfig } from '@ant-design/plots';
+import moment from 'moment';
+import { useApiClient } from '../ApiClientContext';
 // @ts-ignore
-import { useModel } from "umi";
-import { Empty } from "antd";
+import { useModel } from 'umi';
+import { Empty } from 'antd';
 
 type TUsersConnectionsStatisticTimelineProps = UsersConnectionsStatisticQueryDto & {
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
-}
+};
 
-export const UsersConnectionsStatisticTimeline: React.FC<TUsersConnectionsStatisticTimelineProps> = ({
-  startTime,
-  endTime,
-  onDateRangeChange,
-}) => {
+export const UsersConnectionsStatisticTimeline: React.FC<
+  TUsersConnectionsStatisticTimelineProps
+> = ({ startTime, endTime, onDateRangeChange }) => {
   const apiClient = useApiClient();
   const [data, setData] = useState<UsersConnectionsStatisticDto[] | null>(null);
 
@@ -24,11 +25,13 @@ export const UsersConnectionsStatisticTimeline: React.FC<TUsersConnectionsStatis
   const { navTheme } = initialState?.settings || {};
 
   useEffect(() => {
-    apiClient.usersConnectionsStatistic.getTimeline({
-      startTime,
-      endTime,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    }).then(setData);
+    apiClient.usersConnectionsStatistic
+      .getTimeline({
+        startTime,
+        endTime,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      })
+      .then(setData);
   }, [startTime, endTime]);
 
   if (!data) {
@@ -36,7 +39,7 @@ export const UsersConnectionsStatisticTimeline: React.FC<TUsersConnectionsStatis
   }
 
   if (data.length === 0) {
-    return <Empty />
+    return <Empty />;
   }
 
   const config: ColumnConfig = {
@@ -50,7 +53,7 @@ export const UsersConnectionsStatisticTimeline: React.FC<TUsersConnectionsStatis
     axis: {
       y: {
         gridLineWidth: 1,
-      }
+      },
     },
     tooltip: {
       title: {
@@ -58,12 +61,12 @@ export const UsersConnectionsStatisticTimeline: React.FC<TUsersConnectionsStatis
         valueFormatter: (value: string) => {
           const date = new Date(value);
           return moment(date).format('DD-MM-YYYY HH:mm');
-        }
-      }
+        },
+      },
     },
     scale: {
       color: {
-        palette: 'category10'
+        palette: 'category10',
       },
     },
     transform: [
@@ -77,10 +80,8 @@ export const UsersConnectionsStatisticTimeline: React.FC<TUsersConnectionsStatis
         const { data } = event?.data || {};
         onDateRangeChange(data?.startTime, data?.endTime);
       });
-    }
+    },
   };
 
-  return <Column
-    {...config}
-  />;
-}
+  return <Column {...config} />;
+};

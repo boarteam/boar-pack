@@ -64,9 +64,7 @@ describe('Tools.TypeOrmExceptionFilter (Postgres)', () => {
 
   beforeAll(async () => {
     // Silence the filter's own Logger and BaseExceptionFilter's static logger.
-    loggerErrorSpy = jest
-      .spyOn(Logger.prototype, 'error')
-      .mockImplementation(() => undefined);
+    loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
 
     ds = await createTestDataSource([TofUser, TofPost]);
     user = await ds.getRepository(TofUser).save({ email: 'dup@example.com' });
@@ -74,9 +72,7 @@ describe('Tools.TypeOrmExceptionFilter (Postgres)', () => {
   });
 
   afterAll(async () => {
-    delete (TypeOrmExceptionFilter as any).uniqueConstraintMessages[
-      UNIQUE_CONSTRAINT
-    ];
+    delete (TypeOrmExceptionFilter as any).uniqueConstraintMessages[UNIQUE_CONSTRAINT];
     loggerErrorSpy?.mockRestore();
     await ds?.destroy();
   });
@@ -117,10 +113,7 @@ describe('Tools.TypeOrmExceptionFilter (Postgres)', () => {
   });
 
   it('a message registered for an unrelated constraint does not change the default', async () => {
-    TypeOrmExceptionFilter.setUniqueConstraintMessage(
-      'uq_some_other_table',
-      'Should not be used',
-    );
+    TypeOrmExceptionFilter.setUniqueConstraintMessage('uq_some_other_table', 'Should not be used');
     const err = await provokeUniqueViolation();
     const filter = new TypeOrmExceptionFilter(createAdapter() as any);
     const { host, response } = createHost();
@@ -166,8 +159,7 @@ describe('Tools.TypeOrmExceptionFilter (Postgres)', () => {
     expect(response.status).toHaveBeenCalledWith(400);
     expect(response.json).toHaveBeenCalledWith({
       statusCode: 400,
-      message:
-        'System cannot remove the record, please remove all related records first',
+      message: 'System cannot remove the record, please remove all related records first',
       error: 'Bad Request',
     });
     expect(adapter.reply).not.toHaveBeenCalled();

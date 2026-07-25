@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { copyAndRenameFiles } from "./tools";
+import { copyAndRenameFiles } from './tools';
 
 const pack = process.argv[2];
 if (!pack) {
@@ -16,21 +16,27 @@ if (!newModuleName) {
 }
 
 // Directory containing the template module
-const templatePageDir = path.join(__dirname, '../../boar-plate/packages/ui/src/pages/TemplateThings');
-const templateComponentDir = path.join(__dirname, '../../boar-plate/packages/ui/src/components/TemplateThings');
+const templatePageDir = path.join(
+  __dirname,
+  '../../boar-plate/packages/ui/src/pages/TemplateThings',
+);
+const templateComponentDir = path.join(
+  __dirname,
+  '../../boar-plate/packages/ui/src/components/TemplateThings',
+);
 
 if (!fs.existsSync(templatePageDir) || !fs.existsSync(templateComponentDir)) {
   console.error(
     'Templates not found. This generator is maintainer-only: it requires a checkout of the private\n' +
-    'boarteam/boar-plate repository next to this one (../boar-plate). See CONTRIBUTING.md.'
+      'boarteam/boar-plate repository next to this one (../boar-plate). See CONTRIBUTING.md.',
   );
   process.exit(1);
 }
 
 Promise.all([
   copyAndRenameFiles(templatePageDir, 'template-thing', pack, newModuleName),
-  copyAndRenameFiles(templateComponentDir, 'template-thing', pack, newModuleName)
+  copyAndRenameFiles(templateComponentDir, 'template-thing', pack, newModuleName),
 ])
 
   .then(() => console.log(`Module ${newModuleName} created successfully.`))
-  .catch(error => console.error(`Failed to create module ${newModuleName}: ${error.message}`));
+  .catch((error) => console.error(`Failed to create module ${newModuleName}: ${error.message}`));

@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Col, Empty, Result, Row, Space, Tag, theme } from "antd";
-import { PageLoading } from "@ant-design/pro-layout";
-import { Line } from "@ant-design/plots";
-import { StatisticCard } from "@ant-design/pro-components";
-import { groupBy } from "lodash";
-import { createStyles } from "antd-style";
-import { QuotesStatisticDto } from "../../tools/api-client";
-import { useApiClient } from "../ApiClientContext";
-import { TStatisticProvider } from "./index";
+import { Col, Empty, Result, Row, Space, Tag, theme } from 'antd';
+import { PageLoading } from '@ant-design/pro-layout';
+import { Line } from '@ant-design/plots';
+import { StatisticCard } from '@ant-design/pro-components';
+import { groupBy } from 'lodash';
+import { createStyles } from 'antd-style';
+import { QuotesStatisticDto } from '../../tools/api-client';
+import { useApiClient } from '../ApiClientContext';
+import { TStatisticProvider } from './index';
 
 type TQuotesStatisticCardsProps = {
-  providers: TStatisticProvider[] | null | undefined,
+  providers: TStatisticProvider[] | null | undefined;
   updateInterval?: number;
-}
+};
 
 const useStyles = createStyles(() => {
   return {
@@ -22,15 +22,12 @@ const useStyles = createStyles(() => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-      }
-    }
+      },
+    },
   };
 });
 
-export const QuotesStatisticCards = ({
-  providers,
-  updateInterval,
-}: TQuotesStatisticCardsProps) => {
+export const QuotesStatisticCards = ({ providers, updateInterval }: TQuotesStatisticCardsProps) => {
   const apiClient = useApiClient();
   let startTimeInitial = new Date();
   startTimeInitial.setHours(startTimeInitial.getHours() - 1);
@@ -40,18 +37,19 @@ export const QuotesStatisticCards = ({
   const [data, setData] = useState<QuotesStatisticDto[] | null | undefined>(undefined);
 
   const requestQuotesStatistic = () => {
-    apiClient.quotesStatistics.getTimeline({
-      startTime,
-      endTime,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    })
+    apiClient.quotesStatistics
+      .getTimeline({
+        startTime,
+        endTime,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      })
       .then(setData)
       .catch((e) => {
         console.error(e);
         console.error('Quotes statistic request failed');
         setData(null);
       });
-  }
+  };
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
@@ -104,42 +102,47 @@ export const QuotesStatisticCards = ({
               </Space>
             }
             chart={
-              dataByProvider[provider.id] ?
-                <Line {...{
-                  height: 150,
-                  data: dataByProvider[provider.id],
-                  xField: 'time',
-                  yField: 'records',
-                  legend: { size: false },
-                  tooltip: {
-                    title: false,
-                    items: [
-                      { name: 'Time', field: 'time', color: null },
-                      { name: 'Quotes', field: 'records', color: null },
-                    ],
-                  },
-                  axis: {
-                    y: {
-                      title: 'Quotes number',
-                      gridLineWidth: 1,
+              dataByProvider[provider.id] ? (
+                <Line
+                  {...{
+                    height: 150,
+                    data: dataByProvider[provider.id],
+                    xField: 'time',
+                    yField: 'records',
+                    legend: { size: false },
+                    tooltip: {
+                      title: false,
+                      items: [
+                        { name: 'Time', field: 'time', color: null },
+                        { name: 'Quotes', field: 'records', color: null },
+                      ],
                     },
-                  },
-                  area: {
-                    style: {
-                      fill: `linear-gradient(-90deg, white 0%, ${provider.enabled ? token.colorPrimary : token.colorTextDisabled} 100%)`
+                    axis: {
+                      y: {
+                        title: 'Quotes number',
+                        gridLineWidth: 1,
+                      },
                     },
-                  },
-                  line: {
-                    style: {
-                      stroke: provider.enabled ? token.colorPrimary : token.colorTextDisabled,
-                      lineWidth: 2
-                    }
-                  },
-                }} /> : <Empty description='No quotes statistic' />
+                    area: {
+                      style: {
+                        fill: `linear-gradient(-90deg, white 0%, ${provider.enabled ? token.colorPrimary : token.colorTextDisabled} 100%)`,
+                      },
+                    },
+                    line: {
+                      style: {
+                        stroke: provider.enabled ? token.colorPrimary : token.colorTextDisabled,
+                        lineWidth: 2,
+                      },
+                    },
+                  }}
+                />
+              ) : (
+                <Empty description="No quotes statistic" />
+              )
             }
           />
         </Col>
       ))}
     </Row>
   );
-}
+};

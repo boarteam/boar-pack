@@ -1,8 +1,8 @@
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { ClusterInterface, ClusterSettings, WorkerSettings } from "./cluster.interface";
-import cluster from "node:cluster";
-import { ClusterConfigService, TClusterConfig } from "./cluster.config";
-import { Worker } from "cluster";
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ClusterInterface, ClusterSettings, WorkerSettings } from './cluster.interface';
+import cluster from 'node:cluster';
+import { ClusterConfigService, TClusterConfig } from './cluster.config';
+import { Worker } from 'cluster';
 
 type TWorkerVars = {
   APP_ROLE: string;
@@ -11,7 +11,7 @@ type TWorkerVars = {
   PORT?: string;
 } & {
   [key: string]: string;
-}
+};
 
 @Injectable()
 export class ClusterService {
@@ -19,14 +19,18 @@ export class ClusterService {
   private readonly STOP_WORKER = 'SIGKILL';
   private readonly config: TClusterConfig;
 
-  private workersByClusters: Map<ClusterInterface, Map<Worker['id'], {
-    worker: Worker,
-    workerVars: TWorkerVars,
-  }>> = new Map();
+  private workersByClusters: Map<
+    ClusterInterface,
+    Map<
+      Worker['id'],
+      {
+        worker: Worker;
+        workerVars: TWorkerVars;
+      }
+    >
+  > = new Map();
 
-  constructor(
-    private readonly configService: ClusterConfigService,
-  ) {
+  constructor(private readonly configService: ClusterConfigService) {
     this.config = this.configService.config;
   }
 
@@ -36,17 +40,19 @@ export class ClusterService {
 
   public async runClusters(): Promise<void> {
     const clusters = Array.from(this.workersByClusters.keys());
-    await Promise.allSettled(clusters.map(cluster => this.runCluster(cluster)));
+    await Promise.allSettled(clusters.map((cluster) => this.runCluster(cluster)));
   }
 
   private async runCluster(runningCluster: ClusterInterface) {
     const clusterSettings = await runningCluster.getSettings();
     const workersSettings = await runningCluster.getWorkersSettings();
-    workersSettings.forEach(settings => this.runWorker({
-      runningCluster,
-      clusterSettings,
-      workerSettings: settings
-    }));
+    workersSettings.forEach((settings) =>
+      this.runWorker({
+        runningCluster,
+        clusterSettings,
+        workerSettings: settings,
+      }),
+    );
   }
 
   private runWorker({
@@ -55,10 +61,10 @@ export class ClusterService {
     workerSettings,
     callback,
   }: {
-    runningCluster: ClusterInterface,
-    clusterSettings: ClusterSettings,
-    workerSettings: WorkerSettings,
-    callback?: () => void,
+    runningCluster: ClusterInterface;
+    clusterSettings: ClusterSettings;
+    workerSettings: WorkerSettings;
+    callback?: () => void;
   }) {
     const clusterWorkers = this.workersByClusters.get(runningCluster);
 
@@ -74,7 +80,7 @@ export class ClusterService {
       WORKER: workerSettings.workerId,
       WORKER_NAME: workerName,
       ...workerSettings.extraEnv,
-    }
+    };
 
     if (workerSettings.port) {
       vars.PORT = String(workerSettings.port);
@@ -92,7 +98,7 @@ export class ClusterService {
 
     cluster.on('message', (worker, message) => {
       runningCluster.onClusterMessage?.(cluster, worker, message);
-    })
+    });
 
     workerProcess.on('exit', (code, signal) => {
       clusterWorkers.delete(workerProcess.id);
@@ -107,14 +113,16 @@ export class ClusterService {
 
       if (typeof clusterSettings.restartDelay === 'undefined') {
         this.logger.log(`Restarting worker ${workerName} without delay...`);
-        this.startWorker(runningCluster, workerSettings.workerId).catch(err => {
+        this.startWorker(runningCluster, workerSettings.workerId).catch((err) => {
           this.logger.error(`Failed to restart worker ${workerName}: ${err}`);
         });
       } else {
-        this.logger.log(`Worker ${workerName} will be restarted in ${clusterSettings.restartDelay}ms...`);
+        this.logger.log(
+          `Worker ${workerName} will be restarted in ${clusterSettings.restartDelay}ms...`,
+        );
         setTimeout(() => {
           this.logger.log(`Restarting worker ${workerName}...`);
-          this.startWorker(runningCluster, workerSettings.workerId).catch(err => {
+          this.startWorker(runningCluster, workerSettings.workerId).catch((err) => {
             this.logger.error(`Failed to restart worker ${workerName}: ${err}`);
           });
         }, clusterSettings.restartDelay);
@@ -134,7 +142,9 @@ export class ClusterService {
       throw new NotFoundException(`Cluster ${cluster.constructor.name} is not found`);
     }
 
-    const workerDescriptor = Array.from(workers.values()).find(worker => worker.workerVars.WORKER === workerId);
+    const workerDescriptor = Array.from(workers.values()).find(
+      (worker) => worker.workerVars.WORKER === workerId,
+    );
     if (!workerDescriptor) {
       if (state) {
         await this.startWorker(cluster, workerId);
@@ -153,7 +163,7 @@ export class ClusterService {
   private async startWorker(runningCluster: ClusterInterface, workerId: string) {
     const clusterSettings = await runningCluster.getSettings();
     const workersSettings = await runningCluster.getWorkersSettings();
-    const workerSettings = workersSettings.find(settings => settings.workerId === workerId);
+    const workerSettings = workersSettings.find((settings) => settings.workerId === workerId);
 
     if (!workerSettings) {
       throw new NotFoundException(`Settings for worker ${workerId} are not found`);

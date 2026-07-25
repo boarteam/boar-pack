@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { WsAuthGateway } from "./ws-auth.gateway";
-import { WsAuthGuard } from "./ws-auth.guard";
-import { WsAuthService } from "./ws-auth.service";
-import { WS_AUTH_STRATEGY } from "./ws-auth.constants";
-import { JWT_AUTH } from "../auth";
+import { WsAuthGateway } from './ws-auth.gateway';
+import { WsAuthGuard } from './ws-auth.guard';
+import { WsAuthService } from './ws-auth.service';
+import { WS_AUTH_STRATEGY } from './ws-auth.constants';
+import { JWT_AUTH } from '../auth';
 
 @Module({
   imports: [],
@@ -14,12 +14,9 @@ import { JWT_AUTH } from "../auth";
     {
       provide: WS_AUTH_STRATEGY,
       useValue: JWT_AUTH,
-    }
+    },
   ],
-  exports: [
-    WsAuthService,
-    WsAuthGuard,
-  ],
+  exports: [WsAuthService, WsAuthGuard],
 })
 export class WsAuthModule {
   static forCustomStrategy(strategy: string) {
@@ -29,8 +26,8 @@ export class WsAuthModule {
         {
           provide: WS_AUTH_STRATEGY,
           useValue: strategy,
-        }
-      ]
+        },
+      ],
     };
   }
 }

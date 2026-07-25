@@ -3,16 +3,16 @@ import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
 import { EventLogsService } from './event-logs.service';
 import { EventLogsController } from './event-logs.controller';
 import { EventLog } from './entities/event-log.entity';
-import { EventLogsPermissions } from "./event-logs.permissions";
-import { Action, CaslAbilityFactory, CaslModule } from "../casl";
-import { DataSource } from "typeorm";
-import { APP_INTERCEPTOR } from "@nestjs/core";
-import { EventLogInterceptor } from "./event-logs.interceptor";
-import { CONFIGURE_EVENTS_MIDDLEWARE, SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
-import { TEventLogServiceConfig } from "./event-logs.types";
-import { EventLogsLogger } from "./event-logs.logger";
-import { EventLogMiddleware } from "./event-logs.middleware";
-import { ScheduleModule } from "@boarteam/boar-pack-common-backend";
+import { EventLogsPermissions } from './event-logs.permissions';
+import { Action, CaslAbilityFactory, CaslModule } from '../casl';
+import { DataSource } from 'typeorm';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { EventLogInterceptor } from './event-logs.interceptor';
+import { CONFIGURE_EVENTS_MIDDLEWARE, SERVICE_CONFIG_TOKEN } from './event-logs.constants';
+import { TEventLogServiceConfig } from './event-logs.types';
+import { EventLogsLogger } from './event-logs.logger';
+import { EventLogMiddleware } from './event-logs.middleware';
+import { ScheduleModule } from '@boarteam/boar-pack-common-backend';
 
 @Module({})
 export class EventLogsModule implements NestModule {
@@ -29,22 +29,18 @@ export class EventLogsModule implements NestModule {
           inject: [getDataSourceToken(config.dataSourceName)],
           useFactory: (dataSource: DataSource) => {
             return new EventLogsService(dataSource.getRepository(EventLog), dataSource);
-          }
+          },
         },
       ],
-      exports: [
-        EventLogsService,
-      ],
-      controllers: [
-        EventLogsController,
-      ]
-    }
+      exports: [EventLogsService],
+      controllers: [EventLogsController],
+    };
   }
 
   static forInterceptor(config: {
-    dataSourceName: string,
-    service?: TEventLogServiceConfig,
-    eventLogsServiceClass?: new (...args: any[]) => EventLogsService,
+    dataSourceName: string;
+    service?: TEventLogServiceConfig;
+    eventLogsServiceClass?: new (...args: any[]) => EventLogsService;
   }) {
     return {
       module: EventLogsModule,
@@ -60,7 +56,7 @@ export class EventLogsModule implements NestModule {
           useFactory: (dataSource: DataSource) => {
             const serviceClass = config.eventLogsServiceClass || EventLogsService;
             return new serviceClass(dataSource.getRepository(EventLog), dataSource);
-          }
+          },
         },
         {
           provide: SERVICE_CONFIG_TOKEN,
@@ -74,7 +70,7 @@ export class EventLogsModule implements NestModule {
         {
           provide: CONFIGURE_EVENTS_MIDDLEWARE,
           useValue: true,
-        }
+        },
       ],
       exports: [
         EventLogsService,
@@ -82,34 +78,30 @@ export class EventLogsModule implements NestModule {
         CONFIGURE_EVENTS_MIDDLEWARE,
         SERVICE_CONFIG_TOKEN,
       ],
-    }
+    };
   }
 
   static forFeature(config: { dataSourceName: string }) {
     return {
       module: EventLogsModule,
-      imports: [
-        CaslModule,
-        TypeOrmModule.forFeature([EventLog], config.dataSourceName),
-      ],
+      imports: [CaslModule, TypeOrmModule.forFeature([EventLog], config.dataSourceName)],
       providers: [
         {
           provide: EventLogsService,
           inject: [getDataSourceToken(config.dataSourceName)],
           useFactory: (dataSource: DataSource) => {
             return new EventLogsService(dataSource.getRepository(EventLog), dataSource);
-          }
+          },
         },
       ],
-      exports: [
-        EventLogsService,
-      ],
-    }
+      exports: [EventLogsService],
+    };
   }
 
   constructor(
     @Optional()
-    @Inject(CONFIGURE_EVENTS_MIDDLEWARE) private readonly configureEventsMiddleware: boolean,
+    @Inject(CONFIGURE_EVENTS_MIDDLEWARE)
+    private readonly configureEventsMiddleware: boolean,
   ) {
     CaslAbilityFactory.addPermissionToAction({
       permission: EventLogsPermissions.VIEW,

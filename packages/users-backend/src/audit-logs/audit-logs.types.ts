@@ -1,4 +1,4 @@
-import { AuditLog } from "./entities/audit-log.entity";
+import { AuditLog } from './entities/audit-log.entity';
 
 export * from '../index';
 

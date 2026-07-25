@@ -10,8 +10,7 @@ export type TMSAuthConfig = {
 
 @Injectable()
 export class MSAuthConfigService {
-  constructor(private configService: ConfigService) {
-  }
+  constructor(private configService: ConfigService) {}
 
   get config(): TMSAuthConfig {
     const clientId = this.configService.getOrThrow<string>('MICROSOFT_CLIENT_ID');

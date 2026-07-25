@@ -1,23 +1,21 @@
-import pick from "lodash/pick";
-import React, { useState } from "react";
-import { useAccess } from "umi";
-import { Token, TokenCreateDto, TokenUpdateDto } from "../../tools/api-client";
-import { Operators, Table } from "@boarteam/boar-pack-common-frontend";
-import { useApiClient } from "../ApiClientContext";
-import { useMyTokensColumns } from "./useMyTokensColumns";
-import { Modal, Typography } from "antd";
+import pick from 'lodash/pick';
+import React, { useState } from 'react';
+import { useAccess } from 'umi';
+import { Token, TokenCreateDto, TokenUpdateDto } from '../../tools/api-client';
+import { Operators, Table } from '@boarteam/boar-pack-common-frontend';
+import { useApiClient } from '../ApiClientContext';
+import { useMyTokensColumns } from './useMyTokensColumns';
+import { Modal, Typography } from 'antd';
 
 const { Text } = Typography;
 
 function entityToDto(entity: Token) {
-  return pick(entity, [
-    'name',
-  ]);
+  return pick(entity, ['name']);
 }
 
 type TTokenFilterParams = {
-  name?: string,
-}
+  name?: string;
+};
 
 export const MyTokensTable = () => {
   const apiClient = useApiClient();
@@ -32,8 +30,8 @@ export const MyTokensTable = () => {
   return (
     <>
       <Table<Token, TokenCreateDto, TokenUpdateDto, TTokenFilterParams>
-        getAll={params => apiClient.tokens.getManyBaseMyTokensControllerToken(params)}
-        onCreate={async params => {
+        getAll={(params) => apiClient.tokens.getManyBaseMyTokensControllerToken(params)}
+        onCreate={async (params) => {
           const token = await apiClient.tokens.createOneBaseMyTokensControllerToken(params);
 
           if ('value' in token && token.value) {
@@ -43,12 +41,12 @@ export const MyTokensTable = () => {
 
           return token as unknown as Token;
         }}
-        onUpdate={params => apiClient.tokens.updateOneBaseMyTokensControllerToken(params as any)}
-        onDelete={params => apiClient.tokens.deleteOneBaseMyTokensControllerToken(params as any)}
+        onUpdate={(params) => apiClient.tokens.updateOneBaseMyTokensControllerToken(params as any)}
+        onDelete={(params) => apiClient.tokens.deleteOneBaseMyTokensControllerToken(params as any)}
         entityToCreateDto={entityToDto}
         entityToUpdateDto={entityToDto}
         columns={columns}
-        idColumnName='id'
+        idColumnName="id"
         pathParams={{}}
         defaultSort={['name', 'ASC']}
         createNewDefaultParams={{
@@ -68,11 +66,11 @@ export const MyTokensTable = () => {
         onOk={() => setShowModal(false)}
         title="New Token Created"
       >
-        <p className="text-red-500 mb-2">
-          This token will only be shown once. Please copy it now.
-        </p>
+        <p className="text-red-500 mb-2">This token will only be shown once. Please copy it now.</p>
         {createdToken && (
-          <Text copyable code>{createdToken}</Text>
+          <Text copyable code>
+            {createdToken}
+          </Text>
         )}
       </Modal>
     </>

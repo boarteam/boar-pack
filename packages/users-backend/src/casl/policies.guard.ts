@@ -1,10 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  Logger,
-  SetMetadata,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Logger, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AppAbility, CaslAbilityFactory } from './casl-ability.factory';
 
@@ -33,22 +27,21 @@ export class PoliciesGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const skipGuard = this.reflector.getAllAndOverride<boolean>(
-      SKIP_POLICIES_GUARD,
-      [context.getHandler(), context.getClass()],
-    );
+    const skipGuard = this.reflector.getAllAndOverride<boolean>(SKIP_POLICIES_GUARD, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
     if (skipGuard) {
       return true;
     }
 
-    const policyHandlers = this.reflector.getAllAndOverride<
-      PolicyHandler[] | undefined
-    >(CHECK_POLICIES_KEY, [context.getHandler(), context.getClass()]);
+    const policyHandlers = this.reflector.getAllAndOverride<PolicyHandler[] | undefined>(
+      CHECK_POLICIES_KEY,
+      [context.getHandler(), context.getClass()],
+    );
 
     if (!policyHandlers) {
-      this.logger.warn(
-        'Policies for action are not found. Endpoints are closed by default',
-      );
+      this.logger.warn('Policies for action are not found. Endpoints are closed by default');
       return false;
     }
 
@@ -66,9 +59,7 @@ export class PoliciesGuard implements CanActivate {
     const ability = await this.caslAbilityFactory.createForUser(user);
     user.ability = ability;
 
-    return policyHandlers.every((handler) =>
-      this.execPolicyHandler(handler, ability),
-    );
+    return policyHandlers.every((handler) => this.execPolicyHandler(handler, ability));
   }
 
   private execPolicyHandler(handler: PolicyHandler, ability: AppAbility) {

@@ -36,9 +36,7 @@ describe('ws-auth', () => {
 
   beforeEach(() => {
     loggerSpies = (['debug', 'warn', 'error'] as const).map((method) =>
-      jest
-        .spyOn(Logger.prototype, method)
-        .mockImplementation(() => undefined),
+      jest.spyOn(Logger.prototype, method).mockImplementation(() => undefined),
     );
   });
 
@@ -61,12 +59,13 @@ describe('ws-auth', () => {
       middleware = jest.fn((req: any, res: any, next: any) => {
         middlewareNext = next;
       });
-      authenticateSpy = jest
-        .spyOn(passport, 'authenticate')
-        .mockImplementation(((strategy: string, cb: any) => {
-          verify = cb;
-          return middleware;
-        }) as any);
+      authenticateSpy = jest.spyOn(passport, 'authenticate').mockImplementation(((
+        strategy: string,
+        cb: any,
+      ) => {
+        verify = cb;
+        return middleware;
+      }) as any);
     });
 
     function connect(socket: FakeSocket): IncomingMessage {
@@ -84,10 +83,7 @@ describe('ws-auth', () => {
       const socket = createSocket();
       const req = connect(socket);
 
-      expect(authenticateSpy).toHaveBeenCalledWith(
-        STRATEGY,
-        expect.any(Function),
-      );
+      expect(authenticateSpy).toHaveBeenCalledWith(STRATEGY, expect.any(Function));
       expect(middleware).toHaveBeenCalledWith(req, null, expect.any(Function));
     });
 
@@ -102,9 +98,9 @@ describe('ws-auth', () => {
       expect(socket.user).toBe(user);
       expect(authenticated).toHaveBeenCalledTimes(1);
       expect(socket.close).not.toHaveBeenCalled();
-      await expect(
-        service.finishInitialization(socket as unknown as WebSocket),
-      ).resolves.toBe(user);
+      await expect(service.finishInitialization(socket as unknown as WebSocket)).resolves.toBe(
+        user,
+      );
     });
 
     it('sends an error and closes the socket when the strategy errors', async () => {
@@ -193,12 +189,8 @@ describe('ws-auth', () => {
       );
       const errorSpy = loggerSpies[2];
 
-      expect(() =>
-        service.broadcast({ event: 'tick', data: null }),
-      ).not.toThrow();
-      expect(errorSpy).toHaveBeenCalledWith(
-        'Error sending event to client: pipe broken',
-      );
+      expect(() => service.broadcast({ event: 'tick', data: null })).not.toThrow();
+      expect(errorSpy).toHaveBeenCalledWith('Error sending event to client: pipe broken');
     });
 
     describe('client liveness checks', () => {
@@ -263,9 +255,7 @@ describe('ws-auth', () => {
       const client = createSocket();
       const { guard, wsAuthService } = createGuard({ id: 'user-1' });
 
-      await expect(guard.canActivate(createContext(client))).resolves.toBe(
-        true,
-      );
+      await expect(guard.canActivate(createContext(client))).resolves.toBe(true);
       expect(wsAuthService.finishInitialization).toHaveBeenCalledWith(client);
       expect(client.close).not.toHaveBeenCalled();
     });
@@ -275,16 +265,12 @@ describe('ws-auth', () => {
       const { guard } = createGuard(null);
       const warnSpy = loggerSpies[1];
 
-      await expect(guard.canActivate(createContext(client))).resolves.toBe(
-        false,
-      );
+      await expect(guard.canActivate(createContext(client))).resolves.toBe(false);
       expect(client.close).toHaveBeenCalledWith(
         WsErrorCodes.Unauthorized,
         'You have been logged out, please login again',
       );
-      expect(warnSpy).toHaveBeenCalledWith(
-        'Unauthorized connection by websocket',
-      );
+      expect(warnSpy).toHaveBeenCalledWith('Unauthorized connection by websocket');
     });
   });
 
@@ -300,9 +286,7 @@ describe('ws-auth', () => {
         handleConnection: jest.fn(),
         handleDisconnect: jest.fn(),
       };
-      const gateway = new WsAuthGateway(
-        wsAuthService as unknown as WsAuthService,
-      );
+      const gateway = new WsAuthGateway(wsAuthService as unknown as WsAuthService);
       const socket = createSocket() as unknown as WebSocket;
       const req = { url: '/ws' } as IncomingMessage;
 

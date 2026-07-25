@@ -122,10 +122,9 @@ describe('UsersService (Postgres)', () => {
         pass: 'plaintext-secret',
       });
 
-      const [row] = await service.repo.query(
-        'SELECT pass FROM users WHERE email = $1',
-        ['plain@spec.test'],
-      );
+      const [row] = await service.repo.query('SELECT pass FROM users WHERE email = $1', [
+        'plain@spec.test',
+      ]);
       expect(row.pass).toBe('plaintext-secret');
     });
 
@@ -153,9 +152,9 @@ describe('UsersService (Postgres)', () => {
     it('rejects duplicate emails via the unique constraint', async () => {
       await service.create({ name: 'First', email: 'dupe@spec.test' });
 
-      await expect(
-        service.create({ name: 'Second', email: 'dupe@spec.test' }),
-      ).rejects.toThrow(/duplicate key value violates unique constraint/);
+      await expect(service.create({ name: 'Second', email: 'dupe@spec.test' })).rejects.toThrow(
+        /duplicate key value violates unique constraint/,
+      );
     });
 
     it('updates are visible through service reads', async () => {

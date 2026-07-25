@@ -1,25 +1,20 @@
-import { Table, isRecordNew, Operators } from "@boarteam/boar-pack-common-frontend";
-import { useApiClient } from "../ApiClientContext";
-import { User, UserCreateDto, UserUpdateDto } from "../../tools/api-client/generated";
-import { useUsersColumns } from "./useUsersColumns";
-import pick from "lodash/pick";
-import { PermissionsConfig, PermissionsList } from "./PermissionsList";
-import { useAccess, useModel } from "umi";
+import { Table, isRecordNew, Operators } from '@boarteam/boar-pack-common-frontend';
+import { useApiClient } from '../ApiClientContext';
+import { User, UserCreateDto, UserUpdateDto } from '../../tools/api-client/generated';
+import { useUsersColumns } from './useUsersColumns';
+import pick from 'lodash/pick';
+import { PermissionsConfig, PermissionsList } from './PermissionsList';
+import { useAccess, useModel } from 'umi';
 
 function entityToDto(entity: User) {
-  return pick(entity, [
-    'name',
-    'email',
-    'role',
-    'pass'
-  ]);
+  return pick(entity, ['name', 'email', 'role', 'pass']);
 }
 
 type TUserFilterParams = {
-  name?: string,
-  email?: string,
-  role?: string,
-}
+  name?: string;
+  email?: string;
+  role?: string;
+};
 
 export const UsersTable = ({
   permissionsConfig = [],
@@ -40,19 +35,19 @@ export const UsersTable = ({
 
   return (
     <Table<User, UserCreateDto, UserUpdateDto, TUserFilterParams>
-      getAll={params => {
+      getAll={(params) => {
         const fields = params.fields?.[0] || '';
         params.fields = [[fields, 'permissions'].join(',')];
         return apiClient.users.getManyBaseUsersControllerUser(params);
       }}
-      onCreate={params => apiClient.users.createOneBaseUsersControllerUser(params)}
-      onUpdate={params => apiClient.users.updateOneBaseUsersControllerUser(params as any)}
-      onDelete={params => apiClient.users.deleteOneBaseUsersControllerUser(params as any)}
+      onCreate={(params) => apiClient.users.createOneBaseUsersControllerUser(params)}
+      onUpdate={(params) => apiClient.users.updateOneBaseUsersControllerUser(params as any)}
+      onDelete={(params) => apiClient.users.deleteOneBaseUsersControllerUser(params as any)}
       entityToCreateDto={entityToDto}
       entityToUpdateDto={entityToDto}
       pathParams={{}}
       columns={columns}
-      idColumnName='id'
+      idColumnName="id"
       searchableColumns={[
         {
           field: 'name',
@@ -65,17 +60,14 @@ export const UsersTable = ({
         {
           field: 'role',
           operator: Operators.containsLow,
-        }
+        },
       ]}
       expandable={{
         // hide expandable icon for new records which are not saved yet, since you can't set permissions for them
-        rowExpandable: record => !isRecordNew(record),
+        rowExpandable: (record) => !isRecordNew(record),
         expandedRowRender: renderPermissions
-          ? record => <>{renderPermissions(record)}</>
-          : record => <PermissionsList
-            user={record}
-            permissionsConfig={permissionsConfig}
-          />,
+          ? (record) => <>{renderPermissions(record)}</>
+          : (record) => <PermissionsList user={record} permissionsConfig={permissionsConfig} />,
       }}
       viewOnly={!canManageAll}
       editable={{
@@ -85,8 +77,8 @@ export const UsersTable = ({
           }
 
           return [dom.save, dom.delete, dom.cancel];
-        }
+        },
       }}
     ></Table>
   );
-}
+};

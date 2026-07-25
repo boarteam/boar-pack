@@ -29,10 +29,5 @@
     "node_modules/@boarteam/boar-pack-common-backend/src",
     "node_modules/@boarteam/boar-pack-common-backend/package.json"
   ],
-  "exclude": [
-    "test",
-    "**/dist*",
-    "**/*spec.ts",
-    ".yalc/**/*"
-  ]
+  "exclude": ["test", "**/dist*", "**/*spec.ts", ".yalc/**/*"]
 }

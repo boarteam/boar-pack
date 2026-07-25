@@ -49,7 +49,7 @@ const renderTable = (client = makeClient()) => {
   render(
     <TestProviders client={client}>
       <MyTokensTable />
-    </TestProviders>
+    </TestProviders>,
   );
   return client;
 };
@@ -63,9 +63,7 @@ describe('MyTokensTable', () => {
     const client = renderTable();
 
     expect(await screen.findByText('personal token')).toBeInTheDocument();
-    expect(
-      client.tokens.getManyBaseMyTokensControllerToken
-    ).toHaveBeenCalledTimes(1);
+    expect(client.tokens.getManyBaseMyTokensControllerToken).toHaveBeenCalledTimes(1);
     const params = client.tokens.getManyBaseMyTokensControllerToken.mock.calls[0][0];
     expect(params.sort).toEqual(['name,ASC']);
     expect(params.fields).toEqual(['name,createdAt']);
@@ -109,9 +107,7 @@ describe('MyTokensTable', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() => {
-      expect(
-        client.tokens.createOneBaseMyTokensControllerToken
-      ).toHaveBeenCalledWith({
+      expect(client.tokens.createOneBaseMyTokensControllerToken).toHaveBeenCalledWith({
         requestBody: { name: 'release token' },
       });
     });
@@ -119,15 +115,13 @@ describe('MyTokensTable', () => {
     // the one-time secret is revealed in a modal
     expect(await screen.findByText('New Token Created')).toBeInTheDocument();
     expect(
-      screen.getByText('This token will only be shown once. Please copy it now.')
+      screen.getByText('This token will only be shown once. Please copy it now.'),
     ).toBeInTheDocument();
     expect(screen.getByText('super-secret-token-value')).toBeInTheDocument();
 
     // the table reloads after the creation
     await waitFor(() => {
-      expect(
-        client.tokens.getManyBaseMyTokensControllerToken.mock.calls.length
-      ).toBeGreaterThan(1);
+      expect(client.tokens.getManyBaseMyTokensControllerToken.mock.calls.length).toBeGreaterThan(1);
     });
   });
 });

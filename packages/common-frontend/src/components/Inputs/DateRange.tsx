@@ -1,18 +1,17 @@
 // antd switch but not for boolean, for numbers 0 and 1
-import React from "react";
-import dayjs from "dayjs";
-import { DatePicker } from "antd";
+import React from 'react';
+import dayjs from 'dayjs';
+import { DatePicker } from 'antd';
 
-interface RangePickerProps extends Omit<React.ComponentProps<typeof DatePicker.RangePicker>, 'value' | 'onChange'> {
-  value? : [string | null, string | null] | null;
-  onChange? : (value?: [string | null, string | null] | null) => void;
+interface RangePickerProps extends Omit<
+  React.ComponentProps<typeof DatePicker.RangePicker>,
+  'value' | 'onChange'
+> {
+  value?: [string | null, string | null] | null;
+  onChange?: (value?: [string | null, string | null] | null) => void;
 }
 
-export const DateRange: React.FC<RangePickerProps> = ({
-  value,
-  onChange,
-  ...props
-}) => {
+export const DateRange: React.FC<RangePickerProps> = ({ value, onChange, ...props }) => {
   return (
     <DatePicker.RangePicker
       showTime={{
@@ -30,7 +29,10 @@ export const DateRange: React.FC<RangePickerProps> = ({
         },
         {
           label: 'Yesterday',
-          value: [dayjs().subtract(1, 'day').startOf('day'), dayjs().subtract(1, 'day').endOf('day')],
+          value: [
+            dayjs().subtract(1, 'day').startOf('day'),
+            dayjs().subtract(1, 'day').endOf('day'),
+          ],
         },
         {
           label: 'Last 15 minutes',
@@ -62,14 +64,20 @@ export const DateRange: React.FC<RangePickerProps> = ({
         },
         {
           label: 'Last month',
-          value: [dayjs().subtract(1, 'month').startOf('month'), dayjs().subtract(1, 'month').endOf('month')],
+          value: [
+            dayjs().subtract(1, 'month').startOf('month'),
+            dayjs().subtract(1, 'month').endOf('month'),
+          ],
         },
       ]}
-      value={value?.map(date => dayjs(date)) as [dayjs.Dayjs, dayjs.Dayjs] | undefined}
+      value={value?.map((date) => dayjs(date)) as [dayjs.Dayjs, dayjs.Dayjs] | undefined}
       onChange={(dates) => {
-        onChange?.(dates?.map(date => date?.toISOString() ?? null) as [string | null, string | null] | null);
+        onChange?.(
+          dates?.map((date) => date?.toISOString() ?? null) as
+            [string | null, string | null] | null,
+        );
       }}
       {...props}
     />
   );
-}
+};

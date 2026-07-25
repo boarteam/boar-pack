@@ -23,14 +23,14 @@ infrastructure (quote flow, provider uptime, connection statistics).
 
 ## Packages
 
-| Package | Version | What it gives you |
-| --- | --- | --- |
-| [`@boarteam/boar-pack-users-backend`](https://www.npmjs.com/package/@boarteam/boar-pack-users-backend) | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-users-backend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-users-backend) | Users, JWT auth + refresh rotation, local/Google/Microsoft/Yandex login, API tokens, CASL permissions, event logs, settings, Telegram notifications. |
-| [`@boarteam/boar-pack-users-frontend`](https://www.npmjs.com/package/@boarteam/boar-pack-users-frontend) | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-users-frontend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-users-frontend) | Admin UI for the above: users/tokens/event-log tables + typed API client. |
-| [`@boarteam/boar-pack-common-backend`](https://www.npmjs.com/package/@boarteam/boar-pack-common-backend) | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-common-backend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-common-backend) | Shared NestJS blocks: scrypt-keyed encryption, process clustering, outbound WebSocket clients, TypeORM utilities. |
-| [`@boarteam/boar-pack-common-frontend`](https://www.npmjs.com/package/@boarteam/boar-pack-common-frontend) | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-common-frontend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-common-frontend) | Generic CRUD `Table`/`List`/`Descriptions` on `@ant-design/pro-*` for `@dataui/crud` APIs, form inputs, WS client. |
-| [`@boarteam/boar-pack-liquidity-monitor-backend`](https://www.npmjs.com/package/@boarteam/boar-pack-liquidity-monitor-backend) | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-liquidity-monitor-backend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-liquidity-monitor-backend) | Quote-flow statistics, stale-provider detection with Telegram alerts, connection/API statistics. |
-| [`@boarteam/boar-pack-liquidity-monitor-frontend`](https://www.npmjs.com/package/@boarteam/boar-pack-liquidity-monitor-frontend) | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-liquidity-monitor-frontend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-liquidity-monitor-frontend) | Dashboard cards and drill-down timelines for the monitor backend. |
+| Package                                                                                                                          | Version                                                                                                                                                                 | What it gives you                                                                                                                                    |
+| -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`@boarteam/boar-pack-users-backend`](https://www.npmjs.com/package/@boarteam/boar-pack-users-backend)                           | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-users-backend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-users-backend)                           | Users, JWT auth + refresh rotation, local/Google/Microsoft/Yandex login, API tokens, CASL permissions, event logs, settings, Telegram notifications. |
+| [`@boarteam/boar-pack-users-frontend`](https://www.npmjs.com/package/@boarteam/boar-pack-users-frontend)                         | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-users-frontend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-users-frontend)                         | Admin UI for the above: users/tokens/event-log tables + typed API client.                                                                            |
+| [`@boarteam/boar-pack-common-backend`](https://www.npmjs.com/package/@boarteam/boar-pack-common-backend)                         | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-common-backend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-common-backend)                         | Shared NestJS blocks: scrypt-keyed encryption, process clustering, outbound WebSocket clients, TypeORM utilities.                                    |
+| [`@boarteam/boar-pack-common-frontend`](https://www.npmjs.com/package/@boarteam/boar-pack-common-frontend)                       | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-common-frontend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-common-frontend)                       | Generic CRUD `Table`/`List`/`Descriptions` on `@ant-design/pro-*` for `@dataui/crud` APIs, form inputs, WS client.                                   |
+| [`@boarteam/boar-pack-liquidity-monitor-backend`](https://www.npmjs.com/package/@boarteam/boar-pack-liquidity-monitor-backend)   | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-liquidity-monitor-backend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-liquidity-monitor-backend)   | Quote-flow statistics, stale-provider detection with Telegram alerts, connection/API statistics.                                                     |
+| [`@boarteam/boar-pack-liquidity-monitor-frontend`](https://www.npmjs.com/package/@boarteam/boar-pack-liquidity-monitor-frontend) | [![npm](https://img.shields.io/npm/v/@boarteam/boar-pack-liquidity-monitor-frontend.svg)](https://www.npmjs.com/package/@boarteam/boar-pack-liquidity-monitor-frontend) | Dashboard cards and drill-down timelines for the monitor backend.                                                                                    |
 
 Each package has its own README with full registration options — start
 there once you've seen the quick start below.
@@ -65,11 +65,7 @@ Replace `app.module.ts`:
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {
-  AuthModule,
-  CaslModule,
-  UsersModule,
-} from '@boarteam/boar-pack-users-backend';
+import { AuthModule, CaslModule, UsersModule } from '@boarteam/boar-pack-users-backend';
 
 @Module({
   imports: [
@@ -82,9 +78,7 @@ import {
       username: 'app',
       password: 'password',
       database: 'boar_pack',
-      entities: [
-        'node_modules/@boarteam/boar-pack-users-backend/dist/**/entities/*.entity.js',
-      ],
+      entities: ['node_modules/@boarteam/boar-pack-users-backend/dist/**/entities/*.entity.js'],
       synchronize: true, // dev only
     }),
     CaslModule.forRoot(), // global policies guard — endpoints closed by default
@@ -136,11 +130,7 @@ yarn add @boarteam/boar-pack-users-frontend
 ```
 
 ```tsx
-import {
-  createApiClient,
-  ApiClientProvider,
-  UsersTable,
-} from '@boarteam/boar-pack-users-frontend';
+import { createApiClient, ApiClientProvider, UsersTable } from '@boarteam/boar-pack-users-frontend';
 
 // BASE defaults to '/api'; auth rides on the backend's cookies.
 const apiClient = createApiClient({ BASE: '/api' });
@@ -169,7 +159,7 @@ backend exposes via `/me`.
   the server enforces CASL policies and the tables consume generated typed
   clients — but it commits you to NestJS + TypeORM + antd/umi.
 - **Keycloak / SuperTokens / Auth0**: external identity servers. boar-pack
-  keeps users and permissions *inside* your app and database, which is
+  keeps users and permissions _inside_ your app and database, which is
   simpler to operate for internal tools, but it is a library, not a hosted
   IdP.
 

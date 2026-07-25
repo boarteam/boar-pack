@@ -42,9 +42,7 @@ function makeClusterStub({
   appRole?: string;
 }) {
   return {
-    getSettings: jest
-      .fn()
-      .mockResolvedValue({ clusterId: 'c1', appRole, restartDelay }),
+    getSettings: jest.fn().mockResolvedValue({ clusterId: 'c1', appRole, restartDelay }),
     getWorkersSettings: jest.fn().mockResolvedValue(workers),
     onWorkerRun: jest.fn(),
     onWorkerExit: jest.fn(),
@@ -198,9 +196,7 @@ describe('ClusterService', () => {
       expect(stub.onWorkerExit).toHaveBeenCalledWith(workers[0], 1, null);
       expect(clusterMock.fork).toHaveBeenCalledTimes(2);
       // restarted with the same env vars
-      expect(clusterMock.fork.mock.calls[1][0]).toEqual(
-        clusterMock.fork.mock.calls[0][0],
-      );
+      expect(clusterMock.fork.mock.calls[1][0]).toEqual(clusterMock.fork.mock.calls[0][0]);
     });
 
     it('does not restart a worker stopped with the stop signal', async () => {
@@ -245,9 +241,7 @@ describe('ClusterService', () => {
   describe('setWorkerState', () => {
     it('rejects for a cluster that was never added', async () => {
       const stub = makeClusterStub({ workers: [] });
-      await expect(
-        service.setWorkerState(stub, 'w1', true),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.setWorkerState(stub, 'w1', true)).rejects.toThrow(NotFoundException);
     });
 
     it('stops a running worker with the stop signal', async () => {
@@ -317,9 +311,9 @@ describe('ClusterService', () => {
       });
       service.addCluster(stub);
 
-      await expect(
-        service.setWorkerState(stub, 'missing', true),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.setWorkerState(stub, 'missing', true)).rejects.toThrow(
+        NotFoundException,
+      );
       expect(clusterMock.fork).not.toHaveBeenCalled();
     });
   });

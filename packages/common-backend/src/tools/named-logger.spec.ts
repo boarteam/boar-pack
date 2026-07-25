@@ -9,12 +9,8 @@ describe('Tools.NamedLogger', () => {
   let stderrSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    stdoutSpy = jest
-      .spyOn(process.stdout, 'write')
-      .mockImplementation(() => true);
-    stderrSpy = jest
-      .spyOn(process.stderr, 'write')
-      .mockImplementation(() => true);
+    stdoutSpy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+    stderrSpy = jest.spyOn(process.stderr, 'write').mockImplementation(() => true);
   });
 
   afterEach(() => {

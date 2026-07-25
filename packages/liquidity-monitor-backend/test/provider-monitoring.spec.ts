@@ -125,14 +125,16 @@ describe('ProviderMonitoringService (Postgres)', () => {
       expect(type).toBe(Notifications.QuotesByProviderStatus);
     }
     const texts = sentTexts();
-    expect(texts.some((t) => t.includes('StaleProvider') && t.includes('has no quotes'))).toBe(true);
-    expect(texts.some((t) => t.includes('SilentProvider') && t.includes('has no quotes'))).toBe(true);
+    expect(texts.some((t) => t.includes('StaleProvider') && t.includes('has no quotes'))).toBe(
+      true,
+    );
+    expect(texts.some((t) => t.includes('SilentProvider') && t.includes('has no quotes'))).toBe(
+      true,
+    );
   });
 
   it('does nothing when no provider has a threshold', async () => {
-    fetchProviders.mockResolvedValue([
-      { id: randomUUID(), name: 'NoThreshold', threshold: null },
-    ]);
+    fetchProviders.mockResolvedValue([{ id: randomUUID(), name: 'NoThreshold', threshold: null }]);
 
     await checkActivity();
 
@@ -188,9 +190,7 @@ describe('ProviderMonitoringService (Postgres)', () => {
     expect((await selectPeriods())[0].open).toBe(true);
 
     // Fresh quote -> recovered
-    quotes.getLatestQuotesByProvider.mockResolvedValue(
-      new Map([[provider.id, new Date()]]),
-    );
+    quotes.getLatestQuotesByProvider.mockResolvedValue(new Map([[provider.id, new Date()]]));
     await checkActivity();
 
     const rows = await selectPeriods();
@@ -198,8 +198,9 @@ describe('ProviderMonitoringService (Postgres)', () => {
     expect(rows[0].provider_id).toBe(provider.id);
     expect(rows[0].open).toBe(false);
     expect(rows[0].hi).not.toBeNull();
-    expect(new Date(rows[0].hi as Date).getTime())
-      .toBeGreaterThanOrEqual(new Date(rows[0].lo as Date).getTime());
+    expect(new Date(rows[0].hi as Date).getTime()).toBeGreaterThanOrEqual(
+      new Date(rows[0].lo as Date).getTime(),
+    );
 
     expect(telegraf.sendMessage).toHaveBeenCalledTimes(2);
     const [message, type] = telegraf.sendMessage.mock.calls[1];

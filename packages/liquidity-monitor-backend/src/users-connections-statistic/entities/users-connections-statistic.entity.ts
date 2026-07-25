@@ -7,7 +7,8 @@ export enum UserConnectionTarget {
   ACCOUNT = 'account',
 }
 
-export type TComplexTarget = UserConnectionTarget.FIX_SERVER | UserConnectionTarget.WEBSOCKET_SERVER;
+export type TComplexTarget =
+  UserConnectionTarget.FIX_SERVER | UserConnectionTarget.WEBSOCKET_SERVER;
 
 @Entity('users_connections_statistic')
 export class UsersConnectionsStatistic {
@@ -44,7 +45,7 @@ export class UsersConnectionsStatistic {
 
   @CreateDateColumn({
     type: 'timestamp with time zone',
-    name: 'created_at'
+    name: 'created_at',
   })
   createdAt: Date;
 }

@@ -17,10 +17,7 @@ import {
   TJWTPayload,
   TJWTRefreshPayload,
 } from '../src/jwt-auth/jwt-auth.srtategy';
-import {
-  RevokedToken,
-  TOKEN_TYPE,
-} from '../src/revoked-tokens/entities/revoked-token.entity';
+import { RevokedToken, TOKEN_TYPE } from '../src/revoked-tokens/entities/revoked-token.entity';
 import { RevokedTokensService } from '../src/revoked-tokens/revoked-tokens.service';
 import { UsersService } from '../src/users/users.service';
 import { Roles, User } from '../src/users/entities/user.entity';
@@ -48,9 +45,7 @@ describe('JWTAuthService (Postgres-backed revocation)', () => {
 
   beforeAll(async () => {
     ds = await createTestDataSource([User, RevokedToken]);
-    revokedTokensService = new RevokedTokensService(
-      ds.getRepository(RevokedToken),
-    );
+    revokedTokensService = new RevokedTokensService(ds.getRepository(RevokedToken));
     jwtService = new JwtService({ secret: process.env.JWT_SECRET });
     service = buildService();
     usersService = new UsersService(ds.getRepository(User));
@@ -122,10 +117,7 @@ describe('JWTAuthService (Postgres-backed revocation)', () => {
       { email: user.email, sub: user.id, sid: randomUUID() },
       TOKEN_TYPE.ACCESS,
     );
-    const refresh = customService.sign(
-      { sub: user.id, sid: randomUUID() },
-      TOKEN_TYPE.REFRESH,
-    );
+    const refresh = customService.sign({ sub: user.id, sid: randomUUID() }, TOKEN_TYPE.REFRESH);
 
     const decodedAccess = jwtService.verify<TJWTPayload>(access.token);
     const decodedRefresh = jwtService.verify<TJWTPayload>(refresh.token);
@@ -206,9 +198,7 @@ describe('JWTAuthService (Postgres-backed revocation)', () => {
         sid: randomUUID(),
       };
 
-      await expect(strategy.validate({} as any, payload)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(strategy.validate({} as any, payload)).rejects.toThrow(UnauthorizedException);
     });
   });
 });

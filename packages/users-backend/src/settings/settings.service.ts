@@ -1,19 +1,18 @@
-import { Injectable } from "@nestjs/common";
-import { In, Like, Repository } from "typeorm";
-import { Setting } from "./entities/setting.entity";
-import { EventSettingsDto } from "./dto/event-settings.dto";
-import { SettingsValues } from "./settings.constants";
+import { Injectable } from '@nestjs/common';
+import { In, Like, Repository } from 'typeorm';
+import { Setting } from './entities/setting.entity';
+import { EventSettingsDto } from './dto/event-settings.dto';
+import { SettingsValues } from './settings.constants';
 
 @Injectable()
 export class SettingsService {
-  constructor(readonly repo: Repository<Setting>) {
-  }
+  constructor(readonly repo: Repository<Setting>) {}
 
   public getSettings(settingsNames: string[]): Promise<Setting[]> {
     return this.repo.find({
       where: {
         key: In(settingsNames),
-      }
+      },
     });
   }
 
@@ -25,12 +24,12 @@ export class SettingsService {
     const settings = await this.repo.find({
       where: {
         key: Like('notifications.%'),
-      }
+      },
     });
 
     const eventSettings = new EventSettingsDto();
-    settings.forEach(setting => {
-      eventSettings[setting.key] = setting.value === SettingsValues.YES
+    settings.forEach((setting) => {
+      eventSettings[setting.key] = setting.value === SettingsValues.YES;
     });
 
     return eventSettings;

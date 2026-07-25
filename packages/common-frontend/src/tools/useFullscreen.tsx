@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { FullscreenExitOutlined, FullscreenOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-import { createStyles } from "antd-style";
+import { useEffect, useState } from 'react';
+import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import { createStyles } from 'antd-style';
 
 function changeFullScreen(fullscreen: boolean) {
   if (fullscreen) {
@@ -42,16 +42,14 @@ export function useFullscreen() {
     document.addEventListener('fullscreenchange', listener);
     return () => {
       document.removeEventListener('fullscreenchange', listener);
-    }
+    };
   }, []);
 
-  const button = <Button
-    key="fullscreen"
-    type="text"
-    onClick={() => changeFullScreen(!isFullscreen)}
-  >
-    {isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
-  </Button>;
+  const button = (
+    <Button key="fullscreen" type="text" onClick={() => changeFullScreen(!isFullscreen)}>
+      {isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+    </Button>
+  );
 
   return {
     isFullscreen,

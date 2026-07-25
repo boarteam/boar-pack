@@ -1,5 +1,5 @@
-import { Select } from "antd";
-import React from "react";
+import { Select } from 'antd';
+import React from 'react';
 
 export const MultiStringSelect: React.FC<{
   value?: string[];
@@ -11,10 +11,10 @@ export const MultiStringSelect: React.FC<{
       allowClear={true}
       mode="tags"
       style={{ minWidth: 200 }}
-      maxTagCount='responsive'
+      maxTagCount="responsive"
       value={value}
       onChange={onChange}
-      notFoundContent='Enter manually'
+      notFoundContent="Enter manually"
     />
-  )
-}
+  );
+};

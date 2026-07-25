@@ -56,7 +56,7 @@ const renderList = (user: User, client = makeClient()) => {
   render(
     <TestProviders client={client}>
       <PermissionsList user={user} permissionsConfig={permissionsConfig} />
-    </TestProviders>
+    </TestProviders>,
   );
   return client;
 };
@@ -91,21 +91,19 @@ describe('PermissionsList', () => {
     expect(switches[0]).toBeChecked();
     expect(switches[1]).not.toBeChecked();
     expect(switches[2]).not.toBeChecked();
-    switches.forEach(s => expect(s).toBeEnabled());
+    switches.forEach((s) => expect(s).toBeEnabled());
   });
 
   it('does not show the admin alert for a plain user', () => {
     renderList(makeUser());
-    expect(
-      screen.queryByText(/Admin can perform any action/)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/Admin can perform any action/)).not.toBeInTheDocument();
   });
 
   it('grants a permission through the api and keeps the server answer', async () => {
     const user = makeUser({ permissions: ['docs.read'] });
     const client = makeClient();
     client.users.updateOneBaseUsersControllerUser.mockResolvedValue(
-      makeUser({ permissions: ['docs.read', 'trading.view'] })
+      makeUser({ permissions: ['docs.read', 'trading.view'] }),
     );
     renderList(user, client);
 
@@ -126,9 +124,7 @@ describe('PermissionsList', () => {
 
   it('revokes a granted permission through the api', async () => {
     const client = makeClient();
-    client.users.updateOneBaseUsersControllerUser.mockResolvedValue(
-      makeUser({ permissions: [] })
-    );
+    client.users.updateOneBaseUsersControllerUser.mockResolvedValue(makeUser({ permissions: [] }));
     renderList(makeUser({ permissions: ['docs.read'] }), client);
 
     await userEvent.click(screen.getAllByRole('switch')[0]);
@@ -145,13 +141,9 @@ describe('PermissionsList', () => {
   });
 
   it('rolls the switch back when the update fails', async () => {
-    const consoleError = vi
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const client = makeClient();
-    client.users.updateOneBaseUsersControllerUser.mockRejectedValue(
-      new Error('update failed')
-    );
+    client.users.updateOneBaseUsersControllerUser.mockRejectedValue(new Error('update failed'));
     renderList(makeUser({ permissions: [] }), client);
 
     await userEvent.click(screen.getAllByRole('switch')[0]);
@@ -168,11 +160,11 @@ describe('PermissionsList', () => {
 
       expect(
         screen.getByText(
-          'Admin can perform any action, in order to change permissions, change user role.'
-        )
+          'Admin can perform any action, in order to change permissions, change user role.',
+        ),
       ).toBeInTheDocument();
       const switches = screen.getAllByRole('switch');
-      switches.forEach(s => {
+      switches.forEach((s) => {
         expect(s).toBeChecked();
         expect(s).toBeDisabled();
       });
@@ -185,7 +177,7 @@ describe('PermissionsList', () => {
       renderList(makeUser({ permissions: ['trading.view'] }));
 
       const switches = screen.getAllByRole('switch');
-      switches.forEach(s => expect(s).toBeDisabled());
+      switches.forEach((s) => expect(s).toBeDisabled());
       expect(switches[0]).not.toBeChecked();
       expect(switches[1]).toBeChecked();
     });

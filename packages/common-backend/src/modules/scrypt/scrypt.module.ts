@@ -1,20 +1,12 @@
 import { Module } from '@nestjs/common';
-import ScryptService from "./scrypt.service";
-import { ScryptConfigService } from "./scrypt.config";
-import { ConfigModule } from "@nestjs/config";
+import ScryptService from './scrypt.service';
+import { ScryptConfigService } from './scrypt.config';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [
-    ConfigModule,
-  ],
+  imports: [ConfigModule],
   controllers: [],
-  providers: [
-    ScryptService,
-    ScryptConfigService,
-  ],
-  exports: [
-    ScryptService,
-  ],
+  providers: [ScryptService, ScryptConfigService],
+  exports: [ScryptService],
 })
-export class ScryptModule {
-}
+export class ScryptModule {}

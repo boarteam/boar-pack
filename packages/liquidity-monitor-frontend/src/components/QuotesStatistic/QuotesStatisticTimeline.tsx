@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { PageLoading } from "@ant-design/pro-layout";
-import { QuotesStatisticDto, QuotesStatisticQueryDto } from "../../tools/api-client";
-import { Column, ColumnConfig } from "@ant-design/plots";
-import moment from "moment";
-import { useApiClient } from "../ApiClientContext";
-import { TStatisticProvider } from "./index";
+import { PageLoading } from '@ant-design/pro-layout';
+import { QuotesStatisticDto, QuotesStatisticQueryDto } from '../../tools/api-client';
+import { Column, ColumnConfig } from '@ant-design/plots';
+import moment from 'moment';
+import { useApiClient } from '../ApiClientContext';
+import { TStatisticProvider } from './index';
 // @ts-ignore
-import { useModel } from "umi";
-import { Empty } from "antd";
+import { useModel } from 'umi';
+import { Empty } from 'antd';
 
 type TQuotesStatisticTimelineProps = QuotesStatisticQueryDto & {
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
   providers: {
-    [key: string]: TStatisticProvider
-  },
-}
+    [key: string]: TStatisticProvider;
+  };
+};
 
 export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = ({
   startTime,
@@ -29,11 +29,13 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
   const { navTheme } = initialState?.settings || {};
 
   useEffect(() => {
-    apiClient.quotesStatistics.getTimeline({
-      startTime,
-      endTime,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    }).then(setData);
+    apiClient.quotesStatistics
+      .getTimeline({
+        startTime,
+        endTime,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      })
+      .then(setData);
   }, [startTime, endTime]);
 
   if (!data) {
@@ -41,7 +43,7 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
   }
 
   if (data.length === 0) {
-    return <Empty />
+    return <Empty />;
   }
 
   const config: ColumnConfig = {
@@ -57,7 +59,7 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
     axis: {
       y: {
         gridLineWidth: 1,
-      }
+      },
     },
     tooltip: {
       title: {
@@ -65,12 +67,12 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
         valueFormatter: (value: string) => {
           const date = new Date(value);
           return moment(date).format('DD-MM-YYYY HH:mm');
-        }
-      }
+        },
+      },
     },
     scale: {
       color: {
-        palette: 'rainbow'
+        palette: 'rainbow',
       },
     },
     onReady: ({ chart }) => {
@@ -78,10 +80,8 @@ export const QuotesStatisticTimeline: React.FC<TQuotesStatisticTimelineProps> = 
         const { data } = event?.data || {};
         onDateRangeChange(data?.startTime, data?.endTime);
       });
-    }
+    },
   };
 
-  return <Column
-    {...config}
-  />;
-}
+  return <Column {...config} />;
+};

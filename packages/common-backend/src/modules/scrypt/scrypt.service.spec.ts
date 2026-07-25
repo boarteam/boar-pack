@@ -46,8 +46,6 @@ describe('ScryptService', () => {
 
   it('fails module creation when the IV is not 16 hex characters', async () => {
     process.env.SCRYPT_IV = 'not-hex-not-16!';
-    await expect(createService()).rejects.toThrow(
-      'IV is invalid, check SCRYPT_IV env variable',
-    );
+    await expect(createService()).rejects.toThrow('IV is invalid, check SCRYPT_IV env variable');
   });
 });

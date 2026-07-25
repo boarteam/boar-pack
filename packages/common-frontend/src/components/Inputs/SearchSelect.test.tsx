@@ -15,11 +15,7 @@ describe('SearchSelect', () => {
   it('fetches items on mount with the base filter and renders the options', async () => {
     const fetchItems = vi.fn().mockResolvedValue({ data: items });
     render(
-      <SearchSelect<Item>
-        selectedKeys={[]}
-        setSelectedKeys={vi.fn()}
-        fetchItems={fetchItems}
-      />,
+      <SearchSelect<Item> selectedKeys={[]} setSelectedKeys={vi.fn()} fetchItems={fetchItems} />,
     );
 
     expect(fetchItems).toHaveBeenCalledWith([], 7, '');
@@ -45,18 +41,12 @@ describe('SearchSelect', () => {
     });
 
     await waitFor(() =>
-      expect(fetchItems).toHaveBeenCalledWith(
-        ['type||$eq||demo', 'name||$contL||Al'],
-        5,
-        'Al',
-      ),
+      expect(fetchItems).toHaveBeenCalledWith(['type||$eq||demo', 'name||$contL||Al'], 5, 'Al'),
     );
   });
 
   it('respects custom fieldNames for both filtering and labels', async () => {
-    const fetchItems = vi
-      .fn()
-      .mockResolvedValue({ data: [{ code: 'a1', title: 'First' }] });
+    const fetchItems = vi.fn().mockResolvedValue({ data: [{ code: 'a1', title: 'First' }] });
     render(
       <SearchSelect<{ code: string; title: string }>
         selectedKeys={[]}
@@ -72,9 +62,7 @@ describe('SearchSelect', () => {
       target: { value: 'Fi' },
     });
 
-    await waitFor(() =>
-      expect(fetchItems).toHaveBeenCalledWith(['title||$contL||Fi'], 7, 'Fi'),
-    );
+    await waitFor(() => expect(fetchItems).toHaveBeenCalledWith(['title||$contL||Fi'], 7, 'Fi'));
   });
 
   it('adds the clicked option key to the selection', async () => {
@@ -114,11 +102,7 @@ describe('SearchSelect', () => {
   it('shows an empty state when no items are found', async () => {
     const fetchItems = vi.fn().mockResolvedValue({ data: [] });
     render(
-      <SearchSelect<Item>
-        selectedKeys={[]}
-        setSelectedKeys={vi.fn()}
-        fetchItems={fetchItems}
-      />,
+      <SearchSelect<Item> selectedKeys={[]} setSelectedKeys={vi.fn()} fetchItems={fetchItems} />,
     );
 
     expect(await screen.findByText('Not Found')).toBeInTheDocument();

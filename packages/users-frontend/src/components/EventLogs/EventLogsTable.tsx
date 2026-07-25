@@ -1,26 +1,23 @@
-import { useApiClient } from "../ApiClientContext";
-import { EventLog, EventLogCreateDto, EventLogTimelineQueryDto, EventLogUpdateDto } from "../../tools/api-client/generated";
-import { useEventLogsColumns } from "./useEventLogsColumns";
-import { Table, TColumnsSet } from "@boarteam/boar-pack-common-frontend";
-import { eventLogsSearchableColumns } from "./eventLogsSearchableColumns";
-import { EventLogExplanation } from "./EventLogExplanation";
-import { createStyles } from "antd-style";
-import { ConfigProvider } from "antd";
+import { useApiClient } from '../ApiClientContext';
+import {
+  EventLog,
+  EventLogCreateDto,
+  EventLogTimelineQueryDto,
+  EventLogUpdateDto,
+} from '../../tools/api-client/generated';
+import { useEventLogsColumns } from './useEventLogsColumns';
+import { Table, TColumnsSet } from '@boarteam/boar-pack-common-frontend';
+import { eventLogsSearchableColumns } from './eventLogsSearchableColumns';
+import { EventLogExplanation } from './EventLogExplanation';
+import { createStyles } from 'antd-style';
+import { ConfigProvider } from 'antd';
 
-type TEventLogFilterParams = {}
+type TEventLogFilterParams = {};
 
 const columnsSets: TColumnsSet<EventLog>[] = [
   {
     name: 'Audit',
-    columns: [
-      'createdAt',
-      'logType',
-      'entity',
-      'action',
-      'entityId',
-      'user',
-      'logLevel',
-    ],
+    columns: ['createdAt', 'logType', 'entity', 'action', 'entityId', 'user', 'logLevel'],
   },
   {
     name: 'Operational',
@@ -38,37 +35,16 @@ const columnsSets: TColumnsSet<EventLog>[] = [
   },
   {
     name: 'Application',
-    columns: [
-      'createdAt',
-      'logType',
-      'service',
-      'serviceId',
-      'logLevel',
-      'payload',
-    ],
+    columns: ['createdAt', 'logType', 'service', 'serviceId', 'logLevel', 'payload'],
   },
   {
     name: 'Requests',
-    columns: [
-      'service',
-      'createdAt',
-      'user',
-      'method',
-      'url',
-      'duration',
-      'statusCode',
-    ],
+    columns: ['service', 'createdAt', 'user', 'method', 'url', 'duration', 'statusCode'],
   },
   {
     name: 'HTTP',
-    columns: [
-      'createdAt',
-      'method',
-      'url',
-      'ipAddress',
-      'userAgent',
-    ],
-  }
+    columns: ['createdAt', 'method', 'url', 'ipAddress', 'userAgent'],
+  },
 ];
 
 const useStyles = createStyles(({ token }) => {
@@ -104,28 +80,30 @@ const EventLogsTable = ({
             contentPadding: '0',
             headerPadding: '0',
           },
-        }
+        },
       }}
     >
       <Table<EventLog, EventLogCreateDto, EventLogUpdateDto, TEventLogFilterParams>
         className={styles.table}
-        getAll={params => apiClient.eventLogs.getManyBaseEventLogsControllerEventLog(params)}
+        getAll={(params) => apiClient.eventLogs.getManyBaseEventLogsControllerEventLog(params)}
         columns={columns}
-        idColumnName='id'
+        idColumnName="id"
         pathParams={{}}
         defaultSort={['createdAt', 'DESC']}
         columnsSets={columnsSets}
         params={{
-          join: [{
-            field: 'user',
-            select: ['id', 'name'],
-          }],
+          join: [
+            {
+              field: 'user',
+              select: ['id', 'name'],
+            },
+          ],
           baseFilters: {
-            ...startTime && endTime && { createdAt: [startTime, endTime] },
-          }
+            ...(startTime && endTime && { createdAt: [startTime, endTime] }),
+          },
         }}
         expandable={{
-          expandedRowRender: record => {
+          expandedRowRender: (record) => {
             return <EventLogExplanation record={record} />;
           },
           fixed: 'left',
@@ -142,6 +120,6 @@ const EventLogsTable = ({
       ></Table>
     </ConfigProvider>
   );
-}
+};
 
 export default EventLogsTable;

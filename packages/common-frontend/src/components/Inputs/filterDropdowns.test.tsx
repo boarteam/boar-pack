@@ -30,7 +30,13 @@ describe('booleanFilters', () => {
     expect(booleanFilters[0].value).toBe(0);
     expect(booleanFilters[1].value).toBe(1);
 
-    render(<>{booleanFilters.map((f, i) => <span key={i}>{f.text}</span>)}</>);
+    render(
+      <>
+        {booleanFilters.map((f, i) => (
+          <span key={i}>{f.text}</span>
+        ))}
+      </>,
+    );
     expect(screen.getByText('Disabled')).toBeInTheDocument();
     expect(screen.getByText('Enabled')).toBeInTheDocument();
   });
@@ -150,7 +156,10 @@ describe('NumberRangeFilterDropdown', () => {
     render(<NumberRangeFilterDropdown {...props} />);
 
     fireEvent.keyDown(screen.getByPlaceholderText('To'), {
-      key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
+      key: 'Enter',
+      code: 'Enter',
+      keyCode: 13,
+      which: 13,
     });
     expect(props.confirm).toHaveBeenCalledTimes(1);
   });
@@ -165,9 +174,11 @@ describe('NumberRangeFilterDropdown', () => {
         return { error };
       }
       render() {
-        return this.state.error
-          ? <div data-testid="crash">{this.state.error.name}</div>
-          : this.props.children;
+        return this.state.error ? (
+          <div data-testid="crash">{this.state.error.name}</div>
+        ) : (
+          this.props.children
+        );
       }
     }
 

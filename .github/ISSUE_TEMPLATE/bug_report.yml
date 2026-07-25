@@ -1,7 +1,7 @@
 name: Bug report
 description: Report a defect in one of the @boarteam/boar-pack-* packages
-title: "[bug] "
-labels: ["bug"]
+title: '[bug] '
+labels: ['bug']
 body:
   - type: markdown
     attributes:
@@ -18,12 +18,12 @@ body:
       label: Affected package
       description: Which package does the bug live in?
       options:
-        - "@boarteam/boar-pack-users-backend"
-        - "@boarteam/boar-pack-users-frontend"
-        - "@boarteam/boar-pack-common-backend"
-        - "@boarteam/boar-pack-common-frontend"
-        - "@boarteam/boar-pack-liquidity-monitor-backend"
-        - "@boarteam/boar-pack-liquidity-monitor-frontend"
+        - '@boarteam/boar-pack-users-backend'
+        - '@boarteam/boar-pack-users-frontend'
+        - '@boarteam/boar-pack-common-backend'
+        - '@boarteam/boar-pack-common-frontend'
+        - '@boarteam/boar-pack-liquidity-monitor-backend'
+        - '@boarteam/boar-pack-liquidity-monitor-frontend'
         - repository / tooling / other
     validations:
       required: true

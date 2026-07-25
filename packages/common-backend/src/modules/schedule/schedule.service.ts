@@ -1,10 +1,9 @@
-import { Injectable, OnApplicationBootstrap } from "@nestjs/common";
-import { SchedulerRegistry } from "@nestjs/schedule";
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
 
 @Injectable()
 export class ScheduleService implements OnApplicationBootstrap {
-  constructor(private schedulerRegistry: SchedulerRegistry) {
-  }
+  constructor(private schedulerRegistry: SchedulerRegistry) {}
 
   onApplicationBootstrap() {
     const isDisabled = process.env.SWAGGER === 'true';
@@ -19,22 +18,21 @@ export class ScheduleService implements OnApplicationBootstrap {
   private stopAllCronJobs() {
     const jobs = this.schedulerRegistry.getCronJobs();
 
-    jobs.forEach(job => {
-        job.stop();
-      }
-    )
+    jobs.forEach((job) => {
+      job.stop();
+    });
   }
 
   private deleteAllIntervals() {
     const intervals = this.schedulerRegistry.getIntervals();
-    intervals.forEach(key => {
+    intervals.forEach((key) => {
       this.schedulerRegistry.deleteInterval(key);
     });
   }
 
   private deleteAllTimeouts() {
     const timeouts = this.schedulerRegistry.getTimeouts();
-    timeouts.forEach(key => {
+    timeouts.forEach((key) => {
       this.schedulerRegistry.deleteTimeout(key);
     });
   }

@@ -5,10 +5,7 @@
     "declaration": true,
     "baseUrl": "./",
     "outDir": "./dist",
-    "lib": [
-      "esnext",
-      "dom"
-    ],
+    "lib": ["esnext", "dom"],
     "jsx": "react-jsx",
     "resolveJsonModule": true,
     "importHelpers": true,
@@ -26,7 +23,5 @@
     "noImplicitAny": true,
     "strictPropertyInitialization": false
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

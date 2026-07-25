@@ -15,7 +15,11 @@ import { createTestDataSource } from './pg';
 // those columns unnamed — host applications must configure a snake_case
 // NamingStrategy on their DataSource for the queries to work. Mirror that here.
 class SnakeNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
-  columnName(propertyName: string, customName: string | undefined, embeddedPrefixes: string[]): string {
+  columnName(
+    propertyName: string,
+    customName: string | undefined,
+    embeddedPrefixes: string[],
+  ): string {
     return snakeCase(embeddedPrefixes.concat(customName || propertyName).join('_'));
   }
 }
@@ -110,11 +114,26 @@ describe('UsersConnectionsStatisticService (Postgres)', () => {
 
     const rows = await repo.find({ order: { userId: 'ASC', target: 'ASC' } });
     expect(
-      rows.map(({ userId, targetId, target, quotesNumber }) => ({ userId, targetId, target, quotesNumber })),
+      rows.map(({ userId, targetId, target, quotesNumber }) => ({
+        userId,
+        targetId,
+        target,
+        quotesNumber,
+      })),
     ).toEqual([
       { userId: userA, targetId: null, target: UserConnectionTarget.FIX_SERVER, quotesNumber: 4 },
-      { userId: userA, targetId: null, target: UserConnectionTarget.WEBSOCKET_SERVER, quotesNumber: 2 },
-      { userId: userB, targetId: null, target: UserConnectionTarget.WEBSOCKET_SERVER, quotesNumber: 7 },
+      {
+        userId: userA,
+        targetId: null,
+        target: UserConnectionTarget.WEBSOCKET_SERVER,
+        quotesNumber: 2,
+      },
+      {
+        userId: userB,
+        targetId: null,
+        target: UserConnectionTarget.WEBSOCKET_SERVER,
+        quotesNumber: 7,
+      },
     ]);
 
     // buffer cleared: a second flush writes no duplicate rows
@@ -134,7 +153,12 @@ describe('UsersConnectionsStatisticService (Postgres)', () => {
 
     const rows = await repo.find();
     const simplified = rows
-      .map(({ userId, targetId, target, quotesNumber }) => ({ userId, targetId, target, quotesNumber }))
+      .map(({ userId, targetId, target, quotesNumber }) => ({
+        userId,
+        targetId,
+        target,
+        quotesNumber,
+      }))
       .sort((a, b) => a.target.localeCompare(b.target) || a.targetId!.localeCompare(b.targetId!));
     expect(simplified).toEqual([
       { userId: null, targetId: accountId, target: UserConnectionTarget.ACCOUNT, quotesNumber: 3 },
@@ -150,13 +174,38 @@ describe('UsersConnectionsStatisticService (Postgres)', () => {
     const start = new Date('2026-07-20T08:00:00.000Z');
     const end = new Date('2026-07-20T08:00:30.000Z'); // 30s -> 'second' buckets
 
-    await insertStat({ userId: userA, target: UserConnectionTarget.FIX_SERVER, quotesNumber: 3, createdAt: '2026-07-20T08:00:05.000Z' });
-    await insertStat({ userId: userA, target: UserConnectionTarget.FIX_SERVER, quotesNumber: 2, createdAt: '2026-07-20T08:00:05.600Z' }); // same bucket
-    await insertStat({ userId: userA, target: UserConnectionTarget.WEBSOCKET_SERVER, quotesNumber: 4, createdAt: '2026-07-20T08:00:10.000Z' });
-    await insertStat({ userId: userB, target: UserConnectionTarget.FIX_SERVER, quotesNumber: 6, createdAt: '2026-07-20T08:00:10.000Z' });
+    await insertStat({
+      userId: userA,
+      target: UserConnectionTarget.FIX_SERVER,
+      quotesNumber: 3,
+      createdAt: '2026-07-20T08:00:05.000Z',
+    });
+    await insertStat({
+      userId: userA,
+      target: UserConnectionTarget.FIX_SERVER,
+      quotesNumber: 2,
+      createdAt: '2026-07-20T08:00:05.600Z',
+    }); // same bucket
+    await insertStat({
+      userId: userA,
+      target: UserConnectionTarget.WEBSOCKET_SERVER,
+      quotesNumber: 4,
+      createdAt: '2026-07-20T08:00:10.000Z',
+    });
+    await insertStat({
+      userId: userB,
+      target: UserConnectionTarget.FIX_SERVER,
+      quotesNumber: 6,
+      createdAt: '2026-07-20T08:00:10.000Z',
+    });
     // a target-only row (user_id null) never matches a user, but its target
     // still enters the targets CTE, adding zero-filled 'token' rows to the grid
-    await insertStat({ targetId: tokenId, target: UserConnectionTarget.TOKEN, quotesNumber: 9, createdAt: '2026-07-20T08:00:07.000Z' });
+    await insertStat({
+      targetId: tokenId,
+      target: UserConnectionTarget.TOKEN,
+      quotesNumber: 9,
+      createdAt: '2026-07-20T08:00:07.000Z',
+    });
 
     const rows = await service.getTimeline(start, end, 'UTC');
 
@@ -172,7 +221,9 @@ describe('UsersConnectionsStatisticService (Postgres)', () => {
     expect(cell('08:00:10', userB, UserConnectionTarget.WEBSOCKET_SERVER).records).toBe(0);
 
     // the token row's count is not attributed to any user
-    expect(rows.filter((r) => r.target === UserConnectionTarget.TOKEN).every((r) => r.records === 0)).toBe(true);
+    expect(
+      rows.filter((r) => r.target === UserConnectionTarget.TOKEN).every((r) => r.records === 0),
+    ).toBe(true);
     expect(rows.reduce((sum, r) => sum + r.records, 0)).toBe(15);
 
     const bucket = cell('08:00:05', userA, UserConnectionTarget.FIX_SERVER);
@@ -184,11 +235,31 @@ describe('UsersConnectionsStatisticService (Postgres)', () => {
     const start = new Date('2026-07-20T09:00:00.000Z');
     const end = new Date('2026-07-20T09:10:00.000Z'); // 10min -> 'minute' buckets
 
-    await insertStat({ targetId: tokenId, target: UserConnectionTarget.TOKEN, quotesNumber: 5, createdAt: '2026-07-20T09:02:30.000Z' });
-    await insertStat({ targetId: tokenId, target: UserConnectionTarget.TOKEN, quotesNumber: 2, createdAt: '2026-07-20T09:02:45.000Z' }); // same bucket
-    await insertStat({ targetId: accountId, target: UserConnectionTarget.ACCOUNT, quotesNumber: 3, createdAt: '2026-07-20T09:09:59.000Z' });
+    await insertStat({
+      targetId: tokenId,
+      target: UserConnectionTarget.TOKEN,
+      quotesNumber: 5,
+      createdAt: '2026-07-20T09:02:30.000Z',
+    });
+    await insertStat({
+      targetId: tokenId,
+      target: UserConnectionTarget.TOKEN,
+      quotesNumber: 2,
+      createdAt: '2026-07-20T09:02:45.000Z',
+    }); // same bucket
+    await insertStat({
+      targetId: accountId,
+      target: UserConnectionTarget.ACCOUNT,
+      quotesNumber: 3,
+      createdAt: '2026-07-20T09:09:59.000Z',
+    });
     // present in the table but not in the requested targetIds -> never counted
-    await insertStat({ targetId: foreignTargetId, target: UserConnectionTarget.TOKEN, quotesNumber: 100, createdAt: '2026-07-20T09:01:00.000Z' });
+    await insertStat({
+      targetId: foreignTargetId,
+      target: UserConnectionTarget.TOKEN,
+      quotesNumber: 100,
+      createdAt: '2026-07-20T09:01:00.000Z',
+    });
 
     const rows = await service.getTargetsTimeline({
       startTime: start,

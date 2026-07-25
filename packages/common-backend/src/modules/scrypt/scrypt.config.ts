@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import Joi from "joi";
+import Joi from 'joi';
 
 export type TScryptConfig = {
   salt: string;
@@ -11,8 +11,7 @@ export type TScryptConfig = {
 export class ScryptConfigService {
   private ivSchema = Joi.string().length(16).hex();
 
-  constructor(private configService: ConfigService) {
-  }
+  constructor(private configService: ConfigService) {}
 
   get config(): TScryptConfig {
     const salt = this.configService.get<string>('SCRYPT_SALT');

@@ -9,8 +9,7 @@ export type TYandexAuthConfig = {
 
 @Injectable()
 export class YandexAuthConfigService {
-  constructor(private configService: ConfigService) {
-  }
+  constructor(private configService: ConfigService) {}
 
   get config(): TYandexAuthConfig {
     const clientId = this.configService.getOrThrow<string>('YANDEX_CLIENT_ID');

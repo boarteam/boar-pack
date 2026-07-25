@@ -5,20 +5,22 @@ import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
 import { EMAIL_UNIQUE_CONSTRAINT, Roles, User } from './entities/user.entity';
 import { MeController } from './me.controller';
 import { Action, CaslAbilityFactory, CaslModule } from '../casl';
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { Tools } from "@boarteam/boar-pack-common-backend";
-import { VIEW_USERS } from "./users.constants";
-import { DataSource } from "typeorm";
-import { BcryptModule } from "../bcrypt/bcrypt.module";
-import BcryptService from "../bcrypt/bcrypt.service";
-import { UsersConfigService } from "./users.config";
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Tools } from '@boarteam/boar-pack-common-backend';
+import { VIEW_USERS } from './users.constants';
+import { DataSource } from 'typeorm';
+import { BcryptModule } from '../bcrypt/bcrypt.module';
+import BcryptService from '../bcrypt/bcrypt.service';
+import { UsersConfigService } from './users.config';
 
 @Module({})
 export class UsersModule implements OnModuleInit {
-  static register(config: {
-    withControllers?: boolean;
-    dataSourceName?: string;
-  } = { withControllers: true }): DynamicModule {
+  static register(
+    config: {
+      withControllers?: boolean;
+      dataSourceName?: string;
+    } = { withControllers: true },
+  ): DynamicModule {
     const dynamicModule: DynamicModule = {
       module: UsersModule,
       imports: [
@@ -33,7 +35,7 @@ export class UsersModule implements OnModuleInit {
           inject: [getDataSourceToken(config.dataSourceName)],
           useFactory: (dataSource: DataSource) => {
             return new UsersService(dataSource.getRepository(User));
-          }
+          },
         },
         UsersConfigService,
       ],
@@ -54,12 +56,15 @@ export class UsersModule implements OnModuleInit {
     private readonly bcryptService: BcryptService,
     private readonly configService: ConfigService,
   ) {
-    Tools.TypeOrmExceptionFilter.setUniqueConstraintMessage(EMAIL_UNIQUE_CONSTRAINT, 'User with this email already exists');
+    Tools.TypeOrmExceptionFilter.setUniqueConstraintMessage(
+      EMAIL_UNIQUE_CONSTRAINT,
+      'User with this email already exists',
+    );
     CaslAbilityFactory.addPermissionToAction({
       permission: VIEW_USERS,
       action: Action.Read,
       subject: User,
-    })
+    });
   }
 
   async onModuleInit() {

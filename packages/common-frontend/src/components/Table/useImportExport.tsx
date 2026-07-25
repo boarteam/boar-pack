@@ -1,33 +1,33 @@
 import { Button, Tooltip } from 'antd';
-import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
-import { ChangeEvent, useCallback, useRef, useState } from "react";
-import { TGetAllParams } from "./tableTypes";
-import { Link } from "react-router-dom";
-import * as XLSX from "xlsx";
-import diff from "deep-diff";
-import { ProColumns } from "@ant-design/pro-components";
-import { keyBy } from "lodash";
-import { TRelationalFields } from "../ChangesModal";
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
+import { ChangeEvent, useCallback, useRef, useState } from 'react';
+import { TGetAllParams } from './tableTypes';
+import { Link } from 'react-router-dom';
+import * as XLSX from 'xlsx';
+import diff from 'deep-diff';
+import { ProColumns } from '@ant-design/pro-components';
+import { keyBy } from 'lodash';
+import { TRelationalFields } from '../ChangesModal';
 
-type TImportedJSON<Entity> = (Entity & { id: string })[]
+type TImportedJSON<Entity> = (Entity & { id: string })[];
 
 export type TUpdatedDiffResult = {
-  id: string | number,
-  diff: diff.Diff<any, any>[],
-  [key: string]: any,
-}
+  id: string | number;
+  diff: diff.Diff<any, any>[];
+  [key: string]: any;
+};
 
-type TUpdatedResult = ({
-  id: string | number,
-  version: string | number,
-  [key: string]: any,
-})
+type TUpdatedResult = {
+  id: string | number;
+  version: string | number;
+  [key: string]: any;
+};
 
 export type TDiffResult<Entity> = {
-  created: Entity[],
-  updated: TUpdatedResult[],
-  tableData: TUpdatedDiffResult[],
-}
+  created: Entity[];
+  updated: TUpdatedResult[];
+  tableData: TUpdatedDiffResult[];
+};
 
 export function useImportExport<Entity, TPathParams = {}>({
   exportUrl,
@@ -38,11 +38,11 @@ export function useImportExport<Entity, TPathParams = {}>({
 }: {
   exportUrl?: string;
   exportParams?: {
-    [key: string]: string | number
-  },
-  columns: ProColumns<Entity>[],
-  changedRecordsColumnsConfig?: ProColumns<Entity>[],
-  relationalFields?: TRelationalFields,
+    [key: string]: string | number;
+  };
+  columns: ProColumns<Entity>[];
+  changedRecordsColumnsConfig?: ProColumns<Entity>[];
+  relationalFields?: TRelationalFields;
 }) {
   const [isLoadingImport, setIsLoadingImport] = useState(false);
   const [lastQueryParams, setLastQueryParams] = useState<TGetAllParams & TPathParams>();
@@ -58,7 +58,7 @@ export function useImportExport<Entity, TPathParams = {}>({
     }
   }, []);
 
-  const trueBooleanValues = [true, "TRUE", "True", "true", "1", "yes", "on"];
+  const trueBooleanValues = [true, 'TRUE', 'True', 'true', '1', 'yes', 'on'];
 
   const buildExportUrl = useCallback(() => {
     const params = {
@@ -76,9 +76,7 @@ export function useImportExport<Entity, TPathParams = {}>({
         return acc;
       }, new URLSearchParams());
 
-    return exportUrl
-      ? exportUrl + (qp.toString() ? `?${qp.toString()}` : '')
-      : undefined;
+    return exportUrl ? exportUrl + (qp.toString() ? `?${qp.toString()}` : '') : undefined;
   }, [exportUrl, exportParams, lastQueryParams]);
 
   const fetchExportCsvArrayBuffer = useCallback(async (): Promise<ArrayBuffer> => {
@@ -112,13 +110,13 @@ export function useImportExport<Entity, TPathParams = {}>({
       }
 
       // Boolean values handling
-      if (keyedColumns[key]?.valueType === "switch") {
+      if (keyedColumns[key]?.valueType === 'switch') {
         normalizedRow[key] = trueBooleanValues.includes(normalizedRow[key]);
         continue;
       }
 
       // Numeric values handling
-      if (keyedColumns[key]?.valueType === "digit") {
+      if (keyedColumns[key]?.valueType === 'digit') {
         normalizedRow[key] = Number(normalizedRow[key]);
         continue;
       }
@@ -131,21 +129,17 @@ export function useImportExport<Entity, TPathParams = {}>({
 
       // Text values handling
       // Text by default if not specified
-      if (keyedColumns[key] && keyedColumns[key].valueType === undefined || 'text') {
+      if ((keyedColumns[key] && keyedColumns[key].valueType === undefined) || 'text') {
         normalizedRow[key] = String(normalizedRow[key]);
       }
     }
 
     return normalizedRow;
-  }
+  };
 
-  const getRelationalValue = (relationField: {
-    id: any;
-    name?: string;
-    description?: string;
-  }) => {
+  const getRelationalValue = (relationField: { id: any; name?: string; description?: string }) => {
     return relationField?.name || relationField?.description || relationField?.id;
-  }
+  };
 
   const handleFileAsync = async (e: ChangeEvent<HTMLInputElement>) => {
     setIsLoadingImport(true);
@@ -172,23 +166,27 @@ export function useImportExport<Entity, TPathParams = {}>({
       raw: true,
     });
 
-    const jsonBefore: TImportedJSON<Entity> = XLSX.utils.sheet_to_json(workbookBefore.Sheets[workbookBefore.SheetNames[0]], {
-      defval: null
-    });
+    const jsonBefore: TImportedJSON<Entity> = XLSX.utils.sheet_to_json(
+      workbookBefore.Sheets[workbookBefore.SheetNames[0]],
+      {
+        defval: null,
+      },
+    );
 
-    const jsonAfter: TImportedJSON<Entity> = XLSX.utils.sheet_to_json(workbookAfter.Sheets[workbookAfter.SheetNames[0]], {
-      defval: null
-    });
+    const jsonAfter: TImportedJSON<Entity> = XLSX.utils.sheet_to_json(
+      workbookAfter.Sheets[workbookAfter.SheetNames[0]],
+      {
+        defval: null,
+      },
+    );
 
     // TODO: Check JSON structure
     // ...
 
     const oldMap = Object.fromEntries(
-      jsonBefore.map(
-        (row) => {
-          return [row.id, normalizeRow(row)]
-        }
-      )
+      jsonBefore.map((row) => {
+        return [row.id, normalizeRow(row)];
+      }),
     );
     const newMap: { [key: string]: any } = {};
 
@@ -231,20 +229,19 @@ export function useImportExport<Entity, TPathParams = {}>({
 
           // If the key is a relational field (dictionary value), we need to compare only value fields
           if (relationalFields && relationalFields.has(key)) {
-            return [
-              getRelationalValue(lhs),
-              getRelationalValue(rhs),
-            ]
+            return [getRelationalValue(lhs), getRelationalValue(rhs)];
           }
 
           return [lhs, rhs];
-        }
+        },
       });
 
       if (differences) {
         // console.log(differences);
-        const changedFields = differences.map((diff) => diff.path?.[0]).filter((field: string | undefined) => field);
-        const displayFields = changedRecordsColumnsConfig.map(column => column.dataIndex);
+        const changedFields = differences
+          .map((diff) => diff.path?.[0])
+          .filter((field: string | undefined) => field);
+        const displayFields = changedRecordsColumnsConfig.map((column) => column.dataIndex);
 
         const payload: TUpdatedResult = {
           id,
@@ -258,7 +255,7 @@ export function useImportExport<Entity, TPathParams = {}>({
 
         columns.forEach((column) => {
           const key = String(column.dataIndex);
-          const value = newMap[id][key] === undefined ? newMap[id][key + "_id"] : newMap[id][key];
+          const value = newMap[id][key] === undefined ? newMap[id][key + '_id'] : newMap[id][key];
           if (changedFields.includes(key)) {
             payload[key] = value;
           }
@@ -266,7 +263,7 @@ export function useImportExport<Entity, TPathParams = {}>({
           if (displayFields.includes(key)) {
             tableData[key] = value;
           }
-        })
+        });
 
         // Will be sent to the server
         diffResult.updated.push(payload);
@@ -281,29 +278,29 @@ export function useImportExport<Entity, TPathParams = {}>({
     setIsLoadingImport(false);
   };
 
-  const exportButton = <Tooltip title="Export">
-    <Link to={buildExportUrl() ?? '#'} target={'_blank'}>
-      <Button icon={<UploadOutlined />} />
-    </Link>
-  </Tooltip>;
-
-  const importButton = <>
-    <Tooltip title="Import changes CSV file">
-      <Button
-        loading={isLoadingImport}
-        icon={<DownloadOutlined />}
-        onClick={openFileDialog}
-      />
+  const exportButton = (
+    <Tooltip title="Export">
+      <Link to={buildExportUrl() ?? '#'} target={'_blank'}>
+        <Button icon={<UploadOutlined />} />
+      </Link>
     </Tooltip>
+  );
 
-    <input
-      type="file"
-      ref={fileInputRef}
-      style={{ display: 'none' }}
-      accept=".csv"
-      onChange={handleFileAsync}
-    />
-  </>
+  const importButton = (
+    <>
+      <Tooltip title="Import changes CSV file">
+        <Button loading={isLoadingImport} icon={<DownloadOutlined />} onClick={openFileDialog} />
+      </Tooltip>
+
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        accept=".csv"
+        onChange={handleFileAsync}
+      />
+    </>
+  );
 
   return {
     exportButton,

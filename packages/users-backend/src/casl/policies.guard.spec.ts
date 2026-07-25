@@ -18,19 +18,14 @@ describe('PoliciesGuard', () => {
     caslAbilityFactory = {
       createForUser: jest.fn().mockResolvedValue(ability),
     };
-    warnSpy = jest
-      .spyOn(Logger.prototype, 'warn')
-      .mockImplementation(() => undefined);
+    warnSpy = jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => undefined);
   });
 
   afterEach(() => {
     warnSpy.mockRestore();
   });
 
-  function createGuard(metadata: {
-    skip?: boolean;
-    handlers?: PolicyHandler[];
-  }): PoliciesGuard {
+  function createGuard(metadata: { skip?: boolean; handlers?: PolicyHandler[] }): PoliciesGuard {
     const reflector = {
       getAllAndOverride: jest.fn((key: string) => {
         if (key === SKIP_POLICIES_GUARD) {
@@ -43,10 +38,7 @@ describe('PoliciesGuard', () => {
       }),
     } as unknown as Reflector;
 
-    return new PoliciesGuard(
-      reflector,
-      caslAbilityFactory as unknown as CaslAbilityFactory,
-    );
+    return new PoliciesGuard(reflector, caslAbilityFactory as unknown as CaslAbilityFactory);
   }
 
   function createContext(opts: { type?: string; user?: any } = {}) {
@@ -133,8 +125,6 @@ describe('PoliciesGuard', () => {
     const guard = createGuard({ handlers: [() => true] });
     const { context } = createContext({ type: 'rpc' });
 
-    await expect(guard.canActivate(context)).rejects.toThrow(
-      'Unknown context type',
-    );
+    await expect(guard.canActivate(context)).rejects.toThrow('Unknown context type');
   });
 });

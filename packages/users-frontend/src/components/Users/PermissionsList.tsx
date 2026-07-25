@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { User, UserCreateDto } from "../../tools/api-client/generated";
-import { Alert, Card, Switch, Table, Typography, Space } from "antd";
-import { useApiClient } from "../ApiClientContext";
-import { useAccess } from "umi";
+import React, { useState } from 'react';
+import { User, UserCreateDto } from '../../tools/api-client/generated';
+import { Alert, Card, Switch, Table, Typography, Space } from 'antd';
+import { useApiClient } from '../ApiClientContext';
+import { useAccess } from 'umi';
 
 const { Title } = Typography;
 
@@ -25,13 +25,10 @@ interface PermissionsListProps {
   permissionsConfig: PermissionsConfig;
 }
 
-export const PermissionsList: React.FC<PermissionsListProps> = ({
-  user,
-  permissionsConfig,
-}) => {
+export const PermissionsList: React.FC<PermissionsListProps> = ({ user, permissionsConfig }) => {
   const apiClient = useApiClient();
   const [permissionsSet, setPermissionsSet] = useState<Set<string>>(
-    new Set(user.permissions as string[])
+    new Set(user.permissions as string[]),
   );
   const [loading, setLoading] = useState(false);
   const { canManageAll } = useAccess() || {};
@@ -50,19 +47,19 @@ export const PermissionsList: React.FC<PermissionsListProps> = ({
         id: user.id,
         requestBody: {
           permissions: Array.from(newPermissionsSet),
-        }
+        },
       })
       .then((user) => {
         setPermissionsSet(new Set(user.permissions as string[]));
       })
-      .catch(e => {
+      .catch((e) => {
         console.error(e);
         setPermissionsSet(permissionsSet);
       })
       .finally(() => {
         setLoading(false);
       });
-  }
+  };
 
   const renderSwitch = (permission: string) => {
     const disabledSwitch = user.role === UserCreateDto.role.ADMIN || !canManageAll;
@@ -75,7 +72,7 @@ export const PermissionsList: React.FC<PermissionsListProps> = ({
         disabled={disabledSwitch}
       />
     );
-  }
+  };
 
   const buildTableDataSource = () => {
     return permissionsConfig.map((item, index) => {
@@ -83,21 +80,31 @@ export const PermissionsList: React.FC<PermissionsListProps> = ({
         // It's a group with children
         return {
           key: `group-${index}`,
-          permission: <Space>{item.icon}<strong>{item.title}</strong></Space>,
-          children: item.permissions.map(childItem => ({
+          permission: (
+            <Space>
+              {item.icon}
+              <strong>{item.title}</strong>
+            </Space>
+          ),
+          children: item.permissions.map((childItem) => ({
             key: childItem.key,
             permission: childItem.title,
-            granted: renderSwitch(childItem.key)
-          }))
+            granted: renderSwitch(childItem.key),
+          })),
         };
       } else {
         // It's an individual permission
         return {
           key: item.key,
-          permission: item.icon
-            ? <Space>{item.icon}<strong>{item.title}</strong></Space>
-            : item.title,
-          granted: renderSwitch(item.key)
+          permission: item.icon ? (
+            <Space>
+              {item.icon}
+              <strong>{item.title}</strong>
+            </Space>
+          ) : (
+            item.title
+          ),
+          granted: renderSwitch(item.key),
         };
       }
     });
@@ -106,14 +113,15 @@ export const PermissionsList: React.FC<PermissionsListProps> = ({
   return (
     <Card>
       <Title level={5}>Permissions for {user.name}</Title>
-      {user.role === UserCreateDto.role.ADMIN && (
+      {(user.role === UserCreateDto.role.ADMIN && (
         <Alert
           message="Admin can perform any action, in order to change permissions, change user role."
           type="info"
           showIcon
           style={{ marginBottom: '16px' }}
         />
-      ) || null}
+      )) ||
+        null}
       <Table
         loading={loading}
         expandable={{
@@ -131,7 +139,7 @@ export const PermissionsList: React.FC<PermissionsListProps> = ({
           {
             title: 'Granted',
             dataIndex: 'granted',
-          }
+          },
         ]}
         dataSource={buildTableDataSource()}
         pagination={false}

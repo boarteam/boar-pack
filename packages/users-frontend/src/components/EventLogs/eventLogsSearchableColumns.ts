@@ -1,4 +1,4 @@
-import { Operators, TSearchableColumn } from "@boarteam/boar-pack-common-frontend";
+import { Operators, TSearchableColumn } from '@boarteam/boar-pack-common-frontend';
 
 export const eventLogsSearchableColumns: TSearchableColumn[] = [
   {
@@ -83,5 +83,5 @@ export const eventLogsSearchableColumns: TSearchableColumn[] = [
     searchField: null,
     operator: Operators.equals,
     filterOperator: Operators.between,
-  }
+  },
 ];

@@ -79,25 +79,24 @@ import { Table, Operators } from '@boarteam/boar-pack-common-frontend';
 import pick from 'lodash/pick';
 import type { User, UserCreateDto, UserUpdateDto } from './api-client';
 
-const entityToDto = (entity: User) =>
-  pick(entity, ['name', 'email', 'role', 'pass']);
+const entityToDto = (entity: User) => pick(entity, ['name', 'email', 'role', 'pass']);
 
 <Table<User, UserCreateDto, UserUpdateDto>
-  getAll={params => apiClient.users.getManyBaseUsersControllerUser(params)}
-  onCreate={params => apiClient.users.createOneBaseUsersControllerUser(params)}
-  onUpdate={params => apiClient.users.updateOneBaseUsersControllerUser(params)}
-  onDelete={params => apiClient.users.deleteOneBaseUsersControllerUser(params)}
+  getAll={(params) => apiClient.users.getManyBaseUsersControllerUser(params)}
+  onCreate={(params) => apiClient.users.createOneBaseUsersControllerUser(params)}
+  onUpdate={(params) => apiClient.users.updateOneBaseUsersControllerUser(params)}
+  onDelete={(params) => apiClient.users.deleteOneBaseUsersControllerUser(params)}
   entityToCreateDto={entityToDto}
   entityToUpdateDto={entityToDto}
   pathParams={{}}
-  columns={columns}          // ProColumns<User>[]
+  columns={columns} // ProColumns<User>[]
   idColumnName="id"
   searchableColumns={[
     { field: 'name', operator: Operators.containsLow },
     { field: 'email', operator: Operators.containsLow },
   ]}
   viewOnly={!canManageUsers} // hides all editing affordances
-/>
+/>;
 ```
 
 `getAll` receives ready-made crud-request query params (`filter`, `sort`,

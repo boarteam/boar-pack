@@ -1,10 +1,10 @@
-import { Controller, NotFoundException, Param, Post, Req, Res, } from '@nestjs/common';
+import { Controller, NotFoundException, Param, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
-import { LocalAuthTokenDto } from "./local-auth/local-auth.dto";
-import { CheckPolicies, ManageAllPolicy } from "../casl";
-import { UsersService } from "../users";
+import { LocalAuthTokenDto } from './local-auth/local-auth.dto';
+import { CheckPolicies, ManageAllPolicy } from '../casl';
+import { UsersService } from '../users';
 
 @ApiTags('Authentication')
 @CheckPolicies(new ManageAllPolicy())

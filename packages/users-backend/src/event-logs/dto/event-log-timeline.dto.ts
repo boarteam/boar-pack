@@ -1,4 +1,4 @@
-import { LogLevel } from "../entities/event-log.entity";
+import { LogLevel } from '../entities/event-log.entity';
 
 export class EventLogTimelineDto {
   time: string;
@@ -6,4 +6,5 @@ export class EventLogTimelineDto {
   logLevel: LogLevel;
   startTime: string;
   endTime: string;
-}``
+}
+``;

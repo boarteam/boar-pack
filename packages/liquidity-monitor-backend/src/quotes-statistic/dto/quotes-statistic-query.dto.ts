@@ -1,5 +1,5 @@
-import Joi from "joi";
-import { JoiSchema } from "nestjs-joi";
+import Joi from 'joi';
+import { JoiSchema } from 'nestjs-joi';
 
 export class QuotesStatisticQueryDto {
   @JoiSchema(Joi.string().isoDate().optional())

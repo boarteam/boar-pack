@@ -5,17 +5,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtAuthStrategy } from './jwt-auth.srtategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
-import { JWTAuthConfigService } from "./jwt-auth.config";
-import { PassportModule } from "@nestjs/passport";
-import { JWTAuthService } from "./jwt-auth.service";
+import { JWTAuthConfigService } from './jwt-auth.config';
+import { PassportModule } from '@nestjs/passport';
+import { JWTAuthService } from './jwt-auth.service';
 import { RevokedTokensModule } from '../revoked-tokens';
-import { JwtAuthRefreshStrategy } from "./jwt-auth.refresh.srtategy";
+import { JwtAuthRefreshStrategy } from './jwt-auth.refresh.srtategy';
 
 @Module({})
 export class JwtAuthModule {
-  static register(config: {
-    dataSourceName?: string;
-  }) {
+  static register(config: { dataSourceName?: string }) {
     return {
       module: JwtAuthModule,
       imports: [
@@ -46,10 +44,7 @@ export class JwtAuthModule {
           useClass: JwtAuthGuard,
         },
       ],
-      exports: [
-        JWTAuthConfigService,
-        JWTAuthService,
-      ],
+      exports: [JWTAuthConfigService, JWTAuthService],
     };
   }
 

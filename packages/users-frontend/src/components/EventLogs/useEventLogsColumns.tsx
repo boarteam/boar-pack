@@ -1,20 +1,20 @@
-import { ProColumns } from "@ant-design/pro-components";
-import { Badge, Collapse, CollapseProps, Space, Tooltip, Typography } from "antd";
-import { EventLog, EventLogTimelineQueryDto } from "../../tools/api-client/generated";
+import { ProColumns } from '@ant-design/pro-components';
+import { Badge, Collapse, CollapseProps, Space, Tooltip, Typography } from 'antd';
+import { EventLog, EventLogTimelineQueryDto } from '../../tools/api-client/generated';
 import {
   AppstoreOutlined,
   ExclamationCircleOutlined,
   InfoCircleTwoTone,
   SettingOutlined,
   UserOutlined,
-  WarningOutlined
-} from "@ant-design/icons";
-import { useContext, useEffect, useState } from "react";
-import UserAgentDisplay from "./UserAgentDisplay";
-import { useApiClient } from "../ApiClientContext";
-import { getUserRoleIcon } from "./EventLogExplanation";
-import { EventLogsContext } from "./eventLogsContext";
-import { DateRange } from "@boarteam/boar-pack-common-frontend";
+  WarningOutlined,
+} from '@ant-design/icons';
+import { useContext, useEffect, useState } from 'react';
+import UserAgentDisplay from './UserAgentDisplay';
+import { useApiClient } from '../ApiClientContext';
+import { getUserRoleIcon } from './EventLogExplanation';
+import { EventLogsContext } from './eventLogsContext';
+import { DateRange } from '@boarteam/boar-pack-common-frontend';
 
 const { Text } = Typography;
 
@@ -59,21 +59,22 @@ export const useEventLogsColumns = ({
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
 }): ProColumns<EventLog>[] => {
   const apiClient = useApiClient();
-  const [users, setUsers] = useState<{ text: string, value: string }[]>([]);
+  const [users, setUsers] = useState<{ text: string; value: string }[]>([]);
   const [serviceNames, setServiceNames] = useState<string[]>([]);
   const eventLogsContext = useContext(EventLogsContext);
 
   useEffect(() => {
-    apiClient.users.getManyBaseUsersControllerUser({
-      sort: ['name,ASC'],
-    }).then((users) => {
-      setUsers(users.data.map((item) => ({ text: item.name, value: item.id })));
-    });
-
-    apiClient.eventLogs.getServiceNames()
-      .then((names) => {
-        setServiceNames(names)
+    apiClient.users
+      .getManyBaseUsersControllerUser({
+        sort: ['name,ASC'],
+      })
+      .then((users) => {
+        setUsers(users.data.map((item) => ({ text: item.name, value: item.id })));
       });
+
+    apiClient.eventLogs.getServiceNames().then((names) => {
+      setServiceNames(names);
+    });
   }, []);
 
   return [
@@ -87,11 +88,13 @@ export const useEventLogsColumns = ({
           key,
           {
             text: value.text,
-          }
-        ])
+          },
+        ]),
       ),
       render(dom, record) {
-        return <Tooltip title={logTypes[record.logType].text}>{logTypes[record.logType].icon}</Tooltip>;
+        return (
+          <Tooltip title={logTypes[record.logType].text}>{logTypes[record.logType].icon}</Tooltip>
+        );
       },
       filters: true,
       align: 'center',
@@ -101,18 +104,22 @@ export const useEventLogsColumns = ({
       title: 'Service',
       dataIndex: 'service',
       render(dom, record) {
-        return eventLogsContext?.serviceNameToAbbreviation?.[record.service]
-          ? <Tooltip title={record.service}>{eventLogsContext.serviceNameToAbbreviation[record.service]}</Tooltip>
-          : record.service;
+        return eventLogsContext?.serviceNameToAbbreviation?.[record.service] ? (
+          <Tooltip title={record.service}>
+            {eventLogsContext.serviceNameToAbbreviation[record.service]}
+          </Tooltip>
+        ) : (
+          record.service
+        );
       },
       width: 10,
       valueEnum: Object.fromEntries(
         serviceNames.map((value) => [
           value,
           {
-            text: eventLogsContext?.serviceNameToAbbreviation?.[value] ?? value
-          }
-        ])
+            text: eventLogsContext?.serviceNameToAbbreviation?.[value] ?? value,
+          },
+        ]),
       ),
       filters: true,
       hideInSearch: true,
@@ -128,25 +135,25 @@ export const useEventLogsColumns = ({
       dataIndex: 'createdAt',
       valueType: 'dateTime',
       sorter: true,
-      renderFormItem: () => <DateRange
-        value={startTime && endTime ? [startTime, endTime] : null}
-        onChange={(value) => onDateRangeChange(value?.[0] || undefined, value?.[1] || undefined)}
-      />,
+      renderFormItem: () => (
+        <DateRange
+          value={startTime && endTime ? [startTime, endTime] : null}
+          onChange={(value) => onDateRangeChange(value?.[0] || undefined, value?.[1] || undefined)}
+        />
+      ),
     },
     {
       title: 'User',
       dataIndex: 'user',
       render: (text, record) => {
-        return <Space>
-          {getUserRoleIcon(record.userRole)}
-          {
-            record.userName
-            || record.user?.name
-            || record.userId
-            || record.externalUserId
-            || <Text type={'secondary'}>role: {record.userRole}</Text>
-          }
-        </Space>;
+        return (
+          <Space>
+            {getUserRoleIcon(record.userRole)}
+            {record.userName || record.user?.name || record.userId || record.externalUserId || (
+              <Text type={'secondary'}>role: {record.userRole}</Text>
+            )}
+          </Space>
+        );
       },
       filters: users,
       filterSearch: true,
@@ -188,9 +195,7 @@ export const useEventLogsColumns = ({
       dataIndex: 'action',
       render(dom, record) {
         // getManyBase -> Get Many
-        const action = record.action
-          .replace('Base', '')
-          .replace(/([a-z])([A-Z])/g, '$1 $2');
+        const action = record.action.replace('Base', '').replace(/([a-z])([A-Z])/g, '$1 $2');
         return action[0].toUpperCase() + action.slice(1);
       },
       hideInSearch: true,
@@ -200,9 +205,7 @@ export const useEventLogsColumns = ({
       dataIndex: 'entity',
       render(dom, record) {
         // EventLogsController -> Event Logs
-        return record.entity
-          .replace('Controller', '')
-          .replace(/([a-z])([A-Z])/g, '$1 $2');
+        return record.entity.replace('Controller', '').replace(/([a-z])([A-Z])/g, '$1 $2');
       },
       hideInSearch: true,
     },
@@ -246,17 +249,21 @@ export const useEventLogsColumns = ({
       dataIndex: 'url',
       width: 600,
       render(dom, record) {
-        return <Typography.Paragraph
-          style={{
-            width: 600,
-            margin: 0,
-          }}
-          ellipsis={{
-            rows: 1,
-            expandable: true,
-          }}
-          copyable={true}
-        >{record.url}</Typography.Paragraph>;
+        return (
+          <Typography.Paragraph
+            style={{
+              width: 600,
+              margin: 0,
+            }}
+            ellipsis={{
+              rows: 1,
+              expandable: true,
+            }}
+            copyable={true}
+          >
+            {record.url}
+          </Typography.Paragraph>
+        );
       },
       hideInSearch: true,
     },
@@ -273,11 +280,11 @@ export const useEventLogsColumns = ({
             {
               key: '1',
               label: <pre style={{ margin: 0 }}>{record.payload.message}</pre>,
-              children: <pre
-                style={{ margin: 0 }}
-              >{
-                JSON.stringify(record.payload, null, 2).replace(/\n/g, '\n')
-              }</pre>,
+              children: (
+                <pre style={{ margin: 0 }}>
+                  {JSON.stringify(record.payload, null, 2).replace(/\n/g, '\n')}
+                </pre>
+              ),
             },
           ];
 
@@ -305,7 +312,6 @@ export const useEventLogsColumns = ({
         return <UserAgentDisplay userAgent={record.userAgent} />;
       },
       hideInSearch: true,
-
     },
     {
       title: 'Duration',
@@ -318,11 +324,11 @@ export const useEventLogsColumns = ({
         }
 
         if (record.duration >= 1000) {
-          return <Typography.Text type='danger'>{text}</Typography.Text>;
+          return <Typography.Text type="danger">{text}</Typography.Text>;
         }
 
         if (record.duration >= 200) {
-          return <Typography.Text type='warning'>{text}</Typography.Text>;
+          return <Typography.Text type="warning">{text}</Typography.Text>;
         }
 
         return text;
@@ -355,19 +361,26 @@ export const useEventLogsColumns = ({
       title: 'Log Level',
       dataIndex: 'logLevel',
       render(dom, record) {
-        return <Text
-          type={logLevels[record.logLevel].type}>{logLevels[record.logLevel].icon} {logLevels[record.logLevel].text}</Text>;
+        return (
+          <Text type={logLevels[record.logLevel].type}>
+            {logLevels[record.logLevel].icon} {logLevels[record.logLevel].text}
+          </Text>
+        );
       },
       valueEnum: Object.fromEntries(
         Object.entries(logLevels).map(([key, value]) => [
           key,
           {
-            text: <Text type={value.type}>{value.icon} {value.text}</Text>,
-          }
-        ])
+            text: (
+              <Text type={value.type}>
+                {value.icon} {value.text}
+              </Text>
+            ),
+          },
+        ]),
       ),
       filters: true,
       hideInSearch: true,
-    }
+    },
   ];
 };

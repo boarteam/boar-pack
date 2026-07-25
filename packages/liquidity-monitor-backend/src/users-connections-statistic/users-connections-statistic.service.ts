@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { DataSource, Repository } from 'typeorm';
-import { UsersConnectionsStatisticDto } from "./dto/users-connections-statistic.dto";
-import moment from "moment";
+import { UsersConnectionsStatisticDto } from './dto/users-connections-statistic.dto';
+import moment from 'moment';
 import {
   TComplexTarget,
   UserConnectionTarget,
-  UsersConnectionsStatistic
-} from "./entities/users-connections-statistic.entity";
+  UsersConnectionsStatistic,
+} from './entities/users-connections-statistic.entity';
 
 type TInterval = 'second' | 'minute' | 'hour' | 'day' | 'week';
 
@@ -22,8 +22,7 @@ export class UsersConnectionsStatisticService {
   constructor(
     private readonly repo: Repository<UsersConnectionsStatistic>,
     private readonly dataSource: DataSource,
-  ) {
-  }
+  ) {}
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   private async saveAccumulatedQuotesNumber(): Promise<void> {
@@ -36,16 +35,16 @@ export class UsersConnectionsStatisticService {
           stats.push({
             userId,
             quotesNumber: quotesNumberFixServer,
-            target: UserConnectionTarget.FIX_SERVER
-          })
+            target: UserConnectionTarget.FIX_SERVER,
+          });
         }
 
         if (quotesNumberWebsocketServer !== 0) {
           stats.push({
             userId,
             quotesNumber: quotesNumberWebsocketServer,
-            target: UserConnectionTarget.WEBSOCKET_SERVER
-          })
+            target: UserConnectionTarget.WEBSOCKET_SERVER,
+          });
         }
       });
 
@@ -57,15 +56,17 @@ export class UsersConnectionsStatisticService {
 
     if (this.quotesNumberByTarget.size > 0) {
       const stats: Partial<UsersConnectionsStatistic>[] = [];
-      Array.from(this.quotesNumberByTarget.entries()).forEach(([target, targetIdToQuotesNumber]) => {
-        targetIdToQuotesNumber.forEach((quotesNumber, targetId) => {
-          stats.push({
-            targetId,
-            quotesNumber,
-            target,
+      Array.from(this.quotesNumberByTarget.entries()).forEach(
+        ([target, targetIdToQuotesNumber]) => {
+          targetIdToQuotesNumber.forEach((quotesNumber, targetId) => {
+            stats.push({
+              targetId,
+              quotesNumber,
+              target,
+            });
           });
-        });
-      });
+        },
+      );
 
       this.logger.debug('Reset quotes number by target variable');
       this.quotesNumberByTarget.clear();
@@ -86,7 +87,9 @@ export class UsersConnectionsStatisticService {
       .where('created_at <= :oneWeekAgo', { oneWeekAgo })
       .execute();
 
-    this.logger.debug(`Removed ${result.affected} expired records from users_connections_statistic table.`);
+    this.logger.debug(
+      `Removed ${result.affected} expired records from users_connections_statistic table.`,
+    );
   }
 
   public incrementQuotesNumber(userId: string, target: TComplexTarget, n = 1): void {
@@ -99,7 +102,11 @@ export class UsersConnectionsStatisticService {
     this.quotesNumberByUser.set(userId, currentNumber);
   }
 
-  public incrementQuotesNumberByTarget(target: UserConnectionTarget, targetId: string, n = 1): void {
+  public incrementQuotesNumberByTarget(
+    target: UserConnectionTarget,
+    targetId: string,
+    n = 1,
+  ): void {
     let targetIdToQuotesNumber = this.quotesNumberByTarget.get(target);
     if (!targetIdToQuotesNumber) {
       targetIdToQuotesNumber = new Map<string, number>();
@@ -110,7 +117,11 @@ export class UsersConnectionsStatisticService {
     targetIdToQuotesNumber.set(targetId, currentNumber + n);
   }
 
-  public async getTimeline(startTime?: Date, endTime?: Date, timezone: string = 'UTC'): Promise<UsersConnectionsStatisticDto[]> {
+  public async getTimeline(
+    startTime?: Date,
+    endTime?: Date,
+    timezone: string = 'UTC',
+  ): Promise<UsersConnectionsStatisticDto[]> {
     if (!startTime) {
       startTime = await this.getOldestUsersStatsDate();
     }
@@ -125,10 +136,17 @@ export class UsersConnectionsStatisticService {
     const interval = this.determineInterval(startMoment, endMoment);
     const formatTimeFunction = this.getFormatTimeFunction(interval, timezone);
 
-    const startTimeIntervalBegin = startMoment.clone().tz(timezone).startOf(interval as moment.unitOfTime.StartOf);
-    const endTimeIntervalBegin = endMoment.clone().tz(timezone).startOf(interval as moment.unitOfTime.StartOf);
+    const startTimeIntervalBegin = startMoment
+      .clone()
+      .tz(timezone)
+      .startOf(interval as moment.unitOfTime.StartOf);
+    const endTimeIntervalBegin = endMoment
+      .clone()
+      .tz(timezone)
+      .startOf(interval as moment.unitOfTime.StartOf);
 
-    return this.dataSource.query(`
+    return this.dataSource.query(
+      `
       with 
         time_series as (select generate_series($1, $2, '1 ${interval}'::interval) as time),
         users as (select distinct users_connections_statistic.user_id as "userId" from users_connections_statistic),
@@ -152,13 +170,15 @@ export class UsersConnectionsStatisticService {
         u."userId", t.target
       order by ts.time,
         u."userId", t.target;
-    `, [
-      startTimeIntervalBegin.toDate(),
-      endTimeIntervalBegin.toDate(),
-      startMoment.toDate(),
-      endMoment.toDate(),
-      timezone,
-    ]);
+    `,
+      [
+        startTimeIntervalBegin.toDate(),
+        endTimeIntervalBegin.toDate(),
+        startMoment.toDate(),
+        endMoment.toDate(),
+        timezone,
+      ],
+    );
   }
 
   public async getTargetsTimeline({
@@ -166,9 +186,9 @@ export class UsersConnectionsStatisticService {
     endTime,
     targetIds,
   }: {
-    startTime?: Date,
-    endTime?: Date,
-    targetIds: string[],
+    startTime?: Date;
+    endTime?: Date;
+    targetIds: string[];
   }): Promise<UsersConnectionsStatisticDto[]> {
     const timezone = 'UTC';
 
@@ -186,10 +206,17 @@ export class UsersConnectionsStatisticService {
     const interval = this.determineInterval(startMoment, endMoment);
     const formatTimeFunction = this.getFormatTimeFunction(interval, timezone);
 
-    const startTimeIntervalBegin = startMoment.clone().tz(timezone).startOf(interval as moment.unitOfTime.StartOf);
-    const endTimeIntervalBegin = endMoment.clone().tz(timezone).startOf(interval as moment.unitOfTime.StartOf);
+    const startTimeIntervalBegin = startMoment
+      .clone()
+      .tz(timezone)
+      .startOf(interval as moment.unitOfTime.StartOf);
+    const endTimeIntervalBegin = endMoment
+      .clone()
+      .tz(timezone)
+      .startOf(interval as moment.unitOfTime.StartOf);
 
-    return this.dataSource.query(`
+    return this.dataSource.query(
+      `
       with time_series as (select generate_series($1, $2, '1 ${interval}'::interval) as time),
         targetIds as (select unnest($6::uuid[]) as "targetId"),
         targets as (select distinct users_connections_statistic.target from users_connections_statistic)
@@ -211,18 +238,21 @@ export class UsersConnectionsStatisticService {
         t_ids."targetId", t.target
       order by ts.time,
         t_ids."targetId", t.target;
-    `, [
-      startTimeIntervalBegin.toDate(),
-      endTimeIntervalBegin.toDate(),
-      startMoment.toDate(),
-      endMoment.toDate(),
-      timezone,
-      targetIds,
-    ]);
+    `,
+      [
+        startTimeIntervalBegin.toDate(),
+        endTimeIntervalBegin.toDate(),
+        startMoment.toDate(),
+        endMoment.toDate(),
+        timezone,
+        targetIds,
+      ],
+    );
   }
 
   private async getOldestUsersStatsDate(): Promise<Date> {
-    const oldestStat = await this.repo.createQueryBuilder('users_connections_statistic')
+    const oldestStat = await this.repo
+      .createQueryBuilder('users_connections_statistic')
       .select('MIN(users_connections_statistic.createdAt)', 'min')
       .where('users_connections_statistic.userId IS NOT NULL')
       .getRawOne();
@@ -230,7 +260,8 @@ export class UsersConnectionsStatisticService {
   }
 
   private async getOldestTargetStatsDate(): Promise<Date> {
-    const oldestStat = await this.repo.createQueryBuilder('users_connections_statistic')
+    const oldestStat = await this.repo
+      .createQueryBuilder('users_connections_statistic')
       .select('MIN(users_connections_statistic.createdAt)', 'min')
       .where('users_connections_statistic.targetId IS NOT NULL')
       .getRawOne();

@@ -1,4 +1,11 @@
-import { Crud, CrudAuth, CrudController, type CrudRequest, Override, ParsedRequest, } from '@dataui/crud';
+import {
+  Crud,
+  CrudAuth,
+  CrudController,
+  type CrudRequest,
+  Override,
+  ParsedRequest,
+} from '@dataui/crud';
 import { TUser, User } from './entities/user.entity';
 import { Controller, Req } from '@nestjs/common';
 import type { Request } from 'express';
@@ -6,7 +13,7 @@ import { UsersService } from './users.service';
 import { CaslAbilityFactory } from '../casl';
 import { SkipPoliciesGuard } from '../casl';
 import { ApiTags } from '@nestjs/swagger';
-import { TUsersConfig, UsersConfigService } from "./users.config";
+import { TUsersConfig, UsersConfigService } from './users.config';
 
 @Crud({
   model: {
@@ -49,10 +56,7 @@ export class MeController implements CrudController<User> {
   }
 
   @Override()
-  async getOne(
-    @ParsedRequest() req: CrudRequest,
-    @Req() originReq: Request,
-  ): Promise<User> {
+  async getOne(@ParsedRequest() req: CrudRequest, @Req() originReq: Request): Promise<User> {
     const user = await this.base.getOneBase!(req);
     const ability = await this.caslAbilityFactory.createForUser(user);
     user.policies = this.caslAbilityFactory.packAbility(ability);

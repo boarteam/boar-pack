@@ -3,10 +3,18 @@ import Joi from 'joi';
 import { LogType, UserRole, LogLevel } from '../entities/event-log.entity';
 
 export class EventLogCreateDto {
-  @JoiSchema(Joi.string().valid(...Object.values(LogType)).required())
+  @JoiSchema(
+    Joi.string()
+      .valid(...Object.values(LogType))
+      .required(),
+  )
   logType: LogType;
 
-  @JoiSchema(Joi.string().valid(...Object.values(LogLevel)).required())
+  @JoiSchema(
+    Joi.string()
+      .valid(...Object.values(LogLevel))
+      .required(),
+  )
   logLevel: LogLevel;
 
   @JoiSchema(Joi.string().required())
@@ -18,7 +26,11 @@ export class EventLogCreateDto {
   @JoiSchema(Joi.string().uuid().allow(null).optional())
   userId?: string;
 
-  @JoiSchema(Joi.string().valid(...Object.values(UserRole)).required())
+  @JoiSchema(
+    Joi.string()
+      .valid(...Object.values(UserRole))
+      .required(),
+  )
   userRole: string;
 
   @JoiSchema(Joi.string().required())

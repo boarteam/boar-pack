@@ -3,12 +3,12 @@ import { TypeOrmCrudService } from '@dataui/crud-typeorm';
 import { EventLog, LogLevel, LogType, UserRole } from './entities/event-log.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Request } from 'express';
-import { Roles } from "../users";
-import { EventLogTimelineDto } from "./dto/event-log-timeline.dto";
-import { Cron, CronExpression } from "@nestjs/schedule";
-import moment from "moment";
+import { Roles } from '../users';
+import { EventLogTimelineDto } from './dto/event-log-timeline.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import moment from 'moment';
 import 'moment-timezone';
-import { TSkipEventsLogOptions } from "./event-logs.interceptor";
+import { TSkipEventsLogOptions } from './event-logs.interceptor';
 
 type TInterval = 'second' | 'minute' | 'hour' | 'day' | 'week';
 
@@ -22,7 +22,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
   private static readonly rolesMap = {
     [Roles.USER]: UserRole.USER,
     [Roles.ADMIN]: UserRole.ADMIN,
-  }
+  };
 
   constructor(
     readonly repo: Repository<EventLog>,
@@ -38,7 +38,7 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       this.logger.verbose('Reset event logs store variable');
       this.logsStore = [];
 
-      await this.repo.save(logs).catch(e => {
+      await this.repo.save(logs).catch((e) => {
         // DO NOT USE LOGGER HERE - it will cause infinite loop
         console.error('Error while saving logs');
         console.error(e);
@@ -74,7 +74,12 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       const userRole = user?.role ? EventLogsService.rolesMap[user.role] : UserRole.GUEST;
 
       const payload = request.body ? { ...request.body } : null;
-      if (skipOptions && typeof skipOptions === 'object' && Array.isArray(skipOptions.body) && payload) {
+      if (
+        skipOptions &&
+        typeof skipOptions === 'object' &&
+        Array.isArray(skipOptions.body) &&
+        payload
+      ) {
         for (const field of skipOptions.body) {
           if (field in payload) {
             // @ts-ignore
@@ -128,7 +133,11 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     });
   }
 
-  async getTimeline(startTime?: Date, endTime?: Date, timezone: string = 'UTC'): Promise<EventLogTimelineDto[]> {
+  async getTimeline(
+    startTime?: Date,
+    endTime?: Date,
+    timezone: string = 'UTC',
+  ): Promise<EventLogTimelineDto[]> {
     if (!startTime) {
       startTime = await this.getOldestLogDate();
     }
@@ -143,10 +152,17 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
     const interval = this.determineInterval(startMoment, endMoment);
     const formatTimeFunction = this.getFormatTimeFunction(interval, timezone);
 
-    const startTimeIntervalBegin = startMoment.clone().tz(timezone).startOf(interval as moment.unitOfTime.StartOf);
-    const endTimeIntervalBegin = endMoment.clone().tz(timezone).startOf(interval as moment.unitOfTime.StartOf);
+    const startTimeIntervalBegin = startMoment
+      .clone()
+      .tz(timezone)
+      .startOf(interval as moment.unitOfTime.StartOf);
+    const endTimeIntervalBegin = endMoment
+      .clone()
+      .tz(timezone)
+      .startOf(interval as moment.unitOfTime.StartOf);
 
-    return this.dataSource.query(`
+    return this.dataSource.query(
+      `
       with 
         time_series as (select generate_series($1, $2, '1 ${interval}'::interval) as time),
         log_levels as (select unnest(enum_range(null::"${this.dataSource.driver.schema}".event_logs_log_level_enum)) as loglevel)
@@ -165,13 +181,15 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
         ll.loglevel
       order by ts.time,
         ll.loglevel;
-    `, [
-      startTimeIntervalBegin.toDate(),
-      endTimeIntervalBegin.toDate(),
-      startMoment.toDate(),
-      endMoment.toDate(),
-      timezone
-    ]);
+    `,
+      [
+        startTimeIntervalBegin.toDate(),
+        endTimeIntervalBegin.toDate(),
+        startMoment.toDate(),
+        endMoment.toDate(),
+        timezone,
+      ],
+    );
   }
 
   async getServiceNames(): Promise<string[]> {
@@ -184,7 +202,8 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
   }
 
   private async getOldestLogDate(): Promise<Date> {
-    const oldestLog = await this.repo.createQueryBuilder('event_log')
+    const oldestLog = await this.repo
+      .createQueryBuilder('event_log')
       .select('MIN(event_log.createdAt)', 'min')
       .getRawOne();
     return new Date(oldestLog.min);

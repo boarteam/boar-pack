@@ -8,13 +8,11 @@ vi.mock('@boarteam/boar-pack-common-frontend', () => import('../../../../common-
 import { Operators } from '@boarteam/boar-pack-common-frontend';
 import { eventLogsSearchableColumns } from './eventLogsSearchableColumns';
 
-const byField = new Map(
-  eventLogsSearchableColumns.map(col => [col.field, col])
-);
+const byField = new Map(eventLogsSearchableColumns.map((col) => [col.field, col]));
 
 describe('eventLogsSearchableColumns', () => {
   it('covers exactly the searchable event log fields', () => {
-    expect(eventLogsSearchableColumns.map(col => col.field)).toEqual([
+    expect(eventLogsSearchableColumns.map((col) => col.field)).toEqual([
       'logType',
       'serviceId',
       'userRole',

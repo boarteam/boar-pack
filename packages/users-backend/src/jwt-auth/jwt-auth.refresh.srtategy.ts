@@ -4,11 +4,11 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JWTAuthConfigService } from './jwt-auth.config';
 import { Request } from 'express';
 import { JWT_AUTH_REFRESH } from '../auth/auth-strategies.constants';
-import { refreshTokenName } from "../auth/auth.constants";
+import { refreshTokenName } from '../auth/auth.constants';
 import { UsersService } from '../users';
 import { RevokedTokensService, TOKEN_TYPE } from '../revoked-tokens';
-import { TJWTRefreshPayload } from "./jwt-auth.srtategy";
-import ms from "ms";
+import { TJWTRefreshPayload } from './jwt-auth.srtategy';
+import ms from 'ms';
 
 @Injectable()
 export class JwtAuthRefreshStrategy extends PassportStrategy(Strategy, JWT_AUTH_REFRESH) {
@@ -28,7 +28,7 @@ export class JwtAuthRefreshStrategy extends PassportStrategy(Strategy, JWT_AUTH_
             return null;
           }
 
-          const cookie = cookies.find(c => c.startsWith(`${refreshTokenName}=`));
+          const cookie = cookies.find((c) => c.startsWith(`${refreshTokenName}=`));
           if (!cookie) {
             return null;
           }
@@ -63,7 +63,7 @@ export class JwtAuthRefreshStrategy extends PassportStrategy(Strategy, JWT_AUTH_
         expiresAt: new Date(
           payload.exp
             ? payload.exp * 1000
-            : Date.now() + ms(this.jwtAuthConfigService.config.refreshTokenExpiration)
+            : Date.now() + ms(this.jwtAuthConfigService.config.refreshTokenExpiration),
         ),
         sid: payload.sid || null,
         tokenType: TOKEN_TYPE.REFRESH,

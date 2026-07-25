@@ -1,4 +1,4 @@
-import { UserConnectionTarget } from "../entities/users-connections-statistic.entity";
+import { UserConnectionTarget } from '../entities/users-connections-statistic.entity';
 
 export class UsersConnectionsStatisticDto {
   time: string;

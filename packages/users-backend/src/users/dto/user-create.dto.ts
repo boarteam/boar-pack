@@ -1,7 +1,7 @@
-import Joi from "joi";
+import Joi from 'joi';
 import { JoiSchema } from 'nestjs-joi';
 import { Roles } from '../entities/user.entity';
-import { Permission, Permissions } from "../entities/permissions";
+import { Permission, Permissions } from '../entities/permissions';
 
 export class UserCreateDto {
   @JoiSchema(Joi.string().required())
@@ -21,17 +21,19 @@ export class UserCreateDto {
   pass?: string | null;
 
   @JoiSchema(
-    Joi.array().items(
-      Joi.string()
-    ).optional().default([]).custom((value: string[], helpers) => {
-      value.forEach((permission) => {
-        if (!Permissions.isValidPermission(permission as Permission)) {
-          helpers.error('any.invalid');
-        }
-      });
+    Joi.array()
+      .items(Joi.string())
+      .optional()
+      .default([])
+      .custom((value: string[], helpers) => {
+        value.forEach((permission) => {
+          if (!Permissions.isValidPermission(permission as Permission)) {
+            helpers.error('any.invalid');
+          }
+        });
 
-      return value;
-    })
+        return value;
+      }),
   )
   permissions?: Permission[];
 }

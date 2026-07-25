@@ -2,9 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { DataSource, Repository } from 'typeorm';
 import { QuotesStatistic } from './entities/quotes-statistic.entity';
-import { QuotesStatisticDto } from "./dto/quotes-statistic.dto";
-import moment from "moment";
-import { TProvider } from "./quotes-statistic.types";
+import { QuotesStatisticDto } from './dto/quotes-statistic.dto';
+import moment from 'moment';
+import { TProvider } from './quotes-statistic.types';
 
 type TLatestQuotesQueryResult = {
   quotesProviderName: string; // qs.quotes_provider_name
@@ -21,16 +21,17 @@ export class QuotesStatisticService {
   constructor(
     private readonly repo: Repository<QuotesStatistic>,
     private readonly dataSource: DataSource,
-  ) {
-  }
+  ) {}
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   private async saveAccumulatedQuotesNumber(): Promise<void> {
     if (this.quotesNumberByProvider.size > 0) {
-      const stats = Array.from(this.quotesNumberByProvider.entries()).map(([quotesProviderName, quotesNumber]) => ({
-        quotesProviderName,
-        quotesNumber,
-      }));
+      const stats = Array.from(this.quotesNumberByProvider.entries()).map(
+        ([quotesProviderName, quotesNumber]) => ({
+          quotesProviderName,
+          quotesNumber,
+        }),
+      );
 
       this.logger.debug('Reset quotes number variable');
       this.quotesNumberByProvider.clear();
@@ -59,7 +60,11 @@ export class QuotesStatisticService {
     this.quotesNumberByProvider.set(provider, currentNumber + n);
   }
 
-  async getTimeline(startTime?: Date, endTime?: Date, timezone: string = 'UTC'): Promise<QuotesStatisticDto[]> {
+  async getTimeline(
+    startTime?: Date,
+    endTime?: Date,
+    timezone: string = 'UTC',
+  ): Promise<QuotesStatisticDto[]> {
     if (!startTime) {
       startTime = await this.getOldestStatsDate();
     }
@@ -74,10 +79,17 @@ export class QuotesStatisticService {
     const interval = this.determineInterval(startMoment, endMoment);
     const formatTimeFunction = this.getFormatTimeFunction(interval, timezone);
 
-    const startTimeIntervalBegin = startMoment.clone().tz(timezone).startOf(interval as moment.unitOfTime.StartOf);
-    const endTimeIntervalBegin = endMoment.clone().tz(timezone).startOf(interval as moment.unitOfTime.StartOf);
+    const startTimeIntervalBegin = startMoment
+      .clone()
+      .tz(timezone)
+      .startOf(interval as moment.unitOfTime.StartOf);
+    const endTimeIntervalBegin = endMoment
+      .clone()
+      .tz(timezone)
+      .startOf(interval as moment.unitOfTime.StartOf);
 
-    return this.dataSource.query(`
+    return this.dataSource.query(
+      `
       with 
         time_series as (select generate_series($1, $2, '1 ${interval}'::interval) as time),
         providers as (select distinct quotes_statistic.quotes_provider_name as name from quotes_statistic)
@@ -96,13 +108,15 @@ export class QuotesStatisticService {
         p.name
       order by ts.time,
         p.name;
-    `, [
-      startTimeIntervalBegin.toDate(),
-      endTimeIntervalBegin.toDate(),
-      startMoment.toDate(),
-      endMoment.toDate(),
-      timezone,
-    ]);
+    `,
+      [
+        startTimeIntervalBegin.toDate(),
+        endTimeIntervalBegin.toDate(),
+        startMoment.toDate(),
+        endMoment.toDate(),
+        timezone,
+      ],
+    );
   }
 
   /**
@@ -111,7 +125,8 @@ export class QuotesStatisticService {
    * @private
    */
   private async getOldestStatsDate(): Promise<Date> {
-    const oldestStat = await this.repo.createQueryBuilder('quotes_statistic')
+    const oldestStat = await this.repo
+      .createQueryBuilder('quotes_statistic')
       .select('MIN(quotes_statistic.createdAt)', 'min')
       .getRawOne();
     return oldestStat.min ? new Date(oldestStat.min) : moment().subtract(7, 'days').toDate();
@@ -161,7 +176,9 @@ export class QuotesStatisticService {
     }
   }
 
-  public async getLatestQuotesByProvider(providerIds: TProvider['id'][]): Promise<Map<QuotesStatistic['quotesProviderName'], Date>> {
+  public async getLatestQuotesByProvider(
+    providerIds: TProvider['id'][],
+  ): Promise<Map<QuotesStatistic['quotesProviderName'], Date>> {
     const result: TLatestQuotesQueryResult[] = await this.repo
       .createQueryBuilder('qs')
       .select('qs.quotesProviderName', 'quotesProviderName')
@@ -170,9 +187,6 @@ export class QuotesStatisticService {
       .groupBy('qs.quotesProviderName')
       .getRawMany();
 
-    return new Map(result.map(row => [
-      row.quotesProviderName,
-      new Date(row.latestQuoteDate),
-    ]));
+    return new Map(result.map((row) => [row.quotesProviderName, new Date(row.latestQuoteDate)]));
   }
 }

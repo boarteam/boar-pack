@@ -142,9 +142,9 @@ describe('QuotesStatisticCards', () => {
     // The window shifted forward by exactly the update interval (fake timers).
     expect(new Date(second.endTime).getTime() - new Date(first.endTime).getTime()).toBe(30_000);
     // And is still one hour wide.
-    expect(
-      new Date(second.endTime).getTime() - new Date(second.startTime).getTime(),
-    ).toBe(60 * 60 * 1000);
+    expect(new Date(second.endTime).getTime() - new Date(second.startTime).getTime()).toBe(
+      60 * 60 * 1000,
+    );
 
     unmount();
     await act(async () => {

@@ -48,11 +48,7 @@ needs):
 ## Usage
 
 ```tsx
-import {
-  createApiClient,
-  ApiClientProvider,
-  UsersTable,
-} from '@boarteam/boar-pack-users-frontend';
+import { createApiClient, ApiClientProvider, UsersTable } from '@boarteam/boar-pack-users-frontend';
 
 // One client per app; BASE defaults to '/api'. Auth uses the backend's
 // cookies by default; set TOKEN for bearer auth instead.
@@ -61,10 +57,7 @@ const apiClient = createApiClient({ BASE: '/api' });
 export default function UsersPage() {
   return (
     <ApiClientProvider value={apiClient}>
-      <UsersTable
-        userPageUrlPrefix="/admin/users"
-        permissionsConfig={[]}
-      />
+      <UsersTable userPageUrlPrefix="/admin/users" permissionsConfig={[]} />
     </ApiClientProvider>
   );
 }

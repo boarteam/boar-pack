@@ -89,11 +89,7 @@ describe('DateRange', () => {
   });
 
   it('renders provided ISO string values into the inputs', () => {
-    render(
-      <DateRange
-        value={['2024-01-02T03:04:05.000Z', '2024-01-03T03:04:05.000Z']}
-      />,
-    );
+    render(<DateRange value={['2024-01-02T03:04:05.000Z', '2024-01-03T03:04:05.000Z']} />);
 
     const start = screen.getByPlaceholderText('Start date') as HTMLInputElement;
     const end = screen.getByPlaceholderText('End date') as HTMLInputElement;

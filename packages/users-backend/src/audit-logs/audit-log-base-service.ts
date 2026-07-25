@@ -1,14 +1,13 @@
-import { CreateManyDto, CrudRequest, } from '@dataui/crud';
-import { DeepPartial, EntityManager, ObjectLiteral, Repository, } from 'typeorm';
-import { TypeOrmCrudService } from "@dataui/crud-typeorm";
-import { Injectable } from "@nestjs/common";
-import { AuditAction, AuditLog } from "./entities/audit-log.entity";
-import { TUser } from "../users";
+import { CreateManyDto, CrudRequest } from '@dataui/crud';
+import { DeepPartial, EntityManager, ObjectLiteral, Repository } from 'typeorm';
+import { TypeOrmCrudService } from '@dataui/crud-typeorm';
+import { Injectable } from '@nestjs/common';
+import { AuditAction, AuditLog } from './entities/audit-log.entity';
+import { TUser } from '../users';
 import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudService<T> {
-
   public async createOne(req: CrudRequest<TUser>, dto: DeepPartial<T>): Promise<T> {
     const result = await super.createOne(req, dto);
     await this.createAuditLog({
@@ -27,11 +26,11 @@ export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudSer
     const result = await super.createMany(req, dto);
 
     await this.createAuditLog(
-      result.map(r => ({
+      result.map((r) => ({
         userId: req.auth?.id,
         tableName: this.repo.metadata.tableName,
         newValues: r,
-      }))
+      })),
     );
 
     return result;
@@ -103,8 +102,10 @@ export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudSer
     return toReturn;
   }
 
-  public createAuditLog(log: Partial<AuditLog> | Partial<AuditLog>[], manager?: EntityManager): Promise<AuditLog | AuditLog[]> {
+  public createAuditLog(
+    log: Partial<AuditLog> | Partial<AuditLog>[],
+    manager?: EntityManager,
+  ): Promise<AuditLog | AuditLog[]> {
     return (manager || this.repo.manager).getRepository(AuditLog).save(log as Partial<AuditLog>);
   }
 }
-

@@ -1,6 +1,6 @@
-import { ArgumentsHost, Catch, ExceptionFilter, Logger } from "@nestjs/common";
-import { QueryFailedError } from "typeorm";
-import { BaseExceptionFilter } from "@nestjs/core";
+import { ArgumentsHost, Catch, ExceptionFilter, Logger } from '@nestjs/common';
+import { QueryFailedError } from 'typeorm';
+import { BaseExceptionFilter } from '@nestjs/core';
 
 enum ErrorCode {
   // pg
@@ -13,7 +13,7 @@ enum ErrorCode {
 
 @Catch(QueryFailedError)
 export class TypeOrmExceptionFilter extends BaseExceptionFilter implements ExceptionFilter {
-  private static uniqueConstraintMessages: Record<string, string> = {}
+  private static uniqueConstraintMessages: Record<string, string> = {};
 
   public static setUniqueConstraintMessage(constraint: string, message: string) {
     this.uniqueConstraintMessages[constraint] = message;
@@ -24,30 +24,30 @@ export class TypeOrmExceptionFilter extends BaseExceptionFilter implements Excep
   catch(exception: QueryFailedError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    const { code, constraint }: { code: string, constraint: string } = exception as any || {};
+    const { code, constraint }: { code: string; constraint: string } = (exception as any) || {};
 
-    this.logger.error(`QueryFailedError: ${exception.message}, code: ${code}, constraint: ${constraint}`);
+    this.logger.error(
+      `QueryFailedError: ${exception.message}, code: ${code}, constraint: ${constraint}`,
+    );
 
     switch (code) {
       case ErrorCode.UniqueViolation:
-        response
-          .status(400)
-          .json({
-            statusCode: 400,
-            message: TypeOrmExceptionFilter.uniqueConstraintMessages[constraint] || 'The record already exists',
-            error: 'Bad Request',
-          });
+        response.status(400).json({
+          statusCode: 400,
+          message:
+            TypeOrmExceptionFilter.uniqueConstraintMessages[constraint] ||
+            'The record already exists',
+          error: 'Bad Request',
+        });
         return;
 
       case ErrorCode.FailedRemovingByForeignKey:
       case ErrorCode.FailedRemovingByForeignKey2:
-        response
-          .status(400)
-          .json({
-            statusCode: 400,
-            message: 'System cannot remove the record, please remove all related records first',
-            error: 'Bad Request',
-          });
+        response.status(400).json({
+          statusCode: 400,
+          message: 'System cannot remove the record, please remove all related records first',
+          error: 'Bad Request',
+        });
         return;
     }
 

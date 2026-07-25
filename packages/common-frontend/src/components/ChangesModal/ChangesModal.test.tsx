@@ -46,7 +46,9 @@ const changes: TDiffResult<Entity> = {
   ],
 };
 
-function renderModal(overrides: Partial<React.ComponentProps<typeof ChangesModal<Entity, any>>> = {}) {
+function renderModal(
+  overrides: Partial<React.ComponentProps<typeof ChangesModal<Entity, any>>> = {},
+) {
   const onCommit = vi.fn().mockResolvedValue({ created_count: 2, updated_count: 1 });
   const onClose = vi.fn();
   const utils = render(
@@ -215,8 +217,6 @@ describe('ChangesModal', () => {
     expect(
       await screen.findByText('Unexpected error while committing changes'),
     ).toBeInTheDocument();
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'Commit' })).toBeEnabled(),
-    );
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Commit' })).toBeEnabled());
   });
 });

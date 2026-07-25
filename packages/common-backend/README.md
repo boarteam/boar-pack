@@ -15,16 +15,16 @@ Part of the [boar-pack](https://github.com/boarteam/boar-pack) monorepo.
 All modules are plain `@Module` classes — add them to `imports: []`, no
 `forRoot` needed.
 
-| Export | Purpose |
-| --- | --- |
-| `ScryptModule` / `ScryptService` | `encrypt(str)` / `decrypt(str)` with AES-256-CTR, key derived via scrypt from the `SCRYPT_SALT` and `SCRYPT_IV` env vars (IV must be 16 characters). |
-| `ClusterModule` | Forks and supervises worker processes with Node's `cluster`: per-worker env/ports, auto-restart on exit, runtime start/stop of individual workers. You describe workers by implementing `ClusterInterface` and registering it with `ClusterService.addCluster()`. |
-| `ScheduleModule` | Wraps `@nestjs/schedule`'s `ScheduleModule.forRoot()`; additionally stops all cron jobs/intervals when `SWAGGER=true`, so OpenAPI-generation runs don't kick off background work. |
-| `WebsocketsClients` | Transient provider managing **outbound** WebSocket connections (`ws`): connect/send/close/reconnect callbacks, JSON parsing via `lossless-json` with safe number handling. |
-| `WebsocketsExceptionFilter` | `@Catch()` filter for NestJS WS gateways that emits errors as `{ event: 'error', data: … }` frames. |
-| `Tools.NamedLogger` | `ConsoleLogger` subclass that prefixes messages with a custom name. |
-| `Tools.TypeOrmExceptionFilter` | Maps Postgres unique-violation (and MySQL FK) errors to friendly HTTP 400s; customize per constraint with `TypeOrmExceptionFilter.setUniqueConstraintMessage()`. |
-| `Tools.VirtualColumn` | Decorator (+ a `SelectQueryBuilder` patch applied on import) that hydrates entity properties from raw SQL aliases. |
+| Export                           | Purpose                                                                                                                                                                                                                                                           |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ScryptModule` / `ScryptService` | `encrypt(str)` / `decrypt(str)` with AES-256-CTR, key derived via scrypt from the `SCRYPT_SALT` and `SCRYPT_IV` env vars (IV must be 16 characters).                                                                                                              |
+| `ClusterModule`                  | Forks and supervises worker processes with Node's `cluster`: per-worker env/ports, auto-restart on exit, runtime start/stop of individual workers. You describe workers by implementing `ClusterInterface` and registering it with `ClusterService.addCluster()`. |
+| `ScheduleModule`                 | Wraps `@nestjs/schedule`'s `ScheduleModule.forRoot()`; additionally stops all cron jobs/intervals when `SWAGGER=true`, so OpenAPI-generation runs don't kick off background work.                                                                                 |
+| `WebsocketsClients`              | Transient provider managing **outbound** WebSocket connections (`ws`): connect/send/close/reconnect callbacks, JSON parsing via `lossless-json` with safe number handling.                                                                                        |
+| `WebsocketsExceptionFilter`      | `@Catch()` filter for NestJS WS gateways that emits errors as `{ event: 'error', data: … }` frames.                                                                                                                                                               |
+| `Tools.NamedLogger`              | `ConsoleLogger` subclass that prefixes messages with a custom name.                                                                                                                                                                                               |
+| `Tools.TypeOrmExceptionFilter`   | Maps Postgres unique-violation (and MySQL FK) errors to friendly HTTP 400s; customize per constraint with `TypeOrmExceptionFilter.setUniqueConstraintMessage()`.                                                                                                  |
+| `Tools.VirtualColumn`            | Decorator (+ a `SelectQueryBuilder` patch applied on import) that hydrates entity properties from raw SQL aliases.                                                                                                                                                |
 
 ## Install
 

@@ -1,4 +1,4 @@
-import { TJWTPayload, TJWTRefreshPayload } from "../../jwt-auth";
+import { TJWTPayload, TJWTRefreshPayload } from '../../jwt-auth';
 
 export class LocalAuthLoginDto {
   email: string;
@@ -13,5 +13,5 @@ export class LocalAuthTokenDto {
   refreshToken: {
     token: string;
     payload: TJWTRefreshPayload;
-  }
+  };
 }

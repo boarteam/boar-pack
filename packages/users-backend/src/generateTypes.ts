@@ -1,17 +1,17 @@
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule, } from '@nestjs/swagger';
-import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { resolve } from "path";
-import { ConfigModule } from "@nestjs/config";
+import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/swagger';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { resolve } from 'path';
+import { ConfigModule } from '@nestjs/config';
 // @ts-ignore-next-line - Ignore the error because the package on project level
-import { generate } from "openapi-typescript-codegen";
-import { EventLogsModule } from './event-logs'
-import { UsersModule } from "./users";
-import { TokensModule } from "./tokens";
-import { SettingsModule } from "./settings";
-import { TelegrafModule } from "./telegraf";
-import { AuthModule } from "./auth";
+import { generate } from 'openapi-typescript-codegen';
+import { EventLogsModule } from './event-logs';
+import { UsersModule } from './users';
+import { TokensModule } from './tokens';
+import { SettingsModule } from './settings';
+import { TelegrafModule } from './telegraf';
+import { AuthModule } from './auth';
 
 @Module({
   imports: [
@@ -26,9 +26,7 @@ import { AuthModule } from "./auth";
       username: 'app',
       password: 'password',
       database: 'boar_pack',
-      entities: [
-        resolve(__dirname, './*/entities/*.entity.{ts,js}'),
-      ],
+      entities: [resolve(__dirname, './*/entities/*.entity.{ts,js}')],
     }),
     AuthModule.forRoot({
       googleAuth: false,
@@ -42,7 +40,7 @@ import { AuthModule } from "./auth";
       dataSourceName: 'boar_pack_db',
     }),
     EventLogsModule.forRoot({
-      dataSourceName: 'boar_pack_db'
+      dataSourceName: 'boar_pack_db',
     }),
     TokensModule.forRoot({
       dataSourceName: 'boar_pack_db',
@@ -57,8 +55,7 @@ import { AuthModule } from "./auth";
     }),
   ],
 })
-class Swagger {
-}
+class Swagger {}
 
 async function bootstrap() {
   try {
@@ -68,10 +65,7 @@ async function bootstrap() {
       operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
     };
 
-    const swaggerConfig = new DocumentBuilder()
-      .setTitle('API')
-      .setVersion('1.0')
-      .build();
+    const swaggerConfig = new DocumentBuilder().setTitle('API').setVersion('1.0').build();
 
     const document = SwaggerModule.createDocument(app, swaggerConfig, options);
 

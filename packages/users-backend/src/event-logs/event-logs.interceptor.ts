@@ -5,24 +5,27 @@ import {
   Injectable,
   Logger,
   NestInterceptor,
-  SetMetadata
+  SetMetadata,
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { EventLog, LogLevel } from './entities/event-log.entity';
-import { EventLogsService } from "./event-logs.service";
+import { EventLogsService } from './event-logs.service';
 import { Request, Response } from 'express';
-import { HttpException } from "@nestjs/common/exceptions/http.exception";
-import { SERVICE_CONFIG_TOKEN } from "./event-logs.constants";
-import type { TEventLogServiceConfig } from "./event-logs.types";
-import { Reflector } from "@nestjs/core";
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { SERVICE_CONFIG_TOKEN } from './event-logs.constants';
+import type { TEventLogServiceConfig } from './event-logs.types';
+import { Reflector } from '@nestjs/core';
 
-export type TSkipEventsLogOptions = true | {
-  body?: string[];
-}
+export type TSkipEventsLogOptions =
+  | true
+  | {
+      body?: string[];
+    };
 
 export const SKIP_EVENTS_LOG = 'SKIP_EVENTS_LOG';
-export const SkipEventsLog = (skipOptions: TSkipEventsLogOptions = true) => SetMetadata(SKIP_EVENTS_LOG, skipOptions);
+export const SkipEventsLog = (skipOptions: TSkipEventsLogOptions = true) =>
+  SetMetadata(SKIP_EVENTS_LOG, skipOptions);
 
 @Injectable()
 export class EventLogInterceptor implements NestInterceptor {
@@ -40,7 +43,10 @@ export class EventLogInterceptor implements NestInterceptor {
     const handler = context.getHandler();
     const controller = context.getClass();
 
-    const skipOptions = this.reflector.getAllAndOverride<TSkipEventsLogOptions | undefined>(SKIP_EVENTS_LOG, [handler, controller]);
+    const skipOptions = this.reflector.getAllAndOverride<TSkipEventsLogOptions | undefined>(
+      SKIP_EVENTS_LOG,
+      [handler, controller],
+    );
     if (skipOptions === true) {
       return next.handle();
     }
@@ -60,7 +66,12 @@ export class EventLogInterceptor implements NestInterceptor {
       tap(() => {
         logEntry.duration = Date.now() - now;
         logEntry.statusCode = response.statusCode;
-        logEntry.logLevel = response.statusCode >= 500 ? LogLevel.ERROR : (response.statusCode >= 400 ? LogLevel.WARNING : LogLevel.INFO);
+        logEntry.logLevel =
+          response.statusCode >= 500
+            ? LogLevel.ERROR
+            : response.statusCode >= 400
+              ? LogLevel.WARNING
+              : LogLevel.INFO;
         this.eventLogService.audit(logEntry, request, skipOptions);
       }),
       catchError((error: HttpException) => {

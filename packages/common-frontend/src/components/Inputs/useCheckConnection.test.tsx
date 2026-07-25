@@ -37,17 +37,13 @@ describe('useCheckConnection', () => {
 
     expect(request).toHaveBeenCalledTimes(1);
     expect(await screen.findByText('Connection OK')).toBeInTheDocument();
-    await waitFor(() =>
-      expect(container.querySelector('.anticon-check')).toBeTruthy(),
-    );
+    await waitFor(() => expect(container.querySelector('.anticon-check')).toBeTruthy());
     expect(container.querySelector('.ant-btn-dangerous')).toBeFalsy();
   });
 
   it('prefers the server-provided success message', async () => {
     const user = userEvent.setup();
-    const request = vi
-      .fn()
-      .mockResolvedValue({ success: true, message: 'All good over here' });
+    const request = vi.fn().mockResolvedValue({ success: true, message: 'All good over here' });
     render(<Harness request={request} />);
 
     await user.click(screen.getByRole('button', { name: 'Test' }));
@@ -57,17 +53,13 @@ describe('useCheckConnection', () => {
 
   it('shows the error message, danger styling and warning icon on failure', async () => {
     const user = userEvent.setup();
-    const request = vi
-      .fn()
-      .mockResolvedValue({ success: false, message: 'Connection refused' });
+    const request = vi.fn().mockResolvedValue({ success: false, message: 'Connection refused' });
     const { container } = render(<Harness request={request} />);
 
     await user.click(screen.getByRole('button', { name: 'Test' }));
 
     expect(await screen.findByText('Connection refused')).toBeInTheDocument();
-    await waitFor(() =>
-      expect(container.querySelector('.ant-btn-dangerous')).toBeTruthy(),
-    );
+    await waitFor(() => expect(container.querySelector('.ant-btn-dangerous')).toBeTruthy());
     expect(container.querySelector('.anticon-warning')).toBeTruthy();
   });
 

@@ -1,8 +1,8 @@
-import React from "react";
-import { Button, Input, Tooltip } from "antd";
-import { ThunderboltOutlined } from "@ant-design/icons";
-import { Typography } from "antd";
-import { PasswordProps } from "antd/es/input/Password";
+import React from 'react';
+import { Button, Input, Tooltip } from 'antd';
+import { ThunderboltOutlined } from '@ant-design/icons';
+import { Typography } from 'antd';
+import { PasswordProps } from 'antd/es/input/Password';
 
 const { Paragraph } = Typography;
 
@@ -20,7 +20,10 @@ export const Password: React.FC<PasswordProps> = ({ value, onChange }) => {
         <Button
           onClick={(e) => {
             const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%&';
-            const pass = Array(10).fill('').map(x => chars[Math.floor(Math.random() * chars.length)]).join('');
+            const pass = Array(10)
+              .fill('')
+              .map((x) => chars[Math.floor(Math.random() * chars.length)])
+              .join('');
             // @ts-ignore
             onChange?.(pass);
           }}
@@ -30,4 +33,4 @@ export const Password: React.FC<PasswordProps> = ({ value, onChange }) => {
       <Button icon={<Paragraph copyable={{ text: String(value) }} />} />
     </Input.Group>
   );
-}
+};

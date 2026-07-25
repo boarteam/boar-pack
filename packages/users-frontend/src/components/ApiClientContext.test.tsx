@@ -18,7 +18,7 @@ describe('useApiClient', () => {
     };
 
     expect(() => render(<Probe />)).toThrow(
-      'useApiClient must be used within an ApiClientProvider.'
+      'useApiClient must be used within an ApiClientProvider.',
     );
   });
 
@@ -34,7 +34,7 @@ describe('useApiClient', () => {
     render(
       <ApiClientProvider value={fakeClient}>
         <Probe />
-      </ApiClientProvider>
+      </ApiClientProvider>,
     );
 
     expect(screen.getByText('ready')).toBeInTheDocument();
@@ -56,7 +56,7 @@ describe('useApiClient', () => {
         <ApiClientProvider value={inner}>
           <Probe />
         </ApiClientProvider>
-      </ApiClientProvider>
+      </ApiClientProvider>,
     );
 
     expect(received).toBe(inner);

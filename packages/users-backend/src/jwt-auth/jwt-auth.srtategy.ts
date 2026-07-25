@@ -22,7 +22,7 @@ export type TJWTRefreshPayload = {
   iat?: number; // Issued At
   exp?: number; // Expiration Time
   sid?: string; // Session ID to identify the family of tokens
-}
+};
 
 @Injectable()
 export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {
@@ -41,7 +41,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, JWT_AUTH) {
             return null;
           }
 
-          const cookie = cookies.find(c => c.startsWith(`${tokenName}=`));
+          const cookie = cookies.find((c) => c.startsWith(`${tokenName}=`));
           if (!cookie) {
             return null;
           }

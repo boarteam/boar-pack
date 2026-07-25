@@ -1,11 +1,17 @@
 // fields-permission.interceptor.ts
-import { CallHandler, ExecutionContext, ForbiddenException, Injectable, NestInterceptor, } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
 import { permittedFieldsOf } from '@casl/ability/extra';
 import { Observable } from 'rxjs';
 import { Request } from 'express';
-import { Action } from "./action.enum";
-import { Subjects } from "./casl-ability.factory";
-import { PARSED_CRUD_REQUEST_KEY } from "@dataui/crud/lib/constants";
+import { Action } from './action.enum';
+import { Subjects } from './casl-ability.factory';
+import { PARSED_CRUD_REQUEST_KEY } from '@dataui/crud/lib/constants';
 
 type Fields = string[] | undefined;
 
@@ -14,8 +20,7 @@ export class FieldsPermissionInterceptor implements NestInterceptor {
   constructor(
     private readonly subject: Subjects,
     private readonly action: Action,
-  ) {
-  }
+  ) {}
 
   private anyField = '*';
 
@@ -40,7 +45,7 @@ export class FieldsPermissionInterceptor implements NestInterceptor {
     const crudReq = req[PARSED_CRUD_REQUEST_KEY];
     const requested = (crudReq?.parsed?.fields as Fields) ?? [];
     const finalFields =
-      (requested && requested.length > 0)
+      requested && requested.length > 0
         ? requested.filter((f) => permitted.includes(f))
         : permitted;
 

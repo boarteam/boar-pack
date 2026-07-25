@@ -1,7 +1,7 @@
-import { ProColumns } from "@ant-design/pro-components";
-import { EditOutlined } from "@ant-design/icons";
-import { useAccess } from "umi";
-import { Token } from "../../tools/api-client";
+import { ProColumns } from '@ant-design/pro-components';
+import { EditOutlined } from '@ant-design/icons';
+import { useAccess } from 'umi';
+import { Token } from '../../tools/api-client';
 
 export const useTokensColumns = (): ProColumns<Token>[] => {
   const { canManageTokens } = useAccess() || {};
@@ -14,8 +14,8 @@ export const useTokensColumns = (): ProColumns<Token>[] => {
         rules: [
           {
             required: true,
-          }
-        ]
+          },
+        ],
       },
       fieldProps: {
         autoComplete: 'one-time-code', // disable browser autocomplete

@@ -81,12 +81,14 @@ function lastSocket(): FakeWebSocket {
   return FakeWebSocket.instances[FakeWebSocket.instances.length - 1];
 }
 
-function makeClient(overrides: Partial<{
-  worker: null | string;
-  onOpen: () => void;
-  onMessage: (msg: TIncomeEvent) => void;
-  onClose: (event: CloseEvent) => void;
-}> = {}) {
+function makeClient(
+  overrides: Partial<{
+    worker: null | string;
+    onOpen: () => void;
+    onMessage: (msg: TIncomeEvent) => void;
+    onClose: (event: CloseEvent) => void;
+  }> = {},
+) {
   const onOpen = overrides.onOpen ?? vi.fn();
   const onMessage = overrides.onMessage ?? vi.fn();
   const onClose = overrides.onClose ?? vi.fn();

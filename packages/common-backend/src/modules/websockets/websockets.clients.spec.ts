@@ -1,11 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { AddressInfo } from 'node:net';
 import WebSocket, { WebSocketServer } from 'ws';
-import {
-  TBaseConfig,
-  WebsocketsClients,
-  WsErrorCodes,
-} from './websockets.clients';
+import { TBaseConfig, WebsocketsClients, WsErrorCodes } from './websockets.clients';
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -39,9 +35,7 @@ describe('WebsocketsClients', () => {
       serverCloses.set(
         socket,
         new Promise((resolve) =>
-          socket.once('close', (code, reason) =>
-            resolve({ code, reason: reason.toString() }),
-          ),
+          socket.once('close', (code, reason) => resolve({ code, reason: reason.toString() })),
         ),
       );
     });
@@ -117,9 +111,7 @@ describe('WebsocketsClients', () => {
       });
       clients.push(client);
       await waitUntil(() => serverSockets.length > before);
-      const closed = await onServerClose(
-        serverSockets[serverSockets.length - 1],
-      );
+      const closed = await onServerClose(serverSockets[serverSockets.length - 1]);
       expect(closed.code).toBe(WsErrorCodes.ErrorMessage);
       expect(closed.reason).toBe('Error: open failed');
     });
@@ -153,8 +145,7 @@ describe('WebsocketsClients', () => {
       const { server } = await connectPair({
         onClose,
         onMessage,
-        getEventError: (event: any) =>
-          event.event === 'error' ? event.data : null,
+        getEventError: (event: any) => (event.event === 'error' ? event.data : null),
       });
       const closed = onServerClose(server);
 
@@ -298,9 +289,7 @@ describe('WebsocketsClients', () => {
       // closing drops the config from the registry
       await service.close(client);
 
-      expect(() => service.reconnect(client, 10)).toThrow(
-        "Can't reconnect, config not found",
-      );
+      expect(() => service.reconnect(client, 10)).toThrow("Can't reconnect, config not found");
     });
   });
 });

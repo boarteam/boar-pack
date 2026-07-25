@@ -11,9 +11,7 @@
 jest.mock(
   require.resolve('uuid', {
     paths: [
-      require('path').dirname(
-        require.resolve('@boarteam/boar-pack-users-backend/package.json'),
-      ),
+      require('path').dirname(require.resolve('@boarteam/boar-pack-users-backend/package.json')),
     ],
   }),
   () => ({ v4: () => require('crypto').randomUUID() }),
@@ -43,7 +41,11 @@ import { createTestDatabase, testDataSourceOptions } from './pg';
 // those columns unnamed — host applications must configure a snake_case
 // NamingStrategy on their DataSource for the queries to work. Mirror that here.
 class SnakeNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
-  columnName(propertyName: string, customName: string | undefined, embeddedPrefixes: string[]): string {
+  columnName(
+    propertyName: string,
+    customName: string | undefined,
+    embeddedPrefixes: string[],
+  ): string {
     return snakeCase(embeddedPrefixes.concat(customName || propertyName).join('_'));
   }
 }

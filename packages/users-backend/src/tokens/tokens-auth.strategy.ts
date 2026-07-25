@@ -2,10 +2,10 @@ import { Strategy } from 'passport-http-bearer';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { TUser } from '../users';
-import { TOKENS_AUTH } from "./tokens.constants";
-import { TokensService } from "./tokens.service";
-import { BcryptService } from "../bcrypt";
-import Joi from "joi";
+import { TOKENS_AUTH } from './tokens.constants';
+import { TokensService } from './tokens.service';
+import { BcryptService } from '../bcrypt';
+import Joi from 'joi';
 
 @Injectable()
 export class TokensAuthStrategy extends PassportStrategy(Strategy, TOKENS_AUTH) {
@@ -35,7 +35,7 @@ export class TokensAuthStrategy extends PassportStrategy(Strategy, TOKENS_AUTH) 
       },
     });
 
-    if (!tokenEntity || !await this.bcryptService.compare(hash, tokenEntity.hash)) {
+    if (!tokenEntity || !(await this.bcryptService.compare(hash, tokenEntity.hash))) {
       throw new UnauthorizedException('Invalid token');
     }
 

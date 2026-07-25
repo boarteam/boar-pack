@@ -40,9 +40,7 @@ describe('Tokens', () => {
   let apiTokenValue: string;
 
   function login(email: string, password: string) {
-    return request(app.getHttpServer())
-      .post('/auth/login')
-      .send({ email, password });
+    return request(app.getHttpServer()).post('/auth/login').send({ email, password });
   }
 
   beforeAll(async () => {
@@ -85,10 +83,7 @@ describe('Tokens', () => {
   describe('TokensController & MyTokensController (TokensModule.forRoot)', () => {
     it('rejects unauthenticated requests', async () => {
       await request(app.getHttpServer()).get('/tokens').expect(401);
-      await request(app.getHttpServer())
-        .post('/my/tokens')
-        .send({ name: 'nope' })
-        .expect(401);
+      await request(app.getHttpServer()).post('/my/tokens').send({ name: 'nope' }).expect(401);
     });
 
     it('POST /my/tokens returns the secret once and stores only a bcrypt hash', async () => {

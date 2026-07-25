@@ -23,6 +23,7 @@ improving documentation.
 ## Getting Started
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/boarteam/boar-pack.git
    cd boar-pack
@@ -30,6 +31,7 @@ improving documentation.
 
 2. **Install dependencies**:
    This project uses `yarn` (v1) for package management. Run:
+
    ```bash
    yarn install
    ```
@@ -50,9 +52,11 @@ own throwaway Postgres containers via Testcontainers and only needs Docker —
 see [Building and Testing](#building-and-testing).)
 
 1. **Start Postgres** (Docker):
+
    ```bash
    docker compose up -d
    ```
+
    This runs Postgres 13 on `localhost:5951` with database `boar_pack` and
    roles `admin`/`app`, all using the password `password`. These are dummy
    credentials for the local container only — nothing outside your machine
@@ -90,8 +94,8 @@ changelogs from these messages**, so a malformed type (e.g. `feature:` or
 
 ### Commit Types
 
-- **`feat:`** Introduces a new feature *(minor version bump)*.
-- **`fix:`** Fixes a bug *(patch version bump)*.
+- **`feat:`** Introduces a new feature _(minor version bump)_.
+- **`fix:`** Fixes a bug _(patch version bump)_.
 - **`docs:`** Documentation updates.
 - **`style:`** Code style changes (e.g., formatting, missing semi-colons).
 - **`refactor:`** Code changes that neither fix a bug nor add a feature.
@@ -166,22 +170,27 @@ yarn watch:common-frontend
 ## Building and Testing
 
 - **Build everything** (from the repo root):
+
   ```bash
   yarn build
   ```
+
   This runs each package's `build` script via Lerna — plain `tsc` for the
   frontend packages and `nest build` for the backend packages. Output goes to
   each package's `dist/`.
 
 - **Build a single package**:
+
   ```bash
   yarn --cwd packages/users-backend build
   ```
 
 - **Run the tests** (from the repo root):
+
   ```bash
   yarn test
   ```
+
   This runs every package's suite via Lerna, one package at a time. The
   backend packages use **Jest** (with `@nestjs/testing`); suites that need a
   database start a **disposable `postgres:13` container** through
@@ -191,12 +200,15 @@ yarn watch:common-frontend
   use **Vitest** + Testing Library in jsdom and need no Docker.
 
 - **Run one package or one file**:
+
   ```bash
   yarn --cwd packages/users-backend test
   ```
+
   ```bash
   yarn --cwd packages/users-backend jest test/auth.spec.ts
   ```
+
   ```bash
   yarn --cwd packages/common-frontend vitest run src/tools/numberTools.test.ts
   ```
@@ -228,24 +240,24 @@ yarn watch:common-frontend
 
 Root `package.json` scripts:
 
-| Script | What it does |
-| --- | --- |
-| `yarn build` | Builds all packages (`lerna run build`). |
-| `yarn clean` | Removes `node_modules` from all packages (`lerna clean`). |
-| `yarn watch` | Pushes all packages via yalc, then watches every package and re-pushes on change. |
-| `yarn watch:<package>` | Watches a single package (e.g. `watch:users-backend`). |
-| `yarn push` | One-off `yalc push` of every package to linked consumers. |
-| `yarn ver` | `lerna version` — computes bumps from Conventional Commits, tags, updates changelogs. |
-| `yarn ver:pre` | Conventional-commits **prerelease** version/publish flow. |
-| `yarn pub` | Builds all packages, then `lerna publish from-package` (publishes whatever versions are unpublished). |
-| `yarn gen:module` / `yarn gen:page` | Code generators — [maintainers only](#generating-modules-or-pages-maintainers-only). |
+| Script                              | What it does                                                                                          |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `yarn build`                        | Builds all packages (`lerna run build`).                                                              |
+| `yarn clean`                        | Removes `node_modules` from all packages (`lerna clean`).                                             |
+| `yarn watch`                        | Pushes all packages via yalc, then watches every package and re-pushes on change.                     |
+| `yarn watch:<package>`              | Watches a single package (e.g. `watch:users-backend`).                                                |
+| `yarn push`                         | One-off `yalc push` of every package to linked consumers.                                             |
+| `yarn ver`                          | `lerna version` — computes bumps from Conventional Commits, tags, updates changelogs.                 |
+| `yarn ver:pre`                      | Conventional-commits **prerelease** version/publish flow.                                             |
+| `yarn pub`                          | Builds all packages, then `lerna publish from-package` (publishes whatever versions are unpublished). |
+| `yarn gen:module` / `yarn gen:page` | Code generators — [maintainers only](#generating-modules-or-pages-maintainers-only).                  |
 
 Per-package scripts:
 
-| Script | Packages | What it does |
-| --- | --- | --- |
-| `build` | all | Compiles the package into `dist/`. |
-| `yalc:push` | all | Publishes the package to local yalc consumers. |
+| Script      | Packages                                 | What it does                                                                        |
+| ----------- | ---------------------------------------- | ----------------------------------------------------------------------------------- |
+| `build`     | all                                      | Compiles the package into `dist/`.                                                  |
+| `yalc:push` | all                                      | Publishes the package to local yalc consumers.                                      |
 | `gen-types` | users-backend, liquidity-monitor-backend | Regenerates the sibling frontend package's OpenAPI client (needs the dev Postgres). |
 
 ---
@@ -256,6 +268,7 @@ Releasing is done by maintainers from a clean checkout of `master`:
 
 1. Ensure all commits follow the Conventional Commits format.
 2. Use Lerna to handle version bumps and changelog generation:
+
    ```bash
    yarn ver
    ```

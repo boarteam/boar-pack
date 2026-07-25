@@ -2,11 +2,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { TUser, UsersService } from '../users';
 import { JWTAuthService, TJWTPayload, TJWTRefreshPayload } from '../jwt-auth';
 import bcrypt from 'bcrypt';
-import { LocalAuthTokenDto } from "./local-auth/local-auth.dto";
+import { LocalAuthTokenDto } from './local-auth/local-auth.dto';
 import { Response } from 'express';
-import { refreshTokenName, tokenName } from "./auth.constants";
-import { AuthConfigService, TAuthConfig } from "./auth.config";
-import { TOKEN_TYPE } from "../revoked-tokens";
+import { refreshTokenName, tokenName } from './auth.constants';
+import { AuthConfigService, TAuthConfig } from './auth.config';
+import { TOKEN_TYPE } from '../revoked-tokens';
 
 declare global {
   namespace Express {
@@ -67,7 +67,7 @@ export class AuthService {
     const refreshPayload: TJWTRefreshPayload = {
       sub: user.id,
       sid,
-    }
+    };
     return {
       accessToken: this.jwtAuthService.sign(payload, TOKEN_TYPE.ACCESS),
       refreshToken: this.jwtAuthService.sign(refreshPayload, TOKEN_TYPE.REFRESH),
@@ -94,14 +94,18 @@ export class AuthService {
       httpOnly: true,
       secure: process.env.SECURE_COOKIE === 'true',
       sameSite: 'lax',
-      maxAge: tokens.accessToken.payload.exp && Math.max((tokens.accessToken.payload.exp * 1000) - Date.now(), 0),
+      maxAge:
+        tokens.accessToken.payload.exp &&
+        Math.max(tokens.accessToken.payload.exp * 1000 - Date.now(), 0),
     });
 
     res.cookie(refreshTokenName, tokens.refreshToken.token, {
       httpOnly: true,
       secure: process.env.SECURE_COOKIE === 'true',
       sameSite: 'lax',
-      maxAge: tokens.refreshToken.payload.exp && Math.max((tokens.refreshToken.payload.exp * 1000) - Date.now(), 0),
+      maxAge:
+        tokens.refreshToken.payload.exp &&
+        Math.max(tokens.refreshToken.payload.exp * 1000 - Date.now(), 0),
       path: this.config.refreshTokenPath,
     });
   }

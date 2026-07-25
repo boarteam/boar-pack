@@ -1,19 +1,19 @@
 name: Feature request
 description: Suggest an improvement to one of the @boarteam/boar-pack-* packages
-title: "[feat] "
-labels: ["enhancement"]
+title: '[feat] '
+labels: ['enhancement']
 body:
   - type: dropdown
     id: package
     attributes:
       label: Target package
       options:
-        - "@boarteam/boar-pack-users-backend"
-        - "@boarteam/boar-pack-users-frontend"
-        - "@boarteam/boar-pack-common-backend"
-        - "@boarteam/boar-pack-common-frontend"
-        - "@boarteam/boar-pack-liquidity-monitor-backend"
-        - "@boarteam/boar-pack-liquidity-monitor-frontend"
+        - '@boarteam/boar-pack-users-backend'
+        - '@boarteam/boar-pack-users-frontend'
+        - '@boarteam/boar-pack-common-backend'
+        - '@boarteam/boar-pack-common-frontend'
+        - '@boarteam/boar-pack-liquidity-monitor-backend'
+        - '@boarteam/boar-pack-liquidity-monitor-frontend'
         - repository / tooling / other
     validations:
       required: true

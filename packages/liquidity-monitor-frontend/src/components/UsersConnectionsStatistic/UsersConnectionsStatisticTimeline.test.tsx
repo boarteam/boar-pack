@@ -2,10 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { UsersConnectionsStatisticTimeline } from './UsersConnectionsStatisticTimeline';
 import { ApiClientProvider } from '../ApiClientContext';
-import {
-  ApiClient,
-  UsersConnectionsStatisticDto,
-} from '../../tools/api-client/generated';
+import { ApiClient, UsersConnectionsStatisticDto } from '../../tools/api-client/generated';
 
 const captured = vi.hoisted(() => ({
   column: [] as any[],

@@ -1,10 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { DataSource, Repository } from 'typeorm';
 import ms from 'ms';
-import {
-  RevokedToken,
-  TOKEN_TYPE,
-} from '../src/revoked-tokens/entities/revoked-token.entity';
+import { RevokedToken, TOKEN_TYPE } from '../src/revoked-tokens/entities/revoked-token.entity';
 import { RevokedTokensService } from '../src/revoked-tokens/revoked-tokens.service';
 import { createTestDataSource } from './pg';
 

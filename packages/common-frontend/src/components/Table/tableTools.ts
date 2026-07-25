@@ -1,20 +1,20 @@
-import { CondOperator, QueryJoin, SCondition } from "@nestjsx/crud-request";
+import { CondOperator, QueryJoin, SCondition } from '@nestjsx/crud-request';
 import { validate as uuidValidate } from 'uuid';
-import { IWithId, TFilters, TSearchableColumn } from "./tableTypes";
-import React, { Key } from "react";
-import { TColumnsStates } from "./useColumnsSets";
+import { IWithId, TFilters, TSearchableColumn } from './tableTypes';
+import React, { Key } from 'react';
+import { TColumnsStates } from './useColumnsSets';
 
 export function getFiltersSearch({
   baseFilters = {},
   filters = {},
   searchableColumns,
 }: {
-  baseFilters?: TFilters,
-  filters?: TFilters,
-  searchableColumns: TSearchableColumn[],
+  baseFilters?: TFilters;
+  filters?: TFilters;
+  searchableColumns: TSearchableColumn[];
 }): SCondition {
   const filterKeys = new Set(Object.keys(filters).concat(Object.keys(baseFilters)));
-  const search: SCondition = { '$and': [] };
+  const search: SCondition = { $and: [] };
   searchableColumns.forEach((col) => {
     const colDataIndex = Array.isArray(col.field) ? col.field.join('.') : col.field;
     const field = col.filterField || colDataIndex;
@@ -24,8 +24,8 @@ export function getFiltersSearch({
     if (
       value === '' ||
       value === undefined ||
-      col.numeric && !Number.isFinite(Number(value)) ||
-      col.uuid && (typeof value !== 'string' || !uuidValidate(value))
+      (col.numeric && !Number.isFinite(Number(value))) ||
+      (col.uuid && (typeof value !== 'string' || !uuidValidate(value)))
     ) {
       return;
     }
@@ -74,19 +74,20 @@ export function getFiltersSearch({
         break;
 
       case Operators.equals:
-        if (Array.isArray(value) && value.length === 1 && value[0] === null || value === null) {
+        if ((Array.isArray(value) && value.length === 1 && value[0] === null) || value === null) {
           operator = Operators.isNull;
           value = true;
         }
         break;
-
     }
 
     search.$and?.push({ [field]: { [operator]: value } });
   });
 
   if (filterKeys.size) {
-    throw new Error(`Some filters are not defined in searchableColumns: ${Array.from(filterKeys).join(', ')}`);
+    throw new Error(
+      `Some filters are not defined in searchableColumns: ${Array.from(filterKeys).join(', ')}`,
+    );
   }
 
   return search;
@@ -148,8 +149,8 @@ export function applyKeywordToSearch(
   }
 
   return {
-    $and: [...filterSearch.$and, ...keywordSearches]
-  }
+    $and: [...filterSearch.$and, ...keywordSearches],
+  };
 }
 
 export type TIndexableRecord = {
@@ -161,18 +162,20 @@ export type TIndexableRecord = {
 export function collectFieldsFromColumns<T>(
   columns: TIndexableRecord[] | undefined,
   idColumnName: string | string[],
-  joinFields: Set<string> = new Set,
-  fields: Set<string> = new Set
+  joinFields: Set<string> = new Set(),
+  fields: Set<string> = new Set(),
 ): string[] {
-  return [Array.from(buildFieldsFromColumns<T>(columns, idColumnName, joinFields, fields)).join(',')];
+  return [
+    Array.from(buildFieldsFromColumns<T>(columns, idColumnName, joinFields, fields)).join(','),
+  ];
 }
 
 export function buildFieldsFromColumnsForDescriptionsDisplay<T>(
   columns: TIndexableRecord[] | undefined,
   idColumnName: string | string[],
-  fields: Set<string> = new Set,
+  fields: Set<string> = new Set(),
 ): Set<string> {
-  columns?.forEach(col => {
+  columns?.forEach((col) => {
     if ('children' in col && Array.isArray(col.children)) {
       buildFieldsFromColumnsForDescriptionsDisplay(col.children, idColumnName, fields);
     }
@@ -187,10 +190,10 @@ export function buildFieldsFromColumnsForDescriptionsDisplay<T>(
 export function buildFieldsFromColumns<T>(
   columns: TIndexableRecord[] | undefined,
   idColumnName: string | string[],
-  joinFields: Set<string> = new Set,
-  fields: Set<string> = new Set
+  joinFields: Set<string> = new Set(),
+  fields: Set<string> = new Set(),
 ): Set<string> {
-  columns?.forEach(col => {
+  columns?.forEach((col) => {
     if ('children' in col && Array.isArray(col.children)) {
       buildFieldsFromColumns(col.children, idColumnName, joinFields, fields);
     }
@@ -203,7 +206,13 @@ export function buildFieldsFromColumns<T>(
       return;
     }
 
-    if (!dataIndex || (Array.isArray(idColumnName) ? idColumnName.includes(dataIndex) : dataIndex === idColumnName) || joinFields.has(dataIndex)) {
+    if (
+      !dataIndex ||
+      (Array.isArray(idColumnName)
+        ? idColumnName.includes(dataIndex)
+        : dataIndex === idColumnName) ||
+      joinFields.has(dataIndex)
+    ) {
       return;
     }
 
@@ -228,7 +237,7 @@ export function buildJoinFields(join?: QueryJoin | QueryJoin[]) {
     if (!Array.isArray(joinArr)) {
       joinArr = [joinArr];
     }
-    joinSelect = joinArr.map(relation => {
+    joinSelect = joinArr.map((relation) => {
       joinFields.add(relation.field);
       let res = relation.field;
       if (relation.select) {

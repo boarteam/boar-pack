@@ -1,15 +1,31 @@
-import { Tag, Input, InputNumber, Space, Button, Switch, Descriptions, Checkbox, Typography } from "antd";
-import { ColumnFilterItem, FilterDropdownProps } from "antd/es/table/interface";
-import { ReactNode, useEffect, useState } from "react";
+import {
+  Tag,
+  Input,
+  InputNumber,
+  Space,
+  Button,
+  Switch,
+  Descriptions,
+  Checkbox,
+  Typography,
+} from 'antd';
+import { ColumnFilterItem, FilterDropdownProps } from 'antd/es/table/interface';
+import { ReactNode, useEffect, useState } from 'react';
 
 const { Text } = Typography;
 
 export const booleanFilters: ColumnFilterItem[] = [
-  { text: <Tag color='red'>Disabled</Tag>, value: 0 },
-  { text: <Tag color='green'>Enabled</Tag>, value: 1 },
+  { text: <Tag color="red">Disabled</Tag>, value: 0 },
+  { text: <Tag color="green">Enabled</Tag>, value: 1 },
 ];
 
-export function NumberFilterDropdown({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: FilterDropdownProps) {
+export function NumberFilterDropdown({
+  setSelectedKeys,
+  selectedKeys,
+  confirm,
+  clearFilters,
+  close,
+}: FilterDropdownProps) {
   return (
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <InputNumber
@@ -21,10 +37,16 @@ export function NumberFilterDropdown({ setSelectedKeys, selectedKeys, confirm, c
         placeholder="Please Enter"
       />
     </DynamicOptionsFilterDropdown>
-  )
+  );
 }
 
-export function SwitchFilterDropdown({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: FilterDropdownProps) {
+export function SwitchFilterDropdown({
+  setSelectedKeys,
+  selectedKeys,
+  confirm,
+  clearFilters,
+  close,
+}: FilterDropdownProps) {
   return (
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <Descriptions
@@ -32,20 +54,28 @@ export function SwitchFilterDropdown({ setSelectedKeys, selectedKeys, confirm, c
         items={[
           {
             label: 'Only filled values',
-            children: <Switch
-              checked={selectedKeys.length ? Boolean(selectedKeys[0]) : undefined}
-              onChange={(value) => setSelectedKeys([Number(value)])}
-            />,
+            children: (
+              <Switch
+                checked={selectedKeys.length ? Boolean(selectedKeys[0]) : undefined}
+                onChange={(value) => setSelectedKeys([Number(value)])}
+              />
+            ),
             style: { padding: 0 },
             contentStyle: { justifyContent: 'flex-end' },
-          }
+          },
         ]}
       />
     </DynamicOptionsFilterDropdown>
-  )
+  );
 }
 
-export function CheckboxFilterDropdown({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: FilterDropdownProps) {
+export function CheckboxFilterDropdown({
+  setSelectedKeys,
+  selectedKeys,
+  confirm,
+  clearFilters,
+  close,
+}: FilterDropdownProps) {
   return (
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <Checkbox
@@ -54,13 +84,27 @@ export function CheckboxFilterDropdown({ setSelectedKeys, selectedKeys, confirm,
         indeterminate={selectedKeys.length === 0}
         style={{ margin: '8px 16px', width: 250 }}
       >
-        {selectedKeys.length ? (selectedKeys[0] ? 'Will show only filled values' : 'Will show only empty values') : <Text type="secondary">Click to filter</Text>}
+        {selectedKeys.length ? (
+          selectedKeys[0] ? (
+            'Will show only filled values'
+          ) : (
+            'Will show only empty values'
+          )
+        ) : (
+          <Text type="secondary">Click to filter</Text>
+        )}
       </Checkbox>
     </DynamicOptionsFilterDropdown>
-  )
+  );
 }
 
-export function NumberRangeFilterDropdown({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: FilterDropdownProps) {
+export function NumberRangeFilterDropdown({
+  setSelectedKeys,
+  selectedKeys,
+  confirm,
+  clearFilters,
+  close,
+}: FilterDropdownProps) {
   const toRange = (keys: React.Key[]): [number, number] | undefined =>
     keys.length >= 2 ? [Number(keys[0]), Number(keys[1])] : undefined;
 
@@ -78,7 +122,7 @@ export function NumberRangeFilterDropdown({ setSelectedKeys, selectedKeys, confi
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <InputNumber
         value={range?.[0]}
-        onChange={value => updateRange(prev => ([value, prev[1]]))}
+        onChange={(value) => updateRange((prev) => [value, prev[1]])}
         onPressEnter={() => confirm()}
         step={1}
         style={{ margin: 4, width: 250 }}
@@ -86,37 +130,48 @@ export function NumberRangeFilterDropdown({ setSelectedKeys, selectedKeys, confi
       />
       <InputNumber
         value={range?.[1]}
-        onChange={value => updateRange(prev => ([prev[0], value]))}
+        onChange={(value) => updateRange((prev) => [prev[0], value])}
         onPressEnter={() => confirm()}
         step={1}
         style={{ margin: 4, width: 250 }}
         placeholder="To"
       />
     </DynamicOptionsFilterDropdown>
-  )
+  );
 }
 
-export function StringFilterDropdown({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: FilterDropdownProps) {
+export function StringFilterDropdown({
+  setSelectedKeys,
+  selectedKeys,
+  confirm,
+  clearFilters,
+  close,
+}: FilterDropdownProps) {
   return (
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <Input
         value={selectedKeys.length ? String(selectedKeys[0]) : undefined}
-        onChange={(event) => setSelectedKeys(event.target.value === undefined ? [] : [event.target.value])}
+        onChange={(event) =>
+          setSelectedKeys(event.target.value === undefined ? [] : [event.target.value])
+        }
         onPressEnter={() => confirm()}
         style={{ margin: 4, width: 250 }}
         placeholder="Please Enter"
       />
     </DynamicOptionsFilterDropdown>
-  )
+  );
 }
 
 export const DynamicOptionsFilterDropdown = ({
   children,
   confirm,
   clearFilters,
-}: Partial<FilterDropdownProps> & { children: ReactNode}) => {
+}: Partial<FilterDropdownProps> & { children: ReactNode }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }} onKeyDown={(e) => e.stopPropagation()}>
+    <div
+      style={{ display: 'flex', flexDirection: 'column' }}
+      onKeyDown={(e) => e.stopPropagation()}
+    >
       {children}
       <Space className="ant-table-filter-dropdown-btns">
         <Button
@@ -140,5 +195,5 @@ export const DynamicOptionsFilterDropdown = ({
         </Button>
       </Space>
     </div>
-  )
+  );
 };

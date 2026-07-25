@@ -76,9 +76,7 @@ describe('CaslAbilityFactory', () => {
   });
 
   it('ignores unregistered permissions and logs a warning', async () => {
-    const warnSpy = jest
-      .spyOn(Logger.prototype, 'warn')
-      .mockImplementation(() => undefined);
+    const warnSpy = jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => undefined);
 
     try {
       const ability = await factory.createForUser({

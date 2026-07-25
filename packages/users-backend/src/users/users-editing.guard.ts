@@ -7,19 +7,16 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { getAction } from "@dataui/crud";
+import { getAction } from '@dataui/crud';
 import { isEqual } from 'lodash';
-import { Action, CaslAbilityFactory } from "../casl";
-import { Roles } from "./entities/user.entity";
+import { Action, CaslAbilityFactory } from '../casl';
+import { Roles } from './entities/user.entity';
 
 @Injectable()
 export class UsersEditingGuard implements CanActivate {
   private readonly logger = new Logger(UsersEditingGuard.name);
 
-  constructor(
-    private readonly calsAbilityFactory: CaslAbilityFactory,
-  ) {
-  }
+  constructor(private readonly calsAbilityFactory: CaslAbilityFactory) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();

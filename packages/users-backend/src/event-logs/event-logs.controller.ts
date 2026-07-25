@@ -4,12 +4,12 @@ import { Crud, CrudController } from '@dataui/crud';
 import { EventLogsService } from './event-logs.service';
 import { EventLog } from './entities/event-log.entity';
 import { EventLogCreateDto } from './dto/event-log-create.dto';
-import { EventLogUpdateDto } from "./dto/event-log-update.dto";
-import { ManageEventLogsPolicy } from "./policies/manage-event-logs.policy";
-import { ViewEventLogsPolicy } from "./policies/view-event-logs.policy";
-import { CheckPolicies } from "../casl";
-import { EventLogTimelineDto } from "./dto/event-log-timeline.dto";
-import { EventLogTimelineQueryDto } from "./dto/event-log-timeline-query.dto";
+import { EventLogUpdateDto } from './dto/event-log-update.dto';
+import { ManageEventLogsPolicy } from './policies/manage-event-logs.policy';
+import { ViewEventLogsPolicy } from './policies/view-event-logs.policy';
+import { CheckPolicies } from '../casl';
+import { EventLogTimelineDto } from './dto/event-log-timeline.dto';
+import { EventLogTimelineQueryDto } from './dto/event-log-timeline-query.dto';
 
 @Crud({
   model: {
@@ -33,9 +33,7 @@ import { EventLogTimelineQueryDto } from "./dto/event-log-timeline-query.dto";
   routes: {
     only: ['getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
     getManyBase: {
-      decorators: [
-        CheckPolicies(new ViewEventLogsPolicy()),
-      ],
+      decorators: [CheckPolicies(new ViewEventLogsPolicy())],
     },
   },
   dto: {
@@ -47,10 +45,8 @@ import { EventLogTimelineQueryDto } from "./dto/event-log-timeline-query.dto";
 @ApiTags('EventLogs')
 @ApiExtraModels(EventLogTimelineDto, EventLogTimelineQueryDto)
 @Controller('event-logs')
-export class EventLogsController implements CrudController<EventLog>{
-  constructor(
-    readonly service: EventLogsService,
-  ) {}
+export class EventLogsController implements CrudController<EventLog> {
+  constructor(readonly service: EventLogsService) {}
 
   @CheckPolicies(new ViewEventLogsPolicy())
   @Get('timeline')
@@ -58,9 +54,7 @@ export class EventLogsController implements CrudController<EventLog>{
     type: EventLogTimelineDto,
     isArray: true,
   })
-  async getTimeline(
-    @Query() query: EventLogTimelineQueryDto,
-  ): Promise<EventLogTimelineDto[]> {
+  async getTimeline(@Query() query: EventLogTimelineQueryDto): Promise<EventLogTimelineDto[]> {
     const start = query.startTime ? new Date(query.startTime) : undefined;
     const end = query.endTime ? new Date(query.endTime) : undefined;
     return this.service.getTimeline(start, end, query.timezone);

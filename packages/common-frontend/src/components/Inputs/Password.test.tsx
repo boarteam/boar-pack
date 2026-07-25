@@ -37,9 +37,7 @@ describe('Password', () => {
     const onChange = vi.fn();
     const { container } = render(<Password onChange={onChange} />);
 
-    const generateButton = container
-      .querySelector('.anticon-thunderbolt')!
-      .closest('button')!;
+    const generateButton = container.querySelector('.anticon-thunderbolt')!.closest('button')!;
     await user.click(generateButton);
 
     expect(onChange).toHaveBeenCalledTimes(1);

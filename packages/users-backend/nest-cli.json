@@ -3,9 +3,7 @@
   "sourceRoot": "src",
   "entryFile": "generateTypes",
   "compilerOptions": {
-    "plugins": [
-      "@nestjs/swagger"
-    ],
+    "plugins": ["@nestjs/swagger"],
     "tsConfigPath": "./tsconfig.json"
   }
 }

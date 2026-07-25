@@ -12,8 +12,7 @@ export class EventLogMiddleware implements NestMiddleware {
   constructor(
     private readonly eventLogService: EventLogsService,
     @Inject(SERVICE_CONFIG_TOKEN) private readonly serviceConfig?: TEventLogServiceConfig,
-  ) {
-  }
+  ) {}
 
   use(req: Request, res: Response, next: NextFunction) {
     const start = Date.now();
@@ -29,7 +28,8 @@ export class EventLogMiddleware implements NestMiddleware {
 
       const logEntry = new EventLog();
       logEntry.action = req.method;
-      logEntry.entity = req.url.split('?')[0]
+      logEntry.entity = req.url
+        .split('?')[0]
         .split('/')
         .filter((part) => part)
         .map((part) => part[0].toUpperCase() + part.slice(1))
@@ -39,7 +39,6 @@ export class EventLogMiddleware implements NestMiddleware {
         logEntry.service = this.serviceConfig.name;
         logEntry.serviceId = this.serviceConfig.id || null;
       }
-
 
       logEntry.duration = Date.now() - start;
       logEntry.statusCode = res.statusCode;

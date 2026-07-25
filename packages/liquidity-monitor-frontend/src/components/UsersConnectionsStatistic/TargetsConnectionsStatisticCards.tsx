@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
-import { Col, Empty, Row } from "antd";
-import { PageLoading } from "@ant-design/pro-layout";
-import { Line } from "@ant-design/plots";
-import { StatisticCard } from "@ant-design/pro-components";
-import { groupBy } from "lodash";
-import { createStyles } from "antd-style";
-import { UsersConnectionsStatisticDto } from "../../tools/api-client";
-import { useApiClient } from "../ApiClientContext";
+import { Col, Empty, Row } from 'antd';
+import { PageLoading } from '@ant-design/pro-layout';
+import { Line } from '@ant-design/plots';
+import { StatisticCard } from '@ant-design/pro-components';
+import { groupBy } from 'lodash';
+import { createStyles } from 'antd-style';
+import { UsersConnectionsStatisticDto } from '../../tools/api-client';
+import { useApiClient } from '../ApiClientContext';
 
 export type TTarget = {
   id: string;
   name: string;
-}
+};
 
 type TTargetsConnectionsStatisticCardsProps = {
   targets?: TTarget[];
   updateInterval?: number;
-}
+};
 
 const useStyles = createStyles(() => {
   return {
@@ -26,8 +26,8 @@ const useStyles = createStyles(() => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-      }
-    }
+      },
+    },
   };
 });
 
@@ -47,12 +47,14 @@ export const TargetsConnectionsStatisticCards = ({
       return;
     }
 
-    apiClient.usersConnectionsStatistic.getTargetsTimeline({
-      startTime,
-      endTime,
-      targetIds: targets.map(t => t.id),
-    }).then(setData);
-  }
+    apiClient.usersConnectionsStatistic
+      .getTargetsTimeline({
+        startTime,
+        endTime,
+        targetIds: targets.map((t) => t.id),
+      })
+      .then(setData);
+  };
 
   useEffect(() => {
     if (updateInterval) {
@@ -86,35 +88,40 @@ export const TargetsConnectionsStatisticCards = ({
             className={styles.card}
             title={target.name}
             chart={
-              dataByTargets[target.id] ?
-                <Line {...{
-                  height: 200,
-                  data: dataByTargets[target.id],
-                  xField: 'time',
-                  yField: 'records',
-                  colorField: 'target',
-                  legend: {
-                    size: false,
-                    color: {
-                      itemMarker: 'rect'
-                    }
-                  },
-                  axis: {
-                    y: {
-                      title: 'Quotes number',
-                      gridLineWidth: 1,
+              dataByTargets[target.id] ? (
+                <Line
+                  {...{
+                    height: 200,
+                    data: dataByTargets[target.id],
+                    xField: 'time',
+                    yField: 'records',
+                    colorField: 'target',
+                    legend: {
+                      size: false,
+                      color: {
+                        itemMarker: 'rect',
+                      },
                     },
-                  },
-                  line: {
-                    style: {
-                      lineWidth: 2
-                    }
-                  },
-                }} /> : <Empty description='No user connections statistic' />
+                    axis: {
+                      y: {
+                        title: 'Quotes number',
+                        gridLineWidth: 1,
+                      },
+                    },
+                    line: {
+                      style: {
+                        lineWidth: 2,
+                      },
+                    },
+                  }}
+                />
+              ) : (
+                <Empty description="No user connections statistic" />
+              )
             }
           />
         </Col>
       ))}
     </Row>
   );
-}
+};

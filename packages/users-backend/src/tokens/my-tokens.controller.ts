@@ -1,17 +1,24 @@
 import { Body, Controller, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Crud, CrudAuth, CrudController, type CrudRequest, Override, ParsedRequest } from '@dataui/crud';
+import {
+  Crud,
+  CrudAuth,
+  CrudController,
+  type CrudRequest,
+  Override,
+  ParsedRequest,
+} from '@dataui/crud';
 import { TokensService } from './tokens.service';
 import { Token } from './entities/token.entity';
-import { ManageMyTokensPolicy } from "./policies/manage-my-tokens.policy";
-import { TUser } from "../users";
-import { CheckPolicies } from "../casl";
-import { TokenUpdateDto } from "./dto/token-update.dto";
-import { TokenCreateDto } from "./dto/token-create.dto";
-import { Request } from "express";
-import { BcryptService } from "../bcrypt";
+import { ManageMyTokensPolicy } from './policies/manage-my-tokens.policy';
+import { TUser } from '../users';
+import { CheckPolicies } from '../casl';
+import { TokenUpdateDto } from './dto/token-update.dto';
+import { TokenCreateDto } from './dto/token-create.dto';
+import { Request } from 'express';
+import { BcryptService } from '../bcrypt';
 import { randomBytes } from 'crypto';
-import { TokenWithValueDto } from "./dto/token-with-value.dto";
+import { TokenWithValueDto } from './dto/token-with-value.dto';
 
 @Crud({
   model: {
@@ -49,7 +56,7 @@ import { TokenWithValueDto } from "./dto/token-with-value.dto";
 @CheckPolicies(new ManageMyTokensPolicy())
 @ApiTags('Tokens')
 @Controller('my/tokens')
-export class MyTokensController implements CrudController<Token>{
+export class MyTokensController implements CrudController<Token> {
   constructor(
     readonly service: TokensService,
     readonly bcryptService: BcryptService,
@@ -71,12 +78,12 @@ export class MyTokensController implements CrudController<Token>{
       userId: originReq.user!.id,
       name: dto.name,
       hash: hashedValue,
-    }
+    };
     const token = await this.base.createOneBase!(req, tokenData as Token);
 
     return {
       ...token,
       value: `${token.id}.${rawValue}`,
-    }
+    };
   }
 }

@@ -8,8 +8,6 @@ export class AuthExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const status = exception.getStatus();
 
-    response
-      .status(status)
-      .redirect('/user/login?error=' + encodeURIComponent(exception.message));
+    response.status(status).redirect('/user/login?error=' + encodeURIComponent(exception.message));
   }
 }

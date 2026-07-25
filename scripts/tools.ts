@@ -1,17 +1,22 @@
 // oldName is template-thing
 // newName is new-module-name
-import fs from "fs/promises";
-import path from "path";
+import fs from 'fs/promises';
+import path from 'path';
 
-export function replaceStr(content: string, oldName: string, pack: string, newName: string): string {
+export function replaceStr(
+  content: string,
+  oldName: string,
+  pack: string,
+  newName: string,
+): string {
   const oldNameUpper = oldName.toUpperCase().replace(/-/g, '_');
   const oldNameLower = oldNameUpper.toLowerCase();
-  const oldNameCamel = oldName.replace(/-([a-z])/g, g => g[1].toUpperCase());
+  const oldNameCamel = oldName.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
   const oldNameUpperCamel = oldNameCamel.charAt(0).toUpperCase() + oldNameCamel.slice(1);
 
   const newNameUpper = newName.toUpperCase().replace(/-/g, '_');
   const newNameLower = newNameUpper.toLowerCase();
-  const newNameCamel = newName.replace(/-([a-z])/g, g => g[1].toUpperCase());
+  const newNameCamel = newName.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
   const newNameUpperCamel = newNameCamel.charAt(0).toUpperCase() + newNameCamel.slice(1);
 
   return content
@@ -26,7 +31,12 @@ export function replaceStr(content: string, oldName: string, pack: string, newNa
     .replace('// @ts-nocheck\n', '');
 }
 
-export async function copyAndRenameFiles(srcDir: string, oldName: string, pack: string, newName: string): Promise<void> {
+export async function copyAndRenameFiles(
+  srcDir: string,
+  oldName: string,
+  pack: string,
+  newName: string,
+): Promise<void> {
   try {
     const destDir = replaceStr(srcDir, oldName, pack, newName);
     await fs.mkdir(destDir, { recursive: true });

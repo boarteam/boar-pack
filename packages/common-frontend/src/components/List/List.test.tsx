@@ -82,7 +82,7 @@ describe('List', () => {
     expect(params.join).toEqual([]);
     // fields are comma-joined; id omitted (always returned by backend)
     expect(params.fields).toEqual(['name']);
-    expect(JSON.parse(params.s)).toEqual({ '$and': [] });
+    expect(JSON.parse(params.s)).toEqual({ $and: [] });
   });
 
   it('passes pagination through as page/limit when enabled', async () => {

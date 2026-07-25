@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Button, message } from "antd";
-import { CheckOutlined, WarningOutlined } from "@ant-design/icons";
-import { green, red } from "@ant-design/colors";
+import React, { useState } from 'react';
+import { Button, message } from 'antd';
+import { CheckOutlined, WarningOutlined } from '@ant-design/icons';
+import { green, red } from '@ant-design/colors';
 
 type TCheckConnection = {
   defaultSuccessMessage: string;
@@ -10,7 +10,7 @@ type TCheckConnection = {
     success: boolean;
     message?: string;
   }>;
-}
+};
 
 export const useCheckConnection = ({
   defaultSuccessMessage,
@@ -33,26 +33,28 @@ export const useCheckConnection = ({
     setLoading(true);
     setError(null);
 
-    request().then(({
-      success,
-      message,
-    }) => {
-      if (success) {
-        setError(null);
-        messageApi.success(message || defaultSuccessMessage);
-      } else {
-        const err = message || defaultErrorMessage;
-        setError(err);
-        messageApi.error(err);
-      }
-    }).catch(e => {
-      console.error(e);
-    }).finally(() => {
-      setLoading(false);
-      setTimer(setTimeout(() => {
-        setError(undefined);
-      }, 3000));
-    });
+    request()
+      .then(({ success, message }) => {
+        if (success) {
+          setError(null);
+          messageApi.success(message || defaultSuccessMessage);
+        } else {
+          const err = message || defaultErrorMessage;
+          setError(err);
+          messageApi.error(err);
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+      })
+      .finally(() => {
+        setLoading(false);
+        setTimer(
+          setTimeout(() => {
+            setError(undefined);
+          }, 3000),
+        );
+      });
   };
 
   let icon = null;
@@ -62,18 +64,22 @@ export const useCheckConnection = ({
     icon = <WarningOutlined style={{ color: red.primary }} />;
   }
 
-  const button = <>
-    {contextHolder}
-    <Button
-      size={'small'}
-      loading={loading}
-      danger={!!error}
-      icon={icon}
-      onClick={checkConnection}
-    >Test</Button>
-  </>;
+  const button = (
+    <>
+      {contextHolder}
+      <Button
+        size={'small'}
+        loading={loading}
+        danger={!!error}
+        icon={icon}
+        onClick={checkConnection}
+      >
+        Test
+      </Button>
+    </>
+  );
 
   return {
     button,
   };
-}
+};

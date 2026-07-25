@@ -1,8 +1,8 @@
-import React from "react";
-import { useIntl } from "@umijs/max";
-import { NotificationsSettings } from "../../components/Settings/NotificationsSettings";
-import { PageContainer } from "@ant-design/pro-components";
-import { useTabs } from "@boarteam/boar-pack-common-frontend";
+import React from 'react';
+import { useIntl } from '@umijs/max';
+import { NotificationsSettings } from '../../components/Settings/NotificationsSettings';
+import { PageContainer } from '@ant-design/pro-components';
+import { useTabs } from '@boarteam/boar-pack-common-frontend';
 
 enum Tabs {
   notifications = 'notifications',
@@ -29,7 +29,7 @@ const Settings: React.FC = () => {
     >
       {activeTab === Tabs.notifications ? <NotificationsSettings /> : null}
     </PageContainer>
-  )
-}
+  );
+};
 
 export default Settings;

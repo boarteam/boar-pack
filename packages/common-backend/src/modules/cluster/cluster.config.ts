@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import cluster from "node:cluster";
+import cluster from 'node:cluster';
 
 export type TClusterConfig = {
   port: number;
@@ -10,8 +10,7 @@ export type TClusterConfig = {
 
 @Injectable()
 export class ClusterConfigService {
-  constructor(private configService: ConfigService) {
-  }
+  constructor(private configService: ConfigService) {}
 
   get config(): TClusterConfig {
     const port = Number.parseInt(this.configService.get<string>('PORT') || '');
@@ -26,7 +25,6 @@ export class ClusterConfigService {
       if (cluster.isWorker && !worker) {
         throw new Error('WORKER env variable is not set');
       }
-
     }
 
     return {

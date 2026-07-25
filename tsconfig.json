@@ -21,7 +21,5 @@
     "resolveJsonModule": true,
     "paths": {}
   },
-  "include": [
-    "scripts"
-  ]
+  "include": ["scripts"]
 }

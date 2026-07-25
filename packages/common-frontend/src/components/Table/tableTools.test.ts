@@ -50,7 +50,9 @@ describe('getFiltersSearch', () => {
   const emailColumn: TSearchableColumn = { field: 'email', operator: Operators.containsLow };
 
   it('returns an empty $and when there are no filters', () => {
-    expect(getFiltersSearch({ searchableColumns: [nameColumn, emailColumn] })).toEqual({ $and: [] });
+    expect(getFiltersSearch({ searchableColumns: [nameColumn, emailColumn] })).toEqual({
+      $and: [],
+    });
   });
 
   it('builds a condition per filtered column using the column operator', () => {
@@ -60,10 +62,7 @@ describe('getFiltersSearch', () => {
     });
 
     expect(search).toEqual({
-      $and: [
-        { name: { $contL: 'alice' } },
-        { email: { $contL: 'a@b.c' } },
-      ],
+      $and: [{ name: { $contL: 'alice' } }, { email: { $contL: 'a@b.c' } }],
     });
   });
 
@@ -91,71 +90,105 @@ describe('getFiltersSearch', () => {
       filters: { 'user.name': 'bob', name: 'x' },
       searchableColumns: [
         { field: ['user', 'name'], operator: Operators.containsLow },
-        { field: 'name', filterField: 'profile.name', filterOperator: Operators.equals, operator: Operators.containsLow },
+        {
+          field: 'name',
+          filterField: 'profile.name',
+          filterOperator: Operators.equals,
+          operator: Operators.containsLow,
+        },
       ],
     });
 
     expect(search).toEqual({
-      $and: [
-        { 'user.name': { $contL: 'bob' } },
-        { 'profile.name': { $eq: 'x' } },
-      ],
+      $and: [{ 'user.name': { $contL: 'bob' } }, { 'profile.name': { $eq: 'x' } }],
     });
   });
 
   it('drops numeric columns with non-numeric values and keeps numeric ones', () => {
-    const numericColumn: TSearchableColumn = { field: 'age', operator: Operators.equals, numeric: true };
+    const numericColumn: TSearchableColumn = {
+      field: 'age',
+      operator: Operators.equals,
+      numeric: true,
+    };
 
-    expect(getFiltersSearch({ filters: { age: 'abc' }, searchableColumns: [numericColumn] }))
-      .toEqual({ $and: [] });
-    expect(getFiltersSearch({ filters: { age: '42' }, searchableColumns: [numericColumn] }))
-      .toEqual({ $and: [{ age: { $eq: '42' } }] });
+    expect(
+      getFiltersSearch({ filters: { age: 'abc' }, searchableColumns: [numericColumn] }),
+    ).toEqual({ $and: [] });
+    expect(
+      getFiltersSearch({ filters: { age: '42' }, searchableColumns: [numericColumn] }),
+    ).toEqual({ $and: [{ age: { $eq: '42' } }] });
   });
 
   it('drops a numeric filter with value 0 (current behavior: falsy filter values are ignored)', () => {
     // `filters[key] || baseFilters[key]` treats 0/false as absent, so filtering by 0 is impossible.
-    const numericColumn: TSearchableColumn = { field: 'age', operator: Operators.equals, numeric: true };
+    const numericColumn: TSearchableColumn = {
+      field: 'age',
+      operator: Operators.equals,
+      numeric: true,
+    };
 
-    expect(getFiltersSearch({ filters: { age: 0 }, searchableColumns: [numericColumn] }))
-      .toEqual({ $and: [] });
+    expect(getFiltersSearch({ filters: { age: 0 }, searchableColumns: [numericColumn] })).toEqual({
+      $and: [],
+    });
   });
 
   it('validates uuid columns', () => {
-    const uuidColumn: TSearchableColumn = { field: 'ownerId', operator: Operators.equals, uuid: true };
+    const uuidColumn: TSearchableColumn = {
+      field: 'ownerId',
+      operator: Operators.equals,
+      uuid: true,
+    };
 
-    expect(getFiltersSearch({ filters: { ownerId: 'not-a-uuid' }, searchableColumns: [uuidColumn] }))
-      .toEqual({ $and: [] });
-    expect(getFiltersSearch({ filters: { ownerId: 123 }, searchableColumns: [uuidColumn] }))
-      .toEqual({ $and: [] });
-    expect(getFiltersSearch({ filters: { ownerId: VALID_UUID }, searchableColumns: [uuidColumn] }))
-      .toEqual({ $and: [{ ownerId: { $eq: VALID_UUID } }] });
+    expect(
+      getFiltersSearch({ filters: { ownerId: 'not-a-uuid' }, searchableColumns: [uuidColumn] }),
+    ).toEqual({ $and: [] });
+    expect(
+      getFiltersSearch({ filters: { ownerId: 123 }, searchableColumns: [uuidColumn] }),
+    ).toEqual({ $and: [] });
+    expect(
+      getFiltersSearch({ filters: { ownerId: VALID_UUID }, searchableColumns: [uuidColumn] }),
+    ).toEqual({ $and: [{ ownerId: { $eq: VALID_UUID } }] });
   });
 
   describe('between operator', () => {
     const betweenColumn: TSearchableColumn = { field: 'amount', operator: Operators.between };
 
     it('keeps $between when both bounds are set', () => {
-      expect(getFiltersSearch({ filters: { amount: [3, 9] }, searchableColumns: [betweenColumn] }))
-        .toEqual({ $and: [{ amount: { $between: [3, 9] } }] });
+      expect(
+        getFiltersSearch({ filters: { amount: [3, 9] }, searchableColumns: [betweenColumn] }),
+      ).toEqual({ $and: [{ amount: { $between: [3, 9] } }] });
     });
 
     it('degrades to $lte when the lower bound is missing', () => {
-      expect(getFiltersSearch({ filters: { amount: [undefined as any, 9] }, searchableColumns: [betweenColumn] }))
-        .toEqual({ $and: [{ amount: { $lte: 9 } }] });
+      expect(
+        getFiltersSearch({
+          filters: { amount: [undefined as any, 9] },
+          searchableColumns: [betweenColumn],
+        }),
+      ).toEqual({ $and: [{ amount: { $lte: 9 } }] });
     });
 
     it('degrades to $gte when the upper bound is missing', () => {
-      expect(getFiltersSearch({ filters: { amount: [3, undefined as any] }, searchableColumns: [betweenColumn] }))
-        .toEqual({ $and: [{ amount: { $gte: 3 } }] });
+      expect(
+        getFiltersSearch({
+          filters: { amount: [3, undefined as any] },
+          searchableColumns: [betweenColumn],
+        }),
+      ).toEqual({ $and: [{ amount: { $gte: 3 } }] });
     });
 
     it('drops a numeric between column even with two valid bounds (current behavior)', () => {
       // The numeric guard runs Number([3, 9]) -> NaN before the between handling,
       // so a numeric+between column can never receive a two-bound range.
-      const numericBetween: TSearchableColumn = { field: 'amount', operator: Operators.between, numeric: true };
+      const numericBetween: TSearchableColumn = {
+        field: 'amount',
+        operator: Operators.between,
+        numeric: true,
+      };
 
-      expect(getFiltersSearch({ filters: { amount: [3, 9] }, searchableColumns: [numericBetween] }))
-        .toEqual({ $and: [] });
+      expect(
+        getFiltersSearch({ filters: { amount: [3, 9] }, searchableColumns: [numericBetween] }),
+      ).toEqual({ $and: [] });
     });
   });
 
@@ -163,53 +196,65 @@ describe('getFiltersSearch', () => {
     it('unwraps arrays for $isnull and flips to $notnull when the value is not true', () => {
       const column: TSearchableColumn = { field: 'archivedAt', operator: Operators.isNull };
 
-      expect(getFiltersSearch({ filters: { archivedAt: [true] }, searchableColumns: [column] }))
-        .toEqual({ $and: [{ archivedAt: { $isnull: true } }] });
-      expect(getFiltersSearch({ filters: { archivedAt: [false] }, searchableColumns: [column] }))
-        .toEqual({ $and: [{ archivedAt: { $notnull: true } }] });
+      expect(
+        getFiltersSearch({ filters: { archivedAt: [true] }, searchableColumns: [column] }),
+      ).toEqual({ $and: [{ archivedAt: { $isnull: true } }] });
+      expect(
+        getFiltersSearch({ filters: { archivedAt: [false] }, searchableColumns: [column] }),
+      ).toEqual({ $and: [{ archivedAt: { $notnull: true } }] });
     });
 
     it('flips $notnull to $isnull when the value is not true', () => {
       const column: TSearchableColumn = { field: 'deletedAt', operator: Operators.notNull };
 
-      expect(getFiltersSearch({ filters: { deletedAt: [true] }, searchableColumns: [column] }))
-        .toEqual({ $and: [{ deletedAt: { $notnull: true } }] });
-      expect(getFiltersSearch({ filters: { deletedAt: [false] }, searchableColumns: [column] }))
-        .toEqual({ $and: [{ deletedAt: { $isnull: true } }] });
+      expect(
+        getFiltersSearch({ filters: { deletedAt: [true] }, searchableColumns: [column] }),
+      ).toEqual({ $and: [{ deletedAt: { $notnull: true } }] });
+      expect(
+        getFiltersSearch({ filters: { deletedAt: [false] }, searchableColumns: [column] }),
+      ).toEqual({ $and: [{ deletedAt: { $isnull: true } }] });
     });
 
     it('turns a single-null $in selection into $isnull', () => {
       const column: TSearchableColumn = { field: 'tag', operator: Operators.in };
 
-      expect(getFiltersSearch({ filters: { tag: ['a', 'b'] }, searchableColumns: [column] }))
-        .toEqual({ $and: [{ tag: { $in: ['a', 'b'] } }] });
-      expect(getFiltersSearch({ filters: { tag: [null] }, searchableColumns: [column] }))
-        .toEqual({ $and: [{ tag: { $isnull: true } }] });
+      expect(
+        getFiltersSearch({ filters: { tag: ['a', 'b'] }, searchableColumns: [column] }),
+      ).toEqual({ $and: [{ tag: { $in: ['a', 'b'] } }] });
+      expect(getFiltersSearch({ filters: { tag: [null] }, searchableColumns: [column] })).toEqual({
+        $and: [{ tag: { $isnull: true } }],
+      });
     });
 
     it('turns an equals filter for null into $isnull', () => {
       const column: TSearchableColumn = { field: 'role', operator: Operators.equals };
 
-      expect(getFiltersSearch({ filters: { role: [null] }, searchableColumns: [column] }))
-        .toEqual({ $and: [{ role: { $isnull: true } }] });
+      expect(getFiltersSearch({ filters: { role: [null] }, searchableColumns: [column] })).toEqual({
+        $and: [{ role: { $isnull: true } }],
+      });
       // null in filters is falsy and falls back to baseFilters
-      expect(getFiltersSearch({ baseFilters: { role: null }, searchableColumns: [column] }))
-        .toEqual({ $and: [{ role: { $isnull: true } }] });
+      expect(
+        getFiltersSearch({ baseFilters: { role: null }, searchableColumns: [column] }),
+      ).toEqual({ $and: [{ role: { $isnull: true } }] });
     });
   });
 
   it('throws when a filter key has no matching searchable column', () => {
-    expect(() => getFiltersSearch({
-      filters: { rogue: 'x' },
-      searchableColumns: [nameColumn],
-    })).toThrow('Some filters are not defined in searchableColumns: rogue');
+    expect(() =>
+      getFiltersSearch({
+        filters: { rogue: 'x' },
+        searchableColumns: [nameColumn],
+      }),
+    ).toThrow('Some filters are not defined in searchableColumns: rogue');
   });
 
   it('throws for unknown baseFilters keys too', () => {
-    expect(() => getFiltersSearch({
-      baseFilters: { hidden: 1 },
-      searchableColumns: [],
-    })).toThrow('Some filters are not defined in searchableColumns: hidden');
+    expect(() =>
+      getFiltersSearch({
+        baseFilters: { hidden: 1 },
+        searchableColumns: [],
+      }),
+    ).toThrow('Some filters are not defined in searchableColumns: hidden');
   });
 });
 
@@ -232,10 +277,7 @@ describe('applyKeywordToSearch', () => {
       $and: [
         { name: { $contL: 'x' } },
         {
-          $or: [
-            { name: { $contL: 'joe' } },
-            { email: { $cont: 'joe' } },
-          ],
+          $or: [{ name: { $contL: 'joe' } }, { email: { $cont: 'joe' } }],
         },
       ],
     });
@@ -311,26 +353,25 @@ describe('applyKeywordToSearch', () => {
       $and: [{ $or: [{ name: { $contL: 'joe' } }] }],
     });
     expect(applyKeywordToSearch({ $and: [] }, guardedColumns, undefined, '42')).toEqual({
-      $and: [{
-        $or: [
-          { name: { $contL: '42' } },
-          { age: { $eq: '42' } },
-        ],
-      }],
+      $and: [
+        {
+          $or: [{ name: { $contL: '42' } }, { age: { $eq: '42' } }],
+        },
+      ],
     });
     expect(applyKeywordToSearch({ $and: [] }, guardedColumns, undefined, VALID_UUID)).toEqual({
-      $and: [{
-        $or: [
-          { name: { $contL: VALID_UUID } },
-          { ownerId: { $eq: VALID_UUID } },
-        ],
-      }],
+      $and: [
+        {
+          $or: [{ name: { $contL: VALID_UUID } }, { ownerId: { $eq: VALID_UUID } }],
+        },
+      ],
     });
   });
 
   it('throws when the filter search has no $and array', () => {
-    expect(() => applyKeywordToSearch({} as any, columns, undefined, 'joe'))
-      .toThrow('Bad format of filter search');
+    expect(() => applyKeywordToSearch({} as any, columns, undefined, 'joe')).toThrow(
+      'Bad format of filter search',
+    );
   });
 });
 
@@ -365,11 +406,7 @@ describe('buildFieldsFromColumns / collectFieldsFromColumns', () => {
   });
 
   it('supports composite id columns given as an array', () => {
-    const columns = [
-      { dataIndex: 'id' },
-      { dataIndex: 'version' },
-      { dataIndex: 'name' },
-    ];
+    const columns = [{ dataIndex: 'id' }, { dataIndex: 'version' }, { dataIndex: 'name' }];
 
     const fields = buildFieldsFromColumns(columns, ['id', 'version']);
 
@@ -377,11 +414,7 @@ describe('buildFieldsFromColumns / collectFieldsFromColumns', () => {
   });
 
   it('collectFieldsFromColumns returns a single comma-joined entry', () => {
-    const columns = [
-      { dataIndex: 'name' },
-      { dataIndex: 'email' },
-      { dataIndex: 'id' },
-    ];
+    const columns = [{ dataIndex: 'name' }, { dataIndex: 'email' }, { dataIndex: 'id' }];
 
     expect(collectFieldsFromColumns(columns, 'id')).toEqual(['name,email']);
   });
@@ -397,7 +430,10 @@ describe('buildJoinFields', () => {
   });
 
   it('normalizes a single join object and appends selected fields', () => {
-    const { joinSelect, joinFields } = buildJoinFields({ field: 'user', select: ['name', 'email'] });
+    const { joinSelect, joinFields } = buildJoinFields({
+      field: 'user',
+      select: ['name', 'email'],
+    });
 
     expect(joinSelect).toEqual(['user||name,email']);
     expect(joinFields).toEqual(new Set(['user']));

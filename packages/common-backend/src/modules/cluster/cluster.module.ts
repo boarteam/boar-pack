@@ -1,21 +1,13 @@
 import { Logger, Module, OnApplicationBootstrap } from '@nestjs/common';
-import { ClusterService } from "./cluster.service";
-import { nextTick } from "process";
-import { ConfigModule } from "@nestjs/config";
-import { ClusterConfigService, TClusterConfig } from "./cluster.config";
+import { ClusterService } from './cluster.service';
+import { nextTick } from 'process';
+import { ConfigModule } from '@nestjs/config';
+import { ClusterConfigService, TClusterConfig } from './cluster.config';
 
 @Module({
-  imports: [
-    ConfigModule,
-  ],
-  providers: [
-    ClusterConfigService,
-    ClusterService,
-  ],
-  exports: [
-    ClusterService,
-    ClusterConfigService,
-  ],
+  imports: [ConfigModule],
+  providers: [ClusterConfigService, ClusterService],
+  exports: [ClusterService, ClusterConfigService],
 })
 export class ClusterModule implements OnApplicationBootstrap {
   private readonly logger = new Logger(ClusterModule.name);

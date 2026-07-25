@@ -12,7 +12,7 @@ const UserAgentDisplay: React.FC<UserAgentProps> = ({ userAgent }) => {
 
   return (
     <span>
-      <i className={browserIconClass} style={{ fontSize: '14px', marginRight: '4px' }}/>
+      <i className={browserIconClass} style={{ fontSize: '14px', marginRight: '4px' }} />
       <span>{`${browser.name} ${browser.version}`}</span>
     </span>
   );

@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Col, Empty, Row, Space } from "antd";
-import { PageLoading } from "@ant-design/pro-layout";
-import { Line } from "@ant-design/plots";
-import { StatisticCard } from "@ant-design/pro-components";
-import { groupBy } from "lodash";
-import { createStyles } from "antd-style";
-import { UsersConnectionsStatisticDto } from "../../tools/api-client";
-import { useApiClient } from "../ApiClientContext";
-import { TUser } from "./index";
-import { Link } from "react-router-dom";
+import { Col, Empty, Row, Space } from 'antd';
+import { PageLoading } from '@ant-design/pro-layout';
+import { Line } from '@ant-design/plots';
+import { StatisticCard } from '@ant-design/pro-components';
+import { groupBy } from 'lodash';
+import { createStyles } from 'antd-style';
+import { UsersConnectionsStatisticDto } from '../../tools/api-client';
+import { useApiClient } from '../ApiClientContext';
+import { TUser } from './index';
+import { Link } from 'react-router-dom';
 
 type TUsersConnectionsStatisticCardsProps = {
   users: TUser[];
   updateInterval?: number;
-}
+};
 
 const useStyles = createStyles(() => {
   return {
@@ -23,8 +23,8 @@ const useStyles = createStyles(() => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-      }
-    }
+      },
+    },
   };
 });
 
@@ -42,12 +42,14 @@ export const UsersConnectionsStatisticCards = ({
   const [data, setData] = useState<UsersConnectionsStatisticDto[] | null>(null);
 
   const getUsersConnectionsStatistic = () => {
-    apiClient.usersConnectionsStatistic.getTimeline({
-      startTime,
-      endTime,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    }).then(setData);
-  }
+    apiClient.usersConnectionsStatistic
+      .getTimeline({
+        startTime,
+        endTime,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      })
+      .then(setData);
+  };
 
   useEffect(() => {
     if (updateInterval) {
@@ -85,35 +87,40 @@ export const UsersConnectionsStatisticCards = ({
               </Space>
             }
             chart={
-              dataByUsers[user.id] ?
-                <Line {...{
-                  height: 200,
-                  data: dataByUsers[user.id],
-                  xField: 'time',
-                  yField: 'records',
-                  colorField: 'target',
-                  legend: {
-                    size: false,
-                    color: {
-                      itemMarker: 'rect'
-                    }
-                  },
-                  axis: {
-                    y: {
-                      title: 'Quotes number',
-                      gridLineWidth: 1,
+              dataByUsers[user.id] ? (
+                <Line
+                  {...{
+                    height: 200,
+                    data: dataByUsers[user.id],
+                    xField: 'time',
+                    yField: 'records',
+                    colorField: 'target',
+                    legend: {
+                      size: false,
+                      color: {
+                        itemMarker: 'rect',
+                      },
                     },
-                  },
-                  line: {
-                    style: {
-                      lineWidth: 2
-                    }
-                  },
-                }} /> : <Empty description='No user connections statistic' />
+                    axis: {
+                      y: {
+                        title: 'Quotes number',
+                        gridLineWidth: 1,
+                      },
+                    },
+                    line: {
+                      style: {
+                        lineWidth: 2,
+                      },
+                    },
+                  }}
+                />
+              ) : (
+                <Empty description="No user connections statistic" />
+              )
             }
           />
         </Col>
       ))}
     </Row>
   );
-}
+};

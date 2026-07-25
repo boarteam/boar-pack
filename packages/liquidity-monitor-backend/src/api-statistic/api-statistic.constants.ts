@@ -1,3 +1,3 @@
 export const SERVICES = {
-  TID_API: 'TID API Statistic Service'
-}
+  TID_API: 'TID API Statistic Service',
+};

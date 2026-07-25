@@ -1,10 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { WebSocket } from "ws";
-import { TUser } from "../users/entities/user.entity";
-import { IncomingMessage } from "http";
-import passport from "passport";
-import { Interval } from "@nestjs/schedule";
-import { WS_AUTH_CLIENT_AUTHENTICATED, WS_AUTH_STRATEGY } from "./ws-auth.constants";
+import { WebSocket } from 'ws';
+import { TUser } from '../users/entities/user.entity';
+import { IncomingMessage } from 'http';
+import passport from 'passport';
+import { Interval } from '@nestjs/schedule';
+import { WS_AUTH_CLIENT_AUTHENTICATED, WS_AUTH_STRATEGY } from './ws-auth.constants';
 
 declare module 'ws' {
   interface WebSocket {
@@ -25,45 +25,45 @@ export class WsAuthService {
   private clients: Set<WebSocket> = new Set();
   private clientsToTerminate: Set<WebSocket> = new Set();
 
-  constructor(
-    @Inject(WS_AUTH_STRATEGY) private readonly strategy: string,
-  ) {
-  }
+  constructor(@Inject(WS_AUTH_STRATEGY) private readonly strategy: string) {}
 
   public handleConnection(socket: WebSocket, req: IncomingMessage) {
     this.logger.debug(`Client connected`);
 
-    this.socketsAuthenticators.set(socket, new Promise<TUser | null>((resolve) => {
-      passport.authenticate(this.strategy, (err: Error, user: TUser) => {
-        this.logger.debug(`Authenticating user`);
+    this.socketsAuthenticators.set(
+      socket,
+      new Promise<TUser | null>((resolve) => {
+        passport.authenticate(this.strategy, (err: Error, user: TUser) => {
+          this.logger.debug(`Authenticating user`);
 
-        if (err) {
-          this.logger.error(err, err.stack);
-          socket.send('Authentication error');
-          socket.close();
-          return resolve(null);
-        }
-        if (!user) {
-          this.logger.warn(`User was not taken by ${this.strategy} auth strategy`);
-          socket.send('Authentication error');
-          socket.close();
-          return resolve(null);
-        }
+          if (err) {
+            this.logger.error(err, err.stack);
+            socket.send('Authentication error');
+            socket.close();
+            return resolve(null);
+          }
+          if (!user) {
+            this.logger.warn(`User was not taken by ${this.strategy} auth strategy`);
+            socket.send('Authentication error');
+            socket.close();
+            return resolve(null);
+          }
 
-        socket.user = user;
-        this.addClient(socket);
-        resolve(user);
-      })(req, null, (e: Error | null) => {
-        if (e) {
-          this.logger.error(e, e.stack);
-          return resolve(null);
-        }
-      });
-    }));
+          socket.user = user;
+          this.addClient(socket);
+          resolve(user);
+        })(req, null, (e: Error | null) => {
+          if (e) {
+            this.logger.error(e, e.stack);
+            return resolve(null);
+          }
+        });
+      }),
+    );
   }
 
   public async finishInitialization(socket: WebSocket): Promise<TUser | null> {
-    return await this.socketsAuthenticators.get(socket) || null;
+    return (await this.socketsAuthenticators.get(socket)) || null;
   }
 
   public handleDisconnect(client: WebSocket) {

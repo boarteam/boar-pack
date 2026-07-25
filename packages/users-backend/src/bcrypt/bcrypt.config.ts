@@ -8,11 +8,13 @@ export type TBcryptConfig = {
 
 @Injectable()
 export class BcryptConfigService {
-  constructor(private configService: ConfigService) {
-  }
+  constructor(private configService: ConfigService) {}
 
   get config(): TBcryptConfig {
-    const saltRounds = Number.parseInt(this.configService.get<string>('BCRYPT_SALT_ROUNDS', ''), 10);
+    const saltRounds = Number.parseInt(
+      this.configService.get<string>('BCRYPT_SALT_ROUNDS', ''),
+      10,
+    );
     const experimentalFeatures = this.configService.get<string>('EXPERIMENTAL_FEATURES');
 
     if (!Number.isInteger(saltRounds)) {

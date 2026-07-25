@@ -45,7 +45,9 @@ const columnsWithActions: ProColumns<User>[] = [
     title: 'Actions',
     valueType: 'option',
     render: (_dom, record, _index, action) => [
-      <a key="edit" onClick={() => action?.startEditable?.(record.id)}>Edit</a>,
+      <a key="edit" onClick={() => action?.startEditable?.(record.id)}>
+        Edit
+      </a>,
     ],
   },
 ];
@@ -186,10 +188,7 @@ describe('Table (viewOnly)', () => {
       expect(JSON.parse(keywordCall![0].s)).toEqual({
         $and: [
           {
-            $or: [
-              { name: { $contL: 'ali' } },
-              { email: { $contL: 'ali' } },
-            ],
+            $or: [{ name: { $contL: 'ali' } }, { email: { $contL: 'ali' } }],
           },
         ],
       });

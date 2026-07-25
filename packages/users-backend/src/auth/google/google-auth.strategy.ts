@@ -8,13 +8,10 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { GOOGLE_AUTH } from '../auth-strategies.constants';
-import { GoogleAuthConfigService } from "./google-auth.config";
+import { GoogleAuthConfigService } from './google-auth.config';
 
 @Injectable()
-export class GoogleAuthStrategy extends PassportStrategy(
-  Strategy,
-  GOOGLE_AUTH,
-) {
+export class GoogleAuthStrategy extends PassportStrategy(Strategy, GOOGLE_AUTH) {
   private readonly logger = new Logger(GoogleAuthStrategy.name);
 
   constructor(
@@ -37,9 +34,7 @@ export class GoogleAuthStrategy extends PassportStrategy(
     callback: VerifyCallback,
   ): Promise<any> {
     try {
-      const user = await this.authService.validateUserByEmail(
-        profile.emails[0].value,
-      );
+      const user = await this.authService.validateUserByEmail(profile.emails[0].value);
 
       if (!user) {
         callback(new UnauthorizedException('User is not found'));
@@ -49,11 +44,7 @@ export class GoogleAuthStrategy extends PassportStrategy(
       callback(null, user);
     } catch (e) {
       this.logger.error(e, e.stack);
-      callback(
-        new InternalServerErrorException(
-          'Impossible to log in user via google',
-        ),
-      );
+      callback(new InternalServerErrorException('Impossible to log in user via google'));
     }
   }
 }

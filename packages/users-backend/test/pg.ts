@@ -5,9 +5,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 function pgUri(): URL {
   const uri = process.env.TEST_PG_URI;
   if (!uri) {
-    throw new Error(
-      'TEST_PG_URI is not set — jest global-setup did not run (is Docker up?)',
-    );
+    throw new Error('TEST_PG_URI is not set — jest global-setup did not run (is Docker up?)');
   }
   return new URL(uri);
 }

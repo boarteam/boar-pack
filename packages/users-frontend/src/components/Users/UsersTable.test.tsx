@@ -80,7 +80,7 @@ const renderTable = (
   render(
     <TestProviders client={client}>
       <UsersTable {...props} />
-    </TestProviders>
+    </TestProviders>,
   );
   return client;
 };
@@ -142,10 +142,7 @@ describe('UsersTable', () => {
 
     const link = await screen.findByRole('link', { name: 'Alice' });
     expect(link).toHaveAttribute('href', '/admin/users/u1');
-    expect(screen.getByRole('link', { name: 'Bob' })).toHaveAttribute(
-      'href',
-      '/admin/users/u2'
-    );
+    expect(screen.getByRole('link', { name: 'Bob' })).toHaveAttribute('href', '/admin/users/u2');
   });
 
   it('links user names with a custom userPageUrlPrefix', async () => {
@@ -177,19 +174,15 @@ describe('UsersTable', () => {
   });
 
   it('uses renderPermissions for expanded rows when provided', async () => {
-    const renderPermissions = vi.fn((user: User) => (
-      <div>custom permissions for {user.name}</div>
-    ));
+    const renderPermissions = vi.fn((user: User) => <div>custom permissions for {user.name}</div>);
     renderTable({ renderPermissions });
 
     await screen.findByText('Alice');
     await userEvent.click(
-      document.querySelectorAll('.ant-table-row-expand-icon')[0] as HTMLElement
+      document.querySelectorAll('.ant-table-row-expand-icon')[0] as HTMLElement,
     );
 
-    expect(
-      await screen.findByText('custom permissions for Alice')
-    ).toBeInTheDocument();
+    expect(await screen.findByText('custom permissions for Alice')).toBeInTheDocument();
     expect(renderPermissions).toHaveBeenCalled();
     expect(renderPermissions.mock.calls[0][0]).toMatchObject({ name: 'Alice' });
   });

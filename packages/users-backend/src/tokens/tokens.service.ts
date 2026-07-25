@@ -5,10 +5,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class TokensService extends TypeOrmCrudService<Token> {
-
-  constructor(
-    readonly repo: Repository<Token>,
-  ) {
+  constructor(readonly repo: Repository<Token>) {
     super(repo);
   }
 }

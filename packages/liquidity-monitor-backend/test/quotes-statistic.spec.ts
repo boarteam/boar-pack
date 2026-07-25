@@ -49,9 +49,7 @@ describe('QuotesStatisticService (Postgres)', () => {
     await flush();
 
     const rows = await repo.find({ order: { quotesProviderName: 'ASC' } });
-    expect(
-      rows.map((r) => ({ provider: r.quotesProviderName, n: r.quotesNumber })),
-    ).toEqual([
+    expect(rows.map((r) => ({ provider: r.quotesProviderName, n: r.quotesNumber }))).toEqual([
       { provider: 'alpha', n: 4 },
       { provider: 'beta', n: 2 },
     ]);
@@ -118,13 +116,21 @@ describe('QuotesStatisticService (Postgres)', () => {
     const start = new Date('2026-07-20T10:00:00.000Z');
 
     // exactly 75s -> still 'second': 76 ticks, HH24:MI:SS labels
-    const secondRows = await service.getTimeline(start, new Date('2026-07-20T10:01:15.000Z'), 'UTC');
+    const secondRows = await service.getTimeline(
+      start,
+      new Date('2026-07-20T10:01:15.000Z'),
+      'UTC',
+    );
     expect(secondRows).toHaveLength(76);
     expect(secondRows[0].time).toBe('10:00:00');
     expect(secondRows.every((r) => r.records === 0)).toBe(true);
 
     // 76s -> 'minute': 2 ticks, HH24:MI labels
-    const minuteRows = await service.getTimeline(start, new Date('2026-07-20T10:01:16.000Z'), 'UTC');
+    const minuteRows = await service.getTimeline(
+      start,
+      new Date('2026-07-20T10:01:16.000Z'),
+      'UTC',
+    );
     expect(minuteRows.map((r) => r.time)).toEqual(['10:00', '10:01']);
     expect(minuteRows.every((r) => r.records === 0)).toBe(true);
   });

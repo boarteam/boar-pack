@@ -1,5 +1,13 @@
-import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
-import { User } from "../../users";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { User } from '../../users';
 
 export enum LogType {
   AUDIT = 'Audit',
@@ -99,7 +107,7 @@ export class EventLog {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
   })
   userAgent: string | null;
 
@@ -115,7 +123,7 @@ export class EventLog {
 
   @Index('event_logs_service_index')
   @Column({
-    default: 'main'
+    default: 'main',
   })
   service: string;
 
@@ -128,13 +136,13 @@ export class EventLog {
 
   @CreateDateColumn({
     type: 'timestamp with time zone',
-    name: 'created_at'
+    name: 'created_at',
   })
   createdAt: Date;
 
   @UpdateDateColumn({
     type: 'timestamp with time zone',
-    name: 'updated_at'
+    name: 'updated_at',
   })
   updatedAt: Date;
 }

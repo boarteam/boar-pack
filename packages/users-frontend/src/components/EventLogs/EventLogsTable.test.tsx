@@ -96,7 +96,7 @@ const renderTable = (
   render(
     <TestProviders client={client}>
       <EventLogsTable onDateRangeChange={onDateRangeChange} {...props} />
-    </TestProviders>
+    </TestProviders>,
   );
   return { client, onDateRangeChange };
 };
@@ -138,8 +138,7 @@ describe('EventLogsTable', () => {
     });
 
     await screen.findByText('Event Logs');
-    const params =
-      client.eventLogs.getManyBaseEventLogsControllerEventLog.mock.calls[0][0];
+    const params = client.eventLogs.getManyBaseEventLogsControllerEventLog.mock.calls[0][0];
     expect(JSON.parse(params.s)).toEqual({
       $and: [
         {

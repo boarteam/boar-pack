@@ -12,9 +12,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PackRule, packRules } from '@casl/ability/extra';
 import { Permission } from '../users/entities/permissions';
 import { EventLog } from '../event-logs';
-import { Token } from "../tokens/entities/token.entity";
-import { MyToken } from "../tokens/policies/manage-my-tokens.policy";
-import { Setting } from "../settings/entities/setting.entity";
+import { Token } from '../tokens/entities/token.entity';
+import { MyToken } from '../tokens/policies/manage-my-tokens.policy';
+import { Setting } from '../settings/entities/setting.entity';
 
 type AnyObject = Record<PropertyKey, unknown>;
 
@@ -28,12 +28,8 @@ export interface TSubjects {
 
 export type TTextSubjects = 'all';
 
-export type TSubjectsNames =
-  | keyof TSubjects
-  | TTextSubjects;
-export type Subjects =
-  | InferSubjects<TSubjects[keyof TSubjects]>
-  | TTextSubjects;
+export type TSubjectsNames = keyof TSubjects | TTextSubjects;
+export type Subjects = InferSubjects<TSubjects[keyof TSubjects]> | TTextSubjects;
 
 export type AppAbility = MongoAbility<[Action, Subjects], AnyObject>;
 
@@ -49,22 +45,24 @@ export class CaslAbilityFactory {
     [key in Permission]?: {
       action: Action;
       subject: Subjects | Subjects[];
-    }
+    };
   } = {};
 
   private static abilitiesDefiners: Set<TAbilityDefiner> = new Set();
   private logger = new Logger(CaslAbilityFactory.name);
 
   public static addPermissionToAction({
-    permission, action, subject,
+    permission,
+    action,
+    subject,
   }: {
-    permission: Permission,
-    action: Action,
-    subject: Subjects | Subjects[],
+    permission: Permission;
+    action: Action;
+    subject: Subjects | Subjects[];
   }) {
     CaslAbilityFactory.permissionsToActionsMap[permission] = {
       action,
-      subject
+      subject,
     };
   }
 
@@ -101,8 +99,7 @@ export class CaslAbilityFactory {
 
     return build({
       // Read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details
-      detectSubjectType: (item) =>
-        item.constructor as ExtractSubjectType<Subjects>,
+      detectSubjectType: (item) => item.constructor as ExtractSubjectType<Subjects>,
     });
   }
 
