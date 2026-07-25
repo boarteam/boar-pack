@@ -38,10 +38,6 @@ function ConflictsTab<Entity>({
   setResolvedData?: Dispatch<SetStateAction<Entity[]>>;
   originColumns: ProColumns<Entity>[];
 }) {
-  if (!conflicts || conflicts.length === 0) {
-    return <p>No conflicts found.</p>;
-  }
-
   const getRelationalData = (key: string, value: string) => {
     if (relationalFields?.has(key)) {
       const relation = relationalFields.get(key);
@@ -57,8 +53,8 @@ function ConflictsTab<Entity>({
     field-current: 'current field name from server',
     ...
   }*/
-  const [resolvedData, setLocalResolvedData] = useState<Record<string, any>[]>(
-    conflicts.map((conflict) =>
+  const [resolvedData, setLocalResolvedData] = useState<Record<string, any>[]>(() =>
+    (conflicts ?? []).map((conflict) =>
       conflict.fields.reduce((acc: Record<string, any>, currentValue) => {
         const key = getNormalizedKey(currentValue.field);
         acc[key] = getRelationalData(key, currentValue.imported_value);
@@ -70,7 +66,9 @@ function ConflictsTab<Entity>({
   );
 
   useEffect(() => {
-    if (!setResolvedData) return;
+    // no conflicts: keep the parent's resolved data untouched, as before the
+    // hooks were hoisted above the empty-state return
+    if (!setResolvedData || !conflicts || conflicts.length === 0) return;
 
     const payload = resolvedData.map((obj, i) => {
       const data = { ...obj };
@@ -93,7 +91,13 @@ function ConflictsTab<Entity>({
 
   const { styles } = useStyles();
 
-  const useCurrentValue = (conflict: TImportConflict, field: string) => {
+  if (!conflicts || conflicts.length === 0) {
+    return <p>No conflicts found.</p>;
+  }
+
+  // not a hook — plain state updater (the former `use…` name tripped the
+  // rules-of-hooks lint when called from the column-title button)
+  const applyCurrentValue = (conflict: TImportConflict, field: string) => {
     const key = getNormalizedKey(field);
 
     // Update the resolved data for this conflict
@@ -132,7 +136,7 @@ function ConflictsTab<Entity>({
                 size="small"
                 type="link"
                 icon={<SwapOutlined />}
-                onClick={() => useCurrentValue(conflict, field.field)}
+                onClick={() => applyCurrentValue(conflict, field.field)}
               />
             </Tooltip>
           </div>
