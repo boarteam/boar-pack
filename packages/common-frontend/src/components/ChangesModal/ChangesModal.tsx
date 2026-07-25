@@ -1,7 +1,7 @@
 import { Badge, Button, message, Modal, Tabs } from 'antd';
 import { ProColumns } from '@ant-design/pro-components';
 import { createStyles } from 'antd-style';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ConflictsTab from './ConflictsTab';
 import ErrorsTab from './ErrorsTab';
 import ResultsTab from './ResultsTab';
@@ -86,12 +86,6 @@ export function ChangesModal<Entity extends Record<string, any>, ImportRequestPa
   const [serverErrors, setServerErrors] = useState<TServerErrorItem[]>([]);
   const [resolvedData, setResolvedData] = useState<Entity[]>([]);
 
-  useEffect(() => {
-    if (serverErrors.length > 0) {
-      setActiveTab(ModalTabs.errors);
-    }
-  }, [serverErrors.length]);
-
   if (!changes) return null;
 
   const { created, updated, tableData } = changes;
@@ -137,6 +131,11 @@ export function ChangesModal<Entity extends Record<string, any>, ImportRequestPa
 
         if ((status === 400 || payload?.statusCode === 400) && Array.isArray(payload?.errors)) {
           setServerErrors(payload.errors);
+          // The Errors tab is disabled while empty, so only pull the user there when the
+          // server actually reported something.
+          if (payload.errors.length > 0) {
+            setActiveTab(ModalTabs.errors);
+          }
           message.error(payload.message || 'Validation error');
           return;
         }
