@@ -1,4 +1,4 @@
-import { Injectable, NestMiddleware, Inject, Logger, HttpException } from '@nestjs/common';
+import { Injectable, NestMiddleware, Inject, Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { EventLogsService } from './event-logs.service';
 import { EventLog, LogLevel } from './entities/event-log.entity';

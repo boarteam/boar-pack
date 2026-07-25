@@ -38,7 +38,7 @@ export function useCreation<Entity, CreateDto, TPathParams = {}>({
   actionRef?: MutableRefObject<ActionType | undefined>;
   pathParams: TPathParams;
   entityToCreateDto: (entity: Entity) => CreateDto;
-  onCreate?: ({}: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
+  onCreate?: (params: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
   createButtonSize: SizeType;
   popupCreation?: boolean;
   createNewDefaultParams?: Partial<Entity>;

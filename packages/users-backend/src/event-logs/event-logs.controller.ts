@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiExtraModels, ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
+import { ApiExtraModels, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudController } from '@dataui/crud';
 import { EventLogsService } from './event-logs.service';
 import { EventLog } from './entities/event-log.entity';

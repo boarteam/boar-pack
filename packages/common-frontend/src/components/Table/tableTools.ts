@@ -170,7 +170,7 @@ export function collectFieldsFromColumns<T>(
   ];
 }
 
-export function buildFieldsFromColumnsForDescriptionsDisplay<T>(
+export function buildFieldsFromColumnsForDescriptionsDisplay<_T>(
   columns: TIndexableRecord[] | undefined,
   idColumnName: string | string[],
   fields: Set<string> = new Set(),
@@ -187,7 +187,7 @@ export function buildFieldsFromColumnsForDescriptionsDisplay<T>(
   return fields;
 }
 
-export function buildFieldsFromColumns<T>(
+export function buildFieldsFromColumns<_T>(
   columns: TIndexableRecord[] | undefined,
   idColumnName: string | string[],
   joinFields: Set<string> = new Set(),

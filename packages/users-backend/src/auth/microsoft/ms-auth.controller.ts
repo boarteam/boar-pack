@@ -10,7 +10,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { AuthService } from '../auth.service';
-import { tokenName } from '../auth.constants';
 import { SkipJWTGuard } from '../../jwt-auth/jwt-auth.guard';
 import { SkipPoliciesGuard } from '../../casl/policies.guard';
 import { AuthExceptionFilter } from '../auth.exception-filter';

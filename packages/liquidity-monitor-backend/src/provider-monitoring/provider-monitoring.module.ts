@@ -14,7 +14,7 @@ import { QuotesStatisticModule, QuotesStatisticService, TProvider } from '../quo
 
 @Module({})
 export class ProviderMonitoringModule {
-  static forRootAsync<TLocalProvider extends TProvider, TLocalService>(config: {
+  static forRootAsync<TLocalProvider extends TProvider, _TLocalService>(config: {
     dataSourceName: string;
     inject?: any[];
     imports?: any[];

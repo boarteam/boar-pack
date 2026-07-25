@@ -22,7 +22,11 @@ const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
   }, [columns, idColumnName]);
 
   useEffect(() => {
-    data ? form.setFieldsValue(data) : form.resetFields();
+    if (data) {
+      form.setFieldsValue(data);
+    } else {
+      form.resetFields();
+    }
   }, [data]);
 
   return (

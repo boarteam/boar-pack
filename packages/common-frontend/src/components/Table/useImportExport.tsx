@@ -127,11 +127,11 @@ export function useImportExport<Entity, TPathParams = {}>({
         continue;
       }
 
-      // Text values handling
-      // Text by default if not specified
-      if ((keyedColumns[key] && keyedColumns[key].valueType === undefined) || 'text') {
-        normalizedRow[key] = String(normalizedRow[key]);
-      }
+      // Text values handling — everything left over is stringified. NOTE:
+      // the original condition `(… && valueType === undefined) || 'text'` was
+      // constant-true, so per-valueType handling never actually happened;
+      // keeping the always-stringify behavior it produced (tracked follow-up).
+      normalizedRow[key] = String(normalizedRow[key]);
     }
 
     return normalizedRow;

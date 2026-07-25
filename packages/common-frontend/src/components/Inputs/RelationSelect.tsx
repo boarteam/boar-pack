@@ -12,7 +12,7 @@ type RelationSelectProps<T, CreateDto = T> = ProFormSelectProps & {
     value: string;
     label: string;
   };
-  onCreate?: ({}: { requestBody: CreateDto }) => Promise<T>;
+  onCreate?: (params: { requestBody: CreateDto }) => Promise<T>;
   creationColumns?: any[]; // TODO: any specified in the createEntityModal. Need to fix it in the both places
   idColumnName?: (string & keyof T) | (string & keyof T)[];
   createPopupTitle?: string;

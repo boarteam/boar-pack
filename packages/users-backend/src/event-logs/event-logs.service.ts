@@ -146,8 +146,8 @@ export class EventLogsService extends TypeOrmCrudService<EventLog> {
       endTime = new Date();
     }
 
-    let startMoment = moment(startTime);
-    let endMoment = moment(endTime);
+    const startMoment = moment(startTime);
+    const endMoment = moment(endTime);
 
     const interval = this.determineInterval(startMoment, endMoment);
     const formatTimeFunction = this.getFormatTimeFunction(interval, timezone);

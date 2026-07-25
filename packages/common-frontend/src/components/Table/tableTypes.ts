@@ -83,12 +83,12 @@ export type TSearchableColumn = {
 
 interface BaseProps<
   Entity,
-  CreateDto,
-  UpdateDto,
+  _CreateDto,
+  _UpdateDto,
   TEntityParams = {},
   TPathParams = {},
 > extends ProTableProps<Entity, TEntityParams & TFilterParams> {
-  getAll: ({}: TGetAllParams & TPathParams) => Promise<{ data: Entity[] }>;
+  getAll: (params: TGetAllParams & TPathParams) => Promise<{ data: Entity[] }>;
   pathParams: TPathParams;
   idColumnName?: (string & keyof Entity) | (string & keyof Entity)[];
   createNewDefaultParams?: Partial<Entity>;
@@ -115,22 +115,22 @@ export interface EditableProps<
   actionRef?: MutableRefObject<ActionType | undefined>;
   editable?: RowEditableConfig<Entity>;
   afterSave?: (record: Entity) => Promise<void>;
-  onCreate?: ({}: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
+  onCreate?: (params: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
   exportUrl?: string;
   exportParams?: {
     [key: string]: string | number;
   };
-  onUpdate: ({}: Partial<Entity> & {
+  onUpdate: (params: Partial<Entity> & {
     requestBody: UpdateDto;
     index?: number;
   } & TPathParams) => Promise<Entity>;
-  onDelete: ({}: Partial<Entity> & TPathParams) => Promise<void>;
+  onDelete: (params: Partial<Entity> & TPathParams) => Promise<void>;
   entityToCreateDto: (entity: Entity) => CreateDto;
   entityToUpdateDto: (entity: Entity) => UpdateDto;
-  onUpdateMany: ({}: Partial<Entity> & {
+  onUpdateMany: (params: Partial<Entity> & {
     requestBody: { updateValues: Partial<UpdateDto>[]; records: Entity[] };
   } & TPathParams) => Promise<void>;
-  onDeleteMany: ({}: Partial<Entity> & {
+  onDeleteMany: (params: Partial<Entity> & {
     requestBody: { records: Entity[] };
   } & TPathParams) => Promise<void>;
   importConfig?: {

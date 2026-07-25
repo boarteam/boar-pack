@@ -19,10 +19,10 @@ export function useBulkEditing<Entity, TPathParams, UpdateDto, U>({
   actionRef?: MutableRefObject<ActionType | undefined>;
   columns: ProTableProps<Entity, U>['columns'];
   idColumnName?: (string & keyof Entity) | (string & keyof Entity)[];
-  onDeleteMany: ({}: Partial<Entity> & {
+  onDeleteMany: (params: Partial<Entity> & {
     requestBody: { records: Entity[] };
   } & TPathParams) => Promise<void>;
-  onUpdateMany: ({}: Partial<Entity> & {
+  onUpdateMany: (params: Partial<Entity> & {
     requestBody: { updateValues: Partial<UpdateDto>[]; records: Entity[] };
   } & TPathParams) => Promise<void>;
   entityToUpdateDto: (entity: Entity) => UpdateDto;
@@ -125,7 +125,9 @@ export function useBulkEditing<Entity, TPathParams, UpdateDto, U>({
     ],
     onChange: (rowKeys, records) => {
       setSelectedRecords(records);
-      allSelected && setAllSelected(false);
+      if (allSelected) {
+        setAllSelected(false);
+      }
     },
   };
 

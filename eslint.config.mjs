@@ -49,7 +49,7 @@ export default tseslint.config(
       '@typescript-eslint/no-namespace': ['error', { allowDeclarations: true }],
       '@typescript-eslint/no-unused-vars': [
         'error',
-        { args: 'none', caughtErrors: 'none', varsIgnorePattern: '^_' },
+        { args: 'none', caughtErrors: 'none', varsIgnorePattern: '^_', ignoreRestSiblings: true },
       ],
       'no-empty': ['error', { allowEmptyCatch: true }],
     },

@@ -19,7 +19,7 @@ type TUseColumnsSetsParams<Entity> = {
 
 export type TColumnsStates = Record<string, ColumnsState>;
 
-type TUseColumnsSetsResult<Entity> = {
+type TUseColumnsSetsResult<_Entity> = {
   columnsSetSelect: () => React.ReactNode;
   chosenColumnsSet: TColumnsStates | undefined;
   setChosenColumnsSet: React.Dispatch<React.SetStateAction<TColumnsStates | undefined>>;

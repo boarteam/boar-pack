@@ -36,16 +36,16 @@ export enum FieldsEdit {
   All = 'all',
 }
 
-export type TDescriptionsProps<Entity, CreateDto, UpdateDto, TPathParams = object> = {
+export type TDescriptionsProps<Entity, _CreateDto, UpdateDto, TPathParams = object> = {
   mainTitle?: ProColumns<Entity>['title'] | null;
   entity?: Partial<Entity>;
-  getOne?: ({}: TGetOneParams & TPathParams) => Promise<Entity | null>;
-  onUpdate?: ({}: Partial<Entity> & {
+  getOne?: (params: TGetOneParams & TPathParams) => Promise<Entity | null>;
+  onUpdate?: (params: Partial<Entity> & {
     requestBody: UpdateDto;
     index?: number;
   } & TPathParams) => Promise<Entity>;
   onCreate?: (data: Partial<Entity>) => Promise<void>;
-  onDelete?: ({}: Partial<Entity> & TPathParams) => Promise<void>;
+  onDelete?: (params: Partial<Entity> & TPathParams) => Promise<void>;
   pathParams?: TPathParams;
   idColumnName?: string & keyof Entity;
   entityToUpdateDto?: (entity: Entity) => UpdateDto;

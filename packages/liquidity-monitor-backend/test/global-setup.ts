@@ -12,8 +12,8 @@ export default async function globalSetup() {
     process.env.TEST_PG_URI = container.getConnectionUri();
     (globalThis as any).__PG_CONTAINER__ = container;
   } catch (e) {
-    throw new Error(
-      'Could not start the Postgres test container. Is Docker running?\n' + String(e),
-    );
+    throw new Error('Could not start the Postgres test container. Is Docker running?', {
+      cause: e,
+    });
   }
 }

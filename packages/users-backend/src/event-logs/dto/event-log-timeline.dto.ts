@@ -7,4 +7,3 @@ export class EventLogTimelineDto {
   startTime: string;
   endTime: string;
 }
-``;

@@ -51,7 +51,11 @@ const BulkEditDialog = <Entity extends Record<string | symbol, any>>({
   const handleCheckboxChange = (dataIndex: string, checked: boolean) => {
     setEditableKeys((prev) => {
       const next = new Set(prev);
-      checked ? next.add(dataIndex) : next.delete(dataIndex);
+      if (checked) {
+        next.add(dataIndex);
+      } else {
+        next.delete(dataIndex);
+      }
       return next;
     });
   };
@@ -108,7 +112,7 @@ const BulkEditDialog = <Entity extends Record<string | symbol, any>>({
                 render: (...params: any[]) =>
                   !editableKeys.has(column.dataIndex as string)
                     ? '(This field will not be changed)'
-                    : (column.render as Function)(...params),
+                    : (column.render as (...renderParams: any[]) => any)(...params),
                 editable: false,
                 title: (
                   <Checkbox

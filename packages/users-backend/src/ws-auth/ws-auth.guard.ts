@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   Injectable,
   Logger,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { WebSocket } from 'ws';
 import { WsAuthService } from './ws-auth.service';

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TJWTPayload, TJWTRefreshPayload } from './jwt-auth.srtategy';
-import { RevokedToken, RevokedTokensService, TOKEN_TYPE, TRevokedToken } from '../revoked-tokens';
+import { RevokedTokensService, TOKEN_TYPE, TRevokedToken } from '../revoked-tokens';
 import { v4 as uuidv4 } from 'uuid';
 import { JWTAuthConfigService, TJWTAuthConfig } from './jwt-auth.config';
 import { JwtSignOptions } from '@nestjs/jwt/dist/interfaces';

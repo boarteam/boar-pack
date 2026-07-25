@@ -1,5 +1,5 @@
 import { CreateManyDto, CrudRequest } from '@dataui/crud';
-import { DeepPartial, EntityManager, ObjectLiteral, Repository } from 'typeorm';
+import { DeepPartial, EntityManager, ObjectLiteral } from 'typeorm';
 import { TypeOrmCrudService } from '@dataui/crud-typeorm';
 import { Injectable } from '@nestjs/common';
 import { AuditAction, AuditLog } from './entities/audit-log.entity';
@@ -53,7 +53,7 @@ export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudSer
       ) as unknown as DeepPartial<T>,
     );
 
-    let result: Partial<T> | null = null;
+    let result: Partial<T> | null;
     if (returnShallow) {
       result = updated;
     } else {
@@ -87,10 +87,11 @@ export class AuditLogBaseService<T extends ObjectLiteral> extends TypeOrmCrudSer
     const toReturn = returnDeleted
       ? plainToClass(this.entityType, { ...found }, req.parsed.classTransformOptions)
       : undefined;
-    const deleted =
-      req.options.query!.softDelete === true
-        ? await this.repo.softRemove(found as DeepPartial<T>)
-        : await this.repo.remove(found);
+    if (req.options.query!.softDelete === true) {
+      await this.repo.softRemove(found as DeepPartial<T>);
+    } else {
+      await this.repo.remove(found);
+    }
 
     await this.createAuditLog({
       action: AuditAction.DELETE,

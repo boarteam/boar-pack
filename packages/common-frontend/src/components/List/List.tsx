@@ -39,7 +39,7 @@ const List = <
   UpdateDto = Entity,
   TEntityParams = {},
   TPathParams extends Record<string, string | number> = {},
-  TKey = string,
+  _TKey = string,
 >({
   getAll,
   onCreate,
