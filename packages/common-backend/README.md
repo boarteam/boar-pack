@@ -23,8 +23,9 @@ All modules are plain `@Module` classes — add them to `imports: []`, no
 | `WebsocketsClients`              | Transient provider managing **outbound** WebSocket connections (`ws`): connect/send/close/reconnect callbacks, JSON parsing via `lossless-json` with safe number handling.                                                                                        |
 | `WebsocketsExceptionFilter`      | `@Catch()` filter for NestJS WS gateways that emits errors as `{ event: 'error', data: … }` frames.                                                                                                                                                               |
 | `Tools.NamedLogger`              | `ConsoleLogger` subclass that prefixes messages with a custom name.                                                                                                                                                                                               |
-| `Tools.TypeOrmExceptionFilter`   | Maps Postgres unique-violation (and MySQL FK) errors to friendly HTTP 400s; customize per constraint with `TypeOrmExceptionFilter.setUniqueConstraintMessage()`.                                                                                                  |
+| `Tools.TypeOrmExceptionFilter`   | Maps unique-violation and foreign-key-violation errors (Postgres and MySQL) to friendly HTTP 400s; customize per constraint with `TypeOrmExceptionFilter.setUniqueConstraintMessage()`.                                                                           |
 | `Tools.VirtualColumn`            | Decorator (+ a `SelectQueryBuilder` patch applied on import) that hydrates entity properties from raw SQL aliases.                                                                                                                                                |
+| `Tools.ApiError`                 | `Error` subclass describing a failed API call (`url`, `status`, `statusText`, `body`, `request`); `TApiErrorBodyType` types the error body. Mirrors the `common-frontend` copy.                                                                                   |
 
 ## Install
 
