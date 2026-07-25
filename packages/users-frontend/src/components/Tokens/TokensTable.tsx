@@ -24,16 +24,20 @@ export const TokensTable = ({ userId }: { userId: string }) => {
       getAll={(params) => apiClient.tokens.getManyBaseTokensControllerToken(params)}
       onUpdate={(params) => apiClient.tokens.updateOneBaseTokensControllerToken(params as any)}
       onDelete={(params) => apiClient.tokens.deleteOneBaseTokensControllerToken(params as any)}
-      entityToCreateDto={entityToDto}
       entityToUpdateDto={entityToDto}
       columns={columns}
       idColumnName="id"
       params={{ userId }}
       pathParams={{}}
       defaultSort={['name', 'ASC']}
-      createNewDefaultParams={{
-        name: '',
-      }}
+      // Tokens cannot be created on behalf of another user: the admin /tokens
+      // endpoint exposes no create route, and the only POST (/my/tokens) always
+      // persists the *current* user's id. There is therefore no onCreate to wire
+      // here, but common-frontend's Table renders its "New" button for every
+      // non-viewOnly table, so clear the toolbar actions it produces. This table
+      // contributes no other toolbar action (no bulk edit/delete, import or
+      // export), and the toolbar's settings controls are unaffected.
+      toolbar={{ actions: [] }}
       searchableColumns={[
         {
           field: 'name',
