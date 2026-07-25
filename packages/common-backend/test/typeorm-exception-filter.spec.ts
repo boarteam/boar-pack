@@ -165,9 +165,8 @@ describe('Tools.TypeOrmExceptionFilter (Postgres)', () => {
     expect(adapter.reply).not.toHaveBeenCalled();
   });
 
-  it('a Postgres foreign-key violation (23503) falls through to the base filter as 500', async () => {
-    // Only the MySQL FK codes are mapped, so a real pg FK error is NOT turned
-    // into a 400 — current behavior, documented on purpose.
+  it('maps a real Postgres foreign-key violation (23503) to the 400 "remove related records" message', async () => {
+    // Deleting a user that a post still references raises a genuine pg 23503.
     let err: QueryFailedError | undefined;
     try {
       await ds.getRepository(TofUser).delete(user.id);
@@ -183,15 +182,14 @@ describe('Tools.TypeOrmExceptionFilter (Postgres)', () => {
 
     filter.catch(err!, host);
 
-    // not handled by the filter's own 400 branches...
-    expect(response.status).not.toHaveBeenCalled();
-    expect(response.json).not.toHaveBeenCalled();
-    // ...but delegated to BaseExceptionFilter, which replies 500 via the adapter
-    expect(adapter.reply).toHaveBeenCalledWith(
-      response,
-      expect.objectContaining({ statusCode: 500 }),
-      500,
-    );
+    expect(response.status).toHaveBeenCalledWith(400);
+    expect(response.json).toHaveBeenCalledWith({
+      statusCode: 400,
+      message: 'System cannot remove the record, please remove all related records first',
+      error: 'Bad Request',
+    });
+    // handled by the filter itself, never delegated to the base filter
+    expect(adapter.reply).not.toHaveBeenCalled();
   });
 
   it('any other QueryFailedError also falls through to the base filter as 500', async () => {
