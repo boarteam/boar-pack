@@ -207,15 +207,47 @@ describe('WebsocketClient', () => {
       expect(lastSocket().send).toHaveBeenCalledWith(JSON.stringify({ event: 'subscribe' }));
     });
 
-    it('throws when called after the socket has closed (current behavior)', () => {
-      // BUG (documented, not fixed): after a close event this.socket is null,
-      // and send() falls into the not-open branch which dereferences
-      // this.socket.addEventListener without a null check -> TypeError.
+    it('queues the payload after a close and flushes it on the next connection', () => {
+      vi.useFakeTimers();
       const { client } = makeClient({});
       lastSocket().serverOpen();
       lastSocket().close();
 
-      expect(() => client.send({ event: 'ping' })).toThrow(TypeError);
+      expect(() => client.send({ event: 'ping' })).not.toThrow();
+      expect(console.warn).toHaveBeenCalledWith(
+        'QuotesDataSocket: socket is not ready to send data',
+      );
+
+      client.reconnect(1000);
+      vi.advanceTimersByTime(1000);
+      lastSocket().serverOpen();
+
+      expect(lastSocket().send).toHaveBeenCalledTimes(1);
+      expect(lastSocket().send).toHaveBeenCalledWith(JSON.stringify({ event: 'ping' }));
+    });
+
+    it('flushes queued payloads once each, in order', () => {
+      vi.useFakeTimers();
+      const { client } = makeClient({});
+      client.send({ event: 'first' });
+      client.send({ event: 'second' });
+
+      const firstSocket = lastSocket();
+      firstSocket.serverOpen();
+
+      expect(firstSocket.send.mock.calls).toEqual([
+        [JSON.stringify({ event: 'first' })],
+        [JSON.stringify({ event: 'second' })],
+      ]);
+
+      // the queue is drained, so the next connection does not resend them
+      firstSocket.close();
+      client.reconnect(0);
+      vi.advanceTimersByTime(0);
+      lastSocket().serverOpen();
+
+      expect(lastSocket()).not.toBe(firstSocket);
+      expect(lastSocket().send).not.toHaveBeenCalled();
     });
   });
 
