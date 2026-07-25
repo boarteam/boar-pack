@@ -223,6 +223,29 @@ yarn watch:common-frontend
   keep them behavioral (assert responses, DB rows, rendered output — not
   implementation details).
 
+- **Lint, format, typecheck** (all from the repo root):
+
+  ```bash
+  yarn lint
+  ```
+
+  ```bash
+  yarn format:check
+  ```
+
+  ```bash
+  yarn typecheck
+  ```
+
+  ESLint (flat config at `eslint.config.mjs`) and Prettier
+  (`.prettierrc.json`) are shared across all packages; `yarn format`
+  rewrites files in place. Type checking runs `tsc --noEmit` against each
+  package's build config — the shared strict base lives in
+  `tsconfig.base.json` (`strict: true`; `strictPropertyInitialization` is
+  deliberately off because TypeORM entities and Nest DTOs initialize via
+  decorators/hydration). Keep all three green: they will become required
+  CI checks.
+
 - **Regenerating API client types**: the backend packages expose a
   `gen-types` script that boots a minimal Nest app (Postgres from
   [Development Environment](#development-environment) must be running),
@@ -243,6 +266,9 @@ Root `package.json` scripts:
 | Script                              | What it does                                                                                          |
 | ----------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `yarn build`                        | Builds all packages (`lerna run build`).                                                              |
+| `yarn lint`                         | ESLint over all packages (`lerna run lint`).                                                          |
+| `yarn typecheck`                    | `tsc --noEmit` over every package's build config (`lerna run typecheck`).                             |
+| `yarn format` / `yarn format:check` | Prettier over the repo — write in place / verify only.                                                |
 | `yarn clean`                        | Removes `node_modules` from all packages (`lerna clean`).                                             |
 | `yarn watch`                        | Pushes all packages via yalc, then watches every package and re-pushes on change.                     |
 | `yarn watch:<package>`              | Watches a single package (e.g. `watch:users-backend`).                                                |
@@ -257,6 +283,9 @@ Per-package scripts:
 | Script      | Packages                                 | What it does                                                                        |
 | ----------- | ---------------------------------------- | ----------------------------------------------------------------------------------- |
 | `build`     | all                                      | Compiles the package into `dist/`.                                                  |
+| `test`      | all                                      | Runs the package's jest/vitest suite (backends need Docker).                        |
+| `lint`      | all                                      | ESLint over the package's `src` and `test`.                                         |
+| `typecheck` | all                                      | `tsc --noEmit` against the package's build config.                                  |
 | `yalc:push` | all                                      | Publishes the package to local yalc consumers.                                      |
 | `gen-types` | users-backend, liquidity-monitor-backend | Regenerates the sibling frontend package's OpenAPI client (needs the dev Postgres). |
 
