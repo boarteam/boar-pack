@@ -28,16 +28,22 @@ const useStyles = createStyles(() => {
   };
 });
 
+// The cards always show the last hour; computed per call so the interval below
+// never reuses a stale timestamp.
+const oneHourAgoISO = () => {
+  const from = new Date();
+  from.setHours(from.getHours() - 1);
+  return from.toISOString();
+};
+
 export const UsersConnectionsStatisticCards = ({
   users,
   updateInterval,
 }: TUsersConnectionsStatisticCardsProps) => {
   const apiClient = useApiClient();
-  let startTimeInitial = new Date();
-  startTimeInitial.setHours(startTimeInitial.getHours() - 1);
   const userPageUrlPrefix = '/admin/users';
 
-  const [startTime, setStartTime] = useState<string | undefined>(startTimeInitial.toISOString());
+  const [startTime, setStartTime] = useState<string | undefined>(oneHourAgoISO);
   const [endTime, setEndTime] = useState<string | undefined>(new Date().toISOString());
   const [data, setData] = useState<UsersConnectionsStatisticDto[] | null>(null);
 
@@ -60,9 +66,7 @@ export const UsersConnectionsStatisticCards = ({
     let intervalId: NodeJS.Timeout | null = null;
     if (updateInterval) {
       intervalId = setInterval(() => {
-        startTimeInitial = new Date();
-        startTimeInitial.setHours(startTimeInitial.getHours() - 1);
-        setStartTime(startTimeInitial.toISOString());
+        setStartTime(oneHourAgoISO());
         setEndTime(new Date().toISOString());
       }, updateInterval);
     }
