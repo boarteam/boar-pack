@@ -16,6 +16,7 @@ import { TokensModule } from '../src/tokens/tokens.module';
 import { Token } from '../src/tokens/entities/token.entity';
 import { TokensPermissions } from '../src/tokens/tokens.permissions';
 import { RevokedToken } from '../src/revoked-tokens/entities/revoked-token.entity';
+import { JwtAuthGuard } from '../src/jwt-auth/jwt-auth.guard';
 import { createTestDatabase, testDataSourceOptions } from './pg';
 
 // uuid v13 ships ESM-only code that jest's CommonJS runtime cannot parse;
@@ -247,7 +248,7 @@ describe('Tokens', () => {
           }),
           CaslModule.forRoot(),
           TokensModule.forRoot({ dataSourceName: 'default' }),
-          TokensModule.forAuth({ dataSourceName: 'default' }),
+          TokensModule.forAuth({ dataSourceName: 'default', withJwtAuth: true }),
         ],
       }).compile();
       combinedApp = moduleRef.createNestApplication();
@@ -256,16 +257,46 @@ describe('Tokens', () => {
 
     afterAll(async () => {
       await combinedApp.close();
+      // the matcher registry is process-wide; the standalone suites below must
+      // not inherit this app's interop wiring
+      JwtAuthGuard.clearAlternativeAuthenticators();
     });
 
-    it('cannot coexist: forAuth global TokenAuthGuard breaks even the login route', async () => {
-      // forAuth registers TokenAuthGuard as a global APP_GUARD with no skip
-      // mechanism, so any request without a valid API bearer token — including
-      // POST /auth/login with correct credentials — is rejected. That is why the
-      // bearer-strategy suite below runs forAuth in a separate app.
+    it('leaves the login route reachable', async () => {
       await request(combinedApp.getHttpServer())
         .post('/auth/login')
         .send({ email: ADMIN_EMAIL, password: ADMIN_PASSWORD })
+        .expect(201);
+    });
+
+    it('accepts a JWT on a policy-guarded route', async () => {
+      await request(combinedApp.getHttpServer())
+        .get('/tokens')
+        .set('Authorization', `Bearer ${adminJwt}`)
+        .expect(200);
+    });
+
+    it('accepts an API token on a policy-guarded route', async () => {
+      const created = await request(combinedApp.getHttpServer())
+        .post('/my/tokens')
+        .set('Authorization', `Bearer ${adminJwt}`)
+        .send({ name: 'combined app token' })
+        .expect(201);
+
+      await request(combinedApp.getHttpServer())
+        .get('/tokens')
+        .set('Authorization', `Bearer ${created.body.value}`)
+        .expect(200);
+    });
+
+    it('still rejects requests with no credentials at all', async () => {
+      await request(combinedApp.getHttpServer()).get('/tokens').expect(401);
+    });
+
+    it('still rejects an invalid API token', async () => {
+      await request(combinedApp.getHttpServer())
+        .get('/tokens')
+        .set('Authorization', `Bearer ${randomUUID()}.not-the-secret`)
         .expect(401);
     });
   });
