@@ -181,6 +181,85 @@ describe('ClusterService', () => {
         cmd: 'ping',
       });
     });
+
+    it('subscribes to cluster messages once, no matter how often workers are forked', async () => {
+      const stub = makeClusterStub({
+        workers: [{ workerId: 'w1', portIncrement: 1 }],
+      });
+      service.addCluster(stub);
+      await service.runClusters();
+
+      // two auto-restarts on top of the initial fork
+      forkedWorker(0).emit('exit', 1, null);
+      await flush();
+      forkedWorker(1).emit('exit', 1, null);
+      await flush();
+      expect(clusterMock.fork).toHaveBeenCalledTimes(3);
+
+      // one listener for the whole cluster, not one per fork
+      expect(clusterMock.listenerCount('message')).toBe(1);
+
+      const worker = forkedWorker(2);
+      clusterMock.emit('message', worker, { cmd: 'ping' });
+
+      expect(stub.onClusterMessage).toHaveBeenCalledTimes(1);
+      expect(stub.onClusterMessage).toHaveBeenCalledWith(clusterMock, worker, {
+        cmd: 'ping',
+      });
+    });
+
+    it('delivers every message exactly once when a cluster runs several workers', async () => {
+      const stub = makeClusterStub({
+        workers: [
+          { workerId: 'w1', portIncrement: 1 },
+          { workerId: 'w2', portIncrement: 2 },
+        ],
+      });
+      service.addCluster(stub);
+      await service.runClusters();
+
+      clusterMock.emit('message', forkedWorker(0), { cmd: 'a' });
+      clusterMock.emit('message', forkedWorker(1), { cmd: 'b' });
+
+      expect(stub.onClusterMessage).toHaveBeenCalledTimes(2);
+      expect(stub.onClusterMessage).toHaveBeenNthCalledWith(1, clusterMock, forkedWorker(0), {
+        cmd: 'a',
+      });
+      expect(stub.onClusterMessage).toHaveBeenNthCalledWith(2, clusterMock, forkedWorker(1), {
+        cmd: 'b',
+      });
+    });
+
+    it('gives each registered cluster its own single subscription', async () => {
+      const stubA = makeClusterStub({ workers: [{ workerId: 'a1', portIncrement: 1 }] });
+      const stubB = makeClusterStub({ workers: [{ workerId: 'b1', portIncrement: 2 }] });
+      service.addCluster(stubA);
+      service.addCluster(stubB);
+      await service.runClusters();
+
+      expect(clusterMock.listenerCount('message')).toBe(2);
+
+      clusterMock.emit('message', forkedWorker(0), { cmd: 'ping' });
+
+      expect(stubA.onClusterMessage).toHaveBeenCalledTimes(1);
+      expect(stubB.onClusterMessage).toHaveBeenCalledTimes(1);
+    });
+
+    it('ignores a repeated addCluster for the same cluster', async () => {
+      const stub = makeClusterStub({
+        workers: [{ workerId: 'w1', portIncrement: 1 }],
+      });
+      service.addCluster(stub);
+      service.addCluster(stub);
+      await service.runClusters();
+
+      expect(clusterMock.fork).toHaveBeenCalledTimes(1);
+      expect(clusterMock.listenerCount('message')).toBe(1);
+
+      clusterMock.emit('message', forkedWorker(0), { cmd: 'ping' });
+
+      expect(stub.onClusterMessage).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('auto-restart on exit', () => {
