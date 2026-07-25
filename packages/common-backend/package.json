@@ -32,6 +32,7 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
+    "test": "jest",
     "yalc:push": "yalc push"
   },
   "dependencies": {
