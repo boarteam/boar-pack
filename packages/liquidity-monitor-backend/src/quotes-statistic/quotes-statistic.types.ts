@@ -12,4 +12,6 @@ export type TProvider = {
   id: string,
   name: string,
   threshold: number | null,
+  // TODO: remove activeRanges from here?
+  activeRanges: [number, number][];
 }
