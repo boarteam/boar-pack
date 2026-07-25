@@ -1,0 +1,15 @@
+# build output & deps
+node_modules
+dist
+coverage
+*.log
+yarn.lock
+
+# generated code — regenerated wholesale, do not hand-format
+**/src/.umi
+**/src/tools/api-client/generated
+**/CHANGELOG.md
+
+# local tooling
+.claude
+docker/init-db.sh
