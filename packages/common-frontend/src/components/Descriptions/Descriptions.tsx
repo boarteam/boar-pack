@@ -113,13 +113,18 @@ const DescriptionsComponent = <
   >(new Map(sections.map((section) => [section.key, 0])));
 
   const handleSubmit = async () => {
+    if (!onCreate) {
+      // Submitting is a create flow (e.g. CreateEntityModal); without a handler there is
+      // nothing to submit to. Fail outside of the try below so the wiring mistake is not
+      // reported as a validation failure.
+      throw new Error('Descriptions: submit() needs an onCreate handler to send the data to');
+    }
+
     try {
       // Validate all fields in the form
       const data = await form.validateFields();
-      // Let the parent component handle the submit logic.
-      // submit() is only wired up by create flows (e.g. CreateEntityModal) which always
-      // provide onCreate.
-      await onCreate!(data);
+      // Let the parent component handle the submit logic
+      await onCreate(data);
     } catch (error) {
       console.error('Validation or submission failed:', error);
     } finally {

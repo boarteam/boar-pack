@@ -1,10 +1,10 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { IntlProvider } from 'react-intl';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import Descriptions from './Descriptions';
-import { FieldsEdit } from './descriptionTypes';
+import { DescriptionsRefType, FieldsEdit } from './descriptionTypes';
 
 // antd's generated stylesheets can contain selectors nwsapi cannot parse,
 // which makes jsdom's getComputedStyle (used by user-event) throw. Treat
@@ -138,6 +138,51 @@ describe('Descriptions', () => {
     // saved value replaces the old one in the view
     expect(await screen.findByText('Bar')).toBeInTheDocument();
     expect(screen.queryByText('Foo')).not.toBeInTheDocument();
+  });
+
+  it('submits the validated form through onCreate', async () => {
+    const onCreate = vi.fn().mockResolvedValue(undefined);
+    const ref = React.createRef<DescriptionsRefType<Entity>>();
+    render(
+      <IntlProvider locale="en" messages={messages}>
+        <Descriptions<Entity>
+          ref={ref}
+          entity={entity}
+          columns={columns}
+          canEdit
+          onCreate={onCreate}
+        />
+      </IntlProvider>,
+    );
+
+    await screen.findByText('Foo');
+    await act(async () => {
+      await (ref.current?.submit() as unknown as Promise<void>);
+    });
+
+    expect(onCreate).toHaveBeenCalledTimes(1);
+  });
+
+  it('fails loudly when submit() is called without an onCreate handler', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const ref = React.createRef<DescriptionsRefType<Entity>>();
+    render(
+      <IntlProvider locale="en" messages={messages}>
+        <Descriptions<Entity> ref={ref} entity={entity} columns={columns} canEdit />
+      </IntlProvider>,
+    );
+
+    await screen.findByText('Foo');
+
+    // submit() is declared as void on the ref, but it is async and rejects here
+    const submitted = ref.current?.submit() as unknown as Promise<void>;
+
+    await expect(submitted).rejects.toThrow(/onCreate/);
+    // the error is not swallowed into a console.error by the try/catch
+    expect(consoleError).not.toHaveBeenCalledWith(
+      'Validation or submission failed:',
+      expect.anything(),
+    );
   });
 
   it('groups child columns into tabs and renders each section', async () => {
