@@ -178,10 +178,11 @@ If your stack isn't NestJS + React/antd, boar-pack is the wrong tool.
 ## Maturity
 
 **Beta.** The packages are extracted from production systems and run in
-real deployments, but the public API is still being curated, there is no
-automated test suite yet, and maintenance is best-effort with no SLA.
-Expect breaking changes between majors; pin versions and read per-package
-CHANGELOGs when upgrading.
+real deployments, and are covered by an automated test suite (Jest/Vitest,
+with the backend suites running against real Postgres in disposable
+containers) — but the public API is still being curated and maintenance is
+best-effort with no SLA. Expect breaking changes between majors; pin
+versions and read per-package CHANGELOGs when upgrading.
 
 ## Versioning & stability
 
@@ -206,6 +207,7 @@ git clone https://github.com/boarteam/boar-pack.git
 cd boar-pack
 yarn install
 yarn build         # builds all 6 packages via lerna
+yarn test          # full test suite; needs Docker (disposable Postgres containers)
 docker compose up -d   # dev Postgres on localhost:5951 (dummy local-only creds)
 ```
 

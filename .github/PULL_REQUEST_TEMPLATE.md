@@ -25,4 +25,7 @@ messages, so malformed commit types silently skip version bumps.
 - [ ] Breaking changes are marked with a `BREAKING CHANGE:` footer in the
       commit body
 - [ ] `yarn build` passes from the repo root
+- [ ] `yarn test` passes from the repo root (Docker must be running — the
+      backend suites start disposable Postgres containers)
+- [ ] New or changed behavior is covered by tests
 - [ ] Documentation (README / docs/) is updated where behavior changed

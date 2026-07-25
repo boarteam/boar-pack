@@ -45,7 +45,9 @@ improving documentation.
 
 A local Postgres is only needed for the dev-time API-client type generation
 (`gen-types`) and for exercising the backend modules against a real database.
-Building the packages does **not** require it.
+Building the packages does **not** require it. (The test suite manages its
+own throwaway Postgres containers via Testcontainers and only needs Docker —
+see [Building and Testing](#building-and-testing).)
 
 1. **Start Postgres** (Docker):
    ```bash
@@ -176,10 +178,38 @@ yarn watch:common-frontend
   yarn --cwd packages/users-backend build
   ```
 
-- **Tests**: there is **no automated test suite yet** — adding one is on the
-  roadmap. Until then, treat a clean `yarn build` across all packages as the
-  minimum bar, and verify behavior changes by exercising the package from a
-  consuming application (see [Starting Watchers](#starting-watchers)).
+- **Run the tests** (from the repo root):
+  ```bash
+  yarn test
+  ```
+  This runs every package's suite via Lerna, one package at a time. The
+  backend packages use **Jest** (with `@nestjs/testing`); suites that need a
+  database start a **disposable `postgres:13` container** through
+  [Testcontainers](https://testcontainers.com/) — **Docker must be
+  running** — and every suite gets its own isolated database inside it, so
+  runs never touch the compose dev DB or each other. The frontend packages
+  use **Vitest** + Testing Library in jsdom and need no Docker.
+
+- **Run one package or one file**:
+  ```bash
+  yarn --cwd packages/users-backend test
+  ```
+  ```bash
+  yarn --cwd packages/users-backend jest test/auth.spec.ts
+  ```
+  ```bash
+  yarn --cwd packages/common-frontend vitest run src/tools/numberTools.test.ts
+  ```
+
+- **Test conventions**: backend unit specs live next to the code as
+  `src/**/*.spec.ts`; anything that boots a Nest app or touches Postgres
+  lives in `test/*.spec.ts` and uses the helpers in `test/pg.ts`
+  (`createTestDataSource(entities)` gives you a fresh database). Frontend
+  tests are colocated as `src/**/*.test.ts(x)`; import `describe`/`it`/`vi`
+  from `vitest` explicitly (globals are off), and see `test/setup.ts` for
+  the jsdom polyfills already in place. New behavior should come with tests;
+  keep them behavioral (assert responses, DB rows, rendered output — not
+  implementation details).
 
 - **Regenerating API client types**: the backend packages expose a
   `gen-types` script that boots a minimal Nest app (Postgres from
