@@ -137,7 +137,7 @@ export function applyKeywordToSearch(
       const wrongUuid = col.uuid && (typeof word !== 'string' || !uuidValidate(word));
 
       if (!wrongNumeric && !wrongUuid) {
-        keywordSearch.$or.push({ [field]: { [operator]: word } });
+        keywordSearch.$or!.push({ [field]: { [operator]: word } });
       }
     });
 

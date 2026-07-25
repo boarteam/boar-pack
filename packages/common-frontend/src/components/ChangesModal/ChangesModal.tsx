@@ -62,7 +62,7 @@ const useStyles = createStyles(() => {
   };
 });
 
-export function ChangesModal<Entity, ImportRequestParams>({
+export function ChangesModal<Entity extends Record<string, any>, ImportRequestParams>({
   onClose,
   onCommit,
   changes,
@@ -84,7 +84,7 @@ export function ChangesModal<Entity, ImportRequestParams>({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [importResponse, setImportResponse] = useState<TImportResponse>();
   const [serverErrors, setServerErrors] = useState<TServerErrorItem[]>([]);
-  const [resolvedData, setResolvedData] = useState<Entity[]>();
+  const [resolvedData, setResolvedData] = useState<Entity[]>([]);
 
   useEffect(() => {
     if (serverErrors.length > 0) {

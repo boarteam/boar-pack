@@ -158,7 +158,8 @@ const BulkEditButton = <Entity extends Record<string | symbol, any>, TPathParams
           setBulkEditConfig(
             !allSelected
               ? { type: 'records', value: selectedRecords, count: selectedRecords.length }
-              : { type: 'query', value: lastRequest[0], count: lastRequest[1].total },
+              : // allSelected can only be true after a request has populated lastRequest
+                { type: 'query', value: lastRequest[0]!, count: lastRequest[1].total },
           )
         }
       >

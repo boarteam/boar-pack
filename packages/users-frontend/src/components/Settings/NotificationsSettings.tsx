@@ -19,6 +19,10 @@ export const NotificationsSettings: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const intl = useIntl();
   const settingsContext = useContext(SettingsContext);
+  if (!settingsContext) {
+    // the component always crashed without a provider; now it says why
+    throw new Error('NotificationsSettings must be rendered inside SettingsContext.Provider');
+  }
 
   const onSaveTelegramSettings = async (row: TelegramSettingsUpdateDto) => {
     apiClient.telegraf

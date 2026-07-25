@@ -93,7 +93,7 @@ export class TelegrafService {
       await bot.telegram.sendMessage(config.chatId, message);
     } catch (e) {
       this.logger.error('Failed to send telegram message');
-      this.logger.error(e, e.stack);
+      this.logger.error(e, e instanceof Error ? e.stack : undefined);
     }
   }
 
@@ -101,7 +101,7 @@ export class TelegrafService {
     try {
       return await this.sendMessage('Test message', null);
     } catch (e) {
-      this.logger.error(e, e.stack);
+      this.logger.error(e, e instanceof Error ? e.stack : undefined);
       throw new BadRequestException('Wrong bot token or chat id');
     }
   }

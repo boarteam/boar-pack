@@ -103,7 +103,7 @@ export function useImportExport<Entity, TPathParams = {}>({
       // Relational fields handling
       const relationalKey = key.replace('_id', '');
       if (relationalFields?.has(relationalKey)) {
-        const relation = relationalFields.get(relationalKey);
+        const relation = relationalFields.get(relationalKey)!;
         const id = Number(normalizedRow[key]);
         normalizedRow[relationalKey] = relation.data[id] || null;
         continue;
@@ -144,7 +144,8 @@ export function useImportExport<Entity, TPathParams = {}>({
   const handleFileAsync = async (e: ChangeEvent<HTMLInputElement>) => {
     setIsLoadingImport(true);
 
-    const fileAfter = e.target.files[0];
+    // change events on a file input always carry a FileList
+    const fileAfter = e.target.files![0];
 
     if (!fileAfter) {
       throw new Error('Choose CSV with changes.');
@@ -241,7 +242,8 @@ export function useImportExport<Entity, TPathParams = {}>({
         const changedFields = differences
           .map((diff) => diff.path?.[0])
           .filter((field: string | undefined) => field);
-        const displayFields = changedRecordsColumnsConfig.map((column) => column.dataIndex);
+        // the import UI is only rendered when importConfig (which requires this) is provided
+        const displayFields = changedRecordsColumnsConfig!.map((column) => column.dataIndex);
 
         const payload: TUpdatedResult = {
           id,

@@ -40,10 +40,12 @@ export type TDescriptionsProps<Entity, _CreateDto, UpdateDto, TPathParams = obje
   mainTitle?: ProColumns<Entity>['title'] | null;
   entity?: Partial<Entity>;
   getOne?: (params: TGetOneParams & TPathParams) => Promise<Entity | null>;
-  onUpdate?: (params: Partial<Entity> & {
-    requestBody: UpdateDto;
-    index?: number;
-  } & TPathParams) => Promise<Entity>;
+  onUpdate?: (
+    params: Partial<Entity> & {
+      requestBody: UpdateDto;
+      index?: number;
+    } & TPathParams,
+  ) => Promise<Entity>;
   onCreate?: (data: Partial<Entity>) => Promise<void>;
   onDelete?: (params: Partial<Entity> & TPathParams) => Promise<void>;
   pathParams?: TPathParams;

@@ -75,7 +75,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
         await this.checkProviderActivity();
       } catch (error) {
         this.logger.error('Error during provider activity check');
-        this.logger.error(error, error.stack);
+        this.logger.error(error, error instanceof Error ? error.stack : undefined);
       }
     }, 10000);
   }

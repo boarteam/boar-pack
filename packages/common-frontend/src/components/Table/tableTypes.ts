@@ -120,19 +120,25 @@ export interface EditableProps<
   exportParams?: {
     [key: string]: string | number;
   };
-  onUpdate: (params: Partial<Entity> & {
-    requestBody: UpdateDto;
-    index?: number;
-  } & TPathParams) => Promise<Entity>;
+  onUpdate: (
+    params: Partial<Entity> & {
+      requestBody: UpdateDto;
+      index?: number;
+    } & TPathParams,
+  ) => Promise<Entity>;
   onDelete: (params: Partial<Entity> & TPathParams) => Promise<void>;
   entityToCreateDto: (entity: Entity) => CreateDto;
   entityToUpdateDto: (entity: Entity) => UpdateDto;
-  onUpdateMany: (params: Partial<Entity> & {
-    requestBody: { updateValues: Partial<UpdateDto>[]; records: Entity[] };
-  } & TPathParams) => Promise<void>;
-  onDeleteMany: (params: Partial<Entity> & {
-    requestBody: { records: Entity[] };
-  } & TPathParams) => Promise<void>;
+  onUpdateMany: (
+    params: Partial<Entity> & {
+      requestBody: { updateValues: Partial<UpdateDto>[]; records: Entity[] };
+    } & TPathParams,
+  ) => Promise<void>;
+  onDeleteMany: (
+    params: Partial<Entity> & {
+      requestBody: { records: Entity[] };
+    } & TPathParams,
+  ) => Promise<void>;
   importConfig?: {
     onImport?: (params: ImportRequestParams) => Promise<TImportResponse>;
     relationalFields?: TRelationalFields;

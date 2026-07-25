@@ -134,7 +134,8 @@ export class WebsocketClient {
 
     if (this.socket?.readyState !== WebSocket.OPEN) {
       console.warn(`QuotesDataSocket: socket is not ready to send data`);
-      this.socket.addEventListener('open', send, { once: true });
+      // connect() runs in the constructor, so the socket always exists here
+      this.socket!.addEventListener('open', send, { once: true });
       return;
     }
 

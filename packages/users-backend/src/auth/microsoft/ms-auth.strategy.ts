@@ -52,7 +52,7 @@ export class MSAuthStrategy extends PassportStrategy(Strategy, MS_AUTH) {
 
       callback(null, user);
     } catch (e) {
-      this.logger.error(e, e.stack);
+      this.logger.error(e, e instanceof Error ? e.stack : undefined);
       callback(new InternalServerErrorException('Impossible to log in user via ms'));
     }
   }

@@ -7,7 +7,12 @@ import BulkDeleteButton from './BulkDeleteButton';
 import { MutableRefObject, useState } from 'react';
 import { TGetAllParams } from './tableTypes';
 
-export function useBulkEditing<Entity, TPathParams, UpdateDto, U>({
+export function useBulkEditing<
+  Entity extends Record<string | symbol, any>,
+  TPathParams,
+  UpdateDto,
+  U,
+>({
   actionRef,
   columns,
   idColumnName,
@@ -19,12 +24,16 @@ export function useBulkEditing<Entity, TPathParams, UpdateDto, U>({
   actionRef?: MutableRefObject<ActionType | undefined>;
   columns: ProTableProps<Entity, U>['columns'];
   idColumnName?: (string & keyof Entity) | (string & keyof Entity)[];
-  onDeleteMany: (params: Partial<Entity> & {
-    requestBody: { records: Entity[] };
-  } & TPathParams) => Promise<void>;
-  onUpdateMany: (params: Partial<Entity> & {
-    requestBody: { updateValues: Partial<UpdateDto>[]; records: Entity[] };
-  } & TPathParams) => Promise<void>;
+  onDeleteMany: (
+    params: Partial<Entity> & {
+      requestBody: { records: Entity[] };
+    } & TPathParams,
+  ) => Promise<void>;
+  onUpdateMany: (
+    params: Partial<Entity> & {
+      requestBody: { updateValues: Partial<UpdateDto>[]; records: Entity[] };
+    } & TPathParams,
+  ) => Promise<void>;
   entityToUpdateDto: (entity: Entity) => UpdateDto;
   pathParams: TPathParams;
 }) {
@@ -38,8 +47,9 @@ export function useBulkEditing<Entity, TPathParams, UpdateDto, U>({
       selectedRecords={selectedRecords}
       lastRequest={lastRequest}
       allSelected={allSelected}
-      columns={columns}
-      idColumnName={idColumnName}
+      // Table always provides columns (default []) and idColumnName (default 'id')
+      columns={columns!}
+      idColumnName={idColumnName!}
       onSubmit={(values) =>
         // @ts-ignore
         onUpdateMany({

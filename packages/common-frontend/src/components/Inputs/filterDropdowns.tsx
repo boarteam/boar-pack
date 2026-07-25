@@ -30,7 +30,7 @@ export function NumberFilterDropdown({
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <InputNumber
         value={selectedKeys.length ? Number(selectedKeys[0]) : undefined}
-        onChange={(value) => setSelectedKeys(value === undefined ? [] : [value])}
+        onChange={(value) => setSelectedKeys(value === undefined ? [] : ([value] as React.Key[]))}
         onPressEnter={() => confirm()}
         step={1}
         style={{ margin: 4, width: 250 }}
@@ -122,7 +122,7 @@ export function NumberRangeFilterDropdown({
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <InputNumber
         value={range?.[0]}
-        onChange={(value) => updateRange((prev) => [value, prev[1]])}
+        onChange={(value) => updateRange((prev) => [value, prev![1]] as [number, number])}
         onPressEnter={() => confirm()}
         step={1}
         style={{ margin: 4, width: 250 }}
@@ -130,7 +130,7 @@ export function NumberRangeFilterDropdown({
       />
       <InputNumber
         value={range?.[1]}
-        onChange={(value) => updateRange((prev) => [prev[0], value])}
+        onChange={(value) => updateRange((prev) => [prev![0], value] as [number, number])}
         onPressEnter={() => confirm()}
         step={1}
         style={{ margin: 4, width: 250 }}
@@ -177,8 +177,10 @@ export const DynamicOptionsFilterDropdown = ({
         <Button
           type="link"
           onClick={() => {
-            clearFilters();
-            confirm();
+            // antd always provides confirm/clearFilters to filterDropdown renderers;
+            // the props are Partial only to make children the sole required prop
+            clearFilters!();
+            confirm!();
           }}
           size="small"
         >
@@ -188,7 +190,7 @@ export const DynamicOptionsFilterDropdown = ({
           type="primary"
           size="small"
           onClick={() => {
-            confirm();
+            confirm!();
           }}
         >
           OK

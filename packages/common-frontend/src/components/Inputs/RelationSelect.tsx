@@ -18,7 +18,7 @@ type RelationSelectProps<T, CreateDto = T> = ProFormSelectProps & {
   createPopupTitle?: string;
 };
 
-export const RelationSelect = function <T, CreateDto = T>({
+export const RelationSelect = function <T extends Record<string | symbol, any>, CreateDto = T>({
   selectedItem,
   onCreate,
   creationColumns,
@@ -46,7 +46,7 @@ export const RelationSelect = function <T, CreateDto = T>({
 
   const { creationModal, createButton } = useCreation<T, CreateDto>({
     onCreate,
-    columns: creationColumns,
+    columns: creationColumns ?? [],
     popupCreation: !!onCreate,
     createNewDefaultParams: {},
     createButtonSize: 'small',
@@ -62,7 +62,8 @@ export const RelationSelect = function <T, CreateDto = T>({
       reqFilter.push(labelKey + '||$contL||' + keyword);
     }
     const resp = await fetchItems(reqFilter, keyword);
-    return resp.data;
+    // the select maps option fields itself via fieldNames, so plain entities are fine here
+    return resp.data as any[];
   };
 
   return (

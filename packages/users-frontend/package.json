@@ -50,6 +50,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.build.json",
     "lint": "eslint src test",
     "yalc:push": "yalc push"
   }

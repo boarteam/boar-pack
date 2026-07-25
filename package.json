@@ -44,6 +44,7 @@
     "build": "lerna run build",
     "test": "lerna run test --concurrency 1",
     "lint": "lerna run lint",
+    "typecheck": "lerna run typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "ver:pre": "lerna publish --conventional-commits --conventional-prerelease",

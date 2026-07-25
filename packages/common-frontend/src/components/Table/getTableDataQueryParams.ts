@@ -57,9 +57,9 @@ export function getTableDataQueryParams<
       ...filters,
       ...filtersFromSearchForm,
     },
-    searchableColumns,
+    searchableColumns: searchableColumns!,
   });
-  search = applyKeywordToSearch(search, searchableColumns!, columnsState.value!, keyword);
+  search = applyKeywordToSearch(search, searchableColumns!, columnsState!.value!, keyword);
   queryParams.s = JSON.stringify(search);
 
   const { joinSelect, joinFields } = buildJoinFields(join);

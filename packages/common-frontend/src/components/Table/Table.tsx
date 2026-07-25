@@ -29,7 +29,7 @@ const Table = <
   UpdateDto = Entity,
   TEntityParams = {},
   TPathParams extends Record<string, string | number> = {},
-  TImportRequest = {
+  TImportRequest extends {} = {
     // TODO: Add to Table types
     new?: Array<Entity>;
     modified?: Array<Entity>;
@@ -81,18 +81,20 @@ const Table = <
     }
   });
 
+  // TTableProps marks the editable callbacks as optional (they may be omitted for viewOnly
+  // tables), but the corresponding UI is hidden in that case, so the hooks never invoke them.
   const { editableConfig } = useEditableTable<Entity, CreateDto, UpdateDto, TPathParams>({
     actionRef,
     pathParams,
     onCreate,
-    onUpdate,
-    onDelete,
-    entityToCreateDto,
-    entityToUpdateDto,
+    onUpdate: onUpdate!,
+    onDelete: onDelete!,
+    entityToCreateDto: entityToCreateDto!,
+    entityToUpdateDto: entityToUpdateDto!,
     afterSave,
     editable,
-    onDeleteMany,
-    onUpdateMany,
+    onDeleteMany: onDeleteMany!,
+    onUpdateMany: onUpdateMany!,
   });
 
   const {
@@ -106,9 +108,9 @@ const Table = <
     actionRef,
     columns,
     idColumnName,
-    onDeleteMany,
-    onUpdateMany,
-    entityToUpdateDto,
+    onDeleteMany: onDeleteMany!,
+    onUpdateMany: onUpdateMany!,
+    entityToUpdateDto: entityToUpdateDto!,
     pathParams,
   });
 
@@ -119,7 +121,7 @@ const Table = <
     idColumnName: idColumnName,
     onCreate,
     pathParams,
-    entityToCreateDto,
+    entityToCreateDto: entityToCreateDto!,
     actionRef,
     createButtonSize: rest.size,
     popupCreation,
@@ -245,18 +247,25 @@ const Table = <
           entityToUpdateDto={entityToUpdateDto}
         />
       </Modal>
+      {/* The modal only renders content once diffResult is set, which requires a completed
+          import — and the import UI is only shown when importConfig is provided, so the
+          assertions below are type-only; the fallback object keeps the runtime prop
+          values (undefined) identical when importConfig is absent. */}
       <ChangesModal<Entity, TImportRequest>
         {...(diffResult && { changes: diffResult })}
-        onCommit={importConfig?.onImport}
+        onCommit={(importConfig ?? ({} as NonNullable<typeof importConfig>)).onImport!}
         onClose={() => {
           actionRef.current?.reload();
           setDiffResult(undefined);
         }}
         originRecordsColumnsConfig={flatColumns}
-        changedRecordsColumnsConfig={importConfig?.changedRecordsColumnsConfig}
+        changedRecordsColumnsConfig={
+          (importConfig ?? ({} as NonNullable<typeof importConfig>)).changedRecordsColumnsConfig!
+        }
         createdRecordsColumnsConfig={{
           columnsSets,
-          columns: importConfig?.createdRecordsColumnsConfig,
+          columns: (importConfig ?? ({} as NonNullable<typeof importConfig>))
+            .createdRecordsColumnsConfig!,
         }}
         relationalFields={importConfig?.relationalFields}
       />

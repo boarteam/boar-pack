@@ -87,7 +87,8 @@ export class RevokedTokensService {
 
       this.logger.log(`Cleaned up ${result.affected || 0} expired revoked tokens`);
     } catch (error) {
-      this.logger.error(`Error during revoked tokens cleanup: ${error.message}`, error.stack);
+      const err = error instanceof Error ? error : new Error(String(error));
+      this.logger.error(`Error during revoked tokens cleanup: ${err.message}`, err.stack);
     }
   }
 }

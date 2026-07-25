@@ -47,7 +47,7 @@ export class WebsocketsClients<
       } catch (e) {
         this.logger.error(`Error, while calling onOpen for ${config.url} socket`);
         this.logger.error(e);
-        ws.close(WsErrorCodes.ErrorMessage, e.toString());
+        ws.close(WsErrorCodes.ErrorMessage, String(e));
       }
     });
 
@@ -69,7 +69,7 @@ export class WebsocketsClients<
         event = parse(str, null, this.toSafeNumberOrString) as IncomeEventType;
       } catch (e) {
         this.logger.error(`Error, while parsing message from WS server ${msg}`);
-        this.logger.error(e, e.stack);
+        this.logger.error(e, e instanceof Error ? e.stack : undefined);
         if (!config.ignoreInvalidJson) {
           ws?.close(WsErrorCodes.InvalidJson, 'Invalid JSON');
         }

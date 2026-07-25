@@ -32,7 +32,7 @@ export class ClusterModule implements OnApplicationBootstrap {
         await this.clusterService.runClusters();
       } catch (e) {
         this.logger.error('Error while running clusters');
-        this.logger.error(e, e.stack);
+        this.logger.error(e, e instanceof Error ? e.stack : undefined);
       }
     });
   }

@@ -97,7 +97,7 @@ const List = <
       filters,
       searchableColumns,
     });
-    search = applyKeywordToSearch(search, searchableColumns!, null, keyword);
+    search = applyKeywordToSearch(search, searchableColumns!, undefined, keyword);
     queryParams.s = JSON.stringify(search);
 
     const { joinSelect, joinFields } = buildJoinFields(join);

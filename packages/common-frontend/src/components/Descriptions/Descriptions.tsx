@@ -82,7 +82,8 @@ const DescriptionsComponent = <
       form,
     };
   }
-  form = editable.form;
+  // the branch above guarantees editable.form is set
+  form = editable.form!;
 
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
@@ -101,7 +102,7 @@ const DescriptionsComponent = <
       acc.set(column.dataIndex, section);
     });
     return acc;
-  }, new Map<Key, TDescriptionSection<Entity>>());
+  }, new Map<Key | undefined, TDescriptionSection<Entity>>());
 
   const { contentViewModeButton, contentViewMode } = useContentViewMode({
     mode:
@@ -115,8 +116,10 @@ const DescriptionsComponent = <
     try {
       // Validate all fields in the form
       const data = await form.validateFields();
-      // Let the parent component handle the submit logic
-      await onCreate(data);
+      // Let the parent component handle the submit logic.
+      // submit() is only wired up by create flows (e.g. CreateEntityModal) which always
+      // provide onCreate.
+      await onCreate!(data);
     } catch (error) {
       console.error('Validation or submission failed:', error);
     } finally {
@@ -152,11 +155,12 @@ const DescriptionsComponent = <
     // changedValues = {} if we clear select value
     if (!key) {
       const previousValues = form.getFieldsValue(true);
-      key = Object.keys(previousValues).find((field) => !(field in allValues));
+      key = Object.keys(previousValues).find((field) => !(field in allValues))!;
     }
 
     form.validateFields([key]).finally(() => {
-      const section = columnDataIndexToSection.get(key);
+      // every editable field belongs to a column registered in the map above
+      const section = columnDataIndexToSection.get(key)!;
       const dataIndexes = section.columns.map((column) => {
         return Array.isArray(column.dataIndex) ? column.dataIndex.join('.') : column.dataIndex;
       });
@@ -176,7 +180,7 @@ const DescriptionsComponent = <
     const join = params?.join;
     const queryParams: TGetOneParams & TPathParams = {
       ...(pathParams ?? ({} as TPathParams)),
-    };
+    } as TGetOneParams & TPathParams;
 
     const { joinSelect, joinFields } = buildJoinFields(join);
     queryParams.join = joinSelect;
@@ -232,7 +236,8 @@ const DescriptionsComponent = <
 
   useEffect(() => {
     setData(entity);
-    form.setFieldsValue(entity);
+    // antd tolerates undefined at runtime; keep passing it through unchanged
+    form.setFieldsValue(entity as Partial<Entity>);
   }, [entity]);
 
   if (loading) {

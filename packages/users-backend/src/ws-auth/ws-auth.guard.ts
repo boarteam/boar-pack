@@ -1,9 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { WebSocket } from 'ws';
 import { WsAuthService } from './ws-auth.service';
 import { WsErrorCodes } from '@boarteam/boar-pack-common-backend';

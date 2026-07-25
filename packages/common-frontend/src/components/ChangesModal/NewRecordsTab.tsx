@@ -8,7 +8,7 @@ export type TCreatedRecordsColumnsConfig<Entity> = {
   columns: ProColumns<Entity>[];
 };
 
-function NewRecordsTab<Entity>({
+function NewRecordsTab<Entity extends Record<string, any>>({
   created,
   createdRecordsColumnsConfig,
 }: {
@@ -34,7 +34,7 @@ function NewRecordsTab<Entity>({
       columns={columns}
       columnsState={columnsState}
       toolBarRender={(...args) => [columnsSetSelect?.() || null]}
-      rowKey={(record, index) => index}
+      rowKey={(record, index) => index!}
       search={false}
     />,
   ];

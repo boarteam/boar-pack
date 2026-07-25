@@ -10,7 +10,7 @@ export interface CreateEntityModalProps<Entity> {
   /** The entity (or partial entity) data to edit */
   entity: Partial<Entity> | undefined;
   /** Modal title */
-  title: string;
+  title?: string;
   /** Main title for the Descriptions component */
   mainTitle?: ProColumns<Entity>['title'] | null;
   /** Table columns used to render the fields */
@@ -30,7 +30,7 @@ export interface CreateEntityModalProps<Entity> {
 }
 
 export function CreateEntityModal<
-  Entity,
+  Entity extends Record<string | symbol, any>,
   CreateDto = Entity,
   UpdateDto = Entity,
   TPathParams = object,
@@ -77,7 +77,10 @@ export function CreateEntityModal<
         labelStyle={{ width: '15%' }}
         contentStyle={{ width: '25%' }}
         canEdit={true}
-        onCreate={(data) => onSubmit(data, descriptionsRef)}
+        onCreate={(data) =>
+          // the Descriptions ref is mounted by the time the form can be submitted
+          onSubmit(data, descriptionsRef as MutableRefObject<DescriptionsRefType<Entity>>)
+        }
         editable={{
           editableKeys,
           actionRender: () => [],

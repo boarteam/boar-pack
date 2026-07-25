@@ -22,7 +22,11 @@ export function isRecordNew(record: Record<string | symbol, any>): boolean {
   );
 }
 
-export function useCreation<Entity, CreateDto, TPathParams = {}>({
+export function useCreation<
+  Entity extends Record<string | symbol, any>,
+  CreateDto,
+  TPathParams = {},
+>({
   title,
   mainTitle,
   columns,

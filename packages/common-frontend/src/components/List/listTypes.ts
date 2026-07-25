@@ -14,9 +14,11 @@ export interface TListProps<
 > extends ProListProps<Entity, TEntityParams & TFilterParams> {
   getAll: (params: TGetAllParams & TPathParams) => Promise<{ data: Entity[] }>;
   onCreate?: (params: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
-  onUpdate: (params: Record<keyof Entity, string> & {
-    requestBody: UpdateDto;
-  } & TPathParams) => Promise<Entity>;
+  onUpdate: (
+    params: Record<keyof Entity, string> & {
+      requestBody: UpdateDto;
+    } & TPathParams,
+  ) => Promise<Entity>;
   onDelete: (params: Record<keyof Entity, string> & TPathParams) => Promise<void>;
   pathParams: TPathParams;
   idColumnName?: string & keyof Entity;

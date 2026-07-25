@@ -83,6 +83,7 @@
   "scripts": {
     "build": "rm -rf dist && nest build -p tsconfig.build.json",
     "test": "jest",
+    "typecheck": "tsc --noEmit -p tsconfig.build.json",
     "lint": "eslint src test",
     "yalc:push": "yalc push",
     "gen-types": "SWAGGER=true JWT_SECRET=swagger nest start"

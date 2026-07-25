@@ -27,12 +27,10 @@ type TUseColumnsSetsResult<_Entity> = {
   columnsState: ColumnStateType;
 };
 
-type TColumnsState = Partial<Record<string, ColumnsState>>;
-
 function getColumnsStates<T>(
   columns: TIndexableRecord[],
   shownCols: Set<keyof T>,
-  state: TColumnsState = {},
+  state: TColumnsStates = {},
 ): { state: Record<string, ColumnsState>; someColumnsShown: boolean } {
   let someColumnsShown = false;
   columns.forEach((col) => {
