@@ -48,14 +48,45 @@ describe('ClusterConfigService', () => {
       expect(() => getConfig()).toThrow('PORT env variable is not set');
     });
 
-    it('throws when PORT is not numeric', () => {
-      process.env.PORT = 'not-a-number';
+    it('throws when PORT is set to an empty string', () => {
+      process.env.PORT = '';
       expect(() => getConfig()).toThrow('PORT env variable is not set');
     });
 
-    it('throws when PORT is 0 (falsy port is treated as unset)', () => {
+    it('throws a distinct error when PORT is not numeric', () => {
+      process.env.PORT = 'not-a-number';
+      expect(() => getConfig()).toThrow(
+        'PORT env variable is not a valid port number: "not-a-number" ' +
+          '(expected an integer between 1 and 65535)',
+      );
+      // the misleading "not set" wording must not be reused for a value that is set
+      expect(() => getConfig()).not.toThrow('PORT env variable is not set');
+    });
+
+    it('throws a distinct error when PORT is 0', () => {
+      // 0 means "OS picks a free port", which cannot be used as the base for
+      // the per-worker `port + portIncrement` arithmetic
       process.env.PORT = '0';
-      expect(() => getConfig()).toThrow('PORT env variable is not set');
+      expect(() => getConfig()).toThrow('PORT env variable is not a valid port number: "0"');
+      expect(() => getConfig()).not.toThrow('PORT env variable is not set');
+    });
+
+    it('throws a distinct error when PORT is out of range', () => {
+      process.env.PORT = '65536';
+      expect(() => getConfig()).toThrow('PORT env variable is not a valid port number: "65536"');
+    });
+
+    it('throws a distinct error when PORT has trailing garbage', () => {
+      process.env.PORT = '3000abc';
+      expect(() => getConfig()).toThrow('PORT env variable is not a valid port number: "3000abc"');
+    });
+
+    it('accepts the boundary ports', () => {
+      process.env.PORT = '1';
+      expect(getConfig().port).toBe(1);
+
+      process.env.PORT = '65535';
+      expect(getConfig().port).toBe(65535);
     });
 
     it('parses a numeric PORT', () => {
