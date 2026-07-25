@@ -98,7 +98,7 @@ export class TelegrafService {
     }
 
     try {
-      await this.deliver(config, message);
+      await this.deliver(config.botToken, config.chatId, message);
     } catch (e) {
       this.logger.error('Failed to send telegram message');
       this.logger.error(e, e instanceof Error ? e.stack : undefined);
@@ -117,7 +117,7 @@ export class TelegrafService {
     }
 
     try {
-      await this.deliver(config, 'Test message');
+      await this.deliver(config.botToken, config.chatId, 'Test message');
     } catch (e) {
       this.logger.error(e, e instanceof Error ? e.stack : undefined);
       throw new BadRequestException('Wrong bot token or chat id');
@@ -125,11 +125,12 @@ export class TelegrafService {
   }
 
   private async deliver(
-    config: Pick<TelegramSettingsDto, 'botToken' | 'chatId'>,
+    botToken: string,
+    chatId: string,
     message: string | FmtString,
   ): Promise<void> {
-    const bot = new Telegraf(config.botToken);
-    await bot.telegram.sendMessage(config.chatId, message);
+    const bot = new Telegraf(botToken);
+    await bot.telegram.sendMessage(chatId, message);
   }
 
   /**
