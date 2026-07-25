@@ -286,10 +286,53 @@ describe('UsersConnectionsStatisticService (Postgres)', () => {
   });
 
   it('getTimeline on an empty table returns no rows', async () => {
-    // With no rows getOldestUsersStatsDate() yields new Date(null) — the epoch —
-    // so the implicit range spans decades of weekly buckets, but the empty
-    // users CTE collapses the cross join to nothing.
+    // The implicit range is the last 7 days, and the empty users CTE collapses
+    // the cross join to nothing anyway.
     await expect(service.getTimeline()).resolves.toEqual([]);
+  });
+
+  it('defaults the window start to 7 days ago when no matching rows exist', async () => {
+    const oldestUsersDate = () => (service as any).getOldestUsersStatsDate() as Promise<Date>;
+    const oldestTargetDate = () => (service as any).getOldestTargetStatsDate() as Promise<Date>;
+    const isAboutSevenDaysAgo = (date: Date) =>
+      Math.abs(date.getTime() - (Date.now() - 7 * 24 * 3600 * 1000)) < 60_000;
+
+    expect(isAboutSevenDaysAgo(await oldestUsersDate())).toBe(true);
+    expect(isAboutSevenDaysAgo(await oldestTargetDate())).toBe(true);
+
+    // rows on one side only: that side reports its real minimum, the other keeps
+    // falling back
+    const createdAt = '2026-07-20T09:00:00.000Z';
+    await insertStat({
+      targetId: tokenId,
+      target: UserConnectionTarget.TOKEN,
+      quotesNumber: 1,
+      createdAt,
+    });
+
+    expect((await oldestTargetDate()).toISOString()).toBe(createdAt);
+    expect(isAboutSevenDaysAgo(await oldestUsersDate())).toBe(true);
+  });
+
+  it('getTargetsTimeline without a start time spans the last 7 days', async () => {
+    // Only user rows exist, so getOldestTargetStatsDate() finds no minimum and
+    // falls back to 7 days ago -> daily buckets. The epoch it used to return
+    // made the query build ~3000 weekly buckets per requested target.
+    await insertStat({
+      userId: userA,
+      target: UserConnectionTarget.FIX_SERVER,
+      quotesNumber: 4,
+      createdAt: new Date().toISOString(),
+    });
+
+    const rows = await service.getTargetsTimeline({ targetIds: [tokenId] });
+
+    // 8 daily ticks (7 days back, both ends inclusive) x 1 targetId x 1 target
+    expect(rows).toHaveLength(8);
+    expect(rows.every((r) => r.targetId === tokenId && r.records === 0)).toBe(true);
+    expect(new Date(rows[0].startTime).getTime()).toBeGreaterThan(
+      Date.now() - 9 * 24 * 3600 * 1000,
+    );
   });
 
   it('midnight purge deletes rows older than 7 days and keeps newer ones', async () => {

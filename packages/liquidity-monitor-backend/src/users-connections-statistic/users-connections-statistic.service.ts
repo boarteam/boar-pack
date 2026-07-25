@@ -250,22 +250,32 @@ export class UsersConnectionsStatisticService {
     );
   }
 
+  /**
+   * Get the oldest date of the records attributed to a user.
+   * If no records are found, it returns a current date minus 7 days.
+   * @private
+   */
   private async getOldestUsersStatsDate(): Promise<Date> {
     const oldestStat = await this.repo
       .createQueryBuilder('users_connections_statistic')
       .select('MIN(users_connections_statistic.createdAt)', 'min')
       .where('users_connections_statistic.userId IS NOT NULL')
       .getRawOne();
-    return new Date(oldestStat.min);
+    return oldestStat.min ? new Date(oldestStat.min) : moment().subtract(7, 'days').toDate();
   }
 
+  /**
+   * Get the oldest date of the records attributed to a target.
+   * If no records are found, it returns a current date minus 7 days.
+   * @private
+   */
   private async getOldestTargetStatsDate(): Promise<Date> {
     const oldestStat = await this.repo
       .createQueryBuilder('users_connections_statistic')
       .select('MIN(users_connections_statistic.createdAt)', 'min')
       .where('users_connections_statistic.targetId IS NOT NULL')
       .getRawOne();
-    return new Date(oldestStat.min);
+    return oldestStat.min ? new Date(oldestStat.min) : moment().subtract(7, 'days').toDate();
   }
 
   private determineInterval(startTime: moment.Moment, endTime: moment.Moment): TInterval {
