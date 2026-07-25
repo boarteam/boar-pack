@@ -41,7 +41,7 @@ export function useCreation<
 }: {
   actionRef?: MutableRefObject<ActionType | undefined>;
   pathParams: TPathParams;
-  entityToCreateDto: (entity: Entity) => CreateDto;
+  entityToCreateDto?: (entity: Entity) => CreateDto;
   onCreate?: (params: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
   createButtonSize: SizeType;
   popupCreation?: boolean;
@@ -54,7 +54,11 @@ export function useCreation<
     descriptionsRef: MutableRefObject<DescriptionsRefType<Entity>>,
   ) => {
     try {
-      await onCreate?.({
+      if (!onCreate || !entityToCreateDto) {
+        throw new Error('Table: creating rows requires both onCreate and entityToCreateDto props');
+      }
+
+      await onCreate({
         ...pathParams,
         requestBody: entityToCreateDto({
           ...pathParams,
@@ -84,30 +88,34 @@ export function useCreation<
     }
   };
 
-  const createButton = (
-    <Button
-      size={createButtonSize}
-      type="primary"
-      key="create"
-      onClick={() => {
-        if (popupCreation) {
-          setCreatePopupData(createNewDefaultParams);
-        } else {
-          actionRef?.current?.addEditRecord(
-            {
-              [KEY_SYMBOL]: getNewId(),
-              ...createNewDefaultParams,
-            },
-            {
-              position: 'top',
-            },
-          );
-        }
-      }}
-    >
-      <PlusOutlined /> <FormattedMessage id={'table.newButton'} />
-    </Button>
-  );
+  // Creation needs both handlers; without them the button could only produce a
+  // row that silently disappears on save
+  const createButton =
+    !onCreate || !entityToCreateDto ? null : (
+      <Button
+        size={createButtonSize}
+        type="primary"
+        key="create"
+        onClick={() => {
+          if (popupCreation) {
+            // the modal is open while its data is defined, so an empty form still needs an object
+            setCreatePopupData(createNewDefaultParams ?? {});
+          } else {
+            actionRef?.current?.addEditRecord(
+              {
+                [KEY_SYMBOL]: getNewId(),
+                ...createNewDefaultParams,
+              },
+              {
+                position: 'top',
+              },
+            );
+          }
+        }}
+      >
+        <PlusOutlined /> <FormattedMessage id={'table.newButton'} />
+      </Button>
+    );
 
   const modal = (
     <CreateEntityModal<Entity, CreateDto, Entity, TPathParams>

@@ -29,7 +29,15 @@ export function useEditableTable<Entity, CreateDto, UpdateDto, TPathParams = {}>
     onChange: setEditableRowKeys,
     async onSave(id, record, origin, newLine) {
       if (newLine) {
-        await onCreate?.({
+        // Both are needed to create a row; a table wired without them used to
+        // discard the new row silently
+        if (!onCreate || !entityToCreateDto) {
+          throw new Error(
+            'Table: creating rows requires both onCreate and entityToCreateDto props',
+          );
+        }
+
+        await onCreate({
           ...pathParams,
           requestBody: entityToCreateDto(record),
         });

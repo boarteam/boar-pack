@@ -112,14 +112,8 @@ export interface EditableProps<
   TPathParams = {},
   ImportRequestParams = {},
 > {
-  actionRef?: MutableRefObject<ActionType | undefined>;
-  editable?: RowEditableConfig<Entity>;
-  afterSave?: (record: Entity) => Promise<void>;
-  onCreate?: (params: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
-  exportUrl?: string;
-  exportParams?: {
-    [key: string]: string | number;
-  };
+  // Called unguarded whenever a row is saved or deleted, so an editable table
+  // has to provide them
   onUpdate: (
     params: Partial<Entity> & {
       requestBody: UpdateDto;
@@ -127,40 +121,46 @@ export interface EditableProps<
     } & TPathParams,
   ) => Promise<Entity>;
   onDelete: (params: Partial<Entity> & TPathParams) => Promise<void>;
-  entityToCreateDto: (entity: Entity) => CreateDto;
   entityToUpdateDto: (entity: Entity) => UpdateDto;
-  onUpdateMany: (
+
+  // Each of these enables an optional affordance: row creation, bulk actions,
+  // import/export
+  onCreate?: (params: { requestBody: CreateDto } & TPathParams) => Promise<Entity>;
+  entityToCreateDto?: (entity: Entity) => CreateDto;
+  onUpdateMany?: (
     params: Partial<Entity> & {
       requestBody: { updateValues: Partial<UpdateDto>[]; records: Entity[] };
     } & TPathParams,
   ) => Promise<void>;
-  onDeleteMany: (
+  onDeleteMany?: (
     params: Partial<Entity> & {
       requestBody: { records: Entity[] };
     } & TPathParams,
   ) => Promise<void>;
+  exportUrl?: string;
+  exportParams?: {
+    [key: string]: string | number;
+  };
   importConfig?: {
     onImport?: (params: ImportRequestParams) => Promise<TImportResponse>;
     relationalFields?: TRelationalFields;
     changedRecordsColumnsConfig: ProColumns<Entity>[];
     createdRecordsColumnsConfig: ProColumns<Entity>[];
   };
+  actionRef?: MutableRefObject<ActionType | undefined>;
+  editable?: RowEditableConfig<Entity>;
+  afterSave?: (record: Entity) => Promise<void>;
 }
 
-// Conditional type to merge base and editable props conditionally
-type ConditionalProps<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams> = {
-  viewOnly: true;
-} extends { viewOnly: boolean }
-  ? BaseProps<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams> &
-      Partial<EditableProps<Entity, CreateDto, UpdateDto, TPathParams>>
-  : BaseProps<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams> &
-      EditableProps<Entity, CreateDto, UpdateDto, TPathParams>;
-
-// Main type
-export type TTableProps<
-  Entity,
-  CreateDto,
-  UpdateDto,
-  TEntityParams = {},
-  TPathParams = {},
-> = ConditionalProps<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams>;
+/**
+ * A table declared `viewOnly` renders no editing affordances and needs no
+ * handlers; any other table may enter edit mode — including one whose viewOnly
+ * flag is only known at runtime — and must supply the handlers it will call.
+ */
+export type TTableProps<Entity, CreateDto, UpdateDto, TEntityParams = {}, TPathParams = {}> =
+  | (BaseProps<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams> & {
+      viewOnly: true;
+    } & Partial<EditableProps<Entity, CreateDto, UpdateDto, TPathParams>>)
+  | (BaseProps<Entity, CreateDto, UpdateDto, TEntityParams, TPathParams> & {
+      viewOnly?: boolean;
+    } & EditableProps<Entity, CreateDto, UpdateDto, TPathParams>);
