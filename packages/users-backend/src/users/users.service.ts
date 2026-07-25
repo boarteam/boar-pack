@@ -14,7 +14,10 @@ export class UsersService extends TypeOrmCrudService<User> {
   }
 
   async create(data: Partial<User>): Promise<User> {
-    const user = this.repo.create(data);
+    // findByEmail looks up lowercased addresses, so a mixed-case email stored
+    // as given would be unreachable. The DTOs normalize at the controller
+    // boundary; this covers direct service calls (seeding, other modules).
+    const user = this.repo.create(data.email ? { ...data, email: data.email.toLowerCase() } : data);
     await this.repo.save(user);
     return user;
   }
