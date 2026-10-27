@@ -13,6 +13,10 @@ type TLatestQuotesQueryResult = {
 
 type TInterval = 'second' | 'minute' | 'hour' | 'day' | 'week';
 
+// Statistics are kept for a week, and a request without a start time spans that week: a fixed
+// duration, not 7 days of the local calendar, which across a DST change are 167 or 169 hours.
+const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
 @Injectable()
 export class QuotesStatisticService {
   private readonly logger = new Logger(QuotesStatisticService.name);
@@ -42,8 +46,7 @@ export class QuotesStatisticService {
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   private async deleteOldQuotesStatistic() {
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setHours(oneWeekAgo.getHours() - 24 * 7);
+    const oneWeekAgo = new Date(Date.now() - ONE_WEEK_MS);
 
     const result = await this.repo
       .createQueryBuilder()
@@ -129,7 +132,7 @@ export class QuotesStatisticService {
       .createQueryBuilder('quotes_statistic')
       .select('MIN(quotes_statistic.createdAt)', 'min')
       .getRawOne();
-    return oldestStat.min ? new Date(oldestStat.min) : moment().subtract(7, 'days').toDate();
+    return oldestStat.min ? new Date(oldestStat.min) : new Date(Date.now() - ONE_WEEK_MS);
   }
 
   private determineInterval(startTime: moment.Moment, endTime: moment.Moment): TInterval {
