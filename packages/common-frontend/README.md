@@ -103,6 +103,14 @@ const entityToDto = (entity: User) => pick(entity, ['name', 'email', 'role', 'pa
 `join`, `limit`, `page`, …) — pass them through to the generated client and
 return `{ data: Entity[] }`.
 
+**Which handlers you must pass.** A table declared `viewOnly` needs none of
+them. Any other table — including one whose `viewOnly` value is decided at
+runtime, as above — must pass `onUpdate`, `onDelete` and
+`entityToUpdateDto`, because saving or deleting a row calls them directly.
+The rest are optional and each enables one affordance: `onCreate` +
+`entityToCreateDto` show the New button, `onUpdateMany` / `onDeleteMany`
+add the bulk actions, `importConfig` / `exportUrl` add import and export.
+
 ## Stability
 
 Beta. Extracted from production systems and used in real projects, but the
