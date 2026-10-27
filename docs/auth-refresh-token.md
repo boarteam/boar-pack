@@ -31,6 +31,12 @@ export class LocalAuthTokenDto {
 
 Both tokens include their payload so expiration values can be used when setting cookies.
 
+## Token Types
+
+Both tokens are signed with the same `JWT_SECRET`, so each payload carries a `type` claim (`access` or `refresh`) stamped by `JWTAuthService.sign`. The access strategy rejects anything that is not an access token and the refresh strategy rejects anything that is not a refresh token, which keeps a refresh token from being used as a bearer credential on protected routes and an access token from being exchanged for a new pair.
+
+Tokens issued before this claim existed are rejected, so deploying it ends every active session.
+
 ## Cookies
 
 `AuthService` manages cookies for the two tokens. `setCookie` stores them under `auth_token` and `auth_refresh_token` with `maxAge` derived from the JWT payload. The refresh cookie uses `REFRESH_TOKEN_PATH` to scope the cookie only to the refresh route. `clearCookies` removes both cookies during logout.
