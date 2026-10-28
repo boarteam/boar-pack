@@ -11,6 +11,10 @@ import {
 
 type TInterval = 'second' | 'minute' | 'hour' | 'day' | 'week';
 
+// Statistics are kept for a week, and a request without a start time spans that week: a fixed
+// duration, not 7 days of the local calendar, which across a DST change are 167 or 169 hours.
+const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
 type IUserQuotesNumber = { [key in TComplexTarget]: number };
 
 @Injectable()
@@ -77,8 +81,7 @@ export class UsersConnectionsStatisticService {
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   private async deleteOldUsersConnectionsStatistic() {
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setHours(oneWeekAgo.getHours() - 24 * 7);
+    const oneWeekAgo = new Date(Date.now() - ONE_WEEK_MS);
 
     const result = await this.repo
       .createQueryBuilder()
@@ -250,22 +253,32 @@ export class UsersConnectionsStatisticService {
     );
   }
 
+  /**
+   * Get the oldest date of the records attributed to a user.
+   * If no records are found, it returns a current date minus 7 days.
+   * @private
+   */
   private async getOldestUsersStatsDate(): Promise<Date> {
     const oldestStat = await this.repo
       .createQueryBuilder('users_connections_statistic')
       .select('MIN(users_connections_statistic.createdAt)', 'min')
       .where('users_connections_statistic.userId IS NOT NULL')
       .getRawOne();
-    return new Date(oldestStat.min);
+    return oldestStat.min ? new Date(oldestStat.min) : new Date(Date.now() - ONE_WEEK_MS);
   }
 
+  /**
+   * Get the oldest date of the records attributed to a target.
+   * If no records are found, it returns a current date minus 7 days.
+   * @private
+   */
   private async getOldestTargetStatsDate(): Promise<Date> {
     const oldestStat = await this.repo
       .createQueryBuilder('users_connections_statistic')
       .select('MIN(users_connections_statistic.createdAt)', 'min')
       .where('users_connections_statistic.targetId IS NOT NULL')
       .getRawOne();
-    return new Date(oldestStat.min);
+    return oldestStat.min ? new Date(oldestStat.min) : new Date(Date.now() - ONE_WEEK_MS);
   }
 
   private determineInterval(startTime: moment.Moment, endTime: moment.Moment): TInterval {

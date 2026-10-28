@@ -34,8 +34,21 @@ export class ClusterService {
     this.config = this.configService.config;
   }
 
-  public addCluster(cluster: ClusterInterface) {
-    this.workersByClusters.set(cluster, new Map());
+  public addCluster(runningCluster: ClusterInterface) {
+    if (this.workersByClusters.has(runningCluster)) {
+      return;
+    }
+
+    this.workersByClusters.set(runningCluster, new Map());
+
+    // `message` is emitted by the cluster module itself for every worker, so it
+    // has to be subscribed to exactly once per registered cluster. Subscribing
+    // inside runWorker() would add a listener on every fork — including every
+    // auto-restart — leaking listeners and delivering each message once per
+    // fork ever performed.
+    cluster.on('message', (worker, message) => {
+      runningCluster.onClusterMessage?.(cluster, worker, message);
+    });
   }
 
   public async runClusters(): Promise<void> {
@@ -94,10 +107,6 @@ export class ClusterService {
     clusterWorkers.set(workerProcess.id, {
       worker: workerProcess,
       workerVars: vars,
-    });
-
-    cluster.on('message', (worker, message) => {
-      runningCluster.onClusterMessage?.(cluster, worker, message);
     });
 
     workerProcess.on('exit', (code, signal) => {

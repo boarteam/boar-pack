@@ -194,7 +194,7 @@ export class ProviderMonitoringService implements OnModuleInit, OnModuleDestroy 
     const now = Date.now();
     providers.forEach((provider: TProvider) => {
       const latestQuoteDate = latestQuotesByProviders.get(provider.id);
-      const diff = latestQuoteDate ? Math.round(now - latestQuoteDate.getTime()) / 1000 : null;
+      const diff = latestQuoteDate ? Math.round((now - latestQuoteDate.getTime()) / 1000) : null;
       const isProblematic = diff === null || (provider.threshold && diff > provider.threshold);
 
       if (isProblematic) {

@@ -133,6 +133,22 @@ describe('ProviderMonitoringService (Postgres)', () => {
     );
   });
 
+  it('reports the staleness as a whole number of seconds', async () => {
+    const provider: TProvider = { id: randomUUID(), name: 'StaleProvider', threshold: 30 };
+    fetchProviders.mockResolvedValue([provider]);
+    const now = Date.now();
+    jest.spyOn(Date, 'now').mockImplementation(() => now);
+    quotes.getLatestQuotesByProvider.mockResolvedValue(
+      new Map([[provider.id, new Date(now - 60_400)]]),
+    );
+
+    await checkActivity();
+
+    // 60.4s is reported as 60 seconds, not as a fractional figure
+    expect(sentTexts()[0]).toContain('has no quotes in the last 60 seconds');
+    expect(sentTexts()[0]).not.toMatch(/\d\.\d/);
+  });
+
   it('does nothing when no provider has a threshold', async () => {
     fetchProviders.mockResolvedValue([{ id: randomUUID(), name: 'NoThreshold', threshold: null }]);
 

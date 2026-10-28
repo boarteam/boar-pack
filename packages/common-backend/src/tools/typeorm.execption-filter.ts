@@ -5,6 +5,7 @@ import { BaseExceptionFilter } from '@nestjs/core';
 enum ErrorCode {
   // pg
   UniqueViolation = '23505',
+  ForeignKeyViolation = '23503',
 
   // mysql
   FailedRemovingByForeignKey = 'ER_ROW_IS_REFERENCED',
@@ -41,6 +42,7 @@ export class TypeOrmExceptionFilter extends BaseExceptionFilter implements Excep
         });
         return;
 
+      case ErrorCode.ForeignKeyViolation:
       case ErrorCode.FailedRemovingByForeignKey:
       case ErrorCode.FailedRemovingByForeignKey2:
         response.status(400).json({
