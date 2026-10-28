@@ -51,7 +51,7 @@ export class TelegrafService {
   async setTelegramSettings(updateDto: TelegramSettingsUpdateDto): Promise<void> {
     const settings: Pick<Setting, 'key' | 'value'>[] = [];
 
-    if (updateDto.enabled) {
+    if (updateDto.enabled !== undefined) {
       settings.push({
         key: Telegram.Enabled,
         value: updateDto.enabled ? SettingsValues.YES : SettingsValues.NO,
@@ -75,6 +75,11 @@ export class TelegrafService {
     await this.settingsService.updateSettings(settings);
   }
 
+  /**
+   * Sends a notification, unless telegram is disabled, unconfigured, or the
+   * notification type has been switched off in the settings. Delivery failures
+   * are logged, never thrown: notifications must not break their caller.
+   */
   async sendMessage(message: string | FmtString, type: Notifications | null): Promise<void> {
     const config = await this.getTelegramSettings();
     if (!config.enabled) {
@@ -87,22 +92,53 @@ export class TelegrafService {
       return;
     }
 
-    const bot = new Telegraf(config.botToken);
+    if (type && (await this.isNotificationDisabled(type))) {
+      this.logger.log(`Suppressed telegram message because ${type} notifications are disabled`);
+      return;
+    }
 
     try {
-      await bot.telegram.sendMessage(config.chatId, message);
+      await this.deliver(config.botToken, config.chatId, message);
     } catch (e) {
       this.logger.error('Failed to send telegram message');
       this.logger.error(e, e instanceof Error ? e.stack : undefined);
     }
   }
 
+  /**
+   * Connectivity check for the configured bot: unlike sendMessage it reports
+   * failures to the caller, and it ignores the enabled flag and the per-type
+   * toggles — it answers "do these credentials work", not "should we notify".
+   */
   async test() {
+    const config = await this.getTelegramSettings();
+    if (!config.botToken || !config.chatId) {
+      throw new BadRequestException('Bot token or chat id is not set');
+    }
+
     try {
-      return await this.sendMessage('Test message', null);
+      await this.deliver(config.botToken, config.chatId, 'Test message');
     } catch (e) {
       this.logger.error(e, e instanceof Error ? e.stack : undefined);
       throw new BadRequestException('Wrong bot token or chat id');
     }
+  }
+
+  private async deliver(
+    botToken: string,
+    chatId: string,
+    message: string | FmtString,
+  ): Promise<void> {
+    const bot = new Telegraf(botToken);
+    await bot.telegram.sendMessage(chatId, message);
+  }
+
+  /**
+   * A notification type counts as enabled until it is explicitly switched off,
+   * so systems that never configured these toggles keep receiving alerts.
+   */
+  private async isNotificationDisabled(type: Notifications): Promise<boolean> {
+    const [setting] = await this.settingsService.getSettings([type]);
+    return setting?.value === SettingsValues.NO;
   }
 }

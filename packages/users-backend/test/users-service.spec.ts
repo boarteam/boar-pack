@@ -136,17 +136,16 @@ describe('UsersService (Postgres)', () => {
       await expect(service.findByEmail('missing@spec.test')).resolves.toBeNull();
     });
 
-    it('does not normalize the stored email, so mixed-case emails are unfindable by findByEmail', async () => {
-      // create() saves the email as given while findByEmail lowercases the
-      // query — normalization is only enforced by UserCreateDto (Joi
-      // .lowercase()) at the controller boundary. Documenting current
-      // behavior: a mixed-case email created directly through the service
-      // cannot be found by findByEmail.
-      await service.create({ name: 'Mixed', email: 'MixedCase@Spec.Test' });
+    it('normalizes the stored email so mixed-case addresses stay findable', async () => {
+      const created = await service.create({ name: 'Mixed', email: 'MixedCase@Spec.Test' });
 
-      await expect(service.findByEmail('MixedCase@Spec.Test')).resolves.toBeNull();
-      const found = await service.findOne({ where: { email: 'MixedCase@Spec.Test' } });
-      expect(found?.name).toBe('Mixed');
+      expect(created.email).toBe('mixedcase@spec.test');
+      await expect(service.findByEmail('MixedCase@Spec.Test')).resolves.toMatchObject({
+        name: 'Mixed',
+      });
+      await expect(service.findByEmail('mixedcase@spec.test')).resolves.toMatchObject({
+        name: 'Mixed',
+      });
     });
 
     it('rejects duplicate emails via the unique constraint', async () => {

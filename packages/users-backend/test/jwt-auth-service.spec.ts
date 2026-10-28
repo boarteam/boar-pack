@@ -1,9 +1,3 @@
-// uuid v13 is ESM-only and cannot be require()d by jest's CJS runtime, so the
-// dependency of jwt-auth.service.ts is mocked with an equivalent v4 generator.
-jest.mock('uuid', () => ({
-  v4: () => require('node:crypto').randomUUID(),
-}));
-
 import { randomUUID } from 'node:crypto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';

@@ -118,16 +118,23 @@ describe('TelegrafService (TelegrafModule.register)', () => {
       expect(rows[0].value).toBe('new');
     });
 
-    it('cannot disable notifications: enabled=false is silently dropped', async () => {
-      // Current behavior (looks like a bug): `if (updateDto.enabled)` skips falsy
-      // values, so { enabled: false } writes nothing and telegram stays enabled.
+    it('disables notifications when enabled=false is submitted', async () => {
       await service.setTelegramSettings({ enabled: true, botToken: 't', chatId: 'c' });
 
       await service.setTelegramSettings({ enabled: false });
 
       const enabledRow = await repo.findOneByOrFail({ key: Telegram.Enabled });
+      expect(enabledRow.value).toBe(SettingsValues.NO);
+      await expect(service.getTelegramSettings()).resolves.toMatchObject({ enabled: false });
+    });
+
+    it('leaves the enabled flag alone when the update omits it', async () => {
+      await service.setTelegramSettings({ enabled: true, botToken: 't', chatId: 'c' });
+
+      await service.setTelegramSettings({ botToken: 'other' });
+
+      const enabledRow = await repo.findOneByOrFail({ key: Telegram.Enabled });
       expect(enabledRow.value).toBe(SettingsValues.YES);
-      await expect(service.getTelegramSettings()).resolves.toMatchObject({ enabled: true });
     });
 
     it('ignores empty-string token and chat id (no rows written)', async () => {
@@ -156,12 +163,30 @@ describe('TelegrafService (TelegrafModule.register)', () => {
       await service.sendMessage('b', Notifications.QuotesByUserStatus);
       await service.sendMessage('c', null);
 
-      // A fresh bot instance per send; the `type` argument does not affect routing.
+      // A fresh bot instance per send; all types share the one configured chat.
       expect(telegrafMock.Telegraf).toHaveBeenCalledTimes(3);
       expect(telegrafMock.__sendMessage.mock.calls).toEqual([
         ['-1004242', 'a'],
         ['-1004242', 'b'],
         ['-1004242', 'c'],
+      ]);
+    });
+
+    it('suppresses a notification type that was switched off', async () => {
+      await seedEnabledSettings();
+      await repo.save({
+        key: Notifications.QuotesByProviderStatus,
+        value: SettingsValues.NO,
+      });
+
+      await service.sendMessage('suppressed', Notifications.QuotesByProviderStatus);
+      // other types and untyped messages are unaffected
+      await service.sendMessage('delivered', Notifications.QuotesByUserStatus);
+      await service.sendMessage('also delivered', null);
+
+      expect(telegrafMock.__sendMessage.mock.calls).toEqual([
+        ['-1004242', 'delivered'],
+        ['-1004242', 'also delivered'],
       ]);
     });
 
@@ -215,13 +240,27 @@ describe('TelegrafService (TelegrafModule.register)', () => {
       expect(telegrafMock.__sendMessage).toHaveBeenCalledWith('-1004242', 'Test message');
     });
 
-    it('resolves even when the telegram API fails (sendMessage swallows the error)', async () => {
-      // The BadRequestException branch in test() is unreachable in practice
-      // because sendMessage never rethrows.
+    it('reports a failing telegram API as a bad request', async () => {
       await seedEnabledSettings();
       telegrafMock.__sendMessage.mockRejectedValueOnce(new Error('bad token'));
 
-      await expect(service.test()).resolves.toBeUndefined();
+      await expect(service.test()).rejects.toThrow('Wrong bot token or chat id');
+    });
+
+    it('reports missing credentials as a bad request', async () => {
+      await service.setTelegramSettings({ enabled: true });
+
+      await expect(service.test()).rejects.toThrow('Bot token or chat id is not set');
+      expect(telegrafMock.__sendMessage).not.toHaveBeenCalled();
+    });
+
+    it('checks connectivity even while notifications are disabled', async () => {
+      await seedEnabledSettings();
+      await service.setTelegramSettings({ enabled: false });
+
+      await service.test();
+
+      expect(telegrafMock.__sendMessage).toHaveBeenCalledWith('-1004242', 'Test message');
     });
   });
 });

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TJWTPayload, TJWTRefreshPayload } from './jwt-auth.srtategy';
 import { RevokedTokensService, TOKEN_TYPE, TRevokedToken } from '../revoked-tokens';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'node:crypto';
 import { JWTAuthConfigService, TJWTAuthConfig } from './jwt-auth.config';
 import { JwtSignOptions } from '@nestjs/jwt/dist/interfaces';
 import ms from 'ms';
@@ -20,7 +20,7 @@ export class JWTAuthService {
   }
 
   public generateJwtId(): string {
-    return uuidv4();
+    return randomUUID();
   }
 
   public sign<PayloadType extends TJWTPayload | TJWTRefreshPayload>(
@@ -35,10 +35,13 @@ export class JWTAuthService {
       expiresIn,
       jwtid: this.generateJwtId(),
     };
+    // The token type is part of the signed payload: access and refresh tokens share
+    // a secret, and the strategies reject a token presented as the wrong type
+    const signedPayload = { ...payload, type: tokenType };
     return {
-      token: this.jwtService.sign(payload, options),
+      token: this.jwtService.sign(signedPayload, options),
       payload: {
-        ...payload,
+        ...signedPayload,
         exp: Math.floor((ms(expiresIn) + Date.now()) / 1000),
         jti: options.jwtid,
         sid: payload.sid,

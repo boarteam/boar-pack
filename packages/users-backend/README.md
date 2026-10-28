@@ -20,7 +20,7 @@ matching UI lives in
 | `UsersModule`     | `register({ withControllers?, dataSourceName? })`                                               | User entity, CRUD controllers (`@dataui/crud`), `/me` endpoint with packed CASL abilities.                                            |
 | `CaslModule`      | `forRoot()` / `forFeature()`                                                                    | Permission system. `forRoot()` installs the global `PoliciesGuard` — **endpoints are closed by default** unless a policy allows them. |
 | `JwtAuthModule`   | `register({ dataSourceName? })`                                                                 | Access + refresh JWT strategies, token revocation (pulled in by `AuthModule` automatically).                                          |
-| `TokensModule`    | `forRoot({ dataSourceName })` / `forAuth({ dataSourceName })`                                   | Long-lived API tokens; `forAuth` adds bearer-token authentication.                                                                    |
+| `TokensModule`    | `forRoot({ dataSourceName })` / `forAuth({ dataSourceName, withJwtAuth? })`                     | Long-lived API tokens; `forAuth` adds bearer-token authentication — set `withJwtAuth` when the app also uses JWT auth.                |
 | `EventLogsModule` | `forRoot(…)` / `forInterceptor(…)` / `forFeature(…)`                                            | Audit trail of requests/events; `forInterceptor` logs globally via interceptor + middleware.                                          |
 | `SettingsModule`  | `register({ withControllers, dataSourceName })`                                                 | Key-value application settings with CRUD endpoints.                                                                                   |
 | `TelegrafModule`  | `register({ withControllers, dataSourceName })`                                                 | Outbound Telegram notifications (not a login method).                                                                                 |
@@ -108,8 +108,16 @@ global prefix; the `REFRESH_TOKEN_PATH` default assumes
 
 Auth is JWT-based: tokens arrive either as an `Authorization: Bearer …`
 header or as cookies set by the login endpoints; refresh tokens are rotated
-and revoked server-side. The full design is documented in
+and revoked server-side. Access and refresh tokens carry a type claim and
+are not interchangeable — presenting one where the other is expected is
+rejected. The full design is documented in
 [docs/auth-refresh-token.md](https://github.com/boarteam/boar-pack/blob/master/docs/auth-refresh-token.md).
+
+To accept both session JWTs and long-lived API tokens in one app, register
+`TokensModule.forAuth({ dataSourceName, withJwtAuth: true })` alongside
+`AuthModule`: either credential then authenticates a request. Without
+`withJwtAuth` the module installs a standalone guard that requires an API
+token on every route.
 
 ## Permissions (CASL)
 

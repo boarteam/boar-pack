@@ -3,7 +3,7 @@ import { WsAuthGateway } from './ws-auth.gateway';
 import { WsAuthGuard } from './ws-auth.guard';
 import { WsAuthService } from './ws-auth.service';
 import { WS_AUTH_STRATEGY } from './ws-auth.constants';
-import { JWT_AUTH } from '../auth';
+import { JWT_AUTH } from '../auth/auth-strategies.constants';
 
 @Module({
   imports: [],
