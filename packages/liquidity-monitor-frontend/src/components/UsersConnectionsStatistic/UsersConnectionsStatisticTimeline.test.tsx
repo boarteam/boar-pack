@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { message } from 'antd';
 import { UsersConnectionsStatisticTimeline } from './UsersConnectionsStatisticTimeline';
 import { ApiClientProvider } from '../ApiClientContext';
 import { ApiClient, UsersConnectionsStatisticDto } from '../../tools/api-client/generated';
@@ -56,6 +57,7 @@ function renderTimeline(rows: UsersConnectionsStatisticDto[]) {
 beforeEach(() => {
   captured.column.length = 0;
   captured.navTheme = 'light';
+  vi.spyOn(message, 'error').mockImplementation(() => ({}) as any);
 });
 
 afterEach(() => {
@@ -182,5 +184,27 @@ describe('UsersConnectionsStatisticTimeline', () => {
 
     expect(await screen.findByText('No data')).toBeInTheDocument();
     expect(screen.queryByTestId('column-chart')).not.toBeInTheDocument();
+  });
+
+  it('surfaces a failed request instead of spinning forever', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const failure = new Error('network down');
+    const getTimeline = vi.fn().mockRejectedValue(failure);
+    const client = { usersConnectionsStatistic: { getTimeline } } as unknown as ApiClient;
+
+    const { container } = render(
+      <ApiClientProvider value={client}>
+        <UsersConnectionsStatisticTimeline
+          startTime="2026-07-25T08:00:00.000Z"
+          endTime="2026-07-25T10:00:00.000Z"
+          onDateRangeChange={vi.fn()}
+        />
+      </ApiClientProvider>,
+    );
+
+    expect(await screen.findByText('No data')).toBeInTheDocument();
+    expect(container.querySelector('.ant-spin')).toBeFalsy();
+    expect(consoleError).toHaveBeenCalledWith(failure);
+    expect(message.error).toHaveBeenCalledWith('Users connections statistic request failed');
   });
 });

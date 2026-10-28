@@ -36,7 +36,9 @@ export const SearchSelect = function <T>({
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- request() only stores the options once fetchItems resolves; the dropdown has to load them itself because it is mounted on demand
     request('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- request closes over the `filter` array prop and is rebuilt on every render, so depending on it would re-query the options endlessly; the unfiltered list is loaded once when the dropdown opens
   }, []);
 
   return (

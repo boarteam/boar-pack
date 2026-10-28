@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import {
   booleanFilters,
@@ -121,16 +121,18 @@ describe('NumberFilterDropdown', () => {
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter', keyCode: 13, which: 13 });
     expect(props.confirm).toHaveBeenCalledTimes(1);
   });
+
+  it('clears the filter when the input is emptied (antd emits null)', () => {
+    const props = makeProps([7]);
+    render(<NumberFilterDropdown {...props} />);
+
+    fireEvent.change(screen.getByPlaceholderText('Please Enter'), { target: { value: '' } });
+
+    expect(props.setSelectedKeys).toHaveBeenLastCalledWith([]);
+  });
 });
 
 describe('NumberRangeFilterDropdown', () => {
-  beforeEach(() => {
-    vi.spyOn(console, 'error').mockImplementation(() => {});
-  });
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it('syncs a pre-selected [from, to] range back through setSelectedKeys on mount', () => {
     const props = makeProps([5, 10]);
     render(<NumberRangeFilterDropdown {...props} />);
@@ -164,34 +166,39 @@ describe('NumberRangeFilterDropdown', () => {
     expect(props.confirm).toHaveBeenCalledTimes(1);
   });
 
-  // BUG (current behavior): when no range is selected yet, `range` is
-  // undefined and the change handler does `[value, prev[1]]` where prev is
-  // undefined, so typing into either input throws a TypeError.
-  it('currently crashes when typing into a bound while no range is selected', () => {
-    class Boundary extends React.Component<{ children: React.ReactNode }, { error: Error | null }> {
-      state = { error: null as Error | null };
-      static getDerivedStateFromError(error: Error) {
-        return { error };
-      }
-      render() {
-        return this.state.error ? (
-          <div data-testid="crash">{this.state.error.name}</div>
-        ) : (
-          this.props.children
-        );
-      }
-    }
-
+  it('starts a range from the From bound while nothing is selected yet', () => {
     const props = makeProps([]);
-    render(
-      <Boundary>
-        <NumberRangeFilterDropdown {...props} />
-      </Boundary>,
-    );
+    render(<NumberRangeFilterDropdown {...props} />);
 
     fireEvent.change(screen.getByPlaceholderText('From'), { target: { value: '1' } });
 
-    expect(screen.getByTestId('crash')).toHaveTextContent('TypeError');
+    // the upper bound stays open, which getFiltersSearch turns into $gte
+    expect(props.setSelectedKeys).toHaveBeenLastCalledWith([1, undefined]);
+  });
+
+  it('starts a range from the To bound while nothing is selected yet', () => {
+    const props = makeProps([]);
+    render(<NumberRangeFilterDropdown {...props} />);
+
+    fireEvent.change(screen.getByPlaceholderText('To'), { target: { value: '9' } });
+
+    expect(props.setSelectedKeys).toHaveBeenLastCalledWith([undefined, 9]);
+  });
+
+  it('reopens a bound when its input is emptied', () => {
+    const props = makeProps([5, 10]);
+    render(<NumberRangeFilterDropdown {...props} />);
+
+    fireEvent.change(screen.getByPlaceholderText('From'), { target: { value: '' } });
+
+    expect(props.setSelectedKeys).toHaveBeenLastCalledWith([undefined, 10]);
+  });
+
+  it('renders an open bound as an empty input', () => {
+    render(<NumberRangeFilterDropdown {...makeProps([undefined as unknown as React.Key, 9])} />);
+
+    expect((screen.getByPlaceholderText('From') as HTMLInputElement).value).toBe('');
+    expect((screen.getByPlaceholderText('To') as HTMLInputElement).value).toBe('9');
   });
 });
 

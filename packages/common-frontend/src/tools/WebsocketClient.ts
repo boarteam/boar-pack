@@ -21,6 +21,8 @@ export class WebsocketClient {
   private reconnectTimeout: number | undefined;
   private readonly worker: null | string;
   private serverSocketStatus: WebSocket['readyState'] = WebSocket.CLOSED;
+  // payloads sent while no socket was open; flushed as soon as one opens
+  private pendingPayloads: string[] = [];
 
   private readonly closeHandler: (event: CloseEvent) => void;
   private readonly openHandler: () => void;
@@ -81,6 +83,7 @@ export class WebsocketClient {
 
   private onOpen = () => {
     this.openHandler();
+    this.flushPendingPayloads();
   };
 
   private onMessage = async (event: WebSocketEventMap['message']) => {
@@ -128,19 +131,29 @@ export class WebsocketClient {
   }
 
   public send<T>(data: T) {
-    const send = () => {
-      this.socket?.send(JSON.stringify(data));
-    };
+    const payload = JSON.stringify(data);
 
     if (this.socket?.readyState !== WebSocket.OPEN) {
       console.warn(`QuotesDataSocket: socket is not ready to send data`);
-      // connect() runs in the constructor, so the socket always exists here
-      this.socket!.addEventListener('open', send, { once: true });
+      // The socket is either still connecting or already closed (onClose drops it). Either way
+      // the payload waits for the next open event — the one of the current socket, or the one
+      // of the socket a later reconnect() creates.
+      this.pendingPayloads.push(payload);
       return;
     }
 
+    this.sendPayload(payload);
+  }
+
+  private flushPendingPayloads() {
+    const payloads = this.pendingPayloads;
+    this.pendingPayloads = [];
+    payloads.forEach((payload) => this.sendPayload(payload));
+  }
+
+  private sendPayload(payload: string) {
     try {
-      send();
+      this.socket?.send(payload);
     } catch (e) {
       console.error(`QuotesDataSocket: error, while sending data to WS server`);
       console.error(e);

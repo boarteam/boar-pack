@@ -92,6 +92,13 @@ describe('TokensTable', () => {
     expect(screen.getAllByLabelText('edit')).toHaveLength(tokens.length);
   });
 
+  it('never offers creation: the API cannot create a token for another user', async () => {
+    renderTable();
+
+    await screen.findByText('deploy token');
+    expect(screen.queryByRole('button', { name: /New/ })).not.toBeInTheDocument();
+  });
+
   it('is view-only without canManageTokens', async () => {
     hoisted.access = { canManageTokens: false };
     renderTable();

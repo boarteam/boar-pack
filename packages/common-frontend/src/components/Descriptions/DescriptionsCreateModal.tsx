@@ -27,7 +27,7 @@ const DescriptionsCreateModal = <Entity extends Record<string | symbol, any>>({
     } else {
       form.resetFields();
     }
-  }, [data]);
+  }, [data, form]);
 
   return (
     <Modal

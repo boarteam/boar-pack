@@ -4,6 +4,16 @@ import { IWithId, TFilters, TSearchableColumn } from './tableTypes';
 import React, { Key } from 'react';
 import { TColumnsStates } from './useColumnsSets';
 
+/**
+ * Whether the user actually filtered by this column. antd reports every filterable column,
+ * using `null` (or `''` for search form inputs) when no filter is applied, so those two mean
+ * "no filter" and let the base filter through. Every other value — `0` and `false` included —
+ * is a real filter value.
+ */
+function isFilterValueSet(value: TFilters[string] | undefined): boolean {
+  return value !== undefined && value !== null && value !== '';
+}
+
 export function getFiltersSearch({
   baseFilters = {},
   filters = {},
@@ -19,12 +29,22 @@ export function getFiltersSearch({
     const colDataIndex = Array.isArray(col.field) ? col.field.join('.') : col.field;
     const field = col.filterField || colDataIndex;
     let operator = col.filterOperator || col.operator;
-    let value = filters[colDataIndex] || baseFilters[colDataIndex];
+    let value = isFilterValueSet(filters[colDataIndex])
+      ? filters[colDataIndex]
+      : baseFilters[colDataIndex];
     filterKeys.delete(colDataIndex);
+
+    // A range keeps its bounds separate: each defined bound has to be numeric on its own,
+    // `Number([3, 9])` would be NaN and would drop the whole range.
+    const numericValues =
+      operator === Operators.between && Array.isArray(value)
+        ? value.filter((bound) => bound !== undefined)
+        : [value];
+
     if (
       value === '' ||
       value === undefined ||
-      (col.numeric && !Number.isFinite(Number(value))) ||
+      (col.numeric && !numericValues.every((bound) => Number.isFinite(Number(bound)))) ||
       (col.uuid && (typeof value !== 'string' || !uuidValidate(value)))
     ) {
       return;

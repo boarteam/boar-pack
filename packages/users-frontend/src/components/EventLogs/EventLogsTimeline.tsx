@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Column } from '@ant-design/plots';
 import { ColumnConfig } from '@ant-design/plots/es/components/column';
 import { EventLogTimelineDto, EventLogTimelineQueryDto } from '../../tools/api-client/generated';
 import { useApiClient } from '../ApiClientContext';
-import { Button } from 'antd';
 import { PageLoading } from '@ant-design/pro-layout';
 import { useModel } from 'umi';
 
@@ -23,10 +22,6 @@ export const EventLogsTimeline: React.FC<TEventLogsTimelineProps> = ({
   const { navTheme } = initialState?.settings || {};
 
   const [data, setData] = useState<EventLogTimelineDto[] | null>(null);
-  const sliderPosition = useMemo(() => [0, 1], []);
-  const [showFilterButton, setShowFilterButton] = useState(false);
-
-  const chartRef = React.useRef(null);
 
   useEffect(() => {
     apiClient.eventLogs
@@ -35,24 +30,12 @@ export const EventLogsTimeline: React.FC<TEventLogsTimelineProps> = ({
         endTime,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       })
-      .then(setData)
-      .then(() => {
-        sliderPosition[0] = 0;
-        sliderPosition[1] = 1;
-        setShowFilterButton(false);
-      });
-  }, [startTime, endTime]);
+      .then(setData);
+  }, [startTime, endTime, apiClient.eventLogs]);
 
   if (!data) {
     return <PageLoading />;
   }
-
-  const applySliderDates = () => {
-    const [start, end] = sliderPosition;
-    const startDate = data?.[Math.floor(start * (data.length - 1))]?.startTime;
-    const endDate = data?.[Math.floor(end * (data.length - 1))]?.endTime;
-    onDateRangeChange(startDate, endDate);
-  };
 
   const domain = ['Info', 'Warning', 'Error'];
 
@@ -89,10 +72,5 @@ export const EventLogsTimeline: React.FC<TEventLogsTimelineProps> = ({
     },
   };
 
-  return (
-    <>
-      <Column {...config} ref={chartRef} />
-      {(showFilterButton && <Button onClick={applySliderDates}>Filter dates</Button>) || null}
-    </>
-  );
+  return <Column {...config} />;
 };

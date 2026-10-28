@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Col, Empty, Result, Row, Space, Tag, theme } from 'antd';
 import { PageLoading } from '@ant-design/pro-layout';
 import { Line } from '@ant-design/plots';
@@ -27,16 +27,22 @@ const useStyles = createStyles(() => {
   };
 });
 
+// The cards always show the last hour; computed per call so the interval below
+// never reuses a stale timestamp.
+const oneHourAgoISO = () => {
+  const from = new Date();
+  from.setHours(from.getHours() - 1);
+  return from.toISOString();
+};
+
 export const QuotesStatisticCards = ({ providers, updateInterval }: TQuotesStatisticCardsProps) => {
   const apiClient = useApiClient();
-  let startTimeInitial = new Date();
-  startTimeInitial.setHours(startTimeInitial.getHours() - 1);
 
-  const [startTime, setStartTime] = useState<string | undefined>(startTimeInitial.toISOString());
+  const [startTime, setStartTime] = useState<string | undefined>(oneHourAgoISO);
   const [endTime, setEndTime] = useState<string | undefined>(new Date().toISOString());
   const [data, setData] = useState<QuotesStatisticDto[] | null | undefined>(undefined);
 
-  const requestQuotesStatistic = () => {
+  const requestQuotesStatistic = useCallback(() => {
     apiClient.quotesStatistics
       .getTimeline({
         startTime,
@@ -49,15 +55,13 @@ export const QuotesStatisticCards = ({ providers, updateInterval }: TQuotesStati
         console.error('Quotes statistic request failed');
         setData(null);
       });
-  };
+  }, [apiClient.quotesStatistics, startTime, endTime]);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
     if (updateInterval) {
       intervalId = setInterval(() => {
-        startTimeInitial = new Date();
-        startTimeInitial.setHours(startTimeInitial.getHours() - 1);
-        setStartTime(startTimeInitial.toISOString());
+        setStartTime(oneHourAgoISO());
         setEndTime(new Date().toISOString());
       }, updateInterval);
     }
@@ -67,11 +71,11 @@ export const QuotesStatisticCards = ({ providers, updateInterval }: TQuotesStati
         clearInterval(intervalId);
       }
     };
-  }, []);
+  }, [updateInterval]);
 
   useEffect(() => {
     requestQuotesStatistic();
-  }, [startTime, endTime]);
+  }, [requestQuotesStatistic]);
 
   const { styles } = useStyles();
   const { token } = theme.useToken();
@@ -102,11 +106,11 @@ export const QuotesStatisticCards = ({ providers, updateInterval }: TQuotesStati
               </Space>
             }
             chart={
-              dataByProvider[provider.id] ? (
+              dataByProvider[provider.name] ? (
                 <Line
                   {...{
                     height: 150,
-                    data: dataByProvider[provider.id],
+                    data: dataByProvider[provider.name],
                     xField: 'time',
                     yField: 'records',
                     legend: { size: false },

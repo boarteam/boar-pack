@@ -117,12 +117,22 @@ describe('isRecordNew', () => {
 });
 
 describe('useCreation', () => {
+  it('offers no create button when no onCreate handler is wired', () => {
+    renderHarness({});
+
+    expect(screen.queryByText('New')).toBeNull();
+  });
+
   describe('create button (inline mode)', () => {
     it('adds an editable record at the top with a fresh new id and defaults', async () => {
       const user = userEvent.setup();
       const actionRef = makeActionRef();
 
-      renderHarness({ actionRef, createNewDefaultParams: { name: 'Default name' } });
+      renderHarness({
+        actionRef,
+        onCreate: vi.fn(),
+        createNewDefaultParams: { name: 'Default name' },
+      });
 
       await user.click(screen.getByText('New'));
 
@@ -139,7 +149,11 @@ describe('useCreation', () => {
     it('opens the modal with default params and closes it on cancel', async () => {
       const user = userEvent.setup();
 
-      renderHarness({ popupCreation: true, createNewDefaultParams: { name: 'Prefilled' } });
+      renderHarness({
+        popupCreation: true,
+        onCreate: vi.fn(),
+        createNewDefaultParams: { name: 'Prefilled' },
+      });
 
       expect(modalProps.entity).toBeUndefined();
       expect(screen.getByTestId('create-modal')).toHaveAttribute('data-open', 'false');
@@ -155,17 +169,17 @@ describe('useCreation', () => {
       expect(modalProps.entity).toBeUndefined();
     });
 
-    it('does not open the modal without createNewDefaultParams (current behavior)', async () => {
-      // popupCreation sets the popup data to createNewDefaultParams as-is, so when
-      // no defaults are configured the New button leaves the modal closed.
+    it('opens an empty modal without createNewDefaultParams', async () => {
       const user = userEvent.setup();
 
-      renderHarness({ popupCreation: true });
+      renderHarness({ popupCreation: true, onCreate: vi.fn() });
+
+      expect(screen.getByTestId('create-modal')).toHaveAttribute('data-open', 'false');
 
       await user.click(screen.getByText('New'));
 
-      expect(modalProps.entity).toBeUndefined();
-      expect(screen.getByTestId('create-modal')).toHaveAttribute('data-open', 'false');
+      expect(modalProps.entity).toEqual({});
+      expect(screen.getByTestId('create-modal')).toHaveAttribute('data-open', 'true');
     });
 
     it('submits the entity through onCreate with pathParams and the create DTO, then reloads', async () => {

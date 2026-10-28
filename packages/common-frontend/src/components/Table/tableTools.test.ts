@@ -119,17 +119,55 @@ describe('getFiltersSearch', () => {
     ).toEqual({ $and: [{ age: { $eq: '42' } }] });
   });
 
-  it('drops a numeric filter with value 0 (current behavior: falsy filter values are ignored)', () => {
-    // `filters[key] || baseFilters[key]` treats 0/false as absent, so filtering by 0 is impossible.
+  it('keeps falsy but meaningful filter values (0, false)', () => {
+    const numericColumn: TSearchableColumn = {
+      field: 'age',
+      operator: Operators.equals,
+      numeric: true,
+    };
+    const booleanColumn: TSearchableColumn = { field: 'enabled', operator: Operators.equals };
+
+    expect(getFiltersSearch({ filters: { age: 0 }, searchableColumns: [numericColumn] })).toEqual({
+      $and: [{ age: { $eq: 0 } }],
+    });
+    expect(
+      getFiltersSearch({ filters: { enabled: false }, searchableColumns: [booleanColumn] }),
+    ).toEqual({ $and: [{ enabled: { $eq: false } }] });
+  });
+
+  it('lets 0 and false override a base filter', () => {
     const numericColumn: TSearchableColumn = {
       field: 'age',
       operator: Operators.equals,
       numeric: true,
     };
 
-    expect(getFiltersSearch({ filters: { age: 0 }, searchableColumns: [numericColumn] })).toEqual({
-      $and: [],
-    });
+    expect(
+      getFiltersSearch({
+        baseFilters: { age: 18 },
+        filters: { age: 0 },
+        searchableColumns: [numericColumn],
+      }),
+    ).toEqual({ $and: [{ age: { $eq: 0 } }] });
+  });
+
+  it('falls back to baseFilters for the values antd uses to mean "not filtered"', () => {
+    // antd reports every filterable column, with null when the user cleared the filter;
+    // search form inputs report ''. Neither may shadow the base filter.
+    expect(
+      getFiltersSearch({
+        baseFilters: { name: 'base' },
+        filters: { name: null },
+        searchableColumns: [nameColumn],
+      }),
+    ).toEqual({ $and: [{ name: { $contL: 'base' } }] });
+    expect(
+      getFiltersSearch({
+        baseFilters: { name: 'base' },
+        filters: { name: '' },
+        searchableColumns: [nameColumn],
+      }),
+    ).toEqual({ $and: [{ name: { $contL: 'base' } }] });
   });
 
   it('validates uuid columns', () => {
@@ -177,18 +215,48 @@ describe('getFiltersSearch', () => {
       ).toEqual({ $and: [{ amount: { $gte: 3 } }] });
     });
 
-    it('drops a numeric between column even with two valid bounds (current behavior)', () => {
-      // The numeric guard runs Number([3, 9]) -> NaN before the between handling,
-      // so a numeric+between column can never receive a two-bound range.
+    describe('numeric between columns', () => {
       const numericBetween: TSearchableColumn = {
         field: 'amount',
         operator: Operators.between,
         numeric: true,
       };
 
-      expect(
-        getFiltersSearch({ filters: { amount: [3, 9] }, searchableColumns: [numericBetween] }),
-      ).toEqual({ $and: [] });
+      it('keeps a two-bound range, validating each bound on its own', () => {
+        expect(
+          getFiltersSearch({ filters: { amount: [3, 9] }, searchableColumns: [numericBetween] }),
+        ).toEqual({ $and: [{ amount: { $between: [3, 9] } }] });
+      });
+
+      it('still degrades to $gte / $lte when a bound is missing', () => {
+        expect(
+          getFiltersSearch({
+            filters: { amount: [3, undefined as any] },
+            searchableColumns: [numericBetween],
+          }),
+        ).toEqual({ $and: [{ amount: { $gte: 3 } }] });
+        expect(
+          getFiltersSearch({
+            filters: { amount: [undefined as any, 9] },
+            searchableColumns: [numericBetween],
+          }),
+        ).toEqual({ $and: [{ amount: { $lte: 9 } }] });
+      });
+
+      it('drops the range when a bound is not numeric', () => {
+        expect(
+          getFiltersSearch({
+            filters: { amount: ['abc', 9] },
+            searchableColumns: [numericBetween],
+          }),
+        ).toEqual({ $and: [] });
+      });
+
+      it('keeps validating plain (non-range) values', () => {
+        expect(
+          getFiltersSearch({ filters: { amount: 'abc' }, searchableColumns: [numericBetween] }),
+        ).toEqual({ $and: [] });
+      });
     });
   });
 
@@ -232,7 +300,8 @@ describe('getFiltersSearch', () => {
       expect(getFiltersSearch({ filters: { role: [null] }, searchableColumns: [column] })).toEqual({
         $and: [{ role: { $isnull: true } }],
       });
-      // null in filters is falsy and falls back to baseFilters
+      // a bare null is how antd reports an unfiltered column, so it only means
+      // "is null" when it comes from baseFilters
       expect(
         getFiltersSearch({ baseFilters: { role: null }, searchableColumns: [column] }),
       ).toEqual({ $and: [{ role: { $isnull: true } }] });

@@ -85,6 +85,13 @@ describe('EventLogsTimeline', () => {
     expect(await screen.findByTestId('column-chart')).toBeInTheDocument();
   });
 
+  it('renders the chart alone -- no leftover slider filter controls', async () => {
+    renderTimeline();
+
+    await screen.findByTestId('column-chart');
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
+
   it('queries the timeline with the date range and browser timezone', async () => {
     const { client } = renderTimeline({
       startTime: '2026-01-01T00:00:00Z',

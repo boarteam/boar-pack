@@ -30,7 +30,8 @@ export function NumberFilterDropdown({
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <InputNumber
         value={selectedKeys.length ? Number(selectedKeys[0]) : undefined}
-        onChange={(value) => setSelectedKeys(value === undefined ? [] : ([value] as React.Key[]))}
+        // antd reports a cleared InputNumber as null, which has to clear the filter as well
+        onChange={(value) => setSelectedKeys(value === null || value === undefined ? [] : [value])}
         onPressEnter={() => confirm()}
         step={1}
         style={{ margin: 4, width: 250 }}
@@ -98,6 +99,20 @@ export function CheckboxFilterDropdown({
   );
 }
 
+/**
+ * A bound left empty stays undefined — getFiltersSearch turns a range with one open end
+ * into $gte / $lte.
+ */
+type TNumberRange = [number | undefined, number | undefined];
+
+const EMPTY_NUMBER_RANGE: TNumberRange = [undefined, undefined];
+
+const toBound = (key: React.Key | undefined): number | undefined =>
+  key === undefined || key === '' ? undefined : Number(key);
+
+const toNumberRange = (keys: React.Key[]): TNumberRange | undefined =>
+  keys.length >= 2 ? [toBound(keys[0]), toBound(keys[1])] : undefined;
+
 export function NumberRangeFilterDropdown({
   setSelectedKeys,
   selectedKeys,
@@ -105,24 +120,24 @@ export function NumberRangeFilterDropdown({
   clearFilters,
   close,
 }: FilterDropdownProps) {
-  const toRange = (keys: React.Key[]): [number, number] | undefined =>
-    keys.length >= 2 ? [Number(keys[0]), Number(keys[1])] : undefined;
-
-  const [range, updateRange] = useState<[number, number] | undefined>(toRange(selectedKeys));
+  const [range, updateRange] = useState<TNumberRange | undefined>(toNumberRange(selectedKeys));
 
   useEffect(() => {
-    updateRange(toRange(selectedKeys));
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- antd owns the filter state: when the table resets or restores its filters the dropdown has to adopt the new keys, and the inputs stay editable in between, so the range cannot be derived during render
+    updateRange(toNumberRange(selectedKeys));
   }, [selectedKeys]);
 
   useEffect(() => {
-    setSelectedKeys(range ?? []);
+    // an open end is passed on as undefined, which React.Key does not describe
+    setSelectedKeys((range ?? []) as React.Key[]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- antd rebuilds setSelectedKeys on every render of the dropdown, so depending on it would push the range back into the table on every render and re-render it in a loop
   }, [range]);
 
   return (
     <DynamicOptionsFilterDropdown confirm={confirm} clearFilters={clearFilters}>
       <InputNumber
         value={range?.[0]}
-        onChange={(value) => updateRange((prev) => [value, prev![1]] as [number, number])}
+        onChange={(value) => updateRange(([, to] = EMPTY_NUMBER_RANGE) => [value ?? undefined, to])}
         onPressEnter={() => confirm()}
         step={1}
         style={{ margin: 4, width: 250 }}
@@ -130,7 +145,9 @@ export function NumberRangeFilterDropdown({
       />
       <InputNumber
         value={range?.[1]}
-        onChange={(value) => updateRange((prev) => [prev![0], value] as [number, number])}
+        onChange={(value) =>
+          updateRange(([from] = EMPTY_NUMBER_RANGE) => [from, value ?? undefined])
+        }
         onPressEnter={() => confirm()}
         step={1}
         style={{ margin: 4, width: 250 }}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Col, Empty, Row } from 'antd';
+import { Col, Empty, message, Row } from 'antd';
 import { PageLoading } from '@ant-design/pro-layout';
 import { Line } from '@ant-design/plots';
 import { StatisticCard } from '@ant-design/pro-components';
@@ -31,14 +31,20 @@ const useStyles = createStyles(() => {
   };
 });
 
+// The cards always show the last hour; computed per call so the interval below
+// never reuses a stale timestamp.
+const oneHourAgoISO = () => {
+  const from = new Date();
+  from.setHours(from.getHours() - 1);
+  return from.toISOString();
+};
+
 export const TargetsConnectionsStatisticCards = ({
   targets,
   updateInterval,
 }: TTargetsConnectionsStatisticCardsProps) => {
   const apiClient = useApiClient();
-  let startTimeInitial = new Date();
-  startTimeInitial.setHours(startTimeInitial.getHours() - 1);
-  const [startTime, setStartTime] = useState<string | undefined>(startTimeInitial.toISOString());
+  const [startTime, setStartTime] = useState<string | undefined>(oneHourAgoISO);
   const [endTime, setEndTime] = useState<string | undefined>(new Date().toISOString());
   const [data, setData] = useState<UsersConnectionsStatisticDto[] | null>(null);
 
@@ -53,27 +59,43 @@ export const TargetsConnectionsStatisticCards = ({
         endTime,
         targetIds: targets.map((t) => t.id),
       })
-      .then(setData);
+      .then(setData)
+      .catch((e) => {
+        console.error(e);
+        message.error('Targets connections statistic request failed');
+        setData([]);
+      });
   };
 
   useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
     if (updateInterval) {
-      setInterval(() => {
-        startTimeInitial = new Date();
-        startTimeInitial.setHours(startTimeInitial.getHours() - 1);
-        setStartTime(startTimeInitial.toISOString());
+      intervalId = setInterval(() => {
+        setStartTime(oneHourAgoISO());
         setEndTime(new Date().toISOString());
       }, updateInterval);
     }
-  }, []);
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [updateInterval]);
 
   useEffect(() => {
     getTargetsConnectionsStatistic();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the helper closes over the `targets` array prop and is rebuilt on every render, so depending on it would re-request the timeline whenever the caller passes a new array; the request is meant to follow the time window only
   }, [startTime, endTime]);
 
   const { styles } = useStyles();
 
-  if (!data || !targets) {
+  // Without targets no request is made, so there is nothing to wait for.
+  if (!targets || targets.length === 0) {
+    return <Empty />;
+  }
+
+  if (!data) {
     return <PageLoading />;
   }
 

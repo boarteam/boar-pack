@@ -9,7 +9,7 @@ import moment from 'moment';
 import { useApiClient } from '../ApiClientContext';
 // @ts-ignore
 import { useModel } from 'umi';
-import { Empty } from 'antd';
+import { Empty, message } from 'antd';
 
 type TUsersConnectionsStatisticTimelineProps = UsersConnectionsStatisticQueryDto & {
   onDateRangeChange: (start: string | undefined, end: string | undefined) => void;
@@ -31,8 +31,13 @@ export const UsersConnectionsStatisticTimeline: React.FC<
         endTime,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       })
-      .then(setData);
-  }, [startTime, endTime]);
+      .then(setData)
+      .catch((e) => {
+        console.error(e);
+        message.error('Users connections statistic request failed');
+        setData([]);
+      });
+  }, [startTime, endTime, apiClient.usersConnectionsStatistic]);
 
   if (!data) {
     return <PageLoading />;

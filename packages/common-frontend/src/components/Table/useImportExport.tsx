@@ -127,11 +127,14 @@ export function useImportExport<Entity, TPathParams = {}>({
         continue;
       }
 
-      // Text values handling — everything left over is stringified. NOTE:
-      // the original condition `(… && valueType === undefined) || 'text'` was
-      // constant-true, so per-valueType handling never actually happened;
-      // keeping the always-stringify behavior it produced (tracked follow-up).
-      normalizedRow[key] = String(normalizedRow[key]);
+      // Text values handling. The exported file is parsed with type inference while the
+      // imported one is parsed raw, so text columns — and keys without a declared valueType,
+      // including the ones that have no column at all (id, version, …) — are compared as
+      // strings. Values of any other valueType keep the type their own handling gave them.
+      const valueType = keyedColumns[key]?.valueType;
+      if (valueType === undefined || valueType === 'text') {
+        normalizedRow[key] = String(normalizedRow[key]);
+      }
     }
 
     return normalizedRow;

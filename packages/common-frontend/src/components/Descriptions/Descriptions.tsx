@@ -75,15 +75,11 @@ const DescriptionsComponent = <
 ) => {
   const { styles } = useStyles();
 
-  let [form] = useForm<Entity>();
-  if (!editable?.form) {
-    editable = {
-      ...editable,
-      form,
-    };
-  }
-  // the branch above guarantees editable.form is set
-  form = editable.form!;
+  const [ownForm] = useForm<Entity>();
+  // Callers may bring their own form instance; otherwise the component supplies one.
+  const editableConfig = editable?.form ? editable : { ...editable, form: ownForm };
+  // the expression above guarantees form is set
+  const form = editableConfig.form!;
 
   const actionRefComponent = useRef<ActionType>();
   const actionRef = actionRefProp || actionRefComponent;
@@ -113,13 +109,18 @@ const DescriptionsComponent = <
   >(new Map(sections.map((section) => [section.key, 0])));
 
   const handleSubmit = async () => {
+    if (!onCreate) {
+      // Submitting is a create flow (e.g. CreateEntityModal); without a handler there is
+      // nothing to submit to. Fail outside of the try below so the wiring mistake is not
+      // reported as a validation failure.
+      throw new Error('Descriptions: submit() needs an onCreate handler to send the data to');
+    }
+
     try {
       // Validate all fields in the form
       const data = await form.validateFields();
-      // Let the parent component handle the submit logic.
-      // submit() is only wired up by create flows (e.g. CreateEntityModal) which always
-      // provide onCreate.
-      await onCreate!(data);
+      // Let the parent component handle the submit logic
+      await onCreate(data);
     } catch (error) {
       console.error('Validation or submission failed:', error);
     } finally {
@@ -187,6 +188,7 @@ const DescriptionsComponent = <
     queryParams.fields = collectFieldsFromColumns(columns, idColumnName, joinFields);
 
     return queryParams;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- callers rebuild `columns` on every render, so listing it (and idColumnName, which travels with it) would recompute the memo on every render; the requested fields only have to follow the request params
   }, [params, pathParams]);
 
   const getKey = (index: number) => index + String(pathParams?.[idColumnName as keyof TPathParams]);
@@ -231,14 +233,17 @@ const DescriptionsComponent = <
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- requestData raises the loading flag before awaiting getOne; that flag is what renders the spinner for the initial load
     safetyRun(requestData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- requestData is rebuilt on every render, so depending on it would re-fetch the entity in a loop; this fetch is meant to run once on mount
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- the entity prop is the source of truth for a freshly opened record, but it is only a seed: onSave and the initial fetch overwrite `data` afterwards, so it cannot be derived during render
     setData(entity);
     // antd tolerates undefined at runtime; keep passing it through unchanged
     form.setFieldsValue(entity as Partial<Entity>);
-  }, [entity]);
+  }, [entity, form]);
 
   if (loading) {
     return <PageLoading />;
@@ -301,7 +306,7 @@ const DescriptionsComponent = <
                   ],
                   actionRender: () => [],
                 }),
-                ...editable,
+                ...editableConfig,
               }
             : undefined
         }
